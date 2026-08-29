@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charSet="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- 2026-08-25 文件模式修复逻辑：构建资源统一改为相对默认项目根目录的路径，使 HTTP、Vercel 与 Finder 双击 file:// 打开都能加载同一套样式和脚本。 -->
+<link rel="stylesheet" href="../_next/static/css/index.D73yptIG.css" data-rsc-css-href="../_next/static/css/index.D73yptIG.css" data-precedence="vite-rsc/importer-resources"/>
+<link rel="modulepreload" fetchPriority="low" href="../_next/static/chunks/index-CH3iGVJW.js"/>
+<script src="../_next/static/chunks/rolldown-runtime-C60lm6uB.js" type="module" async="">
+</script>
+<script src="../_next/static/chunks/framework-BgSIrAUN.js" type="module" async="">
+</script>
+<link rel="modulepreload" href="../_next/static/chunks/layout-segment-context-bCG5TVfa.js" crossorigin=""/>
+<link rel="modulepreload" href="../_next/static/chunks/page-BBNAE3ct.js" crossorigin=""/>
+<title>一站式 AI 视频创作平台</title>
+<meta name="description" content="从想法到视频的一站式 AI 创作平台。"/>
+<meta property="og:title" content="From Idea to Video"/>
+<meta property="og:description" content="从想法到视频，一站式 AI 创作平台。"/>
+<meta property="og:image" content="https://vina-ai-creative-workspace.laipic-2428.chatgpt.site/og.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="From Idea to Video"/>
+<meta name="twitter:description" content="从想法到视频，一站式 AI 创作平台。"/>
+<meta name="twitter:image" content="https://vina-ai-creative-workspace.laipic-2428.chatgpt.site/og.png"/>
+<!-- 2026-08-25 改动逻辑：按需求移除轮播计数、主按钮辅助文案、各内容板块的“编号 · VinaAI”眉题，以及底部行动区的英文眉题；场景内部的当前分类状态保留。 -->
+<style>.cinema-count,.hero .hint,.section-head .kicker,.final-cta>p{display:none!important}</style>
+<!-- 2026-08-28 改动逻辑：H5 底部创作操作栏改回普通文档流，不再固定覆盖页面内容；用户只有滚动到页尾（页脚之后）时才会看到该入口。 -->
+<style>
+  @media (max-width:980px){
+    .sticky{
+      position:static!important;
+      inset:auto!important;
+    }
+  }
+</style>
+<!-- 2026-08-26 改动逻辑：首屏介绍中的“来画 Agent”统一改为品牌名“VinaAI”；桌面端介绍保持单行展示，窄屏仍允许自然换行，避免移动端横向溢出。 -->
+<style>@media (min-width:981px){.hero .subhead{max-width:none;white-space:nowrap}}</style>
+<!-- 2026-08-26 改动逻辑：按最新标注继续放大轮播底部案例描述与右侧开始创作文字，增强深色画面上的阅读清晰度；按钮尺寸、卡片结构和原点击交互保持不变。分页圆点继续隐藏，轮播仍通过左右箭头和两侧视频切换。 -->
+<style>
+  /* 2026-08-27 改动逻辑：营销页所有语言统一使用英文版完整 VinaAI 品牌 Logo，中文正文品牌称呼仍由语言包显示“来画”。 */
+  .cinema-card .cinema-console-main>p{font-size:16px!important;line-height:1.6!important}
+  .cinema-card .cinema-console-main>.primary{font-size:13px!important;font-weight:680!important}
+  .cinema-dots{display:none!important}
+  @media (min-width:981px){
+    .capabilities .section-head h2{
+      white-space:nowrap;
+      font-size:clamp(40px,4vw,60px);
+    }
+    .capabilities .section-head h2 span{display:inline}
+    .capabilities .section-head h2 br{display:none}
+    .capabilities .section-head>p{font-size:18px;line-height:1.65}
+  }
+  @media (max-width:580px){
+    .cinema-card .cinema-console-main>p{font-size:11px!important}
+    .cinema-card .cinema-console-main>.primary{font-size:10px!important}
+    .capabilities .section-head>p{font-size:15px;line-height:1.65}
+  }
+</style>
+<!-- 2026-08-26 改动逻辑：五张核心能力卡整体压缩纵向留白，并同步放大标题、说明与胶囊标签；使用 min-height 保留多语言文案自然撑高的安全空间。 -->
+<style>
+  .capability-cards article{
+    min-height:245px;
+    padding:24px 28px;
+  }
+  .capability-cards article:nth-child(n+3){min-height:225px}
+  .capability-card-top span{font-size:10px}
+  .capability-cards article>p{margin:28px 0 6px}
+  .capability-cards h3{font-size:clamp(24px,2.1vw,32px)}
+  .capability-cards article>b{
+    margin-top:12px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .capability-card-tags{padding-top:18px}
+  .capability-card-tags em{
+    padding:7px 11px;
+    font-size:12px;
+    line-height:1.2;
+  }
+  @media (max-width:700px){
+    .capability-cards article,
+    .capability-cards article:nth-child(n+3){min-height:225px}
+  }
+  @media (max-width:580px){
+    .capability-cards article,
+    .capability-cards article:nth-child(n+3){min-height:210px;padding:22px 24px}
+    .capability-cards article>p{margin-top:22px}
+    .capability-cards h3{font-size:26px}
+    .capability-cards article>b{font-size:13px}
+    .capability-card-tags em{font-size:11px}
+  }
+</style>
+<!-- 2026-08-26 改动逻辑：统一缩短四张创作者评价卡的纵向高度，桌面端减少大块留白，移动端同步收紧，同时保留作者信息贴近卡片底部的原有布局。 -->
+<style>
+  .stories .story-grid blockquote{min-height:250px!important}
+  /* 2026-08-26 改动逻辑：放大评价卡底部姓名与职位，提升署名信息的可读性。 */
+  .stories .story-grid blockquote footer span{font-size:14px!important;line-height:1.45!important}
+  @media (max-width:580px){
+    .stories .story-grid blockquote{min-height:205px!important}
+    .stories .story-grid blockquote footer span{font-size:13px!important}
+  }
+</style>
+<!-- 2026-08-25 改动逻辑：FAQ 收起/展开图标由加号和叉号改为折角箭头；收起时箭头向下，展开时箭头向上，原生 details 交互保持不变。 -->
+<style>
+  .faq-list summary b{
+    width:11px!important;
+    height:11px!important;
+    justify-self:center;
+    border-right:1.5px solid currentColor;
+    border-bottom:1.5px solid currentColor;
+    font-size:0!important;
+    transform:rotate(45deg)!important;
+    transform-origin:center;
+  }
+  .faq-list details[open] summary b{transform:rotate(225deg)!important}
+</style>
+<!-- 2026-08-25 改动逻辑：按需求隐藏页面最底部整块 Footer，Footer 自带的顶部整行分割线随容器一并移除。 -->
+<style>.footer{display:none!important}</style>
+<!-- 2026-08-25 改动逻辑：移除品牌营销页场景大图下方的“精选视频案例”模块，同时保留上方场景分类及大图切换功能。 -->
+<style>.scene-case-browser{display:none!important}</style>
+<!-- 2026-08-26 改动逻辑：按最新标注继续放大场景说明、标签、已有开始创作按钮及右侧五个场景按钮文字；场景画面和切换结构保持不变。 -->
+<style>
+  .scenes .section-head>p{font-size:16px!important}
+  /* 2026-08-26 改动逻辑：桌面端场景主视频容器改为标准 16:9，取消构建样式的固定 650px 高度；视频继续使用 cover 铺满容器。 */
+  @media (min-width:701px){
+    .scene-theater{
+      height:auto!important;
+      min-height:0!important;
+      aspect-ratio:16/9;
+    }
+  }
+  /* 2026-08-26 改动逻辑：降低场景视频左侧与底部遮罩的不透明度，让原视频画面更明亮，同时保留文案区域所需的基础对比度。 */
+  .scene-theater-shade{
+    background:
+      linear-gradient(90deg,rgba(3,5,6,.58) 0%,rgba(3,5,6,.34) 34%,rgba(3,5,6,.12) 62%,rgba(3,5,6,.04) 100%),
+      linear-gradient(0deg,rgba(3,5,6,.38) 0%,rgba(3,5,6,.16) 34%,transparent 64%)!important;
+  }
+  .scene-theater-copy>p:not(.kicker){font-size:16px!important;line-height:1.65!important}
+  .scene-theater-copy li{font-size:15px!important}
+  .scene-theater-copy>.primary{font-size:13px!important;font-weight:680!important}
+  .scene-theater-tabs span{font-size:12px!important}
+  .scene-theater-tabs b{font-size:17px!important}
+</style>
+<!-- 2026-08-26 改动逻辑：场景区标题说明下方新增居中的同款绿色开始创作按钮，点击后复用现有登录弹窗；窄屏保持自然居中与安全间距。 -->
+<style>
+  .scene-start-action{
+    position:relative;
+    z-index:5;
+    display:flex;
+    justify-content:center;
+    width:min(var(--max),100%);
+    margin:-34px auto 18px;
+  }
+  .scene-start-action .primary{
+    color:#10140d!important;
+    background:var(--accent)!important;
+    border-color:var(--accent)!important;
+    box-shadow:0 14px 34px #b7e85a24;
+  }
+  @media (max-width:700px){
+    .scene-start-action{margin:-24px auto 18px}
+    .scene-theater-copy>p:not(.kicker){font-size:14px!important}
+    .scene-theater-copy li{font-size:13px!important}
+    .scene-theater-tabs span{font-size:10px!important}
+    .scene-theater-tabs b{font-size:14px!important}
+    /* 2026-08-28 改动逻辑：H5 场景分类保留横向滑动，并把底部滚动横条改为常驻可见的细轨道，用户无需先滑动就能识别还有更多分类。 */
+    .scene-theater-tabs{
+      padding-bottom:8px!important;
+      scrollbar-width:auto;
+      scrollbar-color:rgba(220,224,220,.52) rgba(255,255,255,.12);
+    }
+    .scene-theater-tabs::-webkit-scrollbar{
+      display:block;
+      height:3px;
+    }
+    .scene-theater-tabs::-webkit-scrollbar-track{
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+    }
+    .scene-theater-tabs::-webkit-scrollbar-thumb{
+      min-width:72px;
+      border-radius:999px;
+      background:rgba(220,224,220,.52);
+    }
+  }
+</style>
+<!-- 2026-08-25 改动逻辑：按标注移除场景大图左上角的浏览状态卡片，以及主标题上方的“编号 · 场景名”状态文字；右侧切换按钮继续承担当前场景提示。 -->
+<style>.scene-example-badge,.scene-theater-copy .kicker{display:none!important}</style>
+<!-- 2026-08-25 改动逻辑：三步流程卡片压缩纵向高度并移除卡内装饰符号，同时放大、提亮步骤数字，强化 01/02/03 的阅读顺序；卡片之间的流程连接箭头保留。 -->
+<style>
+  .process-grid article{
+    min-height:170px;
+    padding:24px 30px;
+  }
+  .process-grid article>span{
+    color:#b7e85a;
+    letter-spacing:.08em;
+    font-size:18px;
+    font-weight:700;
+    line-height:1;
+  }
+  .process-grid article>i{display:none}
+  .process-grid h3{margin:34px 0 7px}
+  .process-grid p{margin:0}
+  @media (max-width:580px){
+    .process-grid article{
+      min-height:155px;
+      padding:22px 24px;
+    }
+    .process-grid h3{margin-top:28px}
+  }
+</style>
+<!-- 2026-08-25 改动逻辑：灵感区使用 16:9 横屏精选视频轨道；按红框参考将桌面卡片由 640×360 等比缩小为 512×288，封面与悬停视频同步缩放且不拉伸；卡片不显示加号或 Skill 编号。 -->
+<style>
+  /* 2026-08-25 改动逻辑：桌面端灵感区说明文案保持单行，移动端仍允许自然换行避免溢出。 */
+  @media (min-width:701px){#inspiration .section-head>p{max-width:none;white-space:nowrap}}
+  /* 2026-08-25 改动逻辑：将案例横向轮播单轮时长由 58 秒缩短至 50 秒，让滑动速度适度加快，同时保持线性无缝循环。 */
+  #inspiration .featured-video-rail{gap:14px;width:max-content;animation:featured-video-marquee 50s linear infinite;will-change:transform}
+  #inspiration .featured-video-rail.is-hover-paused{animation-play-state:paused}
+  #inspiration .featured-video-card{position:relative;flex:0 0 512px;width:512px;height:288px;overflow:hidden;border:1px solid #ffffff1f;border-radius:15px;background:#111317;cursor:pointer;transition:border-color .25s,transform .25s}
+  #inspiration .featured-video-card:hover,#inspiration .featured-video-card:focus-visible{border-color:#b7e85a8c;outline:none;transform:translateY(-3px)}
+  #inspiration .featured-video-card img,#inspiration .featured-video-card video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;transition:opacity .2s}
+  #inspiration .featured-video-card video{opacity:0;background:#090a0c}
+  #inspiration .featured-video-card.is-previewing video{opacity:1}
+  #inspiration .featured-video-card.is-previewing img{opacity:0}
+  #inspiration .inspire-card>button,#inspiration .inspire-card>span{display:none!important}
+  @keyframes featured-video-marquee{to{transform:translateX(calc(-50% - 7px))}}
+  @media (max-width:700px){#inspiration .featured-video-card{flex-basis:84vw;width:84vw;height:47.25vw}}
+</style>
+<!-- 2026-08-26 改动逻辑：品牌营销页语言入口复用上传版本的地球图标、展开箭头和深色下拉菜单，并按最新要求改为椭圆胶囊按钮；同时隐藏右侧登录入口。 -->
+<style>
+  .marketing-language-switcher{position:relative;height:42px}
+  .marketing-language-trigger{
+    width:100%;height:100%;min-height:42px;min-width:132px;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    padding:0 15px;border:1px solid rgba(255,255,255,.22)!important;border-radius:999px;background:rgba(9,10,12,.92);
+    color:#fff;font-size:14px;font-weight:650;cursor:pointer;box-shadow:0 12px 32px rgba(0,0,0,.28);
+    transition:border-color .18s ease,background .18s ease
+  }
+  .marketing-language-trigger:hover,.marketing-language-switcher.is-open .marketing-language-trigger{border-color:rgba(255,255,255,.48)!important;background:#111317}
+  .marketing-language-icon,.marketing-language-chevron{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .marketing-language-chevron{width:15px;height:15px;margin-left:2px;transition:transform .18s ease}
+  .marketing-language-switcher.is-open .marketing-language-chevron{transform:rotate(180deg)}
+  .marketing-language-menu{position:absolute;z-index:40;top:calc(100% + 8px);right:0;width:164px;margin:0;padding:6px;border:1px solid rgba(255,255,255,.16);border-radius:4px;background:#0b0c0f;box-shadow:0 18px 46px rgba(0,0,0,.42);list-style:none}
+  .marketing-language-menu[hidden]{display:none}
+  .marketing-language-option{width:100%;min-height:38px;display:flex;align-items:center;padding:0 11px;border:0;border-radius:3px;background:transparent;color:rgba(255,255,255,.72);font-size:14px;font-weight:560;text-align:left;cursor:pointer}
+  .marketing-language-option:hover,.marketing-language-option[aria-checked="true"]{background:rgba(255,255,255,.1);color:#fff}
+  /* 2026-08-26 改动逻辑：隐藏构建运行时可能重新生成的旧登录按钮，保证头部只保留语言切换与新的绿色登录入口。 */
+  .nav-actions>.login{display:none!important}
+  /* 2026-08-26 改动逻辑：顶部绿色入口改为“登录”后，将字号和字重统一为左侧语言切换按钮的 14px 与 650。 */
+  .nav-actions>.primary.small{font-size:14px;font-weight:650}
+  /* 2026-08-27 改动逻辑：移除首屏 Google 快捷登录按钮后，让唯一的“开始创作”按钮在操作区内水平居中。 */
+  .hero .hero-actions{justify-content:center}
+  /* 2026-08-26 改动逻辑：场景大图内不再展示 Google 快捷登录入口；该入口仅保留在首屏操作区。 */
+  .scene-mobile-google-login{display:none!important}
+  /* 2026-08-26 改动逻辑：按标注放大顶部四项导航及能力卡底部标签文字，增强远距离阅读清晰度。 */
+  .nav nav a{font-size:14px}
+  .capability-card-tags em{font-size:11px}
+  /* 2026-08-26 改动逻辑：隐藏五张能力卡中箭头指向的 CORE CAPABILITY 文案，同时保留原占位避免标题和卡片节奏上移。 */
+  .capability-cards article>p{visibility:hidden}
+  /* 2026-08-26 改动逻辑：移除首屏主标题上方的绿色圆点及 AI VIDEO CREATIVE WORKSPACE 眉题；运行时重建节点后仍保持隐藏。 */
+  .hero .eyebrow{display:none!important}
+  @media (max-width:700px){
+    /* 2026-08-27 改动逻辑：H5 首屏仅保留“开始创作”按钮，并继续保持水平居中。 */
+    .hero .hero-actions{align-items:center}
+    /* 2026-08-26 改动逻辑：切换按钮选中时会上移 4px，为滚动容器增加顶部安全区，防止按钮顶边被 overflow 裁切。 */
+    .scene-theater-tabs{z-index:6;padding-top:6px;padding-bottom:2px}
+    /* 2026-08-26 改动逻辑：H5 顶部绿色按钮自身字号归零以屏蔽运行时残留的“开始创作”，仅给独立“登录”标签和箭头恢复字号；桌面端不受影响。 */
+    .nav-actions>.primary.small{padding:9px 12px;font-size:0!important;white-space:nowrap}
+    .nav-actions>.primary.small>.nav-primary-label,
+    .nav-actions>.primary.small>b{font-size:13px}
+    /* 2026-08-26 改动逻辑：H5 隐藏 React 运行时额外生成的旧文案标签，只允许当前语言的登录标签显示。 */
+    .nav-actions>.primary.small>span:not(.nav-primary-label){display:none!important}
+    /* 2026-08-26 改动逻辑：覆盖构建样式在 580px 以下通过伪元素强制生成的“开始创作”，H5 顶部只显示登录。 */
+    .nav-actions>.primary.small::before{content:none!important;display:none!important}
+  }
+  @media (max-width:580px){
+    .marketing-language-switcher{height:40px}
+    .marketing-language-trigger{min-width:0;min-height:40px;padding:0 11px;gap:6px;font-size:13px}
+    .marketing-language-menu{width:150px}
+    /* 2026-08-26 改动逻辑：窄屏稍微收紧放大后的导航与标签字号，避免内容溢出。 */
+    .nav nav a{font-size:13px}
+    .capability-card-tags em{font-size:10px}
+  }
+  /* 2026-08-26 改动逻辑：多语言切换后允许标题、按钮和标签安全换行；H5 进一步收紧非中文文案尺寸，避免英文、马来语和法语撑破现有布局。 */
+  html[data-marketing-locale] .hero h1,
+  html[data-marketing-locale] .section-head h2,
+  html[data-marketing-locale] .scene-theater-copy h3,
+  html[data-marketing-locale] .faq-list summary{overflow-wrap:anywhere}
+  html[data-marketing-locale]:not([data-marketing-locale="zh"]) .hero-copy{max-width:940px}
+  html[data-marketing-locale="ms"] .hero h1,
+  html[data-marketing-locale="fr"] .hero h1{font-size:56px;line-height:1.08}
+  /* 2026-08-26 改动逻辑：无论当前选择哪种语言，Google 快捷登录都始终显示用户指定的原图片，不替换为文字按钮。 */
+  @media (max-width:700px){
+    html[data-marketing-locale]:not([data-marketing-locale="zh"]) .hero h1{font-size:38px;line-height:1.1}
+    html[data-marketing-locale]:not([data-marketing-locale="zh"]) .section-head h2{font-size:31px;line-height:1.15}
+    html[data-marketing-locale]:not([data-marketing-locale="zh"]) .scene-theater-tabs b{font-size:11px!important;line-height:1.15;overflow-wrap:anywhere}
+    html[data-marketing-locale]:not([data-marketing-locale="zh"]) .scene-theater-copy>p:not(.kicker){font-size:13px;line-height:1.5}
+    html[data-marketing-locale="ms"] .marketing-language-trigger{font-size:12px;padding:0 9px}
+  }
+</style>
+<script>Object.assign(((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}),{params:{},nav:{"pathname":"/","searchParams":[]}})</script>
+<link rel="modulepreload" href="../_next/static/chunks/index-CH3iGVJW.js" />
+<!-- 2026-08-26 改动逻辑：核心能力卡最终覆盖层放在 Head 末尾，避免旧规则覆盖；明显放大说明与胶囊文字、移除隐藏眉题占位，并将五张卡压缩为更紧凑的自适应高度。 -->
+<style>
+  .capability-cards article{
+    min-height:228px!important;
+    padding:22px 26px!important;
+  }
+  .capability-cards article:nth-child(n+3){min-height:220px!important}
+  .capability-card-top span{font-size:11px!important}
+  .capability-cards article>p{display:none!important}
+  .capability-cards h3{
+    margin-top:26px!important;
+    font-size:clamp(26px,2.2vw,33px)!important;
+  }
+  .capability-cards article>b{
+    margin-top:10px!important;
+    font-size:15px!important;
+    line-height:1.55!important;
+  }
+  .capability-card-tags{padding-top:14px!important}
+  .capability-card-tags em{
+    padding:6px 11px!important;
+    font-size:13px!important;
+    line-height:1.2!important;
+  }
+  @media (max-width:700px){
+    .capability-cards article,
+    .capability-cards article:nth-child(n+3){min-height:218px!important}
+  }
+  @media (max-width:580px){
+    .capability-cards article,
+    .capability-cards article:nth-child(n+3){min-height:205px!important;padding:20px 22px!important}
+    .capability-cards h3{margin-top:22px!important;font-size:27px!important}
+    .capability-cards article>b{font-size:14px!important}
+    .capability-card-tags em{font-size:12px!important}
+  }
+  /* 2026-08-26 改动逻辑：桌面端底部行动区的多语言大标题统一保持单行，并按较长的英文、马来语与法语文案收紧字号；窄屏继续允许自然换行，避免横向溢出。 */
+  @media (min-width:981px){
+    html[data-marketing-locale] .final-cta h2{
+      max-width:none!important;
+      white-space:nowrap!important;
+      overflow-wrap:normal!important;
+    }
+    html[data-marketing-locale]:not([data-marketing-locale="zh"]) .final-cta h2{
+      font-size:clamp(30px,3.2vw,56px)!important;
+    }
+    html[data-marketing-locale="ms"] .final-cta h2,
+    html[data-marketing-locale="fr"] .final-cta h2{
+      font-size:clamp(28px,3vw,52px)!important;
+    }
+  }
+  /* 2026-08-26 改动逻辑：能力区标题下新增居中的绿色开始创作按钮，五张能力卡底部新增参考图式的绿色文字箭头入口；两类入口共享登录语义与多语言文案。 */
+  .capability-start-action{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:center;
+    width:min(var(--max),100%);
+    margin:-34px auto 18px;
+  }
+  .capability-start-action .primary{
+    color:#10140d!important;
+    background:var(--accent)!important;
+    border-color:var(--accent)!important;
+    box-shadow:0 14px 34px #b7e85a24;
+  }
+  .capability-card-cta{
+    position:relative;
+    z-index:2;
+    display:inline-flex;
+    align-items:center;
+    align-self:flex-start;
+    gap:8px;
+    margin-top:13px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--accent);
+    font-size:13px;
+    font-weight:680;
+    line-height:1.4;
+    cursor:pointer;
+  }
+  .capability-card-cta b{font-size:16px;font-weight:500;transition:transform .2s ease}
+  .capability-card-cta:hover b,.capability-card-cta:focus-visible b{transform:translateX(4px)}
+  .capability-card-cta:focus-visible{outline:1px solid var(--accent);outline-offset:5px;border-radius:2px}
+  @media (max-width:700px){
+    .capability-start-action{margin:-24px auto 18px}
+    .capability-card-cta{font-size:12px}
+  }
+</style>
+<!-- 2026-08-26 改动逻辑：三步流程与灵感区标题下新增同款绿色开始创作按钮；同步放大流程卡文案、灵感区说明以及底部行动区说明、输入提示和按钮文字。 -->
+<style>
+  /* 2026-08-26 改动逻辑：桌面端顶部四项导航相对整个视口严格水平居中，不再受左侧品牌与右侧操作区宽度差异影响；窄屏继续沿用原响应式导航。 */
+  @media (min-width:701px){
+    .nav>nav{
+      position:absolute;
+      top:50%;
+      left:50%;
+      z-index:2;
+      transform:translate(-50%,-50%);
+    }
+  }
+  .process-start-action,.inspiration-start-action,.stories-start-action{
+    position:relative;
+    z-index:5;
+    display:flex;
+    justify-content:center;
+    width:min(var(--max),100%);
+    margin:-34px auto 18px;
+  }
+  .process-start-action .primary,.inspiration-start-action .primary,.stories-start-action .primary{
+    color:#10140d!important;
+    background:var(--accent)!important;
+    border-color:var(--accent)!important;
+    box-shadow:0 14px 34px #b7e85a24;
+  }
+  .process-grid h3{font-size:22px!important;line-height:1.35!important}
+  .process-grid p{font-size:14px!important;line-height:1.65!important}
+  /* 2026-08-27 改动逻辑：流程区与创作者评价区新增副标题，并完全复用图三灵感区副标题的字号、颜色、行高和居中布局。 */
+  .process .section-head>p,.stories .section-head>p,#inspiration .section-head>p{font-size:17px!important;line-height:1.65!important}
+  .final-cta>span{font-size:18px!important;line-height:1.65!important}
+  .final-input input{font-size:15px!important}
+  .final-input .primary{font-size:13px!important;font-weight:680!important}
+  @media (max-width:700px){
+    .process-start-action,.inspiration-start-action,.stories-start-action{margin:-24px auto 18px}
+    .process-grid h3{font-size:20px!important}
+    .process-grid p{font-size:13px!important}
+    .process .section-head>p,.stories .section-head>p,#inspiration .section-head>p{font-size:15px!important}
+    .final-cta>span{font-size:15px!important}
+    .final-input input{font-size:13px!important}
+    .final-input .primary{font-size:11px!important}
+  }
+</style>
+<!-- 2026-08-27 改动逻辑：在灵感案例与创作者评价之间新增模型展示页；桌面端每行六个模型，平板与 H5 自动降列，并复用现有绿色主按钮的登录交互。 -->
+<style>
+  .model-showcase{
+    position:relative;
+    overflow:hidden;
+    border-top:1px solid rgba(255,255,255,.06);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    background:radial-gradient(circle at 50% 10%,rgba(183,232,90,.055),transparent 34%),#0b0d10;
+  }
+  .model-showcase .section-head{
+    display:block;
+    max-width:920px;
+    margin:0 auto 28px;
+    text-align:center;
+  }
+  .model-showcase .section-head h2{max-width:none;margin:0}
+  .model-showcase .section-head>p{
+    max-width:none;
+    margin:20px auto 0;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.65;
+  }
+  .model-start-action{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:center;
+    width:min(var(--max),100%);
+    margin:0 auto 58px;
+  }
+  .model-start-action .primary{
+    color:#10140d!important;
+    background:var(--accent)!important;
+    border-color:var(--accent)!important;
+    box-shadow:0 14px 34px #b7e85a24;
+  }
+  .model-grid{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:14px;
+    width:min(var(--max),100%);
+    margin:0 auto;
+  }
+  .model-card{
+    display:flex;
+    min-width:0;
+    min-height:154px;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    padding:24px 12px;
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:16px;
+    background:rgba(18,20,24,.72);
+    transition:transform .24s ease,border-color .24s ease,background .24s ease;
+  }
+  .model-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(183,232,90,.5);
+    background:#15181b;
+  }
+  .model-card img{
+    display:block;
+    width:58px;
+    height:58px;
+    object-fit:contain;
+  }
+  .model-card span{
+    color:#e6e9e5;
+    font-size:14px;
+    font-weight:570;
+    line-height:1.35;
+    text-align:center;
+    overflow-wrap:anywhere;
+  }
+  @media (max-width:980px){
+    .model-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
+  @media (max-width:580px){
+    .model-showcase .section-head>p{font-size:15px}
+    .model-start-action{margin-bottom:38px}
+    .model-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .model-card{min-height:132px;gap:15px;padding:20px 8px;border-radius:14px}
+    .model-card img{width:48px;height:48px}
+    .model-card span{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<main>
+<header class="nav">
+<a class="logo brand-image" href="#">
+<img src="../vinaai-brand-lockup.png" alt="VinaAI"/>
+</a>
+<nav>
+<a href="#examples">精选案例</a>
+<a href="#capabilities">核心能力</a>
+<a href="#scenes">创作场景</a>
+<a href="#inspiration">灵感广场</a>
+</nav>
+<div class="nav-actions">
+<!-- 2026-08-26 改动逻辑：五语言菜单会切换整页文案、无障碍标签和页面元信息，默认显示中文。 -->
+<div class="marketing-language-switcher" id="marketingLanguageSwitcher">
+<button class="marketing-language-trigger" id="marketingLanguageTrigger" type="button" aria-haspopup="menu" aria-expanded="false">
+<svg class="marketing-language-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
+<span class="marketing-language-label">中文</span>
+<svg class="marketing-language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<ul class="marketing-language-menu" role="menu" hidden>
+<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language-label="English">English</button></li>
+<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="true" data-language-label="中文">中文</button></li>
+<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language-label="日本語">日本語</button></li>
+<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language-label="Bahasa Melayu">Bahasa Melayu</button></li>
+<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language-label="Français">Français</button></li>
+</ul>
+</div>
+<!-- 2026-08-26 改动逻辑：按要求移除语言切换右侧的“登录”按钮。 -->
+<!-- 2026-08-26 改动逻辑：顶部绿色主按钮文案由“开始创作”改为“登录”，原点击行为与箭头保持不变。 -->
+<button class="primary small"><span class="nav-primary-label">登录</span><b>↗</b>
+</button>
+</div>
+</header>
+<section class="hero">
+<div class="grid-bg">
+</div>
+<div class="hero-copy">
+<!-- 2026-08-26 改动逻辑：按标注移除主标题上方的英文眉题与绿色圆点。 -->
+<!-- 2026-08-26 改动逻辑：首屏主标题将“想法”改为“灵感”，强调创意灵感进入视频创作流程。 -->
+<h1>从灵感到视频，<em>一站式 AI 创作平台</em>
+</h1>
+<p class="subhead">用一句话、图片或剧本开始，Agent 会理解需求、规划内容，并生成可继续编辑的视频、广告与短剧作品。</p>
+<div class="hero-actions">
+<button class="primary">开始创作<b>→</b>
+</button>
+<!-- 2026-08-27 改动逻辑：按标注移除 Google 快捷登录入口，首屏主操作区只保留居中的“开始创作”按钮。 -->
+</div>
+<p class="hint">✓ <!-- -->无需复杂提示词，创作从表达开始。</p>
+</div>
+<div id="examples" class="cinema-carousel">
+<article class="cinema-card previous">
+<video src="https://vinaagent.vercel.app/assets/videos/digital-human-education.mp4?v=20260728-replaced" autoPlay="" muted="" loop="" playsInline="" preload="metadata">
+</video>
+</article>
+<article class="cinema-card active">
+<video src="https://vinaagent.vercel.app/assets/videos/drama-broom-flight.mp4?v=20260728-original" autoPlay="" muted="" loop="" playsInline="" preload="metadata">
+</video>
+<div class="cinema-count">
+<b>04</b>
+<span>/ 06</span>
+</div>
+<div class="cinema-console">
+<div class="cinema-console-main">
+<span class="prompt-spark">✦</span>
+<p>年轻女巫骑扫帚掠过云海，展开电影感奇幻冒险。</p>
+<div class="cinema-dots" role="tablist" aria-label="精选作品">
+<button role="tab" aria-label="汽车品牌 · 商业 TVC" aria-selected="false" class="">
+<i>01</i>
+</button>
+<button role="tab" aria-label="微观世界 · 创意短片" aria-selected="false" class="">
+<i>02</i>
+</button>
+<button role="tab" aria-label="数字人 · 教育讲解" aria-selected="false" class="">
+<i>03</i>
+</button>
+<button role="tab" aria-label="扫帚飞行 · 奇幻短剧" aria-selected="true" class="active">
+<i>04</i>
+</button>
+<button role="tab" aria-label="MG 动画 · 品牌视觉" aria-selected="false" class="">
+<i>05</i>
+</button>
+<button role="tab" aria-label="3D 模型 · 创作演示" aria-selected="false" class="">
+<i>06</i>
+</button>
+</div>
+<button class="primary">开始创作<!-- --> <b>↗</b>
+</button>
+</div>
+</div>
+</article>
+<article class="cinema-card next">
+<video src="https://vinaagent.vercel.app/assets/videos/mg-motion.mp4?v=20260728-ai-model" autoPlay="" muted="" loop="" playsInline="" preload="metadata">
+</video>
+</article>
+<button class="film-prev" aria-label="上一个案例">←</button>
+<button class="film-next" aria-label="下一个案例">→</button>
+</div>
+<p class="mobile-note">移动端暂支持注册登录，完整创作体验请前往电脑端使用</p>
+</section>
+<section id="capabilities" class="section capabilities">
+<div class="section-head">
+<div>
+<p class="kicker">02</p>
+<h2>
+<span>不只生成一条视频，<br/>
+</span>
+<span>而是推进完整创作</span>
+</h2>
+</div>
+<p>从意图理解到持续编辑，五项核心能力协同工作。</p>
+</div>
+<!-- 2026-08-26 改动逻辑：能力区标题与卡片之间新增居中主入口，点击后通过父页面桥接打开登录弹窗。 -->
+<div class="capability-start-action"><button class="primary capability-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="capability-cards">
+<article>
+<div class="capability-card-top">
+<span>0<!-- -->1</span>
+<i>✦</i>
+</div>
+<p>CORE CAPABILITY</p>
+<h3>智能创作 Agent</h3>
+<b>理解目标、拆解任务，主动推进每一步创作。</b>
+<div class="capability-card-tags">
+<em>创作需求</em>
+<em>任务规划</em>
+<em>可编辑结果</em>
+</div>
+<button class="capability-card-cta" type="button" data-login-entry>开始创作<b>→</b></button>
+</article>
+<article>
+<div class="capability-card-top">
+<span>0<!-- -->2</span>
+<i>⌘</i>
+</div>
+<p>CORE CAPABILITY</p>
+<h3>Skill 场景化创作</h3>
+<b>针对广告、短剧、商品等场景匹配专业流程。</b>
+<div class="capability-card-tags">
+<!-- 2026-08-26 改动逻辑：能力入口标签改为更明确的 Skill 市场。 -->
+<em>Skill 市场</em>
+<em>专业流程</em>
+<em>快速复用</em>
+</div>
+<button class="capability-card-cta" type="button" data-login-entry>开始创作<b>→</b></button>
+</article>
+<article>
+<div class="capability-card-top">
+<span>0<!-- -->3</span>
+<i>∞</i>
+</div>
+<p>CORE CAPABILITY</p>
+<h3>无限画布</h3>
+<b>灵感、素材与生成结果，在一个空间持续展开。</b>
+<div class="capability-card-tags">
+<em>素材节点</em>
+<em>自由组合</em>
+<em>持续延展</em>
+</div>
+<button class="capability-card-cta" type="button" data-login-entry>开始创作<b>→</b></button>
+</article>
+<article>
+<div class="capability-card-top">
+<span>0<!-- -->4</span>
+<i>◎</i>
+</div>
+<p>CORE CAPABILITY</p>
+<h3>角色一致性</h3>
+<b>跨镜头保持角色形象与视觉风格统一。</b>
+<div class="capability-card-tags">
+<em>角色设定</em>
+<em>跨镜头锁定</em>
+<em>稳定输出</em>
+</div>
+<button class="capability-card-cta" type="button" data-login-entry>开始创作<b>→</b></button>
+</article>
+<article>
+<div class="capability-card-top">
+<span>0<!-- -->5</span>
+<i>▶</i>
+</div>
+<p>CORE CAPABILITY</p>
+<h3>短剧工作室</h3>
+<b>从剧本、分镜到成片，完成系列化故事生产。</b>
+<div class="capability-card-tags">
+<em>剧本</em>
+<em>分镜</em>
+<em>系列成片</em>
+</div>
+<button class="capability-card-cta" type="button" data-login-entry>开始创作<b>→</b></button>
+</article>
+</div>
+</section>
+<section id="scenes" class="section scenes">
+<div class="section-head">
+<div>
+<p class="kicker">03</p>
+<h2>
+<span>一个平台，覆盖每一种视频创作</span>
+</h2>
+</div>
+<p>选择你的创作目标，Agent 会自动匹配适合的 Skill 与生成流程。</p>
+</div>
+<!-- 2026-08-26 改动逻辑：在场景标题与主画面之间增加同款开始创作入口，并直接连接父页面登录弹窗。 -->
+<div class="scene-start-action"><button class="primary scene-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="scene-theater">
+<!-- 2026-08-26 改动逻辑：广告场景统一改用用户最新指定的来画公开视频链接；短剧场景继续使用用户上传并复制到项目内的独立视频。 -->
+<video src="https://res-public.laihua.com/system/20260821/video/01a0228c-2139-73c8-8e48-6d93e07885c3.mp4" autoPlay="" muted="" loop="" playsInline="" preload="metadata">
+</video>
+<div class="scene-theater-shade">
+</div>
+<div class="scene-example-badge">
+<span>正在浏览</span>
+<b>香水项目</b>
+</div>
+<div class="scene-theater-copy">
+<p class="kicker">0<!-- -->1<!-- --> · <!-- -->广告</p>
+<h3>智能提炼卖点，产出高转化广告</h3>
+<p>上传商品图或输入链接，自动提炼卖点、生成脚本、画面与多版本成片。</p>
+<ul>
+<li>✓ <!-- -->智能卖点</li>
+<li>✓ <!-- -->多比例适配</li>
+<!-- 2026-08-26 改动逻辑：广告批处理能力明确为批量 SKU。 -->
+<li>✓ <!-- -->批量 SKU</li>
+</ul>
+<!-- 2026-08-26 改动逻辑：场景大图左下角开始创作按钮使用与页面主按钮一致的右箭头。 -->
+<button class="primary">开始创作<!-- --> <b>→</b></button>
+<!-- 2026-08-26 改动逻辑：按要求移除 H5 场景大图内的 Google 快捷登录按钮，仅保留开始创作。 -->
+</div>
+<div class="scene-theater-tabs" role="tablist">
+<button role="tab" aria-selected="true" class="active">
+<span>0<!-- -->1</span>
+<b>广告</b>
+</button>
+<button role="tab" aria-selected="false" class="">
+<span>0<!-- -->2</span>
+<b>创意社媒</b>
+</button>
+<button role="tab" aria-selected="false" class="">
+<span>0<!-- -->3</span>
+<b>短剧</b>
+</button>
+<button role="tab" aria-selected="false" class="">
+<span>0<!-- -->4</span>
+<b>MG 动画</b>
+</button>
+<button role="tab" aria-selected="false" class="">
+<span>0<!-- -->5</span>
+<b>数字人</b>
+</button>
+</div>
+</div>
+<div class="scene-case-browser">
+<div class="scene-case-head">
+<p>精选视频案例</p>
+<a href="#inspiration">查看更多<!-- --> <b>→</b>
+</a>
+</div>
+<div class="scene-case-track">
+<button class="active">
+<video src="https://vinaagent.vercel.app/assets/videos/drama-broom-flight.mp4?v=20260728-original" muted="" loop="" playsInline="" preload="metadata">
+</video>
+<span>
+<small>0<!-- -->1</small>
+<b>扫帚飞行 · 奇幻短剧</b>
+</span>
+</button>
+<button class="">
+<video src="https://vinaagent.vercel.app/assets/videos/model-3d-creation.mp4?v=20260825-user-replaced-2" muted="" loop="" playsInline="" preload="metadata">
+</video>
+<span>
+<small>0<!-- -->2</small>
+<b>3D 模型 · 创作演示</b>
+</span>
+</button>
+<button class="">
+<video src="https://vinaagent.vercel.app/assets/videos/creative-social-micro-world.mp4?v=20260728-original" muted="" loop="" playsInline="" preload="metadata">
+</video>
+<span>
+<small>0<!-- -->3</small>
+<b>微观世界 · 创意短片</b>
+</span>
+</button>
+</div>
+</div>
+</section>
+<section class="section process">
+<div class="section-head">
+<div>
+<p class="kicker">04</p>
+<h2>
+<span>把复杂创作，变成简单三步</span>
+</h2>
+</div>
+<!-- 2026-08-27 改动逻辑：在三步流程主标题下增加与图三一致的居中副标题，补充 Agent 推进创作流程的价值说明。 -->
+<p>从灵感到成片，Agent 自动拆解并推进每一步。</p>
+</div>
+<!-- 2026-08-26 改动逻辑：三步流程标题下新增居中开始创作入口，点击后直接复用现有登录弹窗。 -->
+<div class="process-start-action"><button class="primary process-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="process-grid">
+<article>
+<span>01</span>
+<i>＋</i>
+<h3>说出想法</h3>
+<p>输入一句话、图片、商品或剧本。</p>
+<b>→</b>
+</article>
+<article>
+<span>02</span>
+<i>✦</i>
+<h3>Agent 推进</h3>
+<p>自动规划脚本、镜头、素材与生成任务。</p>
+<b>→</b>
+</article>
+<article>
+<span>03</span>
+<i>↗</i>
+<h3>持续精修</h3>
+<p>在画布中调整、重生成并导出最终作品。</p>
+</article>
+</div>
+</section>
+<section id="inspiration" class="section inspiration">
+<div class="section-head">
+<div>
+<p class="kicker">05</p>
+<h2>
+<span>从好作品获得灵感</span>
+</h2>
+</div>
+<p>浏览广告、短剧与社媒内容中的精选案例，复用经过验证的提示词与创作流程，一键带入工作空间继续创作。</p>
+</div>
+<!-- 2026-08-26 改动逻辑：灵感区标题说明下新增同款开始创作入口，点击后直接复用现有登录弹窗。 -->
+<div class="inspiration-start-action"><button class="primary inspiration-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="marquee-row">
+<div class="inspire-card fruit">
+<span>Skill <!-- -->01</span>
+<button>＋</button>
+</div>
+<div class="inspire-card memory">
+<span>Skill <!-- -->02</span>
+<button>＋</button>
+</div>
+<div class="inspire-card news">
+<span>Skill <!-- -->03</span>
+<button>＋</button>
+</div>
+<div class="inspire-card food">
+<span>Skill <!-- -->04</span>
+<button>＋</button>
+</div>
+<div class="inspire-card manga">
+<span>Skill <!-- -->05</span>
+<button>＋</button>
+</div>
+<div class="inspire-card future">
+<span>Skill <!-- -->06</span>
+<button>＋</button>
+</div>
+<div class="inspire-card fruit">
+<span>Skill <!-- -->01</span>
+<button>＋</button>
+</div>
+<div class="inspire-card memory">
+<span>Skill <!-- -->02</span>
+<button>＋</button>
+</div>
+<div class="inspire-card news">
+<span>Skill <!-- -->03</span>
+<button>＋</button>
+</div>
+<div class="inspire-card food">
+<span>Skill <!-- -->04</span>
+<button>＋</button>
+</div>
+<div class="inspire-card manga">
+<span>Skill <!-- -->05</span>
+<button>＋</button>
+</div>
+<div class="inspire-card future">
+<span>Skill <!-- -->06</span>
+<button>＋</button>
+</div>
+</div>
+</section>
+<!-- 2026-08-27 改动逻辑：新增十二个模型的两行展示区；Seedance 与 Seedream 复用同一张上传图，其余模型按上传的模型类别图片归组展示。 -->
+<section class="section model-showcase" id="models">
+<div class="section-head">
+<div>
+<h2><span>每个任务，都智能选择最适配的模型</span></h2>
+</div>
+<p>不只是模型调用，更是模型深度调优。Agent 基于任务场景精准匹配最优模型。</p>
+</div>
+<div class="model-start-action"><button class="primary model-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="model-grid">
+<article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"/><span>Seedance 2.5</span></article>
+<article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"/><span>Seedance 2.0</span></article>
+<article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"/><span>Seedance 2.0 fast</span></article>
+<article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"/><span>Seedance 2.0 mini</span></article>
+<article class="model-card"><img src="../assets/images/model-minimax.png" alt="Minimax"/><span>Minimax H3</span></article>
+<!-- 2026-08-27 改动逻辑：Wan、Kling、Happyhorse 使用用户提供的独立品牌图标，不再复用 Minimax 图标。 -->
+<article class="model-card"><img src="../assets/images/model-wan.png" alt="Wan"/><span>Wan 3.0</span></article>
+<article class="model-card"><img src="../assets/images/model-kling.png" alt="Kling"/><span>Kling 3.0</span></article>
+<article class="model-card"><img src="../assets/images/model-happyhorse.png" alt="Happyhorse"/><span>Happyhorse 1.0</span></article>
+<article class="model-card"><img src="../assets/images/model-gpt.png" alt="GPT"/><span>Gpt Image 2</span></article>
+<article class="model-card"><img src="../assets/images/model-banana.png" alt="Nano Banana"/><span>Nano Banana Pro</span></article>
+<article class="model-card"><img src="../assets/images/model-banana.png" alt="Nano Banana"/><span>Nano Banana 2</span></article>
+<article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedream"/><span>Seedream 5.0</span></article>
+</div>
+</section>
+<section class="section stories">
+<div class="section-head">
+<div>
+<p class="kicker">06</p>
+<h2>
+<span>创作者正在把更多时间留给好创意</span>
+</h2>
+</div>
+<!-- 2026-08-27 改动逻辑：在创作者评价主标题下增加与图三一致的居中副标题，强调节省重复工作时间的用户价值。 -->
+<p>把重复交给 Agent，把时间留给真正的创意。</p>
+</div>
+<!-- 2026-08-26 改动逻辑：创作者评价标题下新增同款绿色开始创作入口，点击后直接复用现有登录弹窗。 -->
+<div class="stories-start-action"><button class="primary stories-section-cta" type="button" data-login-entry>开始创作<b>→</b></button></div>
+<div class="story-grid">
+<!-- 2026-08-26 改动逻辑：创作者评价卡中的人名统一使用自然英文名，中文职位描述保持原样。 -->
+<blockquote>
+<span class="quote">“</span>
+<p>“过去要协调三四个环节，现在从 Brief 到第一版成片可以在一个下午完成。”</p>
+<footer>
+<i class="avatar av0">
+</i>
+<span>Alex · 消费品牌创意负责人</span>
+</footer>
+</blockquote>
+<blockquote>
+<span class="quote">“</span>
+<p>“角色稳定性让我们终于可以连续生产，而不是每个镜头都重新碰运气。”</p>
+<footer>
+<i class="avatar av1">
+</i>
+<span>Mia · 独立短剧创作者</span>
+</footer>
+</blockquote>
+<blockquote>
+<span class="quote">“</span>
+<p>“我不会复杂提示词，但 Agent 会一步步问清楚，第一次就能得到能继续改的版本。”</p>
+<footer>
+<i class="avatar av2">
+</i>
+<span>Ethan · 内容创业者</span>
+</footer>
+</blockquote>
+<blockquote>
+<span class="quote">“</span>
+<p>“我们把优秀项目沉淀成 Skill，新同事也能快速复用同一套品牌创作方法。”</p>
+<footer>
+<i class="avatar av3">
+</i>
+<span>Emma · 品牌内容运营</span>
+</footer>
+</blockquote>
+</div>
+</section>
+<section class="final-cta">
+<div class="final-grid">
+</div>
+<p>CREATE WHAT&#x27;S NEXT</p>
+<h2>下一个好作品，从一句话开始</h2>
+<span>让 Agent 接住你的想法，推进到可以发布的视频。</span>
+<div class="final-input">
+<i>✦</i>
+<input aria-label="描述你想创作的视频，例如：为一款夏日气泡水制作 15 秒广告…" placeholder="描述你想创作的视频，例如：为一款夏日气泡水制作 15 秒广告…"/>
+<button class="primary">开始创作<b>→</b>
+</button>
+</div>
+<small>移动端暂支持注册登录，完整创作体验请前往电脑端使用</small>
+</section>
+<section class="section faq">
+<div class="section-head">
+<div>
+<p class="kicker">07</p>
+<h2>
+<span>常见问题</span>
+</h2>
+</div>
+</div>
+<div class="faq-list">
+<details open="">
+<summary>
+<span>01</span>Agent 和普通 AI 视频生成工具有什么不同？<b>＋</b>
+</summary>
+<p>Agent 不只提供单次生成，还通过 Skill、无限画布和短剧工作室连接规划、生成、编辑与资产复用。</p>
+</details>
+<details>
+<summary>
+<span>02</span>需要会写复杂提示词或会剪辑吗？<b>＋</b>
+</summary>
+<p>不需要。用自然语言描述目标即可，Agent 会逐步补充信息并推进任务，生成结果也可以继续编辑。</p>
+</details>
+<details>
+<summary>
+<span>03</span>支持哪些内容类型？<b>＋</b>
+</summary>
+<p>支持商品广告、短剧漫剧、社媒内容、品牌视频、数字人口播、图生视频等多种创作场景。</p>
+</details>
+<details>
+<summary>
+<span>04</span>手机端可以直接创作吗？<b>＋</b>
+</summary>
+<p>移动端当前支持注册登录与浏览，完整创作体验请前往电脑端使用。</p>
+</details>
+<details>
+<summary>
+<span>05</span>生成的内容可以商用吗？<b>＋</b>
+</summary>
+<p>具体商用范围与所用模型、素材来源及会员权益有关，请在正式使用前查看对应授权说明。</p>
+</details>
+</div>
+</section>
+<footer class="footer">
+<p>AI Video Creative Workspace</p>
+<div>
+<a href="#">产品</a>
+<a href="#">资源</a>
+<a href="#">公司</a>
+<a href="#">服务条款</a>
+<a href="#">隐私政策</a>
+</div>
+<span>© 2026</span>
+</footer>
+<div class="sticky">
+<span>移动端暂支持注册登录，完整创作体验请前往电脑端使用</span>
+<button>开始创作<!-- --> →</button>
+</div>
+</main>
+<!-- 2026-08-25 跨 iframe 入口桥接逻辑：子页面主动向父页面发消息，规避 file:// 下两个本地文档 origin 都为 null 时无法直接读取 DOM 的安全限制。 -->
+<script src="../marketing-assets/bridge.js"></script>
+<script>
+  // 2026-08-25 改动逻辑：Finder 通过 file:// 打开时模块脚本可能无法挂载 React；仅在确认 React 未接管页面后，为左右箭头补充原生轮播兜底，HTTP/Vercel 下仍沿用原有 React 交互，避免一次点击切换两项。
+  window.setTimeout(() => {
+    const carousel = document.querySelector(".cinema-carousel");
+    if (!carousel || Object.keys(carousel).some((key) => key.startsWith("__reactFiber$"))) return;
+
+    const videos = [
+      "https://vinaagent.vercel.app/assets/videos/advertising-car-tvc.mp4?v=20260728-original",
+      "https://vinaagent.vercel.app/assets/videos/creative-social-micro-world.mp4?v=20260728-original",
+      "https://vinaagent.vercel.app/assets/videos/digital-human-education.mp4?v=20260728-replaced",
+      "https://vinaagent.vercel.app/assets/videos/drama-broom-flight.mp4?v=20260728-original",
+      "https://vinaagent.vercel.app/assets/videos/mg-motion.mp4?v=20260728-ai-model",
+      "https://vinaagent.vercel.app/assets/videos/model-3d-creation.mp4?v=20260825-user-replaced-2"
+    ];
+    const prompts = [
+      "未来感跑车驶入夜色公路，电影级追焦与金属质感。",
+      "微观花园苏醒，晶莹植物与发光生物在自然光中展开。",
+      "亲和的数字人老师在现代教室清晰讲解知识。",
+      "年轻女巫骑扫帚掠过云海，展开电影感奇幻冒险。",
+      "用几何图形与节奏转场演绎高级品牌视觉。",
+      "科幻机械从线稿到 3D 成型，呈现精密细节。"
+    ];
+    const cards = Array.from(carousel.querySelectorAll(".cinema-card"));
+    const prompt = carousel.querySelector(".cinema-console-main > p");
+    const dots = Array.from(carousel.querySelectorAll(".cinema-dots button"));
+    let current = 3;
+
+    const render = () => {
+      [current - 1, current, current + 1].forEach((rawIndex, cardIndex) => {
+        const index = (rawIndex + videos.length) % videos.length;
+        const video = cards[cardIndex]?.querySelector("video");
+        if (video && video.getAttribute("src") !== videos[index]) {
+          video.src = videos[index];
+          video.load();
+          video.play().catch(() => {});
+        }
+      });
+      if (prompt) prompt.textContent = prompts[current];
+      dots.forEach((dot, index) => {
+        const active = index === current;
+        dot.classList.toggle("active", active);
+        dot.setAttribute("aria-selected", String(active));
+      });
+    };
+
+    const move = (step) => {
+      current = (current + step + videos.length) % videos.length;
+      render();
+    };
+    carousel.querySelector(".film-prev")?.addEventListener("click", () => move(-1));
+    carousel.querySelector(".film-next")?.addEventListener("click", () => move(1));
+    dots.forEach((dot, index) => dot.addEventListener("click", () => {
+      current = index;
+      render();
+    }));
+
+    // 2026-08-26 改动逻辑：本地文件模式下按“广告 / 创意社媒 / 短剧 / MG 动画 / 数字人”顺序切换，并直接使用用户从精选案例指定的五条真实视频。
+    const sceneTheater = document.querySelector(".scene-theater");
+    const sceneTabs = Array.from(sceneTheater?.querySelectorAll(".scene-theater-tabs > button") || []);
+    const sceneVideo = sceneTheater?.querySelector(":scope > video");
+    const sceneBadge = sceneTheater?.querySelector(".scene-example-badge b");
+    const sceneKicker = sceneTheater?.querySelector(".scene-theater-copy .kicker");
+    const sceneTitle = sceneTheater?.querySelector(".scene-theater-copy h3");
+    const sceneDescription = sceneTheater?.querySelector(".scene-theater-copy > p:not(.kicker)");
+    const sceneTags = Array.from(sceneTheater?.querySelectorAll(".scene-theater-copy li") || []);
+    const sceneNames = ["广告", "创意社媒", "短剧", "MG 动画", "数字人"];
+    const sceneCaseNames = [
+      "剧情TVC广告示例",
+      "冰箱午夜共和国",
+      "用户上传短剧",
+      "从咖啡果到一杯咖啡",
+      "入职教练"
+    ];
+    const sceneVideoSources = [
+      "https://res-public.laihua.com/system/20260821/video/01a0228c-2139-73c8-8e48-6d93e07885c3.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/019ffff8-a9f0-70f8-9537-23c043e1b192.mp4",
+      "../assets/videos/drama-ai-video-8.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/01a0000b-a7cc-77da-9a20-a78f7e3e44cf.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4"
+    ];
+    const sceneCopy = [
+      // 2026-08-26 改动逻辑：广告场景标题开头增加“智能”，突出系统自动提炼商品卖点的能力。
+      // 2026-08-26 改动逻辑：明确社媒创意视频定位，并以平台原生、高频更新替代重复的形态标签。
+      ["智能提炼卖点，产出高转化广告", "上传商品图或输入链接，自动提炼卖点、生成脚本、画面与多版本成片。", ["智能卖点", "多比例适配", "批量 SKU"]],
+      ["创作爆款社媒短视频", "围绕热点、品牌与日常选题，快速生成适合社媒传播的竖屏创意视频。", ["趋势灵感", "平台原生", "高频更新"]],
+      ["从故事设定到连续短剧", "稳定角色与画风，并行推进剧本、分镜、配音和成片，让系列内容持续更新。", ["角色一致性", "智能分镜", "系列化生产"]],
+      ["让复杂信息变成直观动画", "用图形、文字与节奏化转场，把品牌概念和产品信息讲得更清楚。", ["图形动画", "节奏转场", "品牌视觉"]],
+      ["快速生成可信赖的数字人口播", "创建自然出镜的数字人内容，并完成多语配音、字幕与不同场景适配。", ["自然口型", "多语配音", "字幕生成"]]
+    ];
+
+    const renderScene = (index) => {
+      const videoSource = sceneVideoSources[index];
+      if (sceneVideo && sceneVideo.getAttribute("src") !== videoSource) {
+        sceneVideo.src = videoSource;
+        sceneVideo.load();
+        sceneVideo.play().catch(() => {});
+      }
+      if (sceneBadge) sceneBadge.textContent = sceneCaseNames[index];
+      if (sceneKicker) sceneKicker.textContent = `0${index + 1} · ${sceneNames[index]}`;
+      if (sceneTitle) sceneTitle.textContent = sceneCopy[index][0];
+      if (sceneDescription) sceneDescription.textContent = sceneCopy[index][1];
+      sceneTags.forEach((tag, tagIndex) => {
+        tag.textContent = `✓ ${sceneCopy[index][2][tagIndex]}`;
+      });
+      sceneTabs.forEach((tab, tabIndex) => {
+        const active = tabIndex === index;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+    };
+    sceneTabs.forEach((tab, index) => tab.addEventListener("click", () => renderScene(index)));
+  }, 1200);
+</script>
+<script>
+  // 2026-08-25 改动逻辑：营销页灵感区复用产品首页广告营销分类的 8 个精选案例；轨道自动横向循环，悬停/键盘聚焦时暂停并延迟加载预览视频，点击通过父页面复用既有沉浸式详情播放器。
+  (() => {
+    const featuredCases = [
+      ["温控高速吹风机", "https://res-public.vinabot.ai/system/20260814/video/019fffe2-072a-74af-ab0e-a843a7af97f3.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe2-fb2d-70f1-b97a-c0f4f27a667f.png"],
+      ["一口穿越三个世界", "https://res-public.vinabot.ai/system/20260814/video/019fffe3-4496-73a9-bca6-3d108eb00918.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffd5-1a66-764a-bcdc-25c1fc3f7194.png"],
+      ["护发精油广告", "https://res-public.vinabot.ai/system/20260814/video/019fffea-e96b-76c2-86ff-58e389950f04.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffea-0011-77ef-b5d1-71fea59a6ad1.png"],
+      ["智能眼镜", "https://res-public.vinabot.ai/system/20260815/video/01a00326-ca7b-73e3-adf3-b2529210ae5b.mp4", "https://res-public.vinabot.ai/system/20260815/img/01a00331-9a18-72ef-8c16-92e1ea5dccb4.png"],
+      ["香水项目", "https://res-public.vinabot.ai/system/20260814/video/019fffe1-168e-752e-9896-d22047daeef9.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe1-9299-73ab-9507-5f039e06d970.png"],
+      ["健康戒指项目", "https://res-public.vinabot.ai/system/20260814/video/019fffe6-f741-734f-a22d-7e4e7773de86.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe9-977a-754d-a8e9-537422d87260.png"],
+      ["VYRA防晒霜", "https://res-public.vinabot.ai/system/20260814/video/019fffde-07c1-7699-a9ea-ddefb8180d2b.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffde-72de-72db-9662-277a33ab043b.png"],
+      ["AI实时翻译耳机广告", "https://res-public.vinabot.ai/system/20260814/video/019fffc8-526a-73df-931d-cee85202812d.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffc8-6e38-749c-86fa-03f5e2c7c363.png"]
+    ];
+    const escapeAttribute = (value) => String(value).replace(/[&<>"']/g, (character) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[character]);
+
+    // 2026-08-25 改动逻辑：广告与创意社媒切换后使用用户指定的新标题；观察 React 文本更新并立即校正，避免正常运行模式恢复构建产物中的旧文案。
+    const syncRequestedSceneTitles = () => {
+      const sceneTheater = document.querySelector(".scene-theater");
+      const sceneTitle = sceneTheater?.querySelector(".scene-theater-copy h3");
+      const sceneTabs = Array.from(sceneTheater?.querySelectorAll(".scene-theater-tabs > button") || []);
+      const activeIndex = sceneTabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+      // 2026-08-26 改动逻辑：广告标签切换后强制保持新增“智能”前缀，避免 React 运行时恢复旧标题。
+      const requestedTitles = { 0:"智能提炼卖点，产出高转化广告", 1:"创作爆款社媒短视频" };
+      const requestedTitle = requestedTitles[activeIndex];
+      const isChineseInterface = sceneTabs.some((tab) => tab.textContent.includes("创意社媒"));
+      if (sceneTitle && requestedTitle && isChineseInterface && sceneTitle.textContent !== requestedTitle) sceneTitle.textContent = requestedTitle;
+    };
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".scene-theater-tabs > button")) return;
+      window.setTimeout(syncRequestedSceneTitles, 0);
+    });
+    const observedSceneTitle = document.querySelector(".scene-theater-copy h3");
+    if (observedSceneTitle) new MutationObserver(syncRequestedSceneTitles).observe(observedSceneTitle, { childList:true, characterData:true, subtree:true });
+    window.setTimeout(syncRequestedSceneTitles, 1200);
+
+    const renderFeaturedRail = () => {
+      // 2026-08-26 修复逻辑：React 线上水合失败时会替换整棵营销页 DOM；每次渲染都重新获取当前可见的灵感区，避免继续修改已经脱离文档的旧节点。
+      const inspiration = document.getElementById("inspiration");
+      if (!inspiration) return;
+      // 2026-08-25 改动逻辑：删除标题中红框标注的后半句；React 语言或节点更新后也会重新同步精简标题。
+      const heading = inspiration.querySelector(".section-head h2 span");
+      if (heading?.textContent.includes("让成熟 Skill 成为你的创作起点")) heading.textContent = "从好作品获得灵感";
+      const rail = inspiration.querySelector(".marquee-row");
+      if (!rail || rail.querySelector(".featured-video-card")) return;
+      rail.className = "marquee-row featured-video-rail";
+      rail.setAttribute("aria-label", "精选案例视频");
+      rail.innerHTML = [...featuredCases, ...featuredCases].map(([title, source, poster], index) => `
+        <article class="featured-video-card" role="button" tabindex="${index < featuredCases.length ? "0" : "-1"}" data-featured-case
+          data-featured-title="${escapeAttribute(title)}" data-featured-source="${escapeAttribute(source)}"
+          aria-label="播放精选案例：${escapeAttribute(title)}" aria-hidden="${String(index >= featuredCases.length)}">
+          <img src="${escapeAttribute(poster)}" alt="" loading="lazy" decoding="async" aria-hidden="true" />
+          <video muted loop playsinline preload="none" aria-hidden="true"></video>
+        </article>`).join("");
+    };
+    const stopPreview = (card) => {
+      const video = card?.querySelector("video");
+      card?.classList.remove("is-previewing");
+      if (!video) return;
+      video.pause();
+      video.currentTime = 0;
+    };
+    const startPreview = (card) => {
+      const rail = card?.closest(".featured-video-rail");
+      const video = card?.querySelector("video");
+      const source = card?.dataset.featuredSource || "";
+      if (!rail || !video || !source) return;
+      rail.classList.add("is-hover-paused");
+      if (!video.getAttribute("src")) {
+        video.src = source;
+        video.load();
+      }
+      video.play().then(() => card.classList.add("is-previewing")).catch(() => {});
+    };
+    const resumeRail = (card) => {
+      stopPreview(card);
+      card?.closest(".featured-video-rail")?.classList.remove("is-hover-paused");
+    };
+    // 2026-08-26 修复逻辑：将案例交互委托给不会被 React 替换的 document；新轨道生成后无需重复绑定，也能保持悬停、键盘和详情播放行为。
+    const getFeaturedCard = (event) => event.target.closest("#inspiration [data-featured-case]");
+    document.addEventListener("mouseover", (event) => {
+      const card = getFeaturedCard(event);
+      if (!card || card.contains(event.relatedTarget)) return;
+      startPreview(card);
+    });
+    document.addEventListener("mouseout", (event) => {
+      const card = getFeaturedCard(event);
+      if (!card || card.contains(event.relatedTarget)) return;
+      resumeRail(card);
+    });
+    document.addEventListener("focusin", (event) => {
+      const card = getFeaturedCard(event);
+      if (card) startPreview(card);
+    });
+    document.addEventListener("focusout", (event) => {
+      const card = getFeaturedCard(event);
+      if (card) resumeRail(card);
+    });
+    const openDetail = (card) => window.parent.postMessage({
+      type: "vina-marketing-showcase",
+      title: card.dataset.featuredTitle || "精选视频案例",
+      source: card.dataset.featuredSource || "",
+      kind: "advertising"
+    }, "*");
+    document.addEventListener("click", (event) => {
+      const card = getFeaturedCard(event);
+      if (card) openDetail(card);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const card = getFeaturedCard(event);
+      if (!card) return;
+      event.preventDefault();
+      openDetail(card);
+    });
+    // 2026-08-26 修复逻辑：观察稳定的文档根节点而不是首次查询到的灵感区；React 替换整个 section 或语言切换重建节点后，都会在当前 DOM 中恢复精选视频卡。
+    window.setTimeout(() => {
+      renderFeaturedRail();
+      new MutationObserver(renderFeaturedRail).observe(document.documentElement, { childList:true, subtree:true });
+    }, 1200);
+  })();
+</script>
+<script>
+  // 2026-08-26 改动逻辑：左右预览视频本身也作为轮播切换入口；通过触发既有箭头复用 React 与本地兜底的状态更新逻辑，确保视频、文案和选中态同步变化。
+  document.addEventListener("click", (event) => {
+    const sideCard = event.target.closest(".cinema-card.previous, .cinema-card.next");
+    if (!sideCard) return;
+    const carousel = sideCard.closest(".cinema-carousel");
+    const directionButton = carousel?.querySelector(
+      sideCard.classList.contains("previous") ? ".film-prev" : ".film-next"
+    );
+    directionButton?.click();
+  });
+
+  // 2026-08-26 改动逻辑：React 挂载或语言切换可能重建评价卡，通过索引同步自然英文姓名，同时保留当前语言下的职位文案。
+  const syncEnglishStoryNames = () => {
+    const names = ["Alex", "Mia", "Ethan", "Emma"];
+    document.querySelectorAll(".stories .story-grid footer span").forEach((label, index) => {
+      const role = label.textContent.split("·").slice(1).join("·").trim();
+      const nextText = role ? `${names[index]} · ${role}` : names[index];
+      if (names[index] && label.textContent.trim() !== nextText) label.textContent = nextText;
+    });
+  };
+  syncEnglishStoryNames();
+  new MutationObserver(syncEnglishStoryNames).observe(document.documentElement, {childList:true, subtree:true});
+</script>
+<script>
+  // 2026-08-26 改动逻辑：五语言菜单驱动营销页全部可见文案、动态场景、轮播提示与无障碍标签；短文案和语言专属样式共同适配桌面及 H5。
+  (() => {
+    const languageOptions = [
+      ["en", "English"], ["zh", "中文"], ["ja", "日本語"], ["ms", "Bahasa Melayu"], ["fr", "Français"]
+    ];
+    const copy = {
+      zh: {
+        label:"中文", htmlLang:"zh-CN", title:"一站式 AI 视频创作平台", description:"从想法到视频的一站式 AI 创作平台。",
+        nav:["精选案例","核心能力","创作场景","灵感广场"], login:"登录", start:"开始创作",
+        // 2026-08-26 改动逻辑：中文语言映射同步使用“从灵感到视频”，避免语言切换或运行时重建后恢复旧标题。
+        hero:["从灵感到视频，","一站式 AI 创作平台"], heroDesc:"用一句话、图片或剧本开始，Agent 会理解需求、规划内容，并生成可继续编辑的视频、广告与短剧作品。", hint:"无需复杂提示词，创作从表达开始。", mobile:"移动端支持登录与浏览，完整创作请使用电脑端。",
+        prompts:["未来感跑车驶入夜色公路，电影级追焦与金属质感。","微观花园苏醒，晶莹植物与发光生物在自然光中展开。","亲和的数字人老师在现代教室清晰讲解知识。","年轻女巫骑扫帚掠过云海，展开电影感奇幻冒险。","用几何图形与节奏转场演绎高级品牌视觉。","科幻机械从线稿到 3D 成型，呈现精密细节。"],
+        cases:["汽车品牌 · 商业 TVC","微观世界 · 创意短片","数字人 · 教育讲解","扫帚飞行 · 奇幻短剧","MG 动画 · 品牌视觉","3D 模型 · 创作演示"], previous:"上一个案例", next:"下一个案例",
+        capTitle:"不只生成视频，而是推进完整创作", capDesc:"从意图理解到持续编辑，五项核心能力协同工作。",
+        caps:[["智能创作 Agent","理解目标、拆解任务，主动推进每一步创作。",["创作需求","任务规划","可编辑结果"]],["Skill 场景化创作","为广告、短剧和商品匹配专业流程。",["Skill 市场","专业流程","快速复用"]],["无限画布","灵感、素材与结果，在一个空间持续展开。",["素材节点","自由组合","持续延展"]],["角色一致性","跨镜头保持角色形象与视觉风格统一。",["角色设定","跨镜头锁定","稳定输出"]],["短剧工作室","从剧本、分镜到成片，持续生产系列故事。",["剧本","分镜","系列成片"]]],
+        sceneTitle:"一个平台，覆盖每一种视频创作", sceneDesc:"选择创作目标，Agent 自动匹配合适的 Skill 与生成流程。", sceneNames:["短剧","广告","创意社媒","MG 动画","数字人"],
+        // 2026-08-26 改动逻辑：中文多语言映射中的广告场景标题同步增加“智能”，语言切换后仍显示一致文案。
+        // 2026-08-26 改动逻辑：各语言同步创意视频、平台原生、高频更新、批量 SKU 与 Skill 市场语义。
+        scenes:[["从故事设定到连续短剧","稳定角色与画风，同步推进剧本、分镜、配音和成片。",["角色一致性","智能分镜","系列化生产"]],["智能提炼卖点，产出高转化广告","上传商品图或链接，自动生成卖点、脚本、画面和多版成片。",["智能卖点","多比例适配","批量 SKU"]],["创作爆款社媒短视频","围绕热点与品牌选题，快速生成适合社媒传播的竖屏创意视频。",["趋势灵感","平台原生","高频更新"]],["让复杂信息变成直观动画","用图形、文字和节奏转场，清晰表达品牌与产品信息。",["图形动画","节奏转场","品牌视觉"]],["快速生成自然的数字人口播","创建自然出镜内容，并完成多语配音、字幕和场景适配。",["自然口型","多语配音","字幕生成"]]],
+        // 2026-08-27 改动逻辑：流程区与评价区副标题纳入五语言映射，语言切换及 React 重建后仍显示对应语言文案。
+        processTitle:"把复杂创作，变成简单三步", processDesc:"从灵感到成片，Agent 自动拆解并推进每一步。", process:[["说出想法","输入一句话、图片、商品或剧本。"],["Agent 推进","自动规划脚本、镜头、素材与生成任务。"],["持续精修","在画布中调整、重生成并导出作品。"]],
+        inspireTitle:"从好作品获得灵感", inspireDesc:"浏览广告、短剧与社媒案例，复用成熟提示词和创作流程，一键继续创作。", rail:"精选案例视频", play:"播放精选案例：",
+        // 2026-08-27 改动逻辑：模型区标题明确表达由 VinaAI 为每项任务“智能选择”最适配模型，并同步全部语言版本。
+        modelTitle:"每个任务，都智能选择最适配的模型", modelDesc:"不只是模型调用，更是模型深度调优。Agent 基于任务场景精准匹配最优模型。",
+        featured:["温控高速吹风机","一口穿越三个世界","护发精油广告","智能眼镜","香水项目","健康戒指项目","VYRA 防晒霜","AI 实时翻译耳机广告"],
+        storyTitle:"创作者正在把更多时间留给好创意", storyDesc:"把重复交给 Agent，把时间留给真正的创意。", stories:[["“过去要协调三四个环节，现在从 Brief 到第一版成片可以在一个下午完成。”","Alex · 消费品牌创意负责人"],["“角色稳定性让我们终于可以连续生产，而不是每个镜头都重新碰运气。”","Mia · 独立短剧创作者"],["“我不会复杂提示词，但 Agent 会一步步问清楚，第一次就能得到能继续改的版本。”","Ethan · 内容创业者"],["“我们把优秀项目沉淀成 Skill，新同事也能快速复用同一套品牌创作方法。”","Emma · 品牌内容运营"]],
+        finalTitle:"下一个好作品，从一句话开始", finalDesc:"让 Agent 把你的想法推进为可发布的视频。", placeholder:"描述你想创作的视频，例如：15 秒夏日饮料广告…",
+        faqTitle:"常见问题", faqs:[["Agent 和普通 AI 视频工具有何不同？","Agent 通过 Skill、无限画布和短剧工作室连接规划、生成、编辑与资产复用。"],["需要会写复杂提示词或剪辑吗？","不需要。描述目标即可，Agent 会补充信息、推进任务，结果也能继续编辑。"],["支持哪些内容类型？","支持商品广告、短剧、社媒内容、品牌视频、数字人口播和图生视频等。"],["手机端可以直接创作吗？","移动端支持登录与浏览，完整创作体验请使用电脑端。"],["生成内容可以商用吗？","商用范围取决于模型、素材来源和会员权益，发布前请查看对应授权。"]],
+        footer:["产品","资源","公司","服务条款","隐私政策"], google:"使用 Google 快捷登录", opening:"正在进入创作空间…"
+      },
+      en: {
+        label:"English", htmlLang:"en", title:"AI Video Creation, All in One", description:"Turn ideas into editable videos with one AI workspace.",
+        nav:["Examples","Capabilities","Use Cases","Inspiration"], login:"Sign In", start:"Create Now",
+        hero:["From idea to video,","all in one AI workspace"], heroDesc:"Start with a prompt, image, or script. The Agent plans and creates editable videos, ads, and stories.", hint:"No complex prompts. Just share your idea.", mobile:"Sign in and browse on mobile. Create fully on desktop.",
+        prompts:["A futuristic sports car races through the night in a cinematic tracking shot.","A crystal garden wakes as glowing life appears in soft daylight.","A friendly AI teacher explains a lesson in a modern classroom.","A young witch flies above the clouds in a cinematic fantasy adventure.","Geometric motion and rhythmic cuts shape a refined brand visual.","A sci-fi machine evolves from sketch to detailed 3D form."],
+        cases:["Automotive · TVC","Micro World · Film","AI Avatar · Education","Broom Flight · Fantasy","Motion Graphics · Brand","3D Model · Demo"], previous:"Previous example", next:"Next example",
+        capTitle:"Beyond generation. Build the full story.", capDesc:"Five core capabilities work together, from intent to final edit.",
+        caps:[["Creative Agent","Understands goals, plans tasks, and moves creation forward.",["Creative brief","Task plan","Editable output"]],["Scenario Skills","Expert workflows for ads, stories, products, and more.",["Skill Marketplace","Pro workflow","Reuse fast"]],["Infinite Canvas","Keep ideas, assets, and results in one visual space.",["Asset nodes","Free layout","Keep expanding"]],["Character Consistency","Keep characters and style coherent across every shot.",["Character setup","Shot lock","Stable output"]],["Story Studio","Move from script and storyboard to episodic video.",["Script","Storyboard","Episodes"]]],
+        sceneTitle:"One workspace for every video idea", sceneDesc:"Choose a goal. The Agent matches the right Skill and workflow.", sceneNames:["Stories","Ads","Social","Motion","Avatars"],
+        scenes:[["From story idea to full episodes","Keep characters and style consistent across scripts, shots, voice, and video.",["Consistent cast","Smart boards","Episode flow"]],["Turn product insights into better ads","Upload an image or link to create selling points, scripts, visuals, and cuts.",["Smart benefits","All formats","Batch SKUs"]],["Create social-first short videos","Turn trends and brand ideas into vertical creative videos made to travel.",["Trend ideas","Platform-native","High-frequency"]],["Make complex ideas easy to see","Use motion, type, and rhythm to explain products and brands clearly.",["Graphic motion","Rhythmic cuts","Brand visuals"]],["Create natural avatar videos fast","Make presenter videos with multilingual voice, captions, and scene options.",["Natural lip sync","Multi-language","Auto captions"]]],
+        processTitle:"Complex creation in three simple steps", processDesc:"From first spark to final cut, the Agent moves every step forward.", process:[["Share an idea","Start with a prompt, image, product, or script."],["Agent builds","It plans scripts, shots, assets, and generation."],["Refine freely","Edit, regenerate, and export in the canvas."]],
+        inspireTitle:"Find inspiration in great work", inspireDesc:"Explore standout ads, stories, and social work. Reuse proven prompts and flows in one click.", rail:"Featured videos", play:"Play example: ",
+        modelTitle:"Intelligently select the right model for every task", modelDesc:"More than model access, the Agent tunes and matches the best model to each creative task.",
+        featured:["Smart Hair Dryer","Three Worlds, One Bite","Hair Oil Ad","Smart Glasses","Perfume Project","Health Ring","VYRA Sunscreen","AI Translator Earbuds"],
+        storyTitle:"More time for the ideas that matter", storyDesc:"Let the Agent handle repetition, so you can focus on the creative work.", stories:[["“We used to manage four stages. Now a first cut can happen in one afternoon.”","Alex · Brand Creative Lead"],["“Stable characters finally let us produce episodes, not retry every shot.”","Mia · Story Creator"],["“I do not write complex prompts. The Agent asks, then gives me an editable result.”","Ethan · Content Founder"],["“We save strong projects as Skills, so new teammates can reuse our brand method.”","Emma · Brand Content Lead"]],
+        finalTitle:"Your next great video starts with one line", finalDesc:"Let the Agent turn your idea into a video ready to share.", placeholder:"Describe your video, e.g. a 15-second summer drink ad…",
+        faqTitle:"Frequently asked questions", faqs:[["How is the Agent different?","The Agent connects planning, generation, editing, and reuse with Skills, Canvas, and Story Studio."],["Do I need prompt or editing skills?","No. Describe your goal. The Agent gathers details and creates editable results."],["What can I create?","Ads, episodic stories, social content, brand videos, avatar videos, image-to-video, and more."],["Can I create on mobile?","Mobile supports sign-in and browsing. Use desktop for full creation."],["Can I use the content commercially?","Rights depend on models, source assets, and your plan. Review the license before publishing."]],
+        footer:["Product","Resources","Company","Terms","Privacy"], google:"Continue with Google", opening:"Opening your workspace…"
+      },
+      ja: {
+        label:"日本語", htmlLang:"ja", title:"オールインワン AI 動画制作", description:"アイデアから編集可能な動画まで、ひとつの AI ワークスペースで。",
+        nav:["制作事例","主な機能","制作シーン","アイデア"], login:"ログイン", start:"制作を始める",
+        hero:["アイデアから動画へ。","AI 制作をひとつに"], heroDesc:"言葉・画像・台本から開始。Agent が企画し、編集できる動画、広告、物語を制作します。", hint:"難しいプロンプトは不要。アイデアを伝えるだけ。", mobile:"スマホはログインと閲覧に対応。制作は PC で。",
+        prompts:["未来的なスポーツカーが夜の道路を映画のように駆け抜ける。","光る生物と結晶の植物が、やわらかな光の中で目覚める。","親しみやすい AI 講師が現代的な教室で解説する。","若い魔女が雲海を飛ぶ、映画のような冒険。","幾何学とリズムある転換で上質なブランド映像を描く。","SF マシンが線画から精密な 3D へ進化する。"],
+        cases:["自動車 · CM","ミクロ世界 · 映像","AI アバター · 教育","ほうき飛行 · 物語","モーション · ブランド","3D モデル · デモ"], previous:"前の事例", next:"次の事例",
+        capTitle:"生成だけでなく、制作全体を前へ", capDesc:"意図の理解から編集まで、5 つの機能が連携します。",
+        caps:[["制作 Agent","目的を理解し、タスクを整理して制作を進めます。",["要件","タスク設計","編集可能"]],["シーン別 Skill","広告、物語、商品に合う専門フロー。",["Skill マーケット","専門フロー","すぐ再利用"]],["無限キャンバス","アイデア、素材、結果を一か所で展開。",["素材ノード","自由配置","継続展開"]],["キャラ一貫性","すべてのカットで人物と画風を統一。",["キャラ設定","カット固定","安定出力"]],["ショートドラマ","台本と絵コンテから連続動画まで制作。",["台本","絵コンテ","連続制作"]]],
+        sceneTitle:"あらゆる動画を、ひとつの場所で", sceneDesc:"目的を選ぶと、Agent が最適な Skill と工程を提案します。", sceneNames:["ドラマ","広告","SNS","モーション","アバター"],
+        scenes:[["設定から連続ドラマへ","人物と画風を保ち、台本、絵コンテ、音声、動画を進行。",["人物の統一","自動絵コンテ","連続制作"]],["魅力を引き出す広告制作","商品画像や URL から訴求点、台本、映像、別案を生成。",["訴求点抽出","各比率対応","SKU 一括生成"]],["SNS 向け短編をすばやく","トレンドやブランド案を、SNS 向けの縦型クリエイティブ動画へ。",["トレンド","プラットフォーム最適","高頻度更新"]],["複雑な内容を分かりやすく","図形、文字、リズムで商品やブランドを明快に。",["図形アニメ","リズム転換","ブランド映像"]],["自然なアバター動画を制作","多言語音声、字幕、シーン違いに対応。",["自然な口元","多言語音声","自動字幕"]]],
+        processTitle:"複雑な制作を、シンプルな 3 段階に", processDesc:"ひらめきから完成まで、Agent が各工程を整理して進めます。", process:[["アイデアを入力","言葉、画像、商品、台本から開始。"],["Agent が進行","台本、カット、素材、生成を設計。"],["自由に仕上げる","キャンバスで調整、再生成、書き出し。"]],
+        inspireTitle:"優れた作品からひらめきを", inspireDesc:"広告、物語、SNS の事例から、実績あるプロンプトと工程を再利用。", rail:"注目の動画", play:"事例を再生：",
+        modelTitle:"タスクごとに最適なモデルをスマートに選択", modelDesc:"モデルを呼び出すだけでなく、Agent が用途に合わせて最適化し、最適なモデルを選びます。",
+        featured:["温度制御ドライヤー","ひと口で三世界へ","ヘアオイル広告","スマートグラス","香水プロジェクト","ヘルスリング","VYRA 日焼け止め","AI 翻訳イヤホン"],
+        storyTitle:"もっと多くの時間を、良いアイデアへ", storyDesc:"繰り返し作業は Agent に任せ、本当の創造に時間を使えます。", stories:[["「複数工程の調整が必要でしたが、今は午後だけで初稿まで完成します。」","Alex · ブランド制作責任者"],["「人物が安定し、カットごとのやり直しではなく連続制作ができます。」","Mia · ドラマ制作者"],["「難しい指示は不要。Agent が質問し、編集できる結果を出してくれます。」","Ethan · コンテンツ制作者"],["「良い案件を Skill にし、新メンバーも同じ制作方法を使えます。」","Emma · ブランド運用責任者"]],
+        finalTitle:"次の作品は、ひと言から", finalDesc:"Agent がアイデアを公開できる動画へ。", placeholder:"作りたい動画を入力。例：夏ドリンクの 15 秒広告…",
+        faqTitle:"よくある質問", faqs:[["一般的な AI 動画ツールとの違いは？","Agent、Skill、キャンバス、ドラマ機能で企画から編集、再利用までつなぎます。"],["専門的な指示や編集経験は必要？","不要です。目的を伝えると Agent が情報を補い、編集可能な結果を作ります。"],["何を制作できますか？","商品広告、連続ドラマ、SNS、ブランド、アバター、画像から動画などに対応。"],["スマホだけで制作できますか？","スマホはログインと閲覧に対応。完全な制作は PC をご利用ください。"],["商用利用できますか？","権利はモデル、素材、プランにより異なります。公開前にライセンスをご確認ください。"]],
+        footer:["製品","リソース","会社","利用規約","プライバシー"], google:"Google でログイン", opening:"ワークスペースを開いています…"
+      },
+      ms: {
+        label:"Bahasa Melayu", htmlLang:"ms", title:"Studio Video AI Sehenti", description:"Ubah idea menjadi video boleh sunting dalam satu ruang AI.",
+        nav:["Contoh","Keupayaan","Kegunaan","Inspirasi"], login:"Log Masuk", start:"Mula Cipta",
+        hero:["Daripada idea ke video,","semua dalam satu studio AI"], heroDesc:"Mulakan dengan arahan, imej atau skrip. Agent merancang dan menghasilkan video, iklan serta cerita yang boleh disunting.", hint:"Tak perlu arahan rumit. Kongsikan idea anda.", mobile:"Log masuk dan lihat di telefon. Cipta penuh di desktop.",
+        prompts:["Kereta sport futuristik memecut pada waktu malam dalam rakaman sinematik.","Taman kristal terjaga dengan hidupan bercahaya dalam cahaya lembut.","Guru AI mesra menerangkan pelajaran dalam kelas moden.","Ahli sihir muda terbang di atas awan dalam pengembaraan sinematik.","Gerak geometri dan transisi berirama membentuk visual jenama premium.","Mesin sci-fi berubah daripada lakaran kepada bentuk 3D terperinci."],
+        cases:["Automotif · TVC","Dunia Mikro · Filem","Avatar AI · Edu","Terbang · Fantasi","Grafik Gerak · Jenama","Model 3D · Demo"], previous:"Contoh sebelumnya", next:"Contoh seterusnya",
+        capTitle:"Bukan sekadar jana. Siapkan seluruh karya.", capDesc:"Lima keupayaan bekerjasama daripada niat hingga suntingan.",
+        caps:[["Ejen Kreatif","Faham matlamat, rancang tugas dan gerakkan proses.",["Brief","Pelan tugas","Boleh sunting"]],["Skill Mengikut Situasi","Aliran pakar untuk iklan, cerita dan produk.",["Pasaran Skill","Aliran pakar","Guna semula"]],["Kanvas Tanpa Had","Idea, aset dan hasil kekal dalam satu ruang.",["Nod aset","Susun bebas","Terus kembang"]],["Watak Konsisten","Kekalkan watak dan gaya pada setiap babak.",["Tetapan watak","Kunci babak","Hasil stabil"]],["Studio Cerita","Daripada skrip dan papan cerita ke siri video.",["Skrip","Papan cerita","Siri"]]],
+        sceneTitle:"Satu studio untuk semua idea video", sceneDesc:"Pilih matlamat. Ejen memadankan Skill dan aliran terbaik.", sceneNames:["Cerita","Iklan","Sosial","Gerak","Avatar"],
+        scenes:[["Daripada idea kepada siri","Kekalkan watak dan gaya sambil membina skrip, babak, suara dan video.",["Watak konsisten","Papan pintar","Aliran siri"]],["Ubah manfaat produk menjadi iklan","Muat naik imej atau pautan untuk jana manfaat, skrip, visual dan versi.",["Manfaat pintar","Semua format","SKU pukal"]],["Cipta video sosial yang menarik","Ubah trend dan idea jenama menjadi video kreatif menegak untuk media sosial.",["Idea trend","Asli platform","Kemas kini kerap"]],["Jadikan idea rumit lebih jelas","Gunakan gerak, teks dan ritma untuk menerangkan produk dan jenama.",["Grafik gerak","Transisi ritma","Visual jenama"]],["Cipta video avatar semula jadi","Hasilkan penyampai dengan suara pelbagai bahasa, sari kata dan latar.",["Gerak bibir","Pelbagai bahasa","Sari kata auto"]]],
+        processTitle:"Cipta dengan tiga langkah mudah", processDesc:"Daripada ilham hingga hasil akhir, Ejen mengatur dan menggerakkan setiap langkah.", process:[["Kongsi idea","Mula dengan arahan, imej, produk atau skrip."],["Ejen merancang","Ia menyusun skrip, babak, aset dan penjanaan."],["Kemaskan bebas","Sunting, jana semula dan eksport di kanvas."]],
+        inspireTitle:"Dapatkan ilham daripada karya hebat", inspireDesc:"Terokai iklan, cerita dan kandungan sosial. Guna semula arahan serta aliran terbukti.", rail:"Video pilihan", play:"Mainkan contoh: ",
+        modelTitle:"Pilih model terbaik secara pintar untuk setiap tugasan", modelDesc:"Lebih daripada akses model, Agent menala dan memadankan model terbaik mengikut tugasan kreatif.",
+        featured:["Pengering Rambut Pintar","Tiga Dunia, Satu Gigitan","Iklan Minyak Rambut","Cermin Mata Pintar","Projek Minyak Wangi","Cincin Kesihatan","Krim Suria VYRA","Fon Telinga Penterjemah AI"],
+        storyTitle:"Lebih masa untuk idea yang hebat", storyDesc:"Serahkan kerja berulang kepada Ejen dan fokus pada kreativiti sebenar.", stories:[["“Dulu kami urus beberapa peringkat. Kini draf pertama siap dalam satu petang.”","Alex · Ketua Kreatif Jenama"],["“Watak konsisten membolehkan kami menghasilkan siri tanpa mengulang setiap babak.”","Mia · Pencipta Cerita"],["“Saya tak perlu arahan rumit. Ejen bertanya dan memberi hasil yang boleh disunting.”","Ethan · Pengasas Kandungan"],["“Kami simpan projek terbaik sebagai Skill agar pasukan boleh guna kaedah yang sama.”","Emma · Ketua Kandungan Jenama"]],
+        finalTitle:"Video hebat seterusnya bermula dengan satu ayat", finalDesc:"Biarkan Agent mengubah idea anda menjadi video sedia kongsi.", placeholder:"Huraikan video, contoh: iklan minuman musim panas 15 saat…",
+        faqTitle:"Soalan lazim", faqs:[["Apa beza Agent?","Agent menghubungkan perancangan, penjanaan, suntingan dan guna semula melalui Skill dan Kanvas."],["Perlu mahir arahan atau suntingan?","Tidak. Huraikan matlamat; Ejen melengkapkan butiran dan memberi hasil boleh sunting."],["Apa yang boleh saya cipta?","Iklan, siri cerita, kandungan sosial, video jenama, avatar dan imej-ke-video."],["Boleh cipta melalui telefon?","Telefon menyokong log masuk dan semakan. Gunakan desktop untuk ciptaan penuh."],["Boleh guna secara komersial?","Hak bergantung pada model, aset sumber dan pelan. Semak lesen sebelum terbit."]],
+        footer:["Produk","Sumber","Syarikat","Terma","Privasi"], google:"Teruskan dengan Google", opening:"Membuka ruang kerja…"
+      },
+      fr: {
+        label:"Français", htmlLang:"fr", title:"Création vidéo IA tout-en-un", description:"Transformez vos idées en vidéos modifiables dans un seul studio IA.",
+        nav:["Exemples","Fonctions","Usages","Inspiration"], login:"Connexion", start:"Créer",
+        hero:["De l’idée à la vidéo,","dans un seul studio IA"], heroDesc:"Partez d’un texte, d’une image ou d’un script. L’Agent planifie et crée vidéos, publicités et récits modifiables.", hint:"Aucun prompt complexe. Décrivez simplement votre idée.", mobile:"Connexion et aperçu sur mobile. Création complète sur ordinateur.",
+        prompts:["Une voiture futuriste file de nuit dans un travelling cinématographique.","Un jardin de cristal s’éveille avec une vie lumineuse sous une douce lumière.","Un avatar enseignant explique clairement un cours dans une salle moderne.","Une jeune sorcière survole les nuages dans une aventure cinématographique.","Mouvements géométriques et transitions rythmées créent une image de marque soignée.","Une machine de science-fiction passe du croquis à une forme 3D détaillée."],
+        cases:["Auto · Spot TV","Micro-monde · Film","Avatar IA · Éducation","Vol magique · Fiction","Motion · Marque","Modèle 3D · Démo"], previous:"Exemple précédent", next:"Exemple suivant",
+        capTitle:"Bien plus que générer : créez de bout en bout", capDesc:"Cinq fonctions travaillent ensemble, de l’intention au montage.",
+        caps:[["Agent créatif","Comprend l’objectif, planifie et fait avancer la création.",["Brief","Plan de tâches","Résultat éditable"]],["Skills par usage","Des flux experts pour pubs, récits et produits.",["Marché des Skills","Flux expert","Réutiliser"]],["Canvas infini","Idées, médias et résultats restent au même endroit.",["Nœuds médias","Agencement libre","Développer"]],["Personnages cohérents","Préserve personnages et style d’un plan à l’autre.",["Réglage perso","Plans liés","Résultat stable"]],["Studio narratif","Du script et storyboard à la série vidéo.",["Script","Storyboard","Épisodes"]]],
+        sceneTitle:"Un studio pour chaque idée vidéo", sceneDesc:"Choisissez un objectif. L’Agent associe le bon Skill et le bon flux.", sceneNames:["Fiction","Publicité","Social","Motion","Avatars"],
+        scenes:[["De l’idée à la série complète","Gardez personnages et style tout au long du script, des plans, des voix et de la vidéo.",["Casting stable","Storyboard auto","Production en série"]],["Des atouts produit aux pubs efficaces","Ajoutez une image ou un lien pour créer arguments, script, visuels et variantes.",["Atouts clés","Tous formats","SKU en série"]],["Créez des vidéos pensées pour les réseaux","Transformez tendances et idées de marque en vidéos créatives verticales pour les réseaux.",["Tendances","Natif plateforme","Publication fréquente"]],["Rendez les idées complexes limpides","Expliquez produits et marques avec mouvement, texte et rythme.",["Motion design","Transitions","Image de marque"]],["Créez vite des avatars naturels","Produisez des présentateurs avec voix multilingue, sous-titres et décors.",["Lipsync naturel","Voix multilingue","Sous-titres auto"]]],
+        processTitle:"La création complexe en trois étapes", processDesc:"De l’inspiration au rendu final, l’Agent organise et fait avancer chaque étape.", process:[["Partagez une idée","Commencez par un texte, une image, un produit ou un script."],["L’Agent planifie","Il organise scripts, plans, médias et génération."],["Affinez librement","Modifiez, régénérez et exportez dans le canvas."]],
+        inspireTitle:"Inspirez-vous des meilleures créations", inspireDesc:"Explorez pubs, récits et contenus sociaux. Réutilisez des prompts et flux éprouvés.", rail:"Vidéos à la une", play:"Lire l’exemple : ",
+        modelTitle:"Sélection intelligente du meilleur modèle pour chaque tâche", modelDesc:"Au-delà de l’accès aux modèles, l’Agent les optimise et choisit le plus adapté à chaque création.",
+        featured:["Sèche-cheveux intelligent","Trois mondes en une bouchée","Pub huile capillaire","Lunettes connectées","Projet parfum","Bague santé","Crème solaire VYRA","Écouteurs traducteurs IA"],
+        storyTitle:"Plus de temps pour les bonnes idées", storyDesc:"Confiez les tâches répétitives à l’Agent et concentrez-vous sur la vraie création.", stories:[["« Avant, il fallait coordonner quatre étapes. Le premier montage tient désormais dans un après-midi. »","Alex · Direction créative"],["« La stabilité des personnages nous permet enfin de produire des épisodes sans tout recommencer. »","Mia · Créatrice de séries"],["« Aucun prompt complexe : l’Agent pose les bonnes questions et livre un résultat modifiable. »","Ethan · Créateur de contenu"],["« Nos meilleurs projets deviennent des Skills que toute l’équipe peut réutiliser. »","Emma · Contenu de marque"]],
+        finalTitle:"Votre prochaine vidéo commence par une phrase", finalDesc:"Laissez l’Agent transformer votre idée en vidéo prête à publier.", placeholder:"Décrivez votre vidéo, ex. : pub boisson d’été de 15 s…",
+        faqTitle:"Questions fréquentes", faqs:[["En quoi l’Agent est-il différent ?","L’Agent relie planification, génération, montage et réutilisation avec Skills, Canvas et Studio."],["Faut-il maîtriser les prompts ou le montage ?","Non. Décrivez votre objectif : l’Agent précise les besoins et crée un résultat modifiable."],["Que puis-je créer ?","Publicités, séries, contenus sociaux, vidéos de marque, avatars, image-vers-vidéo, etc."],["Puis-je créer sur mobile ?","Le mobile permet connexion et aperçu. Utilisez un ordinateur pour tout créer."],["Puis-je utiliser le contenu à des fins commerciales ?","Les droits dépendent des modèles, médias sources et de l’offre. Vérifiez la licence avant publication."]],
+        footer:["Produit","Ressources","Société","Conditions","Confidentialité"], google:"Continuer avec Google", opening:"Ouverture de votre espace…"
+      }
+    };
+    let locale = "zh";
+    let applying = false;
+    // 2026-08-26 改动逻辑：界面顺序调整为广告、创意社媒、短剧、MG 动画、数字人；内容索引继续复用原五语言数据，避免重复维护翻译。
+    const sceneOrder = [1, 2, 0, 3, 4];
+    // 2026-08-26 改动逻辑：广告改用用户最新指定的来画公开视频链接，短剧继续使用用户上传视频；其余三类沿用已指定精选案例。
+    const curatedSceneVideos = [
+      "https://res-public.laihua.com/system/20260821/video/01a0228c-2139-73c8-8e48-6d93e07885c3.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/019ffff8-a9f0-70f8-9537-23c043e1b192.mp4",
+      "../assets/videos/drama-ai-video-8.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/01a0000b-a7cc-77da-9a20-a78f7e3e44cf.mp4",
+      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4"
+    ];
+    const curatedSceneTitles = ["剧情TVC广告示例", "冰箱午夜共和国", "用户上传短剧", "从咖啡果到一杯咖啡", "入职教练"];
+
+    const languageSwitcherMarkup = () => `
+      <div class="marketing-language-switcher" id="marketingLanguageSwitcher">
+        <button class="marketing-language-trigger" id="marketingLanguageTrigger" type="button" aria-haspopup="menu" aria-expanded="false">
+          <svg class="marketing-language-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
+          <span class="marketing-language-label">${copy[locale].label}</span>
+          <svg class="marketing-language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <ul class="marketing-language-menu" role="menu" hidden>
+          ${languageOptions.map(([code, label]) => `<li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="${String(code === locale)}" data-language-code="${code}" data-language-label="${label}">${label}</button></li>`).join("")}
+        </ul>
+      </div>`;
+
+    // 2026-08-27 改动逻辑：底层运行时若重建营销页，使用同一份模型清单恢复模型展示区，避免新页面在刷新或切换语言后消失。
+    const modelShowcaseMarkup = () => `
+      <section class="section model-showcase" id="models">
+        <div class="section-head"><div><h2><span></span></h2></div><p></p></div>
+        <div class="model-start-action"><button class="primary model-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>
+        <div class="model-grid">
+          <article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"><span>Seedance 2.5</span></article>
+          <article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"><span>Seedance 2.0</span></article>
+          <article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"><span>Seedance 2.0 fast</span></article>
+          <article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedance"><span>Seedance 2.0 mini</span></article>
+          <article class="model-card"><img src="../assets/images/model-minimax.png" alt="Minimax"><span>Minimax H3</span></article>
+          <!-- 2026-08-27 改动逻辑：运行时重建模型区时继续使用 Wan、Kling、Happyhorse 各自的新图标，确保切换语言后不回退。 -->
+          <article class="model-card"><img src="../assets/images/model-wan.png" alt="Wan"><span>Wan 3.0</span></article>
+          <article class="model-card"><img src="../assets/images/model-kling.png" alt="Kling"><span>Kling 3.0</span></article>
+          <article class="model-card"><img src="../assets/images/model-happyhorse.png" alt="Happyhorse"><span>Happyhorse 1.0</span></article>
+          <article class="model-card"><img src="../assets/images/model-gpt.png" alt="GPT"><span>Gpt Image 2</span></article>
+          <article class="model-card"><img src="../assets/images/model-banana.png" alt="Nano Banana"><span>Nano Banana Pro</span></article>
+          <article class="model-card"><img src="../assets/images/model-banana.png" alt="Nano Banana"><span>Nano Banana 2</span></article>
+          <article class="model-card"><img src="../assets/images/model-seedance.png" alt="Seedream"><span>Seedream 5.0</span></article>
+        </div>
+      </section>`;
+
+    const setText = (selector, value, index = 0) => {
+      const node = document.querySelectorAll(selector)[index];
+      if (node && node.textContent !== value) node.textContent = value;
+    };
+    const setDirectText = (node, value) => {
+      if (!node) return;
+      let textNode = Array.from(node.childNodes).find((child) => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
+      if (!textNode) {
+        textNode = document.createTextNode(value);
+        node.insertBefore(textNode, node.querySelector(":scope > b") || null);
+      } else if (textNode.textContent.trim() !== value) textNode.textContent = value;
+    };
+    const setCommand = (button, value) => {
+      if (!button) return;
+      Array.from(button.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE).forEach((node) => node.remove());
+      let label = button.querySelector(":scope > .i18n-command-label");
+      if (!label) {
+        label = document.createElement("span");
+        label.className = "i18n-command-label";
+        button.insertBefore(label, button.firstChild);
+      }
+      if (label.textContent !== value) label.textContent = value;
+    };
+    const activeIndex = (selector, fallback = 0) => {
+      const nodes = Array.from(document.querySelectorAll(selector));
+      const index = nodes.findIndex((node) => node.getAttribute("aria-selected") === "true" || node.classList.contains("active"));
+      return index < 0 ? fallback : index;
+    };
+
+    const applyTranslations = () => {
+      if (applying) return;
+      applying = true;
+      const t = copy[locale];
+      document.documentElement.lang = t.htmlLang;
+      document.documentElement.dataset.marketingLocale = locale;
+      document.title = t.title;
+      document.querySelector('meta[name="description"]')?.setAttribute("content", t.description);
+      // 2026-08-27 改动逻辑：中文环境将营销页品牌名、品牌图和分享标题统一显示为“来画”；切换其他语言时恢复 VinaAI，且不改动其语言文案。
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", t.title);
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", t.title);
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", t.description);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", t.description);
+      document.querySelectorAll(".brand-image").forEach((brand) => {
+        const image = brand.querySelector("img");
+        brand.querySelectorAll(".brand-localized-name").forEach((node) => node.remove());
+        brand.classList.remove("is-localized-brand");
+        brand.setAttribute("aria-label", "VinaAI");
+        if (image) {
+          image.src = "../vinaai-brand-lockup.png";
+          image.alt = "VinaAI";
+          image.removeAttribute("aria-hidden");
+        }
+      });
+      // 2026-08-27 改动逻辑：除左上角 Logo 外，所有语言的栏目眉题和页尾版权不再展示来画或 VinaAI 品牌文字。
+      document.querySelectorAll(".section-head .kicker").forEach((node) => {
+        node.textContent = node.textContent.replace(/\s*·\s*(?:VinaAI|来画)\s*$/, "");
+      });
+      document.querySelectorAll(".nav nav a").forEach((node, index) => { if (t.nav[index]) node.textContent = t.nav[index]; });
+      setText(".nav-primary-label", t.login);
+      const heroTitle = document.querySelector(".hero h1");
+      if (heroTitle) heroTitle.innerHTML = `${t.hero[0]}<em>${t.hero[1]}</em>`;
+      setText(".hero .subhead", t.heroDesc);
+      setText(".hero .hint", `✓ ${t.hint}`);
+      setCommand(document.querySelector(".hero-actions > .primary"), t.start);
+      setText(".mobile-note", t.mobile);
+      const carouselIndex = activeIndex(".cinema-dots button", 3);
+      setText(".cinema-console-main > p", t.prompts[carouselIndex]);
+      document.querySelectorAll(".cinema-dots button").forEach((node, index) => node.setAttribute("aria-label", t.cases[index] || ""));
+      document.querySelector(".film-prev")?.setAttribute("aria-label", t.previous);
+      document.querySelector(".film-next")?.setAttribute("aria-label", t.next);
+      setCommand(document.querySelector(".cinema-console-main > .primary"), t.start);
+
+      setText(".capabilities .section-head h2 span", t.capTitle);
+      setText(".capabilities .section-head h2 span", "", 1);
+      setText(".capabilities .section-head > p", t.capDesc);
+      setCommand(document.querySelector(".capability-section-cta"), t.start);
+      document.querySelectorAll(".capability-cards article").forEach((card, index) => {
+        const item = t.caps[index]; if (!item) return;
+        card.querySelector("h3").textContent = item[0];
+        card.querySelector(":scope > b").textContent = item[1];
+        card.querySelectorAll(".capability-card-tags em").forEach((tag, tagIndex) => tag.textContent = item[2][tagIndex]);
+        setCommand(card.querySelector(".capability-card-cta"), t.start);
+      });
+
+      setText(".scenes .section-head h2 span", t.sceneTitle);
+      setText(".scenes .section-head > p", t.sceneDesc);
+      setCommand(document.querySelector(".scene-section-cta"), t.start);
+      document.querySelectorAll(".scene-theater-tabs b").forEach((node, index) => node.textContent = t.sceneNames[sceneOrder[index]]);
+      const sceneIndex = activeIndex(".scene-theater-tabs > button", 0);
+      const scene = t.scenes[sceneOrder[sceneIndex]];
+      // 2026-08-26 改动逻辑：React 场景切换后强制回填精选案例视频，确保运行时不会恢复旧的本地演示素材。
+      const sceneVideo = document.querySelector(".scene-theater > video");
+      const curatedSource = curatedSceneVideos[sceneIndex];
+      if (sceneVideo && curatedSource && sceneVideo.getAttribute("src") !== curatedSource) {
+        sceneVideo.src = curatedSource;
+        sceneVideo.load();
+        sceneVideo.play().catch(() => {});
+      }
+      setText(".scene-example-badge b", curatedSceneTitles[sceneIndex]);
+      setText(".scene-theater-copy h3", scene[0]);
+      setText(".scene-theater-copy > p:not(.kicker)", scene[1]);
+      document.querySelectorAll(".scene-theater-copy li").forEach((node, index) => node.textContent = `✓ ${scene[2][index]}`);
+      const sceneCreateButton = document.querySelector(".scene-theater-copy > .primary");
+      setCommand(sceneCreateButton, t.start);
+      // 2026-08-26 改动逻辑：React 重建场景按钮或切换语言后，持续补回统一的右箭头元素。
+      if (sceneCreateButton && !sceneCreateButton.querySelector(":scope > b")) sceneCreateButton.insertAdjacentHTML("beforeend", "<b>→</b>");
+      // 2026-08-26 改动逻辑：只更新无障碍名称，按钮视觉始终沿用原 Google 快捷登录图片。
+      document.querySelectorAll(".hero-google-login,.scene-mobile-google-login").forEach((node) => node.setAttribute("aria-label", t.google));
+      setDirectText(document.querySelector(".toast"), t.opening);
+
+      setText(".process .section-head h2 span", t.processTitle);
+      // 2026-08-27 改动逻辑：语言切换时同步流程区副标题，样式继续由统一 section-head 规则控制。
+      setText(".process .section-head > p", t.processDesc);
+      setCommand(document.querySelector(".process-section-cta"), t.start);
+      document.querySelectorAll(".process-grid article").forEach((card, index) => {
+        card.querySelector("h3").textContent = t.process[index][0]; card.querySelector("p").textContent = t.process[index][1];
+      });
+      setText("#inspiration .section-head h2 span", t.inspireTitle);
+      setText("#inspiration .section-head > p", t.inspireDesc);
+      setCommand(document.querySelector(".inspiration-section-cta"), t.start);
+      const rail = document.querySelector("#inspiration .featured-video-rail");
+      rail?.setAttribute("aria-label", t.rail);
+      document.querySelectorAll("[data-featured-case]").forEach((card, index) => {
+        const title = t.featured[index % t.featured.length];
+        card.dataset.featuredTitle = title; card.setAttribute("aria-label", `${t.play}${title}`);
+      });
+
+      // 2026-08-27 改动逻辑：模型页主副标题与开始创作按钮接入现有五语言切换，模型官方名称保持原文不翻译。
+      setText(".model-showcase .section-head h2 span", t.modelTitle);
+      setText(".model-showcase .section-head > p", t.modelDesc);
+      setCommand(document.querySelector(".model-section-cta"), t.start);
+
+      setText(".stories .section-head h2 span", t.storyTitle);
+      // 2026-08-27 改动逻辑：语言切换时同步评价区副标题，避免仅主标题发生切换。
+      setText(".stories .section-head > p", t.storyDesc);
+      setCommand(document.querySelector(".stories-section-cta"), t.start);
+      document.querySelectorAll(".stories blockquote").forEach((card, index) => {
+        card.querySelector(":scope > p").textContent = t.stories[index][0]; card.querySelector("footer span").textContent = t.stories[index][1];
+      });
+      setText(".final-cta h2", t.finalTitle);
+      setText(".final-cta > span", t.finalDesc);
+      const input = document.querySelector(".final-input input");
+      if (input) { input.placeholder = t.placeholder; input.setAttribute("aria-label", t.placeholder); }
+      setCommand(document.querySelector(".final-input .primary"), t.start);
+      setText(".final-cta > small", t.mobile);
+      setText(".faq .section-head h2 span", t.faqTitle);
+      document.querySelectorAll(".faq-list details").forEach((item, index) => {
+        setDirectText(item.querySelector("summary"), t.faqs[index][0]); item.querySelector(":scope > p").textContent = t.faqs[index][1];
+      });
+      document.querySelectorAll(".footer > div a").forEach((node, index) => node.textContent = t.footer[index]);
+      // 2026-08-27 改动逻辑：品牌图仅保留在左上角导航，运行时重建出的页尾 Logo 会立即移除。
+      document.querySelector(".footer > .brand-image")?.remove();
+      setText(".footer > span", "© 2026");
+      setText(".sticky > span", t.mobile);
+      const stickyButton = document.querySelector(".sticky > button"); if (stickyButton) stickyButton.textContent = `${t.start} →`;
+      document.querySelectorAll(".marketing-language-label").forEach((node) => node.textContent = t.label);
+      document.querySelectorAll(".marketing-language-option").forEach((node) => node.setAttribute("aria-checked", String(node.dataset.languageCode === locale)));
+      // 2026-08-26 改动逻辑：延后一帧解除同步锁，让本轮 DOM 变更先被观察器忽略，避免翻译自身反复触发翻译。
+      window.setTimeout(() => { applying = false; }, 0);
+    };
+
+    const ensureUploadedLanguageSwitcher = () => {
+      const legacyButton = document.querySelector(".nav-actions > button.lang");
+      if (legacyButton) {
+        legacyButton.insertAdjacentHTML("beforebegin", languageSwitcherMarkup());
+        legacyButton.remove();
+      }
+      // 2026-08-26 改动逻辑：为首屏静态菜单补齐语言代码，使首次点击与 React 重建后的菜单使用同一套翻译映射。
+      document.querySelectorAll(".marketing-language-option").forEach((option) => {
+        const match = languageOptions.find(([, label]) => label === (option.dataset.languageLabel || option.textContent.trim()));
+        if (match) option.dataset.languageCode = match[0];
+      });
+      // 2026-08-26 改动逻辑：构建运行时若重建顶部主按钮，立即将旧“开始创作”恢复为“登录”，保留原箭头节点和事件。
+      const primaryEntry = document.querySelector(".nav-actions > .primary.small");
+      if (primaryEntry) {
+        // 2026-08-26 改动逻辑：清除运行时残留文本，并优先复用已有首个标签作为登录标签，避免 React 标签与新增标签拼接。
+        Array.from(primaryEntry.childNodes).forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) node.remove();
+        });
+        let primaryLabel = primaryEntry.querySelector(":scope > .nav-primary-label");
+        if (!primaryLabel) {
+          primaryLabel = primaryEntry.querySelector(":scope > span") || document.createElement("span");
+          primaryLabel.className = "nav-primary-label";
+          if (!primaryLabel.isConnected) primaryEntry.insertBefore(primaryLabel, primaryEntry.firstChild);
+        }
+        if (primaryLabel.textContent !== copy[locale].login) primaryLabel.textContent = copy[locale].login;
+        // 2026-08-26 改动逻辑：移除其余直接子级文字标签，仅保留登录标签与箭头，彻底消除 H5 的双文案。
+        primaryEntry.querySelectorAll(":scope > span:not(.nav-primary-label)").forEach((label) => label.remove());
+      }
+      // 2026-08-27 改动逻辑：首屏不再恢复 Google 快捷登录入口，运行时重建后仍只展示居中的“开始创作”按钮。
+      // 2026-08-26 改动逻辑：React 运行时可能重建能力区；此处恢复标题下主按钮及五张卡片的绿色文字箭头入口，并统一标记为登录入口。
+      const capabilitySection = document.querySelector(".capabilities");
+      const capabilityHead = capabilitySection?.querySelector(":scope > .section-head");
+      if (capabilityHead && !capabilitySection.querySelector(":scope > .capability-start-action")) {
+        capabilityHead.insertAdjacentHTML("afterend", `<div class="capability-start-action"><button class="primary capability-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>`);
+      }
+      capabilitySection?.querySelectorAll(".capability-cards article").forEach((card) => {
+        if (!card.querySelector(":scope > .capability-card-cta")) {
+          card.insertAdjacentHTML("beforeend", `<button class="capability-card-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button>`);
+        }
+      });
+      // 2026-08-26 改动逻辑：React 重建创作场景区后恢复标题下方的绿色开始创作按钮，继续沿用多语言文案和登录入口标记。
+      const scenesSection = document.querySelector(".scenes");
+      const scenesHead = scenesSection?.querySelector(":scope > .section-head");
+      if (scenesHead && !scenesSection.querySelector(":scope > .scene-start-action")) {
+        scenesHead.insertAdjacentHTML("afterend", `<div class="scene-start-action"><button class="primary scene-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>`);
+      }
+      // 2026-08-26 改动逻辑：React 重建流程区或灵感区后恢复新增按钮，确保多语言切换、登录跳转和视觉位置保持一致。
+      const processSection = document.querySelector(".process");
+      const processHead = processSection?.querySelector(":scope > .section-head");
+      // 2026-08-27 改动逻辑：React 运行时重建流程区时主动补回副标题节点，再由多语言映射写入当前语言文案。
+      if (processHead && !processHead.querySelector(":scope > p")) processHead.insertAdjacentHTML("beforeend", `<p></p>`);
+      if (processHead && !processSection.querySelector(":scope > .process-start-action")) {
+        processHead.insertAdjacentHTML("afterend", `<div class="process-start-action"><button class="primary process-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>`);
+      }
+      const inspirationSection = document.querySelector("#inspiration");
+      const inspirationHead = inspirationSection?.querySelector(":scope > .section-head");
+      if (inspirationHead && !inspirationSection.querySelector(":scope > .inspiration-start-action")) {
+        inspirationHead.insertAdjacentHTML("afterend", `<div class="inspiration-start-action"><button class="primary inspiration-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>`);
+      }
+      // 2026-08-27 改动逻辑：模型展示区固定恢复在灵感案例之后、创作者评价之前，并继续复用 data-login-entry 登录事件。
+      const existingModelShowcase = document.querySelector(".model-showcase");
+      const storiesSection = document.querySelector(".stories");
+      if (!existingModelShowcase && inspirationSection && storiesSection) storiesSection.insertAdjacentHTML("beforebegin", modelShowcaseMarkup());
+      // 2026-08-26 改动逻辑：React 重建创作者评价区后恢复标题下方的开始创作按钮，继续沿用当前语言与登录入口。
+      const storiesHead = storiesSection?.querySelector(":scope > .section-head");
+      // 2026-08-27 改动逻辑：React 运行时重建评价区时主动补回副标题节点，确保刷新和语言切换后内容不会消失。
+      if (storiesHead && !storiesHead.querySelector(":scope > p")) storiesHead.insertAdjacentHTML("beforeend", `<p></p>`);
+      if (storiesHead && !storiesSection.querySelector(":scope > .stories-start-action")) {
+        storiesHead.insertAdjacentHTML("afterend", `<div class="stories-start-action"><button class="primary stories-section-cta" type="button" data-login-entry><span class="i18n-command-label"></span><b>→</b></button></div>`);
+      }
+    };
+    const setLanguageMenuOpen = (switcher, isOpen) => {
+      if (!switcher) return;
+      switcher.classList.toggle("is-open", isOpen);
+      switcher.querySelector(".marketing-language-trigger")?.setAttribute("aria-expanded", String(isOpen));
+      const menu = switcher.querySelector(".marketing-language-menu");
+      if (menu) menu.hidden = !isOpen;
+      if (isOpen) switcher.querySelector(".marketing-language-option")?.focus();
+    };
+
+    document.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".marketing-language-trigger");
+      if (trigger) {
+        const switcher = trigger.closest(".marketing-language-switcher");
+        setLanguageMenuOpen(switcher, !switcher.classList.contains("is-open"));
+        return;
+      }
+      const option = event.target.closest(".marketing-language-option");
+      if (option) {
+        const switcher = option.closest(".marketing-language-switcher");
+        locale = copy[option.dataset.languageCode] ? option.dataset.languageCode : "zh";
+        try { localStorage.setItem("vina-marketing-locale", locale); } catch (error) {}
+        switcher.querySelectorAll(".marketing-language-option").forEach((item) => item.setAttribute("aria-checked", String(item === option)));
+        const label = switcher.querySelector(".marketing-language-label");
+        if (label) label.textContent = copy[locale].label;
+        applyTranslations();
+        setLanguageMenuOpen(switcher, false);
+        switcher.querySelector(".marketing-language-trigger")?.focus();
+        return;
+      }
+      document.querySelectorAll(".marketing-language-switcher.is-open").forEach((switcher) => setLanguageMenuOpen(switcher, false));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      document.querySelectorAll(".marketing-language-switcher.is-open").forEach((switcher) => {
+        setLanguageMenuOpen(switcher, false);
+        switcher.querySelector(".marketing-language-trigger")?.focus();
+      });
+    });
+    // 2026-08-26 改动逻辑：轮播或场景按钮会由底层组件写入默认中文；交互完成后重新套用当前语言，保证动态内容不会回退。
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".scene-theater-tabs > button,.film-prev,.film-next,.cinema-dots button")) return;
+      window.setTimeout(applyTranslations, 20);
+    });
+
+    try { const saved = localStorage.getItem("vina-marketing-locale"); if (copy[saved]) locale = saved; } catch (error) {}
+    ensureUploadedLanguageSwitcher();
+    applyTranslations();
+    // 2026-08-26 改动逻辑：React 与本地兜底会动态重建场景、轮播和头部；合并观察回调后重新套用当前语言，防止切换场景时短暂回到中文。
+    let syncTimer = 0;
+    new MutationObserver(() => {
+      if (applying) return;
+      window.clearTimeout(syncTimer);
+      syncTimer = window.setTimeout(() => { ensureUploadedLanguageSwitcher(); applyTranslations(); }, 0);
+    }).observe(document.documentElement, {childList:true, subtree:true});
+  })();
+</script>
+<script type="module" src="../_next/static/chunks/index-CH3iGVJW.js" id="_R_" async="">
+</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("2:I[\"8c0f216c4604\",[],\"Children\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("3:I[\"593f344dc510\",[],\"GlobalErrorBoundary\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("4:I[\"0b874ad30386\",[],\"default\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("5:I[\"593f344dc510\",[],\"ErrorBoundary\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("6:I[\"15c18cfaeeff\",[],\"LayoutSegmentProvider\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("7:I[\"8c0f216c4604\",[],\"Slot\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("8:I[\"9276801271d6\",[],\"AppRouterScrollTarget\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("9:I[\"593f344dc510\",[],\"RedirectBoundary\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push(":HL[\"/_next/static/css/index.D73yptIG.css\",\"style\"     ]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("0:{\"__route\":\"route:/\",\"__interceptionContext\":null,\"__layoutIds\":[\"layout:/\"],\"__rootLayout\":\"/\",\"__sourcePage\":\"/page\",\"page:/\":\"$L1\",\"layout:/\":[[[[\"$\",\"link\",\"css:/_next/static/css/index.D73yptIG.css\",{\"rel\":\"stylesheet\",\"precedence\":\"vite-rsc/importer-resources\",\"href\":\"/_next/static/css/index.D73yptIG.css\",\"data-rsc-css-href\":\"/_next/static/css/index.D73yptIG.css\"}],\"$undefined\"],[\"$\",\"html\",null,{\"lang\":\"zh-CN\",\"children\":[\"$\",\"body\",null,{\"children\":[\"$\",\"$L2\",null,{}]}]}]],null],\"route:/\":[[[\"$\",\"meta\",null,{\"charSet\":\"utf-8\"}],[[\"$\",\"title\",\"0\",{\"children\":\"来画 / VinaAI — 一站式 AI 视频创作平台\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"从想法到视频的一站式 AI 创作平台。\"}],[\"$\",\"meta\",\"2\",{\"property\":\"og:title\",\"content\":\"来画 / VinaAI — From Idea to Video\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:description\",\"content\":\"从想法到视频，一站式 AI 创作平台。\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:image\",\"content\":\"https://vina-ai-creative-workspace.laipic-2428.chatgpt.site/og.png\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"7\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:title\",\"content\":\"来画 / VinaAI — From Idea to Video\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:description\",\"content\":\"从想法到视频，一站式 AI 创作平台。\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:image\",\"content\":\"https://vina-ai-creative-workspace.laipic-2428.chatgpt.site/og.png\"}]],[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]],[\"$\",\"$L3\",null,{\"fallback\":\"$4\",\"children\":[\"$\",\"$L5\",null,{\"fallback\":\"$4\",\"children\":[\"$\",\"$L6\",null,{\"providerId\":\"layout:/\",\"segmentMap\":{\"children\":[]},\"children\":[\"$\",\"$L7\",null,{\"id\":\"layout:/\",\"parallelSlots\":\"$undefined\",\"children\":[\"$\",\"$L8\",null,{\"children\":[\"$\",\"$L9\",null,{\"children\":[[\"$\",\"$L6\",null,{\"providerId\":\"page:/\",\"segmentMap\":{\"children\":[\"__PAGE__\"]},\"children\":[\"$\",\"$L7\",null,{\"id\":\"page:/\"}]}],null]}]}]}]}]}]}],null,null],\"__layoutFlags\":{\"layout:/\":\"s\"},\"__artifactCompatibility\":{\"schemaVersion\":1,\"graphVersion\":\"app-route-graph:1177fd80f83fa7b0\",\"deploymentVersion\":\"57210b91-b86a-46c9-9cdc-06bd8a674288\",\"appElementsSchemaVersion\":1,\"rscPayloadSchemaVersion\":1,\"rootBoundaryId\":\"/\",\"renderEpoch\":null},\"__renderObservation\":{\"schemaVersion\":1,\"output\":{\"kind\":\"app-rsc\",\"mountedSlotsFingerprint\":null,\"renderEpoch\":null,\"rootBoundaryId\":\"/\",\"routeId\":\"route:/\"},\"completeness\":\"partial\",\"boundaryOutcome\":{\"kind\":\"unknown\"},\"requestApis\":[{\"kind\":\"connection\",\"status\":\"unknown\"},{\"kind\":\"cookies\",\"status\":\"unknown\"},{\"kind\":\"draftMode\",\"status\":\"unknown\"},{\"kind\":\"headers\",\"status\":\"unknown\"},{\"kind\":\"params\",\"status\":\"unknown\"},{\"kind\":\"searchParams\",\"status\":\"unknown\"}],\"dynamicFetches\":[],\"cacheTags\":[\"/\",\"_N_T_/\",\"_N_T_/index\",\"_N_T_/layout\",\"_N_T_/page\"],\"pathTags\":[\"/\"],\"cacheability\":\"unknown\",\"downgrade\":{\"target\":\"freshRender\",\"reasons\":[{\"code\":\"CP_DOWNGRADE_CACHEABILITY_UNKNOWN\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_INCOMPLETE_OBSERVATION\",\"completeness\":\"partial\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"connection\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"cookies\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"draftMode\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"headers\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"params\",\"target\":\"freshRender\"},{\"code\":\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"requestApi\":\"searchParams\",\"target\":\"freshRender\"}],\"fallback\":{\"kind\":\"breakerFallback\",\"code\":\"CP_PRIVATE_DYNAMIC_DOWNGRADE\",\"mode\":\"renderFresh\",\"scope\":\"affectedOutput\",\"fields\":{\"reasonCodes\":[\"CP_DOWNGRADE_CACHEABILITY_UNKNOWN\",\"CP_DOWNGRADE_INCOMPLETE_OBSERVATION\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\",\"CP_DOWNGRADE_UNKNOWN_REQUEST_API\"],\"target\":\"freshRender\"}},\"isPublicCacheCandidate\":false}}}\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("a:I[\"6efdf509a785\",[],\"default\",1]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("1:[\"$\",\"$La\",null,{\"params\":\"$@b\",\"searchParams\":\"$@c\"}]\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("b:{}\n")</script>
+<script>((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).rsc.push("c:{}\n")</script>
+<script>Object.assign(((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}),{"initialCacheKind":"dynamic"});((self[Symbol.for("vinext.navigationRuntime")]??={bootstrap:{routeManifest:null},functions:{}}).bootstrap.rsc??={rsc:[]}).done=true</script>
+</body>
+</html>

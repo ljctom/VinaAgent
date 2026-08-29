@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "fileName": "canvas-agent-plan.json",
+  "sessionId": "",
+  "request": "",
+  "summary": "",
+  "status": "idle",
+  "mode": "manual",
+  "steps": [],
+  "progress": {
+    "completed": 0,
+    "total": 0
+  },
+  "finalReply": "",
+  "updatedAt": ""
+}
