@@ -9110,16 +9110,7 @@
       appearance: none;
       backdrop-filter: none;
     }
-    /* 2026-08-30 Product Design 改动逻辑：下载入口复用全能画布的 32px 纯图标按钮规格；去掉文案并以固定图标画布裁切矢量分片，避免下载箭头越出按钮。 */
-    .episode-detail-workspace .detail-player-action.is-download {
-      width: 32px;
-      min-width: 32px;
-      height: 32px;
-      border-color: transparent;
-      border-radius: 7px;
-      color: rgba(255,255,255,.84);
-      background: transparent;
-    }
+    /* 2026-08-30 改动逻辑：下载入口取消 32px 透明无框特例，直接继承 detail-player-action 的 40px 圆形描边、颜色与 hover/focus 状态，和右侧操作按钮保持一致。 */
     .episode-detail-workspace .detail-player-action svg,
     .episode-detail-workspace .detail-player-actions .detail-play-mode-trigger svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .episode-detail-workspace .detail-player-action:hover,
@@ -9139,10 +9130,7 @@
     .episode-detail-workspace .detail-player-action:focus-visible .detail-player-download-icon img { filter: brightness(0) saturate(100%) invert(93%) sepia(90%) saturate(833%) hue-rotate(25deg) brightness(104%); }
     .episode-detail-workspace .detail-player-actions .detail-play-mode { width: 40px; height: 40px; }
     .episode-detail-workspace .detail-player-actions .detail-play-mode-popover { right: 50%; bottom: calc(100% + 12px); transform: translateX(50%); }
-    /* 2026-08-30 改动逻辑：单片段时长从提示词参数栏迁入播放器操作栏第 3 位；沿用原滑杆与数字输入逻辑，仅统一为操作栏圆形按钮并让弹层从按钮上方向左展开。 */
-    .episode-detail-workspace .detail-player-actions .detail-duration-wrap { width: 40px; height: 40px; flex: 0 0 40px; }
-    .episode-detail-workspace .detail-player-actions .detail-duration-btn { width: 40px; min-width: 40px; height: 40px; min-height: 40px; padding: 0; border-radius: 50%; font-size: 12px; font-weight: 800; box-shadow: none; }
-    .episode-detail-workspace .detail-player-actions .detail-duration-popover { left: 0; right: auto; bottom: calc(100% + 12px); }
+    /* 2026-08-30 改动逻辑：单片段时长入口回到提示词工具栏第三位；不再保留播放器操作栏的圆形按钮专用覆盖，继续复用原滑杆、数字输入和向上弹层逻辑。 */
     .episode-detail-workspace .detail-player-action[data-tooltip]::after,
     .episode-detail-workspace .detail-player-actions .detail-play-mode-trigger[data-tooltip]::after {
       content: attr(data-tooltip);
@@ -12629,6 +12617,14 @@
                       </div>
                     </div>
                   </div>
+                  <!-- 2026-08-30 改动逻辑：时长调整入口移动到模型、画幅之后和 @ 之前，作为提示词工具栏第三个控件；保留原 ID、滑杆与输入框，确保状态和事件逻辑不变。 -->
+                  <div class="detail-duration-wrap">
+                    <button class="detail-duration-btn" id="detailDurationButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="detailDurationPopover" aria-label="调整当前片段时长">9s</button>
+                    <div class="detail-duration-popover" id="detailDurationPopover" aria-label="选择当前片段时长" hidden>
+                      <input class="detail-duration-range" id="detailDurationRange" type="range" min="4" max="15" step="1" value="9" aria-label="当前片段时长" style="--detail-duration-progress:45.45%">
+                      <label class="detail-duration-value"><input class="detail-duration-input" id="detailDurationInput" type="number" min="4" max="15" step="1" value="9" aria-label="输入当前片段时长"><span>s</span></label>
+                    </div>
+                  </div>
                   <!-- 2026-08-30 改动逻辑：@ 入口移到统一工具组最右侧，仍沿用原参考素材选择交互。 -->
                   <button class="detail-mention-btn" id="detailMentionButton" type="button" aria-label="艾特参考图">@</button>
                 </div>
@@ -12683,14 +12679,7 @@
                   <button class="detail-play-mode-option" type="button" role="menuitemradio" aria-checked="false" data-detail-play-mode="sequence"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg><span>顺序播放</span></button>
                 </div>
               </div>
-              <!-- 2026-08-30 改动逻辑：时间调整固定为操作栏第 3 个入口，下载和播放方式在前，片段重拍顺延至第 4 位。 -->
-              <div class="detail-duration-wrap">
-                <button class="detail-duration-btn detail-player-action" id="detailDurationButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="detailDurationPopover" aria-label="调整当前片段时长" data-tooltip="调整片段时长">9s</button>
-                <div class="detail-duration-popover" id="detailDurationPopover" aria-label="选择当前片段时长" hidden>
-                  <input class="detail-duration-range" id="detailDurationRange" type="range" min="4" max="15" step="1" value="9" aria-label="当前片段时长" style="--detail-duration-progress:45.45%">
-                  <label class="detail-duration-value"><input class="detail-duration-input" id="detailDurationInput" type="number" min="4" max="15" step="1" value="9" aria-label="输入当前片段时长"><span>s</span></label>
-                </div>
-              </div>
+              <!-- 2026-08-30 改动逻辑：时长入口已移到左侧提示词工具栏第三位，右侧操作栏仅保留下载、播放方式和片段重拍。 -->
               <button class="detail-player-action" id="detailRemakeButton" type="button" aria-label="片段重拍" aria-disabled="false" data-tooltip="片段重拍">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/><path d="M17 3v4M15 5h4"/></svg>
               </button>
