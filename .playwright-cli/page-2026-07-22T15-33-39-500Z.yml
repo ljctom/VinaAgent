@@ -1,0 +1,91 @@
+- generic [active] [ref=e1]:
+  - region "VinaAI 创作入口" [ref=e2]:
+    - generic [ref=e5]:
+      - generic "VinaAI" [ref=e6]:
+        - strong [ref=e8]: VinaAI
+      - button "进入 VinaAI" [ref=e9] [cursor=pointer]:
+        - generic [ref=e11]: →
+    - generic [ref=e12]:
+      - paragraph [ref=e13]:
+        - strong [ref=e14]: /短剧漫剧 · 神秘来客
+        - text: 复古酒店走廊里，一位身穿黄色外套的女性提着金属手提箱快步前行，镜头平行跟拍，暖色灯光与急促步伐共同营造任务即将开始的悬念感。
+      - group "选择视频创作方向" [ref=e15]:
+        - button "短剧漫剧" [pressed] [ref=e16] [cursor=pointer]
+        - button "广告营销" [ref=e17] [cursor=pointer]
+        - button "创意社媒" [ref=e18] [cursor=pointer]
+        - button "MG动画" [ref=e19] [cursor=pointer]
+        - button "数字人" [ref=e20] [cursor=pointer]
+        - button "3D创作" [ref=e21] [cursor=pointer]
+    - generic: SCROLL
+    - article [ref=e22]:
+      - generic [ref=e23]:
+        - heading "短剧漫剧" [level=2] [ref=e24]
+        - paragraph [ref=e25]: 从一句故事设定出发，自动完成剧本拆解、角色与场景统一，再把连续情节推进为可直接发布的系列内容。
+        - generic "短剧漫剧能力" [ref=e26]:
+          - generic [ref=e27]: 多集剧本
+          - generic [ref=e28]: 角色一致
+          - generic [ref=e29]: 连续镜头
+          - generic [ref=e30]: 批量成片
+        - button "开始创作" [ref=e31] [cursor=pointer]:
+          - generic [ref=e33]: →
+    - article [ref=e36]:
+      - generic [ref=e37]:
+        - heading "广告营销" [level=2] [ref=e38]
+        - paragraph [ref=e39]: 让产品成为镜头主角。快速生成兼顾品牌质感、核心卖点和转化节奏的广告片，适配多渠道投放。
+        - generic "广告营销能力" [ref=e40]:
+          - generic [ref=e41]: 产品特写
+          - generic [ref=e42]: 卖点脚本
+          - generic [ref=e43]: 品牌风格
+          - generic [ref=e44]: 多尺寸交付
+        - button "开始创作" [ref=e45] [cursor=pointer]:
+          - generic [ref=e47]: →
+    - article [ref=e50]:
+      - generic [ref=e51]:
+        - heading "创意社媒" [level=2] [ref=e52]
+        - paragraph [ref=e53]: 捕捉平台热点与视觉情绪，把灵感快速变成更有停留感、传播感和辨识度的社交内容。
+        - generic "创意社媒能力" [ref=e54]:
+          - generic [ref=e55]: 热点创意
+          - generic [ref=e56]: 氛围短片
+          - generic [ref=e57]: 多平台适配
+          - generic [ref=e58]: 快速变体
+        - button "开始创作" [ref=e59] [cursor=pointer]:
+          - generic [ref=e61]: →
+    - article [ref=e64]:
+      - generic [ref=e65]:
+        - heading "MG 动画" [level=2] [ref=e66]
+        - paragraph [ref=e67]: 将复杂信息转成清楚、有节奏的动态图形表达，用统一的视觉语言讲透产品、数据与流程。
+        - generic "MG动画能力" [ref=e68]:
+          - generic [ref=e69]: 信息可视化
+          - generic [ref=e70]: 节奏编排
+          - generic [ref=e71]: 图形转场
+          - generic [ref=e72]: 品牌模板
+        - button "开始创作" [ref=e73] [cursor=pointer]:
+          - generic [ref=e75]: →
+    - article [ref=e78]:
+      - generic [ref=e79]:
+        - heading "数字人" [level=2] [ref=e80]
+        - paragraph [ref=e81]: 自然口播、稳定表达、持续生产。让品牌拥有随时在线的内容主理人，轻松覆盖讲解、直播与知识传播。
+        - generic "数字人能力" [ref=e82]:
+          - generic [ref=e83]: 自然口播
+          - generic [ref=e84]: 多语种
+          - generic [ref=e85]: 品牌形象
+          - generic [ref=e86]: 规模生产
+        - button "开始创作" [ref=e87] [cursor=pointer]:
+          - generic [ref=e89]: →
+    - article [ref=e92]:
+      - generic [ref=e93]:
+        - heading "3D 创作" [level=2] [ref=e94]
+        - paragraph [ref=e95]: 从平面概念到立体资产，快速还原轮廓、材质与结构，为产品展示、动画制作和虚拟空间提供可用起点。
+        - generic "3D创作能力" [ref=e96]:
+          - generic [ref=e97]: 图生模型
+          - generic [ref=e98]: 材质还原
+          - generic [ref=e99]: 环绕展示
+          - generic [ref=e100]: 场景资产
+        - button "开始创作" [ref=e101] [cursor=pointer]:
+          - generic [ref=e103]: →
+      - generic [ref=e107]:
+        - link "粤ICP备15083104号" [ref=e108] [cursor=pointer]:
+          - /url: https://beian.miit.gov.cn/
+        - generic [ref=e109]: Shenzhen Qianhai Hand-painted Technology and Culture Co. Ltd.
+        - generic [ref=e110]: 深圳市前海手绘科技文化股份有限公司
+  - text: 和我说说你想把这个产品打造成一个什么样的广告视频，例如：为索尼相机生成一组野性自然风格的极简广告视频... 图片 1 ♪ 音频 1 图片 2 ♪ 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段

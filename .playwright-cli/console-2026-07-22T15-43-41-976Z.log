@@ -1,0 +1,2 @@
+[     879ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:8770/favicon.ico:0
+[  315274ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8770/assets/videos/drama-corridor.mp4:0

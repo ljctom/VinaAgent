@@ -1,0 +1,91 @@
+- generic [active] [ref=f3e1]:
+  - region "VinaAI 创作入口" [ref=f3e2]:
+    - generic [ref=f3e6]:
+      - generic "VinaAI" [ref=f3e7]:
+        - strong [ref=f3e9]: VinaAI
+      - button "进入 VinaAI" [ref=f3e10] [cursor=pointer]:
+        - generic [ref=f3e12]: →
+    - generic [ref=f3e13]:
+      - paragraph [ref=f3e14]:
+        - strong [ref=f3e15]: /短剧漫剧 · 神秘来客
+        - text: 复古酒店走廊里，一位身穿黄色外套的女性提着金属手提箱快步前行，镜头平行跟拍，暖色灯光与急促步伐共同营造任务即将开始的悬念感。
+      - group "选择视频创作方向" [ref=f3e16]:
+        - button "短剧漫剧" [pressed] [ref=f3e17] [cursor=pointer]
+        - button "广告营销" [ref=f3e18] [cursor=pointer]
+        - button "创意社媒" [ref=f3e19] [cursor=pointer]
+        - button "MG动画" [ref=f3e20] [cursor=pointer]
+        - button "数字人" [ref=f3e21] [cursor=pointer]
+        - button "3D创作" [ref=f3e22] [cursor=pointer]
+    - generic: SCROLL
+    - article [ref=f3e23]:
+      - generic [ref=f3e24]:
+        - heading "短剧漫剧" [level=2] [ref=f3e25]
+        - paragraph [ref=f3e26]: 从一句故事设定出发，自动完成剧本拆解、角色与场景统一，再把连续情节推进为可直接发布的系列内容。
+        - generic "短剧漫剧能力" [ref=f3e27]:
+          - generic [ref=f3e28]: 多集剧本
+          - generic [ref=f3e29]: 角色一致
+          - generic [ref=f3e30]: 连续镜头
+          - generic [ref=f3e31]: 批量成片
+        - button "开始创作" [ref=f3e32] [cursor=pointer]:
+          - generic [ref=f3e34]: →
+    - article [ref=f3e37]:
+      - generic [ref=f3e38]:
+        - heading "广告营销" [level=2] [ref=f3e39]
+        - paragraph [ref=f3e40]: 让产品成为镜头主角。快速生成兼顾品牌质感、核心卖点和转化节奏的广告片，适配多渠道投放。
+        - generic "广告营销能力" [ref=f3e41]:
+          - generic [ref=f3e42]: 产品特写
+          - generic [ref=f3e43]: 卖点脚本
+          - generic [ref=f3e44]: 品牌风格
+          - generic [ref=f3e45]: 多尺寸交付
+        - button "开始创作" [ref=f3e46] [cursor=pointer]:
+          - generic [ref=f3e48]: →
+    - article [ref=f3e51]:
+      - generic [ref=f3e52]:
+        - heading "创意社媒" [level=2] [ref=f3e53]
+        - paragraph [ref=f3e54]: 捕捉平台热点与视觉情绪，把灵感快速变成更有停留感、传播感和辨识度的社交内容。
+        - generic "创意社媒能力" [ref=f3e55]:
+          - generic [ref=f3e56]: 热点创意
+          - generic [ref=f3e57]: 氛围短片
+          - generic [ref=f3e58]: 多平台适配
+          - generic [ref=f3e59]: 快速变体
+        - button "开始创作" [ref=f3e60] [cursor=pointer]:
+          - generic [ref=f3e62]: →
+    - article [ref=f3e65]:
+      - generic [ref=f3e66]:
+        - heading "MG 动画" [level=2] [ref=f3e67]
+        - paragraph [ref=f3e68]: 将复杂信息转成清楚、有节奏的动态图形表达，用统一的视觉语言讲透产品、数据与流程。
+        - generic "MG动画能力" [ref=f3e69]:
+          - generic [ref=f3e70]: 信息可视化
+          - generic [ref=f3e71]: 节奏编排
+          - generic [ref=f3e72]: 图形转场
+          - generic [ref=f3e73]: 品牌模板
+        - button "开始创作" [ref=f3e74] [cursor=pointer]:
+          - generic [ref=f3e76]: →
+    - article [ref=f3e79]:
+      - generic [ref=f3e80]:
+        - heading "数字人" [level=2] [ref=f3e81]
+        - paragraph [ref=f3e82]: 自然口播、稳定表达、持续生产。让品牌拥有随时在线的内容主理人，轻松覆盖讲解、直播与知识传播。
+        - generic "数字人能力" [ref=f3e83]:
+          - generic [ref=f3e84]: 自然口播
+          - generic [ref=f3e85]: 多语种
+          - generic [ref=f3e86]: 品牌形象
+          - generic [ref=f3e87]: 规模生产
+        - button "开始创作" [ref=f3e88] [cursor=pointer]:
+          - generic [ref=f3e90]: →
+    - article [ref=f3e93]:
+      - generic [ref=f3e94]:
+        - heading "3D 创作" [level=2] [ref=f3e95]
+        - paragraph [ref=f3e96]: 从平面概念到立体资产，快速还原轮廓、材质与结构，为产品展示、动画制作和虚拟空间提供可用起点。
+        - generic "3D创作能力" [ref=f3e97]:
+          - generic [ref=f3e98]: 图生模型
+          - generic [ref=f3e99]: 材质还原
+          - generic [ref=f3e100]: 环绕展示
+          - generic [ref=f3e101]: 场景资产
+        - button "开始创作" [ref=f3e102] [cursor=pointer]:
+          - generic [ref=f3e104]: →
+      - generic [ref=f3e108]:
+        - link "粤ICP备15083104号" [ref=f3e109] [cursor=pointer]:
+          - /url: https://beian.miit.gov.cn/
+        - generic [ref=f3e110]: Shenzhen Qianhai Hand-painted Technology and Culture Co. Ltd.
+        - generic [ref=f3e111]: 深圳市前海手绘科技文化股份有限公司
+  - text: 和我说说你想把这个产品打造成一个什么样的广告视频，例如：为索尼相机生成一组野性自然风格的极简广告视频... 图片 1 ♪ 音频 1 图片 2 ♪ 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段 添加片段

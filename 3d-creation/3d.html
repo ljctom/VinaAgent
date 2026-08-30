@@ -1,0 +1,2649 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 3D Studio</title>
+  <link rel="icon" href="data:,">
+  <!-- 2026-07-24 修改逻辑：提前连接组件 CDN，并预加载兼容版首屏老虎模型；新版本参数用于绕过此前无法解码的 Meshopt 缓存。 -->
+  <link rel="preconnect" href="https://ajax.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <!-- 2026-07-24 修改逻辑：预加载首个古风角色；新增老虎作为第二个可点击预置，避免首屏同时抢占两份大型 GLB 下载。 -->
+  <link rel="preload" href="./3d-demo/assets/AncientCharacter.glb?v=20260724c" as="fetch" type="model/gltf-binary" crossorigin>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0e10;
+      --panel: #181a1e;
+      --surface: #111317;
+      --surface-hover: #20242a;
+      --line: #2b2f36;
+      --muted: #858b95;
+      --text: #f5f7fa;
+      --blue: #4c8dff;
+      --cyan: #5ed8ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, textarea, input { font: inherit; }
+
+    /* 修改逻辑：复用画布项目的顶部结构，左侧展示可返回产品首页的 Logo 与 3D创作标题，右侧展示会员、积分和头像。 */
+    .studio-topbar {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+      padding: 0 24px 0 12px;
+      border-bottom: 1px solid #222b35;
+      background: #090d12;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+    }
+
+    /* 2026-07-23 修改逻辑：将 Logo 与“3D创作”标题组合为同一顶栏品牌区，标题固定显示在 Logo 右侧。 */
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .home-logo {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      padding: 3px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+
+    .home-logo:hover { background: rgb(255 255 255 / 8%); }
+    .home-logo img { display: block; width: 30px; height: 30px; object-fit: contain; }
+
+    .studio-title {
+      color: #f4f6f8;
+      font-size: 16px;
+      font-weight: 720;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .studio-account {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+
+    .account-chip {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 14px;
+      border: 1px solid #2b3642;
+      border-radius: 30px;
+      color: #fff;
+      background: #080d12;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 520;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    /* 修改逻辑：账户区直接使用画布项目原始的彩色会员与积分 SVG，不再用不同风格的线框图标替代。 */
+    .account-chip img { width: 24px; height: 24px; object-fit: contain; }
+    .account-chip .account-points-icon { width: 20px; height: 20px; }
+    .account-divider { width: 1px; height: 24px; background: #2b3642; }
+
+    .account-avatar {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 7px;
+      border: 1px solid #2b3642;
+      border-radius: 50%;
+      color: #b8f84a;
+      background: #080d12;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .account-avatar span {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4d5865;
+    }
+
+    .app {
+      display: grid;
+      /* 修改逻辑：新增 52px 顶栏后，3D 工作区占据其下方的完整可用高度。 */
+      /* 2026-07-24 修改逻辑：移除右侧“我的素材”可视模块后，预览画布占满左侧生成栏之外的全部宽度。 */
+      grid-template-columns: 326px minmax(0, 1fr);
+      height: calc(100dvh - 52px);
+      min-height: 468px;
+      margin-top: 52px;
+    }
+
+    .sidebar {
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+      padding: 20px;
+      overflow-y: auto;
+      background: #15181d;
+      border-right: 1px solid rgb(153 171 196 / 14%);
+      box-shadow: 12px 0 34px rgb(0 0 0 / 24%);
+    }
+
+    /* 修改逻辑：左侧生成方式改为带图标的紧凑分段控件，用冰蓝色细节与底部材质工具栏建立统一的选中语言。 */
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      padding: 4px;
+      border: 1px solid rgb(153 171 196 / 16%);
+      border-radius: 8px;
+      background: #101319;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
+    }
+
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 40px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: #9ea8b6;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .tab i { width: 15px; height: 15px; flex: 0 0 15px; stroke-width: 1.9; }
+    .tab:hover { color: #eef5ff; border-color: rgb(140 180 235 / 22%); background: rgb(112 157 219 / 9%); }
+    .tab:active { transform: scale(.985); }
+    .tab:focus-visible { outline: 2px solid #8fc9ff; outline-offset: 2px; }
+    .tab.active {
+      color: #eef7ff;
+      border-color: rgb(158 215 255 / 28%);
+      background: #283542;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%), 0 4px 12px rgb(0 0 0 / 24%);
+    }
+
+    .mode-panel { display: none; min-width: 0; }
+    .mode-panel.active { display: block; }
+
+    .count { color: #7f8997; font-size: 11px; font-weight: 520; font-variant-numeric: tabular-nums; }
+
+    .prompt-wrap {
+      position: relative;
+      height: 196px;
+      overflow: hidden;
+      border: 1px solid rgb(153 171 196 / 16%);
+      border-radius: 8px;
+      background: #0f1217;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .prompt-wrap:focus-within {
+      border-color: rgb(143 201 255 / 68%);
+      background: #10151b;
+      box-shadow: 0 0 0 3px rgb(86 159 226 / 12%), inset 0 1px 0 rgb(255 255 255 / 4%);
+    }
+
+    textarea {
+      width: 100%;
+      height: 151px;
+      padding: 15px 16px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      background: transparent;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    textarea::placeholder { color: #687281; }
+
+    .prompt-tools {
+      display: flex;
+      align-items: center;
+      /* 修改逻辑：移除灵感按钮后，字数统计独立固定在输入框右下角。 */
+      justify-content: flex-end;
+      height: 43px;
+      padding: 0 13px;
+      border-top: 1px solid rgb(153 171 196 / 9%);
+      color: var(--muted);
+      font-size: 11px;
+      background: rgb(255 255 255 / 1.5%);
+    }
+
+    .uploads { display: grid; gap: 9px; }
+
+    .upload {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 194px;
+      overflow: hidden;
+      border: 1px dashed rgb(143 201 255 / 34%);
+      border-radius: 8px;
+      color: #91c9ff;
+      background: #0f1217;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+      transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .upload:hover, .upload.dragging { border-color: #8fc9ff; background: #141b23; box-shadow: 0 0 0 3px rgb(86 159 226 / 10%); }
+    .upload input { display: none; }
+
+    .upload-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      padding: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .upload-copy i { width: 21px; height: 21px; }
+    .upload small { color: #737e8d; font-size: 10px; line-height: 1.5; }
+
+    /* 2026-07-24 修改逻辑：预览区用同图的模糊放大层填满背景，前景改为 contain，确保选中的示例图和用户上传图都完整显示且两侧自然虚化。 */
+    .preview-backdrop,
+    .preview-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .preview-backdrop {
+      object-fit: cover;
+      transform: scale(1.12);
+      filter: blur(18px) brightness(.52) saturate(.82);
+      opacity: .92;
+      pointer-events: none;
+    }
+
+    .preview-img {
+      z-index: 1;
+      padding: 0 1px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 14px rgb(0 0 0 / 34%));
+    }
+
+    .upload.has-image .preview-backdrop,
+    .upload.has-image .preview-img { display: block; }
+    .upload.has-image .upload-copy { display: none; }
+
+    .remove-image {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      z-index: 2;
+      display: none;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid rgb(255 255 255 / 17%);
+      border-radius: 50%;
+      color: white;
+      background: rgb(10 12 15 / 75%);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+
+    .upload.has-image .remove-image { display: grid; }
+    .remove-image i { width: 15px; height: 15px; }
+
+    /* 2026-07-24 修改逻辑：图生 3D 在上传区下方复用“示例指令”的标题与切换按钮语言，并以三列 1:1 卡片展示两组可切换、可回填上传区的示例图。 */
+    .image-examples {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .image-examples-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .example-image {
+      position: relative;
+      aspect-ratio: 1;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid #263b4b;
+      border-radius: 9px;
+      background: #07111a;
+      cursor: pointer;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .example-image:hover {
+      border-color: rgb(164 231 77 / 72%);
+      transform: translateY(-2px);
+    }
+
+    .example-image:focus-visible {
+      outline: 2px solid var(--ui-lime);
+      outline-offset: 3px;
+    }
+
+    .example-image.active {
+      border-color: var(--ui-lime);
+      box-shadow: 0 0 0 2px rgb(164 231 77 / 14%), 0 7px 18px rgb(0 0 0 / 28%);
+    }
+
+    .example-image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+
+    .generation-area {
+      display: grid;
+      gap: 9px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgb(153 171 196 / 12%);
+      /* 修改逻辑：生成按钮和任务状态作为一个整体略微下移，更贴近侧栏底部。 */
+      transform: translateY(8px);
+    }
+
+    .generate-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      height: 48px;
+      padding: 0 8px 0 18px;
+      border: 1px solid rgb(202 232 255 / 88%);
+      border-radius: 11px;
+      color: #06121d;
+      background: linear-gradient(110deg, #a8dcff 0%, #91ceff 58%, #b9e4ff 100%);
+      font-size: 14px;
+      font-weight: 760;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 68%), 0 9px 24px rgb(52 134 207 / 25%);
+      transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, opacity .16s ease, transform .16s ease;
+    }
+
+    /* 2026-07-24 修改逻辑：主按钮使用图标、明确动作文字和独立次数胶囊，增强层级并避免旧版平铺文字显得松散。 */
+    .generate-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .generate-label svg { width: 16px; height: 16px; stroke-width: 2.25; }
+
+    /* 2026-07-24 修改逻辑：底部仅保留可动态更新的剩余生成次数，不再显示积分消耗。 */
+    .generate-remaining {
+      color: #c6d0d7;
+      font-size: 13px;
+      font-weight: 520;
+      text-align: center;
+    }
+    .generate-button:hover { border-color: #e1f2ff; background: linear-gradient(110deg, #bae5ff 0%, #a3d8ff 58%, #c9ebff 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 76%), 0 11px 28px rgb(52 134 207 / 32%); transform: translateY(-1px); }
+    .generate-button:active { transform: translateY(0) scale(.99); }
+    .generate-button:focus-visible { outline: 2px solid #8fc9ff; outline-offset: 3px; }
+    .generate-button:disabled { opacity: .52; cursor: not-allowed; transform: none; box-shadow: inset 0 1px 0 rgb(255 255 255 / 35%); }
+
+    /* 2026-07-24 修改逻辑：移除生成按钮下方的接口状态行，避免与主操作争夺注意力。 */
+    .job-status {
+      display: none;
+    }
+
+    .job-status[data-state="working"] { color: #78adff; }
+    .job-status[data-state="success"] { color: #65dcb8; }
+    .job-status[data-state="error"] { color: #ff8585; }
+
+    .viewer-shell {
+      position: relative;
+      min-width: 0;
+      background:
+        radial-gradient(ellipse 58% 54% at 50% 49%, rgb(116 127 149 / 25%) 0%, rgb(56 63 76 / 16%) 43%, transparent 76%),
+        linear-gradient(180deg, #131519 0%, #0d0f12 72%);
+    }
+
+    .viewer-shell::before {
+      position: absolute;
+      inset: 12% 12% 8%;
+      z-index: 0;
+      content: "";
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgb(187 196 214 / 8%), transparent 67%);
+      filter: blur(22px);
+    }
+
+    /* 2026-07-24 修改逻辑：首次进入 3D 创作时使用图一的“双角色生成舞台”作为独立空状态；生成后仍由原模型预览接管，不改动模型、进度或历史记录逻辑。 */
+    .viewer-empty-state {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      background:
+        radial-gradient(ellipse 72% 54% at 50% 38%, rgb(66 177 73 / 13%), transparent 70%),
+        linear-gradient(180deg, #081216 0%, #071015 64%, #091113 100%);
+      text-align: center;
+      transition: opacity .24s ease;
+    }
+
+    .viewer-empty-state[hidden] { display: none; }
+
+    /* 2026-07-24 修改逻辑：中央首屏按“角色舞台 / 双行口号 / 三项卖点”纵向分区，使用真实截图素材承载复杂角色与能量场，避免用代码图形近似。 */
+    .viewer-empty-content {
+      display: flex;
+      width: 100%;
+      min-width: 0;
+      max-width: 980px;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(14px, 2.3vh, 26px) clamp(20px, 3vw, 44px) clamp(18px, 3vh, 32px);
+    }
+
+    .viewer-empty-visual {
+      display: block;
+      /* 2026-07-24 修改逻辑：角色舞台横向延伸到中央面板两侧，并用透明蒙版柔化截图边缘，使能量背景与面板自然融合。 */
+      width: min(calc(100% + 88px), 820px);
+      max-height: min(47vh, 430px);
+      flex: 0 1 auto;
+      object-fit: contain;
+      object-position: center top;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 9%, #000 95%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 9%, #000 95%, transparent 100%);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .viewer-empty-title {
+      /* 2026-07-24 修改逻辑：标题组向上叠入舞台底部 18px，对齐图一中标题紧贴能量底座的纵向节奏。 */
+      margin: -18px 0 0;
+      color: #f5f7f1;
+      font-size: clamp(34px, 3.2vw, 48px);
+      font-weight: 820;
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      text-shadow: 0 4px 24px rgb(0 0 0 / 34%);
+    }
+
+    .viewer-empty-description {
+      margin: 10px 0 0;
+      color: #b9ff84;
+      font-size: clamp(25px, 2.55vw, 37px);
+      font-weight: 520;
+      line-height: 1.2;
+      letter-spacing: .05em;
+      text-shadow: 0 0 24px rgb(136 255 92 / 20%);
+    }
+
+    /* 2026-07-24 修改逻辑：底部三项优势按图一等宽排列并保留竖向分隔线；图标复用页面现有图标库，保证清晰度与响应式缩放。 */
+    .viewer-empty-features {
+      display: grid;
+      width: min(100%, 760px);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      /* 2026-07-24 修改逻辑：卖点区与副标题的间距按图一下移约 18px，让底部三栏落在参考位置。 */
+      margin-top: clamp(44px, 6vh, 60px);
+    }
+
+    .viewer-empty-feature {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 clamp(12px, 2.2vw, 28px);
+    }
+
+    .viewer-empty-feature + .viewer-empty-feature::before {
+      position: absolute;
+      top: 22px;
+      bottom: 2px;
+      left: 0;
+      width: 1px;
+      content: "";
+      background: rgb(163 186 181 / 17%);
+    }
+
+    .viewer-empty-feature-icon {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      margin-bottom: 14px;
+      place-items: center;
+      border: 1px solid rgb(131 178 148 / 15%);
+      border-radius: 50%;
+      color: #baff53;
+      background: rgb(20 40 39 / 78%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 0 22px rgb(127 255 68 / 5%);
+    }
+
+    .viewer-empty-feature-icon svg {
+      width: 29px;
+      height: 29px;
+      stroke-width: 1.9;
+    }
+
+    .viewer-empty-feature-title {
+      margin: 0;
+      color: #f1f2ee;
+      font-size: clamp(17px, 1.5vw, 22px);
+      font-weight: 690;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .viewer-empty-feature-copy {
+      margin: 7px 0 0;
+      color: #929a9b;
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .viewer-shell.is-empty .ground-grid,
+    .viewer-shell.is-empty > #model-viewer,
+    .viewer-shell.is-empty .loading,
+    .viewer-shell.is-empty .viewer-bottom-controls {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 修改逻辑：网格改为全画布 SVG 投影层，由相机事件实时重算线条方向与透视，不再固定在一个 CSS 角度。 */
+    .ground-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      shape-rendering: geometricPrecision;
+    }
+
+    .ground-grid .grid-minor { stroke: rgb(111 123 141 / 21%); stroke-width: .65; }
+    .ground-grid .grid-major { stroke: rgb(151 162 179 / 34%); stroke-width: 1; }
+    .ground-grid .grid-axis { stroke: rgb(180 192 210 / 46%); stroke-width: 1.2; }
+
+    .asset-panel {
+      z-index: 2;
+      min-width: 0;
+      padding: 20px 16px;
+      overflow-y: auto;
+      background: #15171a;
+      border-left: 1px solid var(--line);
+      box-shadow: -12px 0 32px rgb(0 0 0 / 16%);
+    }
+
+    /* 2026-07-24 修改逻辑：保留隐藏素材数据供生成、下载及材质切换逻辑使用，但不再显示图一右侧素材模块。 */
+    .asset-panel[hidden] { display: none; }
+
+    .asset-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 0 0 14px;
+      border-bottom: 1px solid rgb(255 255 255 / 7%);
+      color: #f1f4f8;
+      font-size: 15px;
+      font-weight: 720;
+      line-height: 1.2;
+    }
+
+    /* 修改逻辑：“我的素材”标题增加文件夹图标与分隔线，在不改变右栏尺寸的前提下强化个人素材库的层级。 */
+    .asset-heading-icon {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      place-items: center;
+      border: 1px solid rgb(111 165 255 / 24%);
+      border-radius: 6px;
+      color: #8db7ff;
+      background: rgb(111 165 255 / 10%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+    }
+
+    .asset-heading-icon svg { width: 15px; height: 15px; stroke-width: 1.8; }
+
+    .asset-list {
+      display: grid;
+      /* 修改逻辑：右侧素材缩略图固定为两列，提升单个模型缩略图的可辨识度。 */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: 8px;
+    }
+
+    .asset-card {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid #353941;
+      border-radius: 7px;
+      color: var(--text);
+      background: #101216;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      aspect-ratio: 1;
+    }
+
+    .asset-card:hover { background: #181b20; border-color: #59616e; }
+    .asset-card.active {
+      border-color: #6fa5ff;
+      box-shadow: 0 0 0 2px rgb(94 216 238 / 13%);
+    }
+
+    .asset-preview {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 50%, rgb(93 102 119 / 28%), transparent 65%),
+        #0d0f12;
+    }
+
+    /* 修改逻辑：生成任务立即占据一个素材格，格内同步显示百分比，真正完成前最多停在 99%。 */
+    .asset-card.generating {
+      position: relative;
+      cursor: default;
+      border-color: #434955;
+      background: #111419;
+    }
+
+    .asset-generating-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 8px;
+      color: #aeb5bf;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .asset-generating-spinner {
+      width: 18px;
+      height: 18px;
+      margin: auto;
+      border: 2px solid rgb(255 255 255 / 12%);
+      border-top-color: #6fd8ec;
+      border-radius: 50%;
+      animation: asset-spin .8s linear infinite;
+    }
+
+    .asset-progress-track {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      left: 7px;
+      height: 3px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: rgb(255 255 255 / 10%);
+    }
+
+    .asset-progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transition: width .45s ease;
+    }
+
+    @keyframes asset-spin { to { transform: rotate(360deg); } }
+
+    model-viewer {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+      background: transparent;
+      outline: none;
+    }
+
+    model-viewer::part(default-progress-bar) { display: none; }
+
+    /* 修改逻辑：底部两组控件共用轻量悬浮工具栏语言，在保留分组边界的同时统一高度、圆角和交互状态。 */
+    .viewer-bottom-controls {
+      position: absolute;
+      z-index: 2;
+      bottom: 24px;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(-50%);
+    }
+
+    .material-switch {
+      display: grid;
+      grid-template-columns: repeat(2, 80px);
+      gap: 2px;
+      padding: 4px;
+      border: 1px solid rgb(153 171 196 / 18%);
+      border-radius: 8px;
+      background: rgb(17 21 27 / 92%);
+      box-shadow: 0 10px 30px rgb(0 0 0 / 34%), inset 0 1px 0 rgb(255 255 255 / 5%);
+      backdrop-filter: blur(16px) saturate(125%);
+    }
+
+    .material-switch[hidden] { display: none; }
+
+    .asset-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 40px);
+      gap: 2px;
+      padding: 4px;
+      border: 1px solid rgb(153 171 196 / 18%);
+      border-radius: 8px;
+      background: rgb(17 21 27 / 92%);
+      box-shadow: 0 10px 30px rgb(0 0 0 / 34%), inset 0 1px 0 rgb(255 255 255 / 5%);
+      backdrop-filter: blur(16px) saturate(125%);
+    }
+
+    .asset-actions[hidden] { display: none; }
+
+    .asset-action {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: #aeb8c6;
+      background: transparent;
+      cursor: pointer;
+      transition: color .16s ease, border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+
+    .asset-action:hover {
+      color: #eef5ff;
+      border-color: rgb(140 180 235 / 30%);
+      background: rgb(112 157 219 / 13%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+      transform: translateY(-1px);
+    }
+    /* 2026-07-24 修改逻辑：恢复下载按钮右侧的删除操作，并用红色悬停态区分破坏性动作。 */
+    .asset-action.delete:hover { color: #ffaaa8; border-color: rgb(234 105 105 / 30%); background: rgb(202 72 72 / 13%); }
+    .asset-action:active { transform: translateY(0) scale(.96); }
+    .asset-action:focus-visible { outline: 2px solid #8fc9ff; outline-offset: 2px; }
+    .asset-action:disabled { opacity: .45; cursor: wait; }
+    .asset-action i { width: 17px; height: 17px; stroke-width: 1.9; }
+
+    .material-option {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: #aeb8c6;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    /* 修改逻辑：图标与材质文案固定单行排列，避免窄屏下“白模/纹理”拆行导致工具栏跳动。 */
+    .material-option i { width: 14px; height: 14px; flex: 0 0 14px; stroke-width: 1.9; }
+    .material-option span { white-space: nowrap; }
+    .material-option:hover { color: #eef5ff; border-color: rgb(140 180 235 / 24%); background: rgb(112 157 219 / 10%); }
+    .material-option:active { transform: scale(.98); }
+    .material-option:focus-visible { outline: 2px solid #8fc9ff; outline-offset: 2px; }
+    .material-option.active {
+      /* 修改逻辑：材质选中态改为克制的冰蓝色实心面，用内高光与微阴影强化当前模式而不抢夺模型视觉焦点。 */
+      color: #07131f;
+      border-color: #a7d8ff;
+      background: #9ed7ff;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 55%), 0 5px 16px rgb(52 134 207 / 30%);
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid #30353d;
+      border-radius: 7px;
+      color: #cad0d8;
+      background: rgb(24 27 32 / 82%);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .icon-button:hover { color: white; background: #282d34; }
+    .icon-button i { width: 17px; height: 17px; }
+
+    /* 修改逻辑：下载完成使用轻量 Toast 反馈，不遮挡模型与底部操作区。 */
+    .toast {
+      position: fixed;
+      z-index: 20;
+      bottom: 82px;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 16px;
+      border: 1px solid #38414c;
+      border-radius: 7px;
+      color: #eef2f7;
+      background: rgb(25 29 35 / 96%);
+      box-shadow: 0 12px 34px rgb(0 0 0 / 36%);
+      font-size: 13px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast i { width: 17px; height: 17px; color: #68ddba; }
+
+    /* 2026-07-24 修改逻辑：删除预置模型前保留二次确认；确认后只重置当前预览，不调用后端接口。 */
+    .delete-dialog {
+      width: min(360px, calc(100% - 40px));
+      padding: 0;
+      border: 1px solid #343943;
+      border-radius: 8px;
+      color: var(--text);
+      background: #191c21;
+      box-shadow: 0 24px 70px rgb(0 0 0 / 55%);
+    }
+    .delete-dialog::backdrop { background: rgb(5 7 10 / 68%); backdrop-filter: blur(4px); }
+    .delete-dialog-content { padding: 24px; }
+    .delete-dialog h2 { margin: 0; font-size: 17px; font-weight: 650; }
+    .delete-dialog p { margin: 10px 0 22px; color: #9ca4af; font-size: 13px; line-height: 1.6; }
+    .delete-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .dialog-button {
+      min-width: 72px;
+      height: 34px;
+      padding: 0 15px;
+      border: 1px solid #3a404a;
+      border-radius: 6px;
+      color: #d4d9e0;
+      background: #22262c;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .dialog-button:hover { color: #fff; background: #2a2f37; }
+    .dialog-button.confirm { border-color: #b64c55; color: #fff; background: #b9434d; }
+    .dialog-button.confirm:hover { background: #ce4b56; }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      color: #9da4af;
+      font-size: 12px;
+      transition: opacity .25s ease;
+    }
+
+    .loading.hidden { opacity: 0; }
+
+    /* 修改逻辑：任务刚开始时隐藏旧模型并展示中央进度；用户选择已有素材后恢复模型查看，任务仍在后台继续。 */
+    .viewer-shell > #model-viewer,
+    .viewer-bottom-controls {
+      transition: opacity .24s ease;
+    }
+
+    .viewer-shell.generating > #model-viewer,
+    .viewer-shell.generating .viewer-bottom-controls,
+    .viewer-shell.generating .loading {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 修改逻辑：生成中点击已有素材时退出中央进度视图，允许正常查看、旋转及切换白模/纹理。 */
+    .viewer-shell.generating.browsing-generation > #model-viewer,
+    .viewer-shell.generating.browsing-generation .viewer-bottom-controls,
+    .viewer-shell.generating.browsing-generation .loading {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .viewer-shell.generating.browsing-generation .loading { pointer-events: none; }
+
+    body.hunyuan-generating .job-status { visibility: hidden; }
+
+    .generation-progress {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .24s ease;
+    }
+
+    .viewer-shell.generating .generation-progress { opacity: 1; }
+    .viewer-shell.generating.browsing-generation .generation-progress { opacity: 0; }
+
+    .generation-progress-inner {
+      width: min(410px, calc(100% - 64px));
+      text-align: center;
+    }
+
+    .generation-progress-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 13px;
+      color: #cfd5de;
+      font-size: 12px;
+    }
+
+    .generation-progress-value {
+      color: #72d8ea;
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+    }
+
+    .generation-progress-track {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 3px;
+      background: rgb(255 255 255 / 9%);
+      box-shadow: inset 0 1px 2px rgb(0 0 0 / 35%);
+    }
+
+    .generation-progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      box-shadow: 0 0 16px rgb(94 216 238 / 34%);
+      transition: width .45s ease;
+    }
+
+    /* 2026-07-24 修改逻辑：仅重塑 3D 创作页的界面边框与按钮语言，参考目标图统一为深蓝黑玻璃面板、荧光绿选中态和大圆角描边；模型、相机、网格及生成逻辑保持原样。 */
+    :root {
+      --ui-lime: #b8ff3d;
+      --ui-lime-soft: rgb(184 255 61 / 16%);
+      --ui-line: #243747;
+      --ui-line-soft: rgb(127 174 203 / 18%);
+      --ui-panel: rgb(6 15 24 / 92%);
+    }
+
+    .studio-topbar {
+      height: 64px;
+      padding: 0 34px 0 28px;
+      border-bottom: 0;
+      background:
+        radial-gradient(circle at 9% -120%, rgb(96 180 230 / 11%), transparent 30%),
+        #050b11;
+      box-shadow: none;
+    }
+
+    .studio-brand { gap: 18px; }
+    .studio-brand::after {
+      order: 1;
+      width: 1px;
+      height: 30px;
+      content: "";
+      background: #263543;
+    }
+
+    .home-logo {
+      order: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid #314657;
+      border-radius: 50%;
+      color: #f5f9fc;
+      background: linear-gradient(180deg, rgb(14 25 35 / 96%), rgb(5 12 19 / 96%));
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 8px 22px rgb(0 0 0 / 26%);
+    }
+
+    .home-logo:hover {
+      color: var(--ui-lime);
+      border-color: rgb(153 212 83 / 68%);
+      background: rgb(18 32 42 / 96%);
+      box-shadow: 0 0 18px rgb(154 236 68 / 10%);
+    }
+
+    .home-logo i { width: 23px; height: 23px; stroke-width: 1.8; }
+
+    .studio-title {
+      order: 2;
+      font-size: 22px;
+      font-weight: 760;
+      letter-spacing: -.02em;
+    }
+
+    .studio-account { gap: 14px; }
+
+    .account-chip {
+      height: 42px;
+      padding: 0 16px;
+      border-color: #1d2d39;
+      border-radius: 22px;
+      color: #f5f7f8;
+      background: rgb(8 16 23 / 94%);
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 650;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 3%);
+    }
+
+    .account-chip img { width: 21px; height: 21px; }
+    .account-chip .account-points-icon { width: 19px; height: 19px; }
+    .account-pro { color: #a6aeb6; font-weight: 500; }
+    .account-chevron { width: 15px; height: 15px; color: #84919d; stroke-width: 1.7; }
+
+    .account-avatar {
+      width: 42px;
+      height: 42px;
+      padding: 5px;
+      border-color: #2c3d4b;
+      background: #081019;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+    }
+
+    .account-avatar span {
+      width: 30px;
+      height: 30px;
+      color: #b8ff51;
+      background: linear-gradient(145deg, #394754, #1f2b35);
+    }
+
+    .app {
+      /* 2026-07-24 修改逻辑：左侧面板宽度按参考图比例微调到 454px，使两块圆角主面板的分栏比例更接近目标截图。 */
+      /* 2026-07-24 修改逻辑：工作区扩展为“生成设置 / 3D 预览 / 历史记录”三栏，中间预览让出固定宽度给右侧个人历史区域。 */
+      grid-template-columns: 454px minmax(0, 1fr) 320px;
+      gap: 22px;
+      height: calc(100dvh - 64px);
+      margin-top: 64px;
+      padding: 12px 24px 18px;
+      background:
+        radial-gradient(circle at 16% 10%, rgb(118 230 89 / 5%), transparent 24%),
+        radial-gradient(circle at 83% 8%, rgb(46 123 179 / 8%), transparent 28%),
+        #030a10;
+    }
+
+    .sidebar {
+      gap: 18px;
+      padding: 28px 30px 26px;
+      overflow: hidden auto;
+      border: 1px solid #294154;
+      border-left-color: rgb(118 198 74 / 58%);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 5% 4%, rgb(150 255 81 / 7%), transparent 25%),
+        linear-gradient(180deg, rgb(7 17 26 / 98%), rgb(4 13 21 / 98%));
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 3%),
+        0 0 34px rgb(92 192 79 / 6%),
+        14px 0 34px rgb(0 0 0 / 20%);
+    }
+
+    /* 2026-07-24 修改逻辑：右侧历史生成记录沿用当前页面的深蓝黑玻璃面板，仅参考用户图二的两列卡片布局。 */
+    .asset-panel {
+      z-index: 2;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 24px 18px;
+      overflow: hidden auto;
+      border: 1px solid #294154;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 95% 4%, rgb(150 255 81 / 6%), transparent 25%),
+        linear-gradient(180deg, rgb(7 17 26 / 98%), rgb(4 13 21 / 98%));
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 3%),
+        0 0 34px rgb(92 192 79 / 5%),
+        -12px 0 30px rgb(0 0 0 / 17%);
+    }
+
+    .asset-heading {
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 0 2px 16px;
+      border-bottom-color: rgb(105 151 177 / 16%);
+      color: #f1f5f7;
+      font-size: 16px;
+      font-weight: 720;
+    }
+
+    .asset-heading-icon {
+      width: 30px;
+      height: 30px;
+      flex-basis: 30px;
+      border-color: rgb(153 219 79 / 38%);
+      border-radius: 8px;
+      color: var(--ui-lime);
+      background: rgb(130 207 76 / 8%);
+    }
+
+    .asset-heading-icon svg { width: 17px; height: 17px; }
+
+    .asset-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .asset-card {
+      position: relative;
+      aspect-ratio: 1 / 1.12;
+      border-color: #243947;
+      border-radius: 13px;
+      background:
+        radial-gradient(circle at 50% 42%, rgb(88 108 119 / 18%), transparent 58%),
+        rgb(10 18 25 / 88%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 2%);
+    }
+
+    .asset-card:hover {
+      border-color: rgb(150 213 83 / 45%);
+      background:
+        radial-gradient(circle at 50% 42%, rgb(107 143 111 / 20%), transparent 58%),
+        rgb(12 22 28 / 94%);
+    }
+
+    .asset-card.active {
+      border-color: rgb(164 230 77 / 78%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 0 18px rgb(139 230 72 / 10%);
+    }
+
+    .asset-preview {
+      /* 2026-07-24 修改逻辑：缩略图按原始宽高比完整适配卡片，避免古风人物与老虎被强制拉伸压扁。 */
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+    }
+
+    /* 2026-07-27 修改逻辑：为右侧两张预置模型缩略图增加统一的左上角“示例”标签，标签覆盖图片但不改变卡片尺寸和点击区域。 */
+    .asset-example-badge {
+      position: absolute;
+      z-index: 1;
+      top: 8px;
+      left: 8px;
+      padding: 3px 7px;
+      border: 1px solid rgb(164 230 77 / 52%);
+      border-radius: 4px;
+      color: #d9ffb1;
+      background: rgb(8 20 20 / 86%);
+      box-shadow: 0 2px 8px rgb(0 0 0 / 32%);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+
+    .tabs {
+      gap: 0;
+      padding: 0 0 10px;
+      border: 0;
+      border-bottom: 1px solid rgb(103 167 127 / 18%);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: 0 10px 18px -16px rgb(157 255 66 / 70%);
+    }
+
+    .tab {
+      height: 50px;
+      border-color: rgb(102 143 171 / 8%);
+      border-radius: 9px;
+      color: #c7d0d9;
+      background: rgb(4 12 19 / 50%);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .tab i { width: 21px; height: 21px; flex-basis: 21px; }
+    .tab:hover {
+      color: #eff8f0;
+      border-color: rgb(151 211 90 / 35%);
+      background: rgb(129 205 79 / 7%);
+    }
+
+    .tab:focus-visible,
+    .generate-button:focus-visible,
+    .material-option:focus-visible,
+    .asset-action:focus-visible {
+      outline-color: var(--ui-lime);
+    }
+
+    .tab.active {
+      color: #c8ff4d;
+      border-color: rgb(155 218 75 / 58%);
+      background:
+        linear-gradient(180deg, rgb(35 52 58 / 88%), rgb(19 32 42 / 92%));
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 7%),
+        inset 0 -1px 0 rgb(185 255 61 / 70%),
+        0 7px 18px rgb(122 221 72 / 9%);
+    }
+
+    .prompt-wrap {
+      height: 205px;
+      border-color: #2b4355;
+      border-radius: 11px;
+      background:
+        linear-gradient(180deg, rgb(14 25 35 / 90%), rgb(8 18 27 / 94%));
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 2%);
+    }
+
+    .prompt-wrap:focus-within {
+      border-color: rgb(164 231 77 / 70%);
+      background: rgb(9 20 29 / 98%);
+      box-shadow: 0 0 0 3px rgb(164 231 77 / 8%), inset 0 1px 0 rgb(255 255 255 / 3%);
+    }
+
+    textarea {
+      height: 162px;
+      padding: 16px 20px;
+      color: #e8edf1;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    textarea::placeholder { color: #8a98a6; }
+
+    .prompt-tools {
+      height: 41px;
+      padding: 0 16px;
+      border-top-color: rgb(112 149 176 / 9%);
+      background: transparent;
+    }
+
+    .count { color: #8b98a5; font-size: 12px; }
+
+    /* 2026-07-24 修改逻辑：保留参考图左栏的示例指令按钮，只扩展可见 UI 和本地填写交互，不接入新的生成参数或接口。 */
+    .prompt-examples {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .prompt-examples-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 28px;
+      color: #edf1f3;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .example-refresh {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #c7d2da;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .example-refresh:hover { color: var(--ui-lime); background: var(--ui-lime-soft); }
+    .example-refresh i { width: 18px; height: 18px; stroke-width: 1.8; }
+
+    .example-prompt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid #263b4b;
+      border-radius: 9px;
+      color: #d7dfe5;
+      background: rgb(7 17 26 / 75%);
+      font-size: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .16s ease, color .16s ease, background .16s ease, transform .16s ease;
+    }
+
+    .example-prompt:hover {
+      color: #efffd3;
+      border-color: rgb(156 218 80 / 52%);
+      background: rgb(122 199 75 / 7%);
+      transform: translateX(2px);
+    }
+
+    .example-prompt i:first-child {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 15px;
+      color: #c6d5df;
+      stroke-width: 1.7;
+    }
+
+    .example-prompt span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .example-prompt i:last-child {
+      width: 15px;
+      height: 15px;
+      margin-left: auto;
+      flex: 0 0 15px;
+      stroke-width: 1.8;
+    }
+
+    .upload {
+      border-color: rgb(154 225 78 / 30%);
+      border-radius: 11px;
+      color: #c6ff59;
+      background: rgb(8 18 27 / 94%);
+    }
+
+    .upload:hover,
+    .upload.dragging {
+      border-color: #a9ed54;
+      background: rgb(12 28 35 / 96%);
+      box-shadow: 0 0 0 3px rgb(164 231 77 / 8%);
+    }
+
+    .generation-area {
+      gap: 10px;
+      padding-top: 20px;
+      border-top-color: rgb(103 140 166 / 15%);
+      transform: none;
+    }
+
+    .generate-button {
+      height: 58px;
+      padding: 0 18px;
+      border-color: #d4ff75;
+      border-radius: 10px;
+      color: #0b1608;
+      background: linear-gradient(100deg, #b7ff3e 0%, #cbff50 54%, #b8ff3d 100%);
+      font-size: 17px;
+      font-weight: 780;
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 60%),
+        0 8px 24px rgb(148 239 61 / 16%);
+    }
+
+    .generate-label { gap: 10px; }
+    .generate-label svg { width: 19px; height: 19px; }
+    .generate-button:hover {
+      border-color: #edffb2;
+      background: linear-gradient(100deg, #c4ff54 0%, #daff70 54%, #c6ff58 100%);
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 66%), 0 10px 28px rgb(148 239 61 / 25%);
+    }
+
+    .generate-button:disabled {
+      opacity: .62;
+      color: #1b2a16;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%);
+    }
+
+    .viewer-shell {
+      overflow: hidden;
+      border: 1px solid #294154;
+      border-radius: 22px;
+      box-shadow:
+        inset 0 0 0 1px rgb(80 134 164 / 4%),
+        0 0 34px rgb(44 121 159 / 5%);
+    }
+
+    .viewer-bottom-controls {
+      bottom: 32px;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #294154;
+      border-bottom-color: rgb(127 196 77 / 55%);
+      border-radius: 19px;
+      background: rgb(5 15 23 / 88%);
+      box-shadow:
+        0 14px 38px rgb(0 0 0 / 42%),
+        inset 0 1px 0 rgb(255 255 255 / 4%),
+        0 0 22px rgb(129 221 71 / 5%);
+      backdrop-filter: blur(18px) saturate(130%);
+    }
+
+    .material-switch {
+      grid-template-columns: repeat(2, 112px);
+      gap: 10px;
+      padding: 0 12px 0 0;
+      border: 0;
+      border-right: 1px solid #2a3a47;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .asset-actions {
+      /* 2026-07-24 修改逻辑：下载与删除按钮改为图标加文字的宽按钮，补齐参考图中的动作语义；点击处理逻辑保持不变。 */
+      grid-template-columns: repeat(2, 92px);
+      gap: 8px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .material-option {
+      min-height: 52px;
+      gap: 10px;
+      border-color: #304657;
+      border-radius: 12px;
+      color: #d3dce3;
+      background: rgb(8 19 28 / 86%);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .material-option i {
+      width: 25px;
+      height: 25px;
+      flex-basis: 25px;
+      stroke-width: 1.7;
+    }
+
+    .material-option:hover {
+      color: #d9ff90;
+      border-color: rgb(151 211 90 / 45%);
+      background: rgb(129 205 79 / 7%);
+    }
+
+    .material-option.active {
+      color: #caff55;
+      border-color: rgb(151 221 72 / 75%);
+      background:
+        radial-gradient(circle at 30% 0%, rgb(175 255 87 / 13%), transparent 45%),
+        linear-gradient(180deg, rgb(24 47 38 / 95%), rgb(13 31 31 / 95%));
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 6%),
+        0 0 18px rgb(141 235 74 / 10%);
+    }
+
+    .asset-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 92px;
+      height: 52px;
+      border-color: #304657;
+      border-radius: 12px;
+      color: #d3dce3;
+      background: rgb(8 19 28 / 86%);
+      font-size: 14px;
+      font-weight: 620;
+    }
+
+    .asset-action i { width: 22px; height: 22px; stroke-width: 1.7; }
+    .asset-action span { white-space: nowrap; }
+    .asset-action:hover {
+      color: #e9f6ff;
+      border-color: rgb(151 211 90 / 42%);
+      background: rgb(129 205 79 / 7%);
+    }
+
+    /* 2026-07-27 Figma 首页-默认 UI：中间空状态改为无外框的 720×794 主视觉，严格沿用稿件的纵向尺寸、渐变标题和三项能力排布；模型生成后的预览与交互逻辑保持不变。 */
+    .viewer-shell {
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .viewer-shell::before {
+      display: none;
+    }
+
+    .viewer-empty-state {
+      align-items: flex-start;
+      padding: clamp(32px, 6.2vh, 67px) 0 0;
+      background: transparent;
+    }
+
+    .viewer-empty-content {
+      width: 720px;
+      max-width: none;
+      height: 794px;
+      min-height: 0;
+      flex: 0 0 auto;
+      justify-content: flex-start;
+      padding: 0;
+      transform: scale(var(--viewer-empty-scale, 1));
+      transform-origin: top center;
+      will-change: transform;
+    }
+
+    .viewer-empty-visual {
+      width: min(720px, 100%);
+      height: 500px;
+      max-height: none;
+      flex: 0 0 500px;
+      object-fit: contain;
+      object-position: center;
+      /* 2026-07-27 Figma 首页-默认 UI：仅柔化原稿位图最外侧 5%，消除矩形裁切边，角色与能量舞台的主体像素保持不变。 */
+      -webkit-mask-image:
+        linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%),
+        linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image:
+        linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%),
+        linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      mask-composite: intersect;
+    }
+
+    .viewer-empty-title {
+      width: 360px;
+      margin: 0;
+      color: transparent;
+      background: linear-gradient(90deg, #4cfecc 0%, #4da3fe 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 64px;
+      letter-spacing: 0;
+      text-shadow: none;
+      white-space: nowrap;
+    }
+
+    .viewer-empty-description {
+      width: 360px;
+      margin: 16px 0 0;
+      color: #fff;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 40px;
+      letter-spacing: 0;
+      text-shadow: none;
+      white-space: nowrap;
+    }
+
+    .viewer-empty-features {
+      display: flex;
+      width: 582px;
+      height: 134px;
+      flex: 0 0 134px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+
+    .viewer-empty-feature {
+      width: 98px;
+      height: 134px;
+      flex: 0 0 98px;
+      padding: 0;
+    }
+
+    .viewer-empty-feature + .viewer-empty-feature::before {
+      top: 0;
+      bottom: auto;
+      left: -72px;
+      height: 134px;
+      background: rgb(255 255 255 / 6%);
+    }
+
+    .viewer-empty-feature-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 24px;
+      border-color: transparent;
+      color: #32e7f4;
+      background:
+        linear-gradient(#0a1522, #0a1522) padding-box,
+        linear-gradient(180deg, rgb(76 254 204 / 20%), rgb(77 163 254 / 20%)) border-box;
+      box-shadow: 0 0 15px rgb(255 255 255 / 8%);
+    }
+
+    .viewer-empty-feature-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 1.9;
+    }
+
+    .viewer-empty-feature-title {
+      width: 98px;
+      color: #fff;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      letter-spacing: 0;
+    }
+
+    .viewer-empty-feature-copy {
+      width: 98px;
+      margin: 4px 0 0;
+      color: #6f7b88;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 12px;
+      line-height: 18px;
+      letter-spacing: 0;
+    }
+
+    /* 2026-07-27 Figma 首页-默认 UI：剩余次数改为悬浮在按钮右上沿的 90×24 胶囊，按钮同步为稿件中的深橄榄色圆角样式；原次数节点和动态更新 ID 保持不变。 */
+    .generation-area {
+      position: relative;
+      gap: 0;
+      padding-top: 0;
+      border-top: 0;
+      transform: none;
+    }
+
+    .generate-button {
+      height: 48px;
+      padding: 0 60px;
+      border: 0;
+      border-radius: 36px;
+      color: #0d1308;
+      background: #3d4f2a;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    .generate-label { gap: 8px; }
+    .generate-label svg { width: 16px; height: 16px; }
+    .generate-button:hover {
+      border-color: transparent;
+      background: #4a6033;
+      box-shadow: none;
+    }
+
+    .generate-button:disabled {
+      color: #0d1308;
+      background: #3d4f2a;
+      box-shadow: none;
+    }
+
+    .generate-remaining {
+      position: absolute;
+      z-index: 1;
+      top: -12px;
+      right: 0;
+      display: inline-flex;
+      width: 90px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 16px;
+      border: 1px solid #3d4f2a;
+      border-radius: 30px;
+      color: #6f7b88;
+      background: #080d12;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    /* 2026-07-27 Figma 3D创作-已生成 UI：提示词存在且按钮可用时切换为稿件的 #B8F84A 亮绿，空输入或生成中继续使用深橄榄色。 */
+    .generate-button.is-ready:not(:disabled),
+    .generate-button.is-ready:not(:disabled):hover {
+      color: #0d1308;
+      background: #b8f84a;
+      box-shadow: none;
+    }
+
+    /* 2026-07-27 Figma 3D创作-已生成 UI：亮态同时同步次数胶囊的亮绿描边与白色文字，节点和动态次数逻辑保持不变。 */
+    .generate-button.is-ready:not(:disabled) + .generate-remaining {
+      border-color: #b8f84a;
+      color: #fff;
+    }
+
+    /* 2026-07-27 Figma 首页-默认 UI：仅在宽桌面把主视觉对齐稿件的 x=600；缩放变量由预览区实际可用宽高计算，小屏不再沿用该偏移。 */
+    @media (min-width: 1800px) {
+      .viewer-empty-content { transform: translateX(-67px) scale(var(--viewer-empty-scale, 1)); }
+    }
+
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(480px, 62vh) auto;
+        height: auto;
+        min-height: 100dvh;
+        padding: 12px;
+      }
+      .sidebar { border: 1px solid #294154; }
+      .asset-panel {
+        min-height: 220px;
+        border: 1px solid #294154;
+      }
+      .asset-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .prompt-wrap { height: 160px; }
+      textarea { height: 115px; }
+      .upload { min-height: 160px; }
+      .studio-topbar { padding: 0 12px; }
+      .studio-account { gap: 7px; }
+      .account-chip { padding: 0 10px; font-size: 12px; }
+      .account-divider { margin: 0 8px; }
+      .account-pro,
+      .account-chip[aria-label="积分"] { display: none; }
+      .viewer-bottom-controls {
+        bottom: 16px;
+        transform: translateX(-50%) scale(.84);
+        transform-origin: center bottom;
+      }
+      /* 2026-07-27 响应式 UI：窄屏仍保留 Figma 的 720×794 基准比例，仅收紧顶部留白，实际缩放交给预览区尺寸同步逻辑。 */
+      .viewer-empty-state { padding-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 2026-07-23 修改逻辑：3D 顶栏左侧的 Logo 直接返回图一产品首页，并在其右侧显示“3D创作”标题。 -->
+  <header class="studio-topbar">
+    <div class="studio-brand">
+      <!-- 2026-07-24 修改逻辑：Logo 直接返回 VinaAgent 的 index.html 首页，不携带无效查询参数。 -->
+      <!-- 2026-07-24 修改逻辑：按目标图把品牌 Logo 按钮改为圆形返回按钮，仅改变顶部视觉入口，链接仍返回原首页。 -->
+      <!-- 2026-07-27 返回逻辑：携带首页输入区定位参数，跳过品牌宣传层并直接回到全能画布输入框。 -->
+      <a class="home-logo" href="../index.html?return=canvas-input#canvasPrompt" title="返回全能画布" aria-label="返回全能画布输入框"><i data-lucide="arrow-left"></i></a>
+      <span class="studio-title">3D创作</span>
+    </div>
+    <div class="studio-account" aria-label="账户信息">
+      <!-- 2026-07-24 修改逻辑：会员与积分拆成独立圆角胶囊，匹配参考图的按钮分组，同时保留原账户数据与图标资源。 -->
+      <div class="account-chip" aria-label="会员等级"><img src="../assets/images/canvas-member.svg" alt="" aria-hidden="true"><span>会员等级</span><span class="account-pro">Pro</span><i class="account-chevron" data-lucide="chevron-right" aria-hidden="true"></i></div>
+      <div class="account-chip" aria-label="积分"><img class="account-points-icon" src="../assets/images/canvas-points.svg" alt="" aria-hidden="true"><span>100,000,000</span><i class="account-chevron" data-lucide="chevron-right" aria-hidden="true"></i></div>
+      <div class="account-avatar" aria-label="当前用户"><span>V</span></div>
+    </div>
+  </header>
+  <main class="app">
+    <aside class="sidebar" aria-label="3D 生成设置">
+      <!-- 修改逻辑：左侧生成方式使用文件与图片图标辅助识别，与整个 3D 工作台的工具栏风格保持一致。 -->
+      <div class="tabs" role="tablist" aria-label="生成方式">
+        <button class="tab active" type="button" role="tab" aria-selected="true" data-mode="text"><i data-lucide="file-text"></i><span>文生 3D</span></button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-mode="image"><i data-lucide="image"></i><span>图生 3D</span></button>
+      </div>
+
+      <section class="mode-panel active" id="text-panel">
+        <!-- 2026-07-24 修改逻辑：按用户标注移除输入区标题，文本框和生成逻辑保持不变。 -->
+        <div class="prompt-wrap">
+          <textarea id="prompt" maxlength="300" placeholder="例如：一个正在行走的宇航员，白色宇航服，细节清晰，完整角色模型"></textarea>
+          <div class="prompt-tools">
+            <span class="count"><span id="prompt-count">0</span>/300</span>
+          </div>
+        </div>
+        <!-- 2026-07-24 修改逻辑：参考目标图加入四条示例指令按钮，点击只会填入原文本框，不改变后续生成流程。 -->
+        <section class="prompt-examples" aria-labelledby="prompt-examples-title">
+          <div class="prompt-examples-heading">
+            <span id="prompt-examples-title">示例指令</span>
+            <button class="example-refresh" id="example-refresh" type="button" title="换一批" aria-label="换一批示例指令"><i data-lucide="refresh-cw"></i></button>
+          </div>
+          <button class="example-prompt" type="button" data-prompt="未来科幻风格的机器人，带机械臂"><i data-lucide="box"></i><span>未来科幻风格的机器人，带机械臂</span><i data-lucide="chevron-right"></i></button>
+          <button class="example-prompt" type="button" data-prompt="中世纪风格的骑士，铠甲完整"><i data-lucide="box"></i><span>中世纪风格的骑士，铠甲完整</span><i data-lucide="chevron-right"></i></button>
+          <button class="example-prompt" type="button" data-prompt="可爱的柴犬，带着围巾和帽子"><i data-lucide="box"></i><span>可爱的柴犬，带着围巾和帽子</span><i data-lucide="chevron-right"></i></button>
+          <button class="example-prompt" type="button" data-prompt="赛博朋克风格的女性角色，霓虹灯光"><i data-lucide="box"></i><span>赛博朋克风格的女性角色，霓虹灯光</span><i data-lucide="chevron-right"></i></button>
+        </section>
+      </section>
+
+      <section class="mode-panel" id="image-panel">
+        <!-- 修改逻辑：图生 3D 固定为单张图片，不再展示单图/多图切换栏。 -->
+        <div class="uploads" id="uploads"></div>
+        <!-- 2026-07-24 修改逻辑：去掉上传框下方的格式与容量说明，让图生 3D 面板保持简洁。 -->
+        <!-- 2026-07-24 修改逻辑：默认展示压缩后的猫、木屋和猎人图片；切换按钮在这组三图与三张小老虎之间循环切换，任意缩略图仍可回填上传预览。 -->
+        <section class="image-examples" aria-labelledby="image-examples-title">
+          <div class="prompt-examples-heading">
+            <span id="image-examples-title">示例图片</span>
+            <button class="example-refresh" id="image-example-refresh" type="button" title="换一批" aria-label="切换示例图片"><i data-lucide="refresh-cw"></i></button>
+          </div>
+          <div class="image-examples-grid">
+            <button class="example-image" type="button" data-example-src="./assets/example-cat.jpg" aria-label="使用小猫示例图片"><img src="./assets/example-cat.jpg" alt="小猫示例图片"></button>
+            <button class="example-image" type="button" data-example-src="./assets/example-cabin.jpg" aria-label="使用木屋示例图片"><img src="./assets/example-cabin.jpg" alt="木屋示例图片"></button>
+            <button class="example-image" type="button" data-example-src="./assets/example-ranger.jpg" aria-label="使用猎人示例图片"><img src="./assets/example-ranger.jpg" alt="猎人示例图片"></button>
+          </div>
+        </section>
+      </section>
+
+      <!-- 2026-07-24 修改逻辑：主生成按钮初始提供 5 次额度，点击后立即扣减并在生成过程中锁定。 -->
+      <div class="generation-area">
+        <button class="generate-button" id="generate-button" type="button" aria-label="生成模型，剩余 5 次">
+          <span class="generate-label"><i data-lucide="sparkles"></i><span>生成模型</span></span>
+        </button>
+        <!-- 2026-07-27 Figma 首页-默认 UI：次数节点悬浮到按钮右上沿，保留原 ID 供生成后实时扣减。 -->
+        <span class="generate-remaining">剩余 <span id="remaining-generations">5</span> 次</span>
+        <p class="job-status" id="job-status" aria-live="polite" hidden></p>
+      </div>
+    </aside>
+
+    <section class="viewer-shell" aria-label="3D 模型预览">
+      <!-- 修改逻辑：SVG 网格使用与模型相同的相机参数投影，模型最低点即为网格地面高度。 -->
+      <svg class="ground-grid" id="ground-grid" aria-hidden="true" preserveAspectRatio="none">
+        <g id="ground-grid-lines"></g>
+      </svg>
+      <!-- 2026-07-24 修改逻辑：首屏不预加载任何模型；完成两秒模拟生成后再载入古风人物。 -->
+      <model-viewer
+        id="model-viewer"
+        alt="生成的古风人物 3D 模型"
+        camera-controls
+        disable-tap
+        touch-action="pan-y"
+        interaction-prompt="none"
+        shadow-intensity="1"
+        shadow-softness="0.8"
+        exposure="1.05"
+        environment-image="neutral"
+        camera-orbit="25deg 75deg auto"
+        min-camera-orbit="auto 18deg auto"
+        max-camera-orbit="auto 162deg 500%"
+        min-field-of-view="18deg"
+        max-field-of-view="100deg">
+      </model-viewer>
+
+      <!-- 2026-07-27 Figma 首页-默认 UI：空状态仅替换为稿件主视觉与排版，点击生成后仍按原逻辑隐藏此区域。 -->
+      <section class="viewer-empty-state" id="viewer-empty-state" aria-labelledby="viewer-empty-title">
+        <div class="viewer-empty-content">
+          <img class="viewer-empty-visual" src="./assets/figma-home-hero.png" alt="白色狐狸从白模生成带纹理橙色狐狸的 3D 创作示意" draggable="false">
+          <h2 class="viewer-empty-title" id="viewer-empty-title">AI驱动 3D创作</h2>
+          <p class="viewer-empty-description">让想象立体成真</p>
+          <div class="viewer-empty-features" aria-label="3D 创作优势">
+            <article class="viewer-empty-feature">
+              <span class="viewer-empty-feature-icon" aria-hidden="true"><i data-lucide="zap"></i></span>
+              <h3 class="viewer-empty-feature-title">快速生成</h3>
+              <p class="viewer-empty-feature-copy">AI智能生成3D模型</p>
+            </article>
+            <article class="viewer-empty-feature">
+              <!-- 2026-07-27 Figma 首页-默认 UI：能力图标换为稿件对应的花形设置符号，仅调整图标外观。 -->
+              <span class="viewer-empty-feature-icon" aria-hidden="true"><i data-lucide="settings"></i></span>
+              <h3 class="viewer-empty-feature-title">多样风格</h3>
+              <p class="viewer-empty-feature-copy">多种风格任意选择</p>
+            </article>
+            <article class="viewer-empty-feature">
+              <!-- 2026-07-27 Figma 首页-默认 UI：能力图标换为稿件对应的四角精度符号，仅调整图标外观。 -->
+              <span class="viewer-empty-feature-icon" aria-hidden="true"><i data-lucide="scan"></i></span>
+              <h3 class="viewer-empty-feature-title">高精细度</h3>
+              <p class="viewer-empty-feature-copy">细节丰富高清输出</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 修改逻辑：所有素材均不在主预览顶部显示文件名或绿色状态点，保持画面干净。 -->
+      <div class="loading" id="loading">正在载入 3D 模型...</div>
+      <!-- 修改逻辑：进度反馈移到预览区中央，生成完成前不展示旧模型。 -->
+      <div class="generation-progress" id="generation-progress" role="status" aria-live="polite" aria-hidden="true">
+        <div class="generation-progress-inner">
+          <div class="generation-progress-label">
+            <span id="generation-progress-text">正在生成中...</span>
+            <span class="generation-progress-value" id="generation-progress-value">0%</span>
+          </div>
+          <div class="generation-progress-track" aria-hidden="true">
+            <div class="generation-progress-bar" id="generation-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+      <!-- 修改逻辑：材质切换增加图标辅助识别，并与下载/删除组共用统一的悬浮工具栏样式。 -->
+      <div class="viewer-bottom-controls" id="viewer-bottom-controls">
+        <div class="material-switch" id="material-switch" role="group" aria-label="模型显示模式">
+          <button class="material-option" type="button" data-material-mode="white" aria-pressed="false"><i data-lucide="box"></i><span>白模</span></button>
+          <button class="material-option active" type="button" data-material-mode="texture" aria-pressed="true"><i data-lucide="palette"></i><span>纹理</span></button>
+        </div>
+        <div class="asset-actions" id="asset-actions" role="group" aria-label="素材操作">
+          <!-- 2026-07-24 修改逻辑：为底部下载和删除操作补充可见文字，增强按钮识别并匹配参考图；原 ID 与事件绑定不变。 -->
+          <button class="asset-action" id="download-asset" type="button" title="下载当前 GLB" aria-label="下载当前 GLB"><i data-lucide="download"></i><span>下载</span></button>
+          <button class="asset-action delete" id="delete-asset" type="button" title="删除当前模型" aria-label="删除当前模型"><i data-lucide="trash-2"></i><span>删除</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2026-07-24 修改逻辑：右侧历史记录使用两列布局展示古风角色与老虎两个预置，点击卡片可切换主预览。 -->
+    <aside class="asset-panel" aria-label="个人历史生成记录">
+      <!-- 2026-07-24 修改逻辑：按最新标注移除标题右侧的历史记录数量徽标。 -->
+      <h2 class="asset-heading"><span class="asset-heading-icon" aria-hidden="true"><i data-lucide="history"></i></span><span>历史生成记录</span></h2>
+      <div class="asset-list">
+        <!-- 2026-07-24 修改逻辑：第一个预置保留古风男生，第二个预置加入老虎纹理模型与白模。 -->
+        <button
+          class="asset-card active"
+          type="button"
+          data-model-src="./3d-demo/assets/AncientCharacter.glb?v=20260724c"
+          data-model-name="古风男生.glb"
+          data-model-kind="ancient-character"
+          aria-label="示例：古风男生模型"
+          aria-pressed="true">
+          <!-- 2026-07-27 修改逻辑：预置模型卡片左上角常驻“示例”标签，帮助用户区分公共示例与后续个人生成记录。 -->
+          <span class="asset-example-badge" aria-hidden="true">示例</span>
+          <!-- 2026-07-24 修改逻辑：历史卡片使用稳定的本地人物缩略图，避免第二个 3D 渲染实例偶发空白；卡片点击仍加载原 GLB。 -->
+          <img
+            class="asset-preview"
+            src="./assets/ancient-character-thumb.png"
+            alt="古风男生模型缩略图"
+            draggable="false">
+        </button>
+        <button
+          class="asset-card"
+          type="button"
+          data-model-src="./3d-demo/assets/Tiger.glb?v=20260724d"
+          data-model-name="卡通小老虎.glb"
+          data-model-kind="tiger"
+          aria-label="示例：卡通小老虎模型"
+          aria-pressed="false">
+          <!-- 2026-07-27 修改逻辑：第二张预置模型沿用同一标签样式，保证两张示例卡的识别方式一致。 -->
+          <span class="asset-example-badge" aria-hidden="true">示例</span>
+          <!-- 2026-07-24 修改逻辑：老虎卡片改用稳定的本地 PNG，避免 file:// 页面中的第二个 model-viewer 因本地请求限制显示空白。 -->
+          <img
+            class="asset-preview"
+            src="./assets/tiger-thumb.png"
+            alt="卡通小老虎模型缩略图"
+            draggable="false">
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 2026-07-24 修改逻辑：恢复本地删除确认；删除只清空当前预览，不请求任何接口。 -->
+  <div class="toast" id="toast" role="status" aria-live="polite"><i data-lucide="circle-check"></i><span id="toast-text">下载成功</span></div>
+  <dialog class="delete-dialog" id="delete-dialog" aria-labelledby="delete-dialog-title">
+    <div class="delete-dialog-content">
+      <h2 id="delete-dialog-title">确定要删除吗</h2>
+      <p>删除后将返回初始状态，再次点击生成可重新展示预置模型。</p>
+      <div class="delete-dialog-actions">
+        <button class="dialog-button" id="cancel-delete" type="button">取消</button>
+        <button class="dialog-button confirm" id="confirm-delete" type="button">确认</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // 2026-07-24 修改逻辑：登记古风男生与老虎两组纹理/白模资源，让每张历史卡都可独立切换材质。
+    const MATERIAL_SOURCES = {
+      'ancient-character': {
+        texture: './3d-demo/assets/AncientCharacter.glb?v=20260724c',
+        white: './3d-demo/assets/AncientCharacterWhite.glb?v=20260724c'
+      },
+      tiger: {
+        texture: './3d-demo/assets/Tiger.glb?v=20260724d',
+        white: './3d-demo/assets/TigerWhite.glb?v=20260724d'
+      }
+    };
+    // 2026-07-24 修改逻辑：直接双击 file:// 页面时不请求接口或本地服务；改为加载古风角色与老虎的内嵌数据并生成 Blob URL。
+    // HTTP/Vercel 环境仍使用原 GLB 静态文件，避免线上重复加载体积较大的 Base64 数据。
+    let embeddedModelSourcesPromise = null;
+    const embeddedModelObjectUrls = [];
+
+    function base64ModelToObjectUrl(base64) {
+      const binary = window.atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+      const objectUrl = URL.createObjectURL(new Blob([bytes], { type: 'model/gltf-binary' }));
+      embeddedModelObjectUrls.push(objectUrl);
+      return objectUrl;
+    }
+
+    function preparePresetModelSources() {
+      if (location.protocol !== 'file:') return Promise.resolve();
+      if (embeddedModelSourcesPromise) return embeddedModelSourcesPromise;
+      // 2026-07-24 修改逻辑：统一加载每个预置的离线数据文件，新增预置时只需登记路径、全局变量和素材键。
+      const embeddedPresets = [
+        {
+          scriptSrc: './3d-demo/assets/AncientCharacterData.js',
+          globalKey: 'VINA_ANCIENT_CHARACTER_MODELS',
+          materialKey: 'ancient-character',
+          label: '预置古风男生'
+        },
+        {
+          scriptSrc: './3d-demo/assets/TigerData.js',
+          globalKey: 'VINA_TIGER_MODELS',
+          materialKey: 'tiger',
+          label: '预置卡通小老虎'
+        }
+      ];
+      embeddedModelSourcesPromise = Promise.all(embeddedPresets.map((preset) => new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = preset.scriptSrc;
+        script.onload = () => {
+          const data = window[preset.globalKey];
+          if (!data?.texture || !data?.white) {
+            reject(new Error(`${preset.label}模型数据不完整`));
+            return;
+          }
+          MATERIAL_SOURCES[preset.materialKey].texture = base64ModelToObjectUrl(data.texture);
+          MATERIAL_SOURCES[preset.materialKey].white = base64ModelToObjectUrl(data.white);
+          delete window[preset.globalKey];
+          script.remove();
+          resolve();
+        };
+        script.onerror = () => reject(new Error(`${preset.label}模型数据加载失败`));
+        document.head.append(script);
+      })));
+      return embeddedModelSourcesPromise;
+    }
+
+    window.addEventListener('beforeunload', () => {
+      embeddedModelObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    });
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.mode-panel');
+    const prompt = document.querySelector('#prompt');
+    const promptCount = document.querySelector('#prompt-count');
+    const examplePromptButtons = document.querySelectorAll('.example-prompt');
+    const exampleRefreshButton = document.querySelector('#example-refresh');
+    const exampleImageButtons = [...document.querySelectorAll('.example-image')];
+    const exampleImageRefreshButton = document.querySelector('#image-example-refresh');
+    const uploads = document.querySelector('#uploads');
+    const viewer = document.querySelector('#model-viewer');
+    const viewerEmptyState = document.querySelector('#viewer-empty-state');
+    const loading = document.querySelector('#loading');
+    const generateButton = document.querySelector('#generate-button');
+    const remainingGenerationsLabel = document.querySelector('#remaining-generations');
+    const jobStatus = document.querySelector('#job-status');
+    const assetList = document.querySelector('.asset-list');
+    const viewerShell = document.querySelector('.viewer-shell');
+    const groundGrid = document.querySelector('#ground-grid');
+    const groundGridLines = document.querySelector('#ground-grid-lines');
+    const generationProgress = document.querySelector('#generation-progress');
+    const generationProgressText = document.querySelector('#generation-progress-text');
+    const generationProgressValue = document.querySelector('#generation-progress-value');
+    const generationProgressBar = document.querySelector('#generation-progress-bar');
+    const materialSwitch = document.querySelector('#material-switch');
+    const materialOptions = document.querySelectorAll('.material-option');
+    const assetActions = document.querySelector('#asset-actions');
+    const downloadAssetButton = document.querySelector('#download-asset');
+    const deleteAssetButton = document.querySelector('#delete-asset');
+    const toast = document.querySelector('#toast');
+    const toastText = document.querySelector('#toast-text');
+    const deleteDialog = document.querySelector('#delete-dialog');
+    const cancelDeleteButton = document.querySelector('#cancel-delete');
+    const confirmDeleteButton = document.querySelector('#confirm-delete');
+    let activeMode = 'text';
+    let toastTimer = null;
+    let gridFrame = null;
+    // 2026-07-24 修改逻辑：演示页生成额度从 5 次开始，每次启动生成立即扣减一次。
+    let remainingGenerations = 5;
+    // 2026-07-24 修改逻辑：两个预置分别记忆纹理/白模状态，来回点击时保留各自最后一次选择。
+    const materialModes = { 'ancient-character': 'texture', tiger: 'texture' };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((item) => {
+          const selected = item === tab;
+          item.classList.toggle('active', selected);
+          item.setAttribute('aria-selected', String(selected));
+        });
+        activeMode = tab.dataset.mode;
+        panels.forEach((panel) => panel.classList.toggle('active', panel.id === `${tab.dataset.mode}-panel`));
+      });
+    });
+
+    // 2026-07-27 Figma 3D创作-已生成 UI：文本有内容或图生模式已有图片时切换按钮亮态，不改变原生成事件、额度扣减或模型选择逻辑。
+    function syncPromptButtonState() {
+      promptCount.textContent = prompt.value.length;
+      const hasCreationInput = Boolean(prompt.value.trim()) || Boolean(uploads.querySelector('.upload.has-image'));
+      generateButton.classList.toggle('is-ready', hasCreationInput);
+    }
+
+    prompt.addEventListener('input', syncPromptButtonState);
+    syncPromptButtonState();
+
+    let viewerEmptyLayoutTimer = 0;
+    // 2026-07-27 响应式 UI：窗口变化后延迟到当前布局任务结束再按 Figma 720×794 基准测量，确保前台或后台页面都读取最新网格尺寸，避免小屏遮挡底部能力项。
+    function syncViewerEmptyLayout() {
+      clearTimeout(viewerEmptyLayoutTimer);
+      viewerEmptyLayoutTimer = window.setTimeout(() => {
+        viewerEmptyLayoutTimer = 0;
+        const styles = getComputedStyle(viewerEmptyState);
+        const verticalInset = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0) + 16;
+        const availableWidth = Math.max(1, viewerShell.clientWidth - 24);
+        const availableHeight = Math.max(1, viewerShell.clientHeight - verticalInset);
+        const scale = Math.max(0.3, Math.min(1, availableWidth / 720, availableHeight / 794));
+        viewerEmptyState.style.setProperty('--viewer-empty-scale', scale.toFixed(4));
+      }, 0);
+    }
+
+    window.addEventListener('resize', syncViewerEmptyLayout, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(syncViewerEmptyLayout).observe(viewerShell);
+
+    // 2026-07-24 修改逻辑：示例指令按钮只负责写入现有提示词输入框，并复用原字数统计事件。
+    examplePromptButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        prompt.value = button.dataset.prompt || '';
+        prompt.dispatchEvent(new Event('input', { bubbles: true }));
+        prompt.focus();
+      });
+    });
+
+    // 2026-07-24 修改逻辑：“换一批”在本地轮换示例文案，不请求接口，也不影响生成模型逻辑。
+    const examplePromptPool = [
+      '未来科幻风格的机器人，带机械臂',
+      '中世纪风格的骑士，铠甲完整',
+      '可爱的柴犬，带着围巾和帽子',
+      '赛博朋克风格的女性角色，霓虹灯光',
+      '古风少年，白色长袍与金色发冠',
+      '低多边形风格的森林守护者'
+    ];
+    let examplePromptOffset = 0;
+    exampleRefreshButton.addEventListener('click', () => {
+      examplePromptOffset = (examplePromptOffset + 1) % examplePromptPool.length;
+      examplePromptButtons.forEach((button, index) => {
+        const nextPrompt = examplePromptPool[(examplePromptOffset + index) % examplePromptPool.length];
+        button.dataset.prompt = nextPrompt;
+        button.querySelector('span').textContent = nextPrompt;
+      });
+    });
+
+    // 修改逻辑：图生 3D 只创建一个上传框，上传与拖放均只读取第一张图片。
+    function createUpload() {
+      const label = document.createElement('label');
+      label.className = 'upload';
+      label.innerHTML = `
+        <input type="file" accept="image/png,image/jpeg,image/webp">
+        <span class="upload-copy">
+          <i data-lucide="image-up"></i>
+          <span>上传图片</span>
+          <small>点击选择或拖放图片</small>
+        </span>
+        <!-- 2026-07-24 修改逻辑：背景图负责两侧虚化补边，前景图保持完整比例，二者始终复用同一个图片来源。 -->
+        <img class="preview-backdrop" alt="" aria-hidden="true">
+        <img class="preview-img" alt="已上传图片预览">
+        <button class="remove-image" type="button" title="移除图片" aria-label="移除图片"><i data-lucide="x"></i></button>
+      `;
+
+      const input = label.querySelector('input');
+      const backdrop = label.querySelector('.preview-backdrop');
+      const image = label.querySelector('.preview-img');
+      const remove = label.querySelector('.remove-image');
+
+      // 2026-07-24 修改逻辑：选择或拖放图片后把同一来源同步给虚化背景与完整前景，不需要额外确认或生成操作。
+      const showFile = (file) => {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          backdrop.src = reader.result;
+          image.src = reader.result;
+          label.classList.add('has-image');
+          // 2026-07-27 修改逻辑：用户上传或拖入有效图片后，立即同步生成按钮为亮绿可创作状态。
+          syncPromptButtonState();
+        });
+        reader.readAsDataURL(file);
+      };
+
+      input.addEventListener('change', () => showFile(input.files[0]));
+      label.addEventListener('dragover', (event) => { event.preventDefault(); label.classList.add('dragging'); });
+      label.addEventListener('dragleave', () => label.classList.remove('dragging'));
+      label.addEventListener('drop', (event) => {
+        event.preventDefault();
+        label.classList.remove('dragging');
+        showFile(event.dataTransfer.files[0]);
+      });
+      remove.addEventListener('click', (event) => {
+        event.preventDefault();
+        input.value = '';
+        backdrop.removeAttribute('src');
+        image.removeAttribute('src');
+        label.classList.remove('has-image');
+        // 2026-07-24 修改逻辑：移除上传预览时一并清除示例图片选中态，避免界面误示仍在使用某个示例。
+        exampleImageButtons.forEach((button) => button.classList.remove('active'));
+        // 2026-07-27 修改逻辑：图片移除后重新依据文本内容决定按钮亮暗；若文本为空则恢复暗绿。
+        syncPromptButtonState();
+      });
+
+      // 2026-07-24 修改逻辑：示例缩略图同步填入虚化背景与完整前景，复用现有预览与移除流程，不新增生成参数。
+      label.showExampleImage = (source) => {
+        input.value = '';
+        backdrop.src = source;
+        image.src = source;
+        label.classList.add('has-image');
+        // 2026-07-27 修改逻辑：示例图片回填与本地上传保持同一按钮亮态反馈。
+        syncPromptButtonState();
+      };
+      return label;
+    }
+
+    function renderUpload() {
+      uploads.replaceChildren(createUpload());
+      lucide.createIcons();
+    }
+
+    // 2026-07-24 修改逻辑：点击任意 1:1 示例缩略图后立即显示到上传框，并用高亮边框标记当前选中的示例。
+    function selectExampleImage(button) {
+      if (!button) return;
+      exampleImageButtons.forEach((item) => item.classList.toggle('active', item === button));
+      const upload = uploads.querySelector('.upload');
+      upload?.showExampleImage(button.dataset.exampleSrc);
+    }
+
+    exampleImageButtons.forEach((button) => {
+      button.addEventListener('click', () => selectExampleImage(button));
+    });
+
+    // 2026-07-24 修改逻辑：两组数据分别对应默认的猫/木屋/猎人和备用的三张小老虎；刷新时整组替换图片、文案与无障碍标签。
+    const exampleImageGroups = [
+      [
+        { src: './assets/example-cat.jpg', label: '小猫示例图片' },
+        { src: './assets/example-cabin.jpg', label: '木屋示例图片' },
+        { src: './assets/example-ranger.jpg', label: '猎人示例图片' }
+      ],
+      [
+        { src: './assets/tiger-thumb.png', label: '老虎示例图片 1' },
+        { src: './assets/tiger-thumb.png', label: '老虎示例图片 2' },
+        { src: './assets/tiger-thumb.png', label: '老虎示例图片 3' }
+      ]
+    ];
+    let exampleImageGroupIndex = 0;
+    exampleImageRefreshButton.addEventListener('click', () => {
+      // 2026-07-24 修改逻辑：“换一批”每次在两组三图之间循环，不再自动选图或改动当前上传预览。
+      exampleImageGroupIndex = (exampleImageGroupIndex + 1) % exampleImageGroups.length;
+      exampleImageButtons.forEach((button, index) => {
+        const nextExample = exampleImageGroups[exampleImageGroupIndex][index];
+        const image = button.querySelector('img');
+        button.dataset.exampleSrc = nextExample.src;
+        button.setAttribute('aria-label', `使用${nextExample.label}`);
+        button.classList.remove('active');
+        image.src = nextExample.src;
+        image.alt = nextExample.label;
+      });
+    });
+
+    // 修改逻辑：把世界坐标中的水平地面投影到当前模型相机画面，使网格随水平旋转和上下俯仰实时改变角度。
+    function renderGroundGrid() {
+      gridFrame = null;
+      if (!viewer.loaded || !viewer.clientWidth || !viewer.clientHeight) return;
+
+      const width = viewer.clientWidth;
+      const height = viewer.clientHeight;
+      const orbit = viewer.getCameraOrbit();
+      const target = viewer.getCameraTarget();
+      const dimensions = viewer.getDimensions();
+      const fieldOfView = viewer.getFieldOfView() * Math.PI / 180;
+      const sinPhi = Math.sin(orbit.phi);
+      const camera = {
+        x: target.x + orbit.radius * sinPhi * Math.sin(orbit.theta),
+        y: target.y + orbit.radius * Math.cos(orbit.phi),
+        z: target.z + orbit.radius * sinPhi * Math.cos(orbit.theta)
+      };
+
+      const normalize = (vector) => {
+        const length = Math.hypot(vector.x, vector.y, vector.z) || 1;
+        return { x: vector.x / length, y: vector.y / length, z: vector.z / length };
+      };
+      const cross = (a, b) => ({
+        x: a.y * b.z - a.z * b.y,
+        y: a.z * b.x - a.x * b.z,
+        z: a.x * b.y - a.y * b.x
+      });
+      const dot = (a, b) => a.x * b.x + a.y * b.y + a.z * b.z;
+      const forward = normalize({ x: target.x - camera.x, y: target.y - camera.y, z: target.z - camera.z });
+      let right = normalize(cross(forward, { x: 0, y: 1, z: 0 }));
+      if (Math.hypot(right.x, right.y, right.z) < .001) right = { x: 1, y: 0, z: 0 };
+      const up = normalize(cross(right, forward));
+      const focalLength = height / (2 * Math.tan(fieldOfView / 2));
+      const near = Math.max(.01, orbit.radius * .002);
+
+      const cameraPoint = (point) => {
+        const relative = { x: point.x - camera.x, y: point.y - camera.y, z: point.z - camera.z };
+        return { x: dot(relative, right), y: dot(relative, up), z: dot(relative, forward) };
+      };
+      const screenPoint = (point) => ({
+        x: width / 2 + point.x * focalLength / point.z,
+        y: height / 2 - point.y * focalLength / point.z
+      });
+      const projectSegment = (start, end) => {
+        let a = cameraPoint(start);
+        let b = cameraPoint(end);
+        if (a.z <= near && b.z <= near) return null;
+        if (a.z <= near || b.z <= near) {
+          const behind = a.z <= near ? a : b;
+          const ahead = a.z <= near ? b : a;
+          const ratio = (near - behind.z) / (ahead.z - behind.z);
+          const clipped = {
+            x: behind.x + (ahead.x - behind.x) * ratio,
+            y: behind.y + (ahead.y - behind.y) * ratio,
+            z: near
+          };
+          if (a.z <= near) a = clipped;
+          else b = clipped;
+        }
+        const p1 = screenPoint(a);
+        const p2 = screenPoint(b);
+        return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} L ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+      };
+
+      // 修改逻辑：模型最低点定义为地面高度，网格原点位于模型中心正下方，因此脚部始终落在网格平面上。
+      const groundY = target.y - dimensions.y / 2;
+      const modelScale = Math.max(dimensions.x, dimensions.y, dimensions.z, .5);
+      const minorStep = Math.max(.25, modelScale * .45);
+      const halfLines = 36;
+      const extent = minorStep * halfLines;
+      const paths = { minor: [], major: [], axis: [] };
+      for (let index = -halfLines; index <= halfLines; index += 1) {
+        const offset = index * minorStep;
+        const bucket = index === 0 ? paths.axis : index % 5 === 0 ? paths.major : paths.minor;
+        const xLine = projectSegment(
+          { x: target.x + offset, y: groundY, z: target.z - extent },
+          { x: target.x + offset, y: groundY, z: target.z + extent }
+        );
+        const zLine = projectSegment(
+          { x: target.x - extent, y: groundY, z: target.z + offset },
+          { x: target.x + extent, y: groundY, z: target.z + offset }
+        );
+        if (xLine) bucket.push(xLine);
+        if (zLine) bucket.push(zLine);
+      }
+
+      groundGrid.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      groundGridLines.innerHTML = `
+        <path class="grid-minor" d="${paths.minor.join(' ')}" fill="none"></path>
+        <path class="grid-major" d="${paths.major.join(' ')}" fill="none"></path>
+        <path class="grid-axis" d="${paths.axis.join(' ')}" fill="none"></path>`;
+    }
+
+    function scheduleGroundGrid() {
+      if (gridFrame === null) gridFrame = window.requestAnimationFrame(renderGroundGrid);
+    }
+
+    viewer.addEventListener('load', () => {
+      loading.classList.add('hidden');
+      scheduleGroundGrid();
+    });
+    viewer.addEventListener('camera-change', scheduleGroundGrid);
+    window.addEventListener('resize', scheduleGroundGrid);
+    // 2026-07-24 修改逻辑：模型已支持直接打开，不再提示用户启动已删除的本地服务。
+    viewer.addEventListener('error', () => { loading.textContent = '预置古风男生模型加载失败，请重新打开页面'; });
+
+    // 修改逻辑：统一读取预置或动态生成素材的纹理/白模路径，让所有已生成模型共用底部切换控件。
+    function getMaterialConfig(card) {
+      const kind = card?.dataset.modelKind;
+      if (MATERIAL_SOURCES[kind]) {
+        return { key: kind, ...MATERIAL_SOURCES[kind] };
+      }
+      if (card?.dataset.textureSrc && card?.dataset.whiteSrc) {
+        return {
+          key: `saved:${card.dataset.savedId || card.dataset.textureSrc}`,
+          texture: card.dataset.textureSrc,
+          white: card.dataset.whiteSrc
+        };
+      }
+      return null;
+    }
+
+    function getAssetSource(card) {
+      const config = getMaterialConfig(card);
+      if (config) return config[materialModes[config.key] || 'texture'];
+      return card.dataset.modelSrc;
+    }
+
+    function updateMaterialControls(card) {
+      const config = getMaterialConfig(card);
+      const supportsMaterials = Boolean(config);
+      materialSwitch.hidden = !supportsMaterials;
+      materialOptions.forEach((button) => {
+        const selected = supportsMaterials && button.dataset.materialMode === (materialModes[config.key] || 'texture');
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+    }
+
+    // 修改逻辑：只有选中可用素材时才展示下载/删除按钮，生成中的占位素材不允许操作。
+    function updateAssetActions(card) {
+      assetActions.hidden = !card || card.classList.contains('generating');
+    }
+
+    // 修改逻辑：素材全部删除后清空主预览与底部控制，避免继续显示已经不存在的 GLB。
+    function clearAssetViewer() {
+      document.querySelectorAll('.asset-card').forEach((item) => {
+        item.classList.remove('active');
+        item.setAttribute('aria-pressed', 'false');
+      });
+      viewer.removeAttribute('src');
+      loading.textContent = '暂无可预览素材';
+      loading.classList.remove('hidden');
+      updateMaterialControls(null);
+      updateAssetActions(null);
+    }
+
+    // 修改逻辑：素材选择监听改为事件委托，使 API 新增的模型卡片无需重复绑定事件。
+    function selectAsset(card) {
+      document.querySelectorAll('.asset-card').forEach((item) => {
+        const selected = item === card;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+      const nextSource = getAssetSource(card);
+      if (viewer.getAttribute('src') !== nextSource) {
+        loading.textContent = '正在载入 3D 模型...';
+        loading.classList.remove('hidden');
+        viewer.setAttribute('src', nextSource);
+      }
+      updateMaterialControls(card);
+      updateAssetActions(card);
+    }
+
+    assetList.addEventListener('click', (event) => {
+      const card = event.target.closest('.asset-card');
+      if (card && !card.classList.contains('generating')) {
+        // 修改逻辑：生成过程中仍允许点击其他已完成素材；中央进度隐藏，右侧任务卡继续同步进度。
+        if (viewerShell.classList.contains('generating')) viewerShell.classList.add('browsing-generation');
+        // 2026-07-24 修改逻辑：点击右侧历史记录时直接恢复对应模型预览，并退出首次进入的空状态。
+        viewerEmptyState.hidden = true;
+        viewerShell.classList.remove('is-empty');
+        selectAsset(card);
+      }
+    });
+
+    // 修改逻辑：预置模型及以后每次生成的模型都可切换白模/纹理，右侧仍各自只占一个素材格。
+    materialOptions.forEach((button) => {
+      button.addEventListener('click', () => {
+        const activeCard = document.querySelector('.asset-card.active');
+        const config = getMaterialConfig(activeCard);
+        if (!config) return;
+        materialModes[config.key] = button.dataset.materialMode;
+        updateMaterialControls(activeCard);
+        const nextSource = getAssetSource(activeCard);
+        if (viewer.getAttribute('src') !== nextSource) {
+          loading.textContent = '正在切换模型材质...';
+          loading.classList.remove('hidden');
+          viewer.setAttribute('src', nextSource);
+        }
+      });
+    });
+
+    // 修改逻辑：Toast 统一在底部操作区上方短暂显示，下载触发成功后提示“下载成功”。
+    function showToast(message) {
+      window.clearTimeout(toastTimer);
+      toastText.textContent = message;
+      toast.classList.add('show');
+      toastTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // 修改逻辑：下载当前正在查看的版本，白模模式下载白模 GLB，纹理模式下载纹理 GLB。
+    downloadAssetButton.addEventListener('click', async () => {
+      const activeCard = document.querySelector('.asset-card.active');
+      if (!activeCard) return;
+      downloadAssetButton.disabled = true;
+      try {
+        const source = getAssetSource(activeCard);
+        const response = await fetch(source);
+        if (!response.ok) throw new Error(`下载失败 (${response.status})`);
+        const blobUrl = URL.createObjectURL(await response.blob());
+        const config = getMaterialConfig(activeCard);
+        const mode = config ? (materialModes[config.key] || 'texture') : 'texture';
+        const baseName = (activeCard.dataset.modelName || '3D模型.glb').replace(/\.glb$/i, '');
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${baseName}${mode === 'white' ? '-白模' : ''}.glb`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        showToast('下载成功');
+      } catch (error) {
+        updateJobStatus(error.message || '下载失败，请重试', 'error');
+      } finally {
+        downloadAssetButton.disabled = false;
+      }
+    });
+
+    // 2026-07-24 修改逻辑：删除只重置浏览器中的当前预览，保留隐藏的预置数据供下一次两秒生成复用。
+    deleteAssetButton.addEventListener('click', () => {
+      if (document.querySelector('.asset-card.active')) deleteDialog.showModal();
+    });
+    cancelDeleteButton.addEventListener('click', () => deleteDialog.close());
+    confirmDeleteButton.addEventListener('click', () => {
+      clearAssetViewer();
+      viewerShell.classList.add('is-empty');
+      viewerEmptyState.hidden = false;
+      loading.classList.add('hidden');
+      deleteDialog.close();
+      updateJobStatus('当前模型已删除', 'success');
+      showToast('模型已删除');
+    });
+
+    function updateJobStatus(message, state = '') {
+      jobStatus.textContent = message;
+      jobStatus.dataset.state = state;
+    }
+
+    // 修改逻辑：中央与右侧素材占位卡共用同一进度；GLB 真正加载完成前最高为 99%，不会提前显示 100%。
+    function updateGenerationProgress(percent, message) {
+      const value = Math.max(0, Math.min(100, Math.round(percent)));
+      generationProgressBar.style.width = `${value}%`;
+      generationProgressValue.textContent = `${value}%`;
+      generationProgressText.textContent = message;
+      const pendingCard = assetList.querySelector('.asset-card.generating');
+      if (pendingCard) {
+        pendingCard.querySelector('.asset-generating-value').textContent = `${value}%`;
+        pendingCard.querySelector('.asset-progress-bar').style.width = `${value}%`;
+      }
+    }
+
+    function setGenerating(active) {
+      viewerShell.classList.toggle('generating', active);
+      // 修改逻辑：每个新任务从中央进度开始，任务结束后清理临时的素材浏览状态。
+      viewerShell.classList.remove('browsing-generation');
+      document.body.classList.toggle('hunyuan-generating', active);
+      generationProgress.setAttribute('aria-hidden', String(!active));
+    }
+
+    // 2026-07-24 修改逻辑：演示流程不再请求真实生成接口；点击后用原进度条模拟两秒生成，再展示预置古风人物模型。
+    async function generateModel() {
+      if (generateButton.disabled || remainingGenerations <= 0) return;
+      // 2026-07-24 修改逻辑：生成按钮只准备本地预置资源，不调用任何模型生成接口。
+      const presetSourcesReady = preparePresetModelSources();
+      remainingGenerations -= 1;
+      // 2026-07-24 修改逻辑：生成后同步更新底部保留的“剩余次数”文字。
+      remainingGenerationsLabel.textContent = String(remainingGenerations);
+      generateButton.setAttribute('aria-label', `生成模型，剩余 ${remainingGenerations} 次`);
+      generateButton.disabled = true;
+      viewerEmptyState.hidden = true;
+      viewerShell.classList.remove('is-empty');
+      setGenerating(true);
+      // 2026-07-24 修改逻辑：模拟进度全程使用固定文案，避免不同阶段文字跳变干扰用户。
+      updateGenerationProgress(0, '正在生成中...');
+      updateJobStatus('正在生成古风人物模型...', 'working');
+
+      const ancientCard = assetList.querySelector('.asset-card[data-model-kind="ancient-character"]');
+      const startTime = performance.now();
+      const duration = 2000;
+
+      try {
+        await new Promise((resolve) => {
+          const tick = (now) => {
+            const elapsed = now - startTime;
+            const percent = Math.min(99, Math.round((elapsed / duration) * 100));
+            updateGenerationProgress(percent, '正在生成中...');
+            if (elapsed >= duration) resolve();
+            else requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+
+        await presetSourcesReady;
+        if (!ancientCard) throw new Error('古风人物模型资源不存在');
+        selectAsset(ancientCard);
+        updateGenerationProgress(100, '生成完成');
+        setGenerating(false);
+        updateJobStatus('古风人物模型生成完成', 'success');
+      } catch (error) {
+        setGenerating(false);
+        viewerShell.classList.add('is-empty');
+        viewerEmptyState.hidden = false;
+        updateJobStatus(error.message || '生成失败，请重试', 'error');
+      } finally {
+        // 2026-07-24 修改逻辑：两秒生成结束后恢复按钮；额度耗尽时继续禁用，避免出现负次数。
+        generateButton.disabled = remainingGenerations <= 0;
+      }
+    }
+
+    generateButton.addEventListener('click', generateModel);
+
+    renderUpload();
+    // 2026-07-24 修改逻辑：直接打开页面时提前准备内嵌模型，让两秒进度结束后立即展示预置角色。
+    preparePresetModelSources().catch(() => {});
+    lucide.createIcons();
+    // 2026-07-24 修改逻辑：每次进入页面都从未生成状态开始，不恢复或自动选中任何历史模型。
+    viewerShell.classList.add('is-empty');
+    updateMaterialControls(null);
+    updateAssetActions(null);
+    syncViewerEmptyLayout();
+  </script>
+</body>
+</html>
