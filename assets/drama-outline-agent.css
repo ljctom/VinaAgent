@@ -1,0 +1,233 @@
+/* 2026-09-22：只作用于短剧第一步的对话侧栏；独立复制全能创作的深色气泡与分页选择卡视觉。 */
+body.drama-workflow-active .script-chat {background:#0b131a;border:1px solid #293a49;border-radius:28px;padding:0!important;overflow:hidden;}
+.script-chat .chat-block {max-width:none;margin:0;}
+.script-chat .drama-outline-heading {display:flex;align-items:center;gap:12px;flex:none;height:54px;padding:0 22px;border-bottom:1px solid #293a49;color:#dce2e8;font-size:18px;font-weight:700;}
+.drama-outline-heading svg {width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;}
+.script-chat .chat-scroll {padding:24px 20px 16px;}
+.script-chat .script-conversation {display:flex;flex-direction:column;gap:18px;}
+.script-chat .script-message {margin:0;max-width:100%;}
+.script-chat .script-message.user {align-self:flex-end;}
+.script-chat .script-user-bubble {padding:14px 16px;background:#386bff;border:0;border-radius:12px;color:white;box-shadow:none;font-size:16px;}
+.script-chat .script-message.ai {align-self:flex-start;width:auto;max-width:100%;}
+.script-chat .script-ai-head {display:none;}
+.script-chat .script-ai-text {box-sizing:border-box;max-width:100%;padding:14px 16px;border:1px solid #2c4264;border-radius:9px;background:#1b2735;color:#d6dde8;font-size:16px;font-weight:500;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;}
+.script-chat .script-input {margin:12px 16px 16px;flex:none;}
+.drama-outline-card {box-sizing:border-box;width:400px;max-width:100%;margin-top:14px;padding:20px;border:1px solid #3a3e45;border-radius:12px;background:#151b24;white-space:normal;color:#f1f3f7;}
+.do-head {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;}.do-head strong {font-size:16px;line-height:1.6;}
+.do-nav {display:flex;gap:10px;align-items:center;flex:none;color:#a0a2a6;font-size:14px;}.do-nav button {width:36px;height:38px;border:1px solid #42464e;border-radius:7px;background:#222830;color:#eee;font-size:22px;cursor:pointer;}.do-nav button:disabled {opacity:.3;cursor:default;}
+.do-body {display:grid;gap:10px;}.drama-outline-card textarea,.drama-outline-card input {box-sizing:border-box;width:100%;padding:15px;border:1px solid #484b52;border-radius:10px;background:#252a31;color:#eef1f5;font:inherit;outline:none;}.drama-outline-card textarea {min-height:120px;resize:vertical;}.drama-outline-card :focus-visible {outline:2px solid #527cff;outline-offset:2px;}
+.do-option {display:flex;gap:12px;text-align:left;padding:12px 13px;width:100%;border:1px solid #3d424b;border-radius:10px;background:#292d35;color:#e7e9ee;cursor:pointer;font:inherit;}.do-option.selected {border-color:#507aff;background:#1f2d51;box-shadow:inset 0 0 0 1px #386bff;}.do-marker {display:grid;place-items:center;flex:0 0 25px;height:25px;border-radius:6px;background:#42464f;color:#c5c7cd;font-weight:700;}.selected .do-marker {background:#507aff;color:white;}.do-option b {display:block;font-size:16px;}.do-option small {display:block;color:#9297a2;font-size:14px;line-height:1.5;}.do-option.selected small {color:#adbada;}
+.do-custom {position:relative;}.do-custom input {padding-right:44px;}.do-custom button {position:absolute;right:9px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#a5a8b1;font-size:24px;cursor:pointer;}.do-custom button:disabled {opacity:.45;}
+.do-actions {display:flex;justify-content:flex-end;margin-top:18px;}.do-actions button {padding:10px 28px;border:0;border-radius:10px;background:#386bff;color:white;font:inherit;font-weight:700;cursor:pointer;}.drama-outline-card[data-done] {opacity:.65;}
+
+/* 2026-09-22 Product Design：仅收紧短剧侧栏。用户消息容器占满可用宽度，
+ * 气泡按内容宽度展开，达到整行上限才自然换行，避免父子百分比收缩造成短句断行。
+ * 输入框扣除两侧各 16px 外边距并采用 border-box，保证右边框和发送按钮完整可见。 */
+.script-chat .chat-block {box-sizing:border-box;min-width:0;}
+.script-chat .chat-scroll {box-sizing:border-box;min-width:0;padding:18px 18px 12px;}
+.script-chat .script-conversation {min-width:0;gap:16px;}
+.script-chat .script-message.user {display:flex;justify-content:flex-end;align-self:stretch;width:100%;min-width:0;}
+.script-chat .script-user-bubble {box-sizing:border-box;width:fit-content;max-width:100%;min-width:0;padding:10px 14px;font-size:14px;font-weight:600;line-height:1.55;white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;}
+.script-chat .script-ai-text {padding:12px 14px;font-size:14px;line-height:1.6;}
+.script-chat .drama-outline-heading {height:48px;padding:0 18px;gap:10px;font-size:16px;}
+.script-chat .drama-outline-heading svg {width:18px;height:18px;}
+.script-chat .drama-outline-card {width:360px;margin-top:12px;padding:14px;border-radius:10px;font-size:14px;}
+.script-chat .do-head {gap:10px;margin-bottom:12px;}
+.script-chat .do-head strong {font-size:14px;}
+.script-chat .do-nav {gap:8px;font-size:12px;}
+.script-chat .do-nav button {width:30px;height:30px;font-size:18px;}
+.script-chat .do-body {gap:8px;}
+.script-chat .do-option {box-sizing:border-box;min-width:0;gap:9px;padding:9px 10px;border-radius:8px;}
+.script-chat .do-option > span:last-child {min-width:0;}
+.script-chat .do-option b {font-size:14px;}
+.script-chat .do-option small {font-size:12px;}
+.script-chat .do-marker {flex-basis:21px;height:21px;font-size:12px;border-radius:5px;}
+.script-chat .drama-outline-card textarea,.script-chat .drama-outline-card input {padding:11px 12px;font-size:13px;border-radius:8px;}
+.script-chat .drama-outline-card textarea {min-height:96px;}
+.script-chat .do-custom input {padding-right:38px;}
+.script-chat .do-custom button {font-size:20px;}
+.script-chat .do-actions {margin-top:12px;}
+.script-chat .do-actions button {padding:8px 22px;font-size:13px;border-radius:8px;}
+body.drama-workflow-active .script-chat .script-input {box-sizing:border-box;width:calc(100% - 32px);max-width:calc(100% - 32px);min-width:0;margin:12px 16px 16px;align-self:center;}
+.script-chat .script-input [data-script-chat-input] {min-height:112px;padding:14px;font-size:14px;}
+.script-chat .script-input-row {box-sizing:border-box;width:100%;min-width:0;}
+.script-chat .script-input .script-send {flex-shrink:0;}
+
+/* 2026-09-22：短剧生成态优先于待生成基础设定的高优先级展示规则；
+ * 生成期间右栏仅保留加载提示，1.5 秒结束移除 is-generating 后自动恢复设定和大纲。 */
+body.drama-workflow-active .script-workspace .script-detail.is-generating > :not(.script-loading) {display:none!important;}
+body.drama-workflow-active .script-workspace .script-detail.is-generating {overflow:hidden!important;grid-template-rows:minmax(0,1fr);}
+
+/* 2026-09-22 改动逻辑：大纲生成期间隐藏右侧整个基础设定区域（含摘要与展开表单），生成结束移除状态后恢复原展示。 */
+.is-generating [data-script-detail-setup] { display: none !important; }
+
+/* 2026-09-30 Product Design 改动逻辑：质检等待复用全站青色转圈，保留背景中的当前步骤；优化确认沿用现有弹窗尺寸、按钮和字体，窄屏允许按钮换行。 */
+.drama-logic-loading {background:rgba(0,0,0,.48);backdrop-filter:blur(2px);outline:none;}
+.drama-logic-loading .title-toast {position:static;transform:none;box-sizing:border-box;max-width:100%;font-size:16px;}
+#dramaLogicModal .batch-generate-dialog {box-sizing:border-box;width:min(100%,480px);padding:32px;}
+#dramaLogicModal .batch-generate-message {font-size:20px;}
+#dramaLogicModal .batch-generate-description {margin-top:12px;font-size:15px;line-height:1.75;}
+#dramaLogicModal .batch-generate-actions {flex-wrap:wrap;gap:12px;margin-top:32px;}
+#dramaLogicModal .batch-generate-action {min-height:44px;padding:0 16px;font-size:15px;}
+#dramaLogicModal .batch-generate-action:focus-visible {outline:2px solid #54ebe4;outline-offset:3px;}
+
+
+/* 2026-09-30 Product Design 改动逻辑：通过 Figma MCP 读取 VinaAgent / 设计规范（91:2）颜色规范。
+ * 2026-09-30 扩展逻辑：大纲、设定、剧本共用同一组配色变量与对话颜色，使用现有工作区限定范围。
+ * 只覆盖颜色属性：页面 #080D12，面板 rgba(15,21,28,.6)，卡片 #171E27；
+ * 品牌主色 #B8F84A、悬停 #CFFF5A、按下 #9FDB3E、禁用 #3D4F2A；
+ * 浅品牌底取 Figma 色块透明度 .1216，用户气泡取 rgba(184,236,100,.29)。
+ * 标题/正文/辅助/弱提示/禁用文字及边框按规范分层，阴影保留原偏移、模糊与扩散，仅换颜色。
+ * 保留全部布局、圆角、字号、文案、图标、图片、节点和事件；具体设定控件与剧本卡片由 drama-workflow-colors.css 补齐。
+ */
+.script-workspace[data-view="script-studio"] {
+  --outline-brand: #b8f84a;
+  --outline-brand-hover: #cfff5a;
+  --outline-brand-active: #9fdb3e;
+  --outline-brand-disabled: #3d4f2a;
+  --outline-brand-subtle: rgba(184,248,74,.1216);
+  --outline-page: #080d12;
+  --outline-container: rgba(15,21,28,.6);
+  --outline-card: #171e27;
+  --outline-disabled-bg: #141a21;
+  --outline-text: #f5f7fa;
+  --outline-copy: #d5dbe3;
+  --outline-secondary: #9aa6b2;
+  --outline-caption: #6f7b88;
+  --outline-disabled-text: #4d5865;
+  --outline-inverse: #0d1308;
+  --outline-border: #2b3642;
+  --outline-border-light: rgba(255,255,255,.06);
+  --outline-border-focus: #3a4654;
+  --outline-border-disabled: #222b35;
+  background: var(--outline-page);
+  color: var(--outline-text);
+}
+/* 颜色映射：顶栏、流程和大容器沿用既有尺寸、描边宽度与阴影形状。 */
+.script-workspace[data-view="script-studio"] .script-status { background: var(--outline-container); border-bottom-color: var(--outline-border-light); }
+.script-workspace[data-view="script-studio"] .script-back { background: var(--outline-card); color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .script-back:hover { background: var(--outline-border-focus); color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .script-back-title { color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .steps { color: var(--outline-disabled-text); }
+.script-workspace[data-view="script-studio"] .step { background: var(--outline-disabled-bg); border-color: var(--outline-border-disabled); }
+.script-workspace[data-view="script-studio"] .step-num { background: var(--outline-border-disabled); color: var(--outline-caption); }
+.script-workspace[data-view="script-studio"] .step.complete { color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .step.complete .step-num { background: var(--outline-brand-subtle); color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .step.active { background: var(--outline-brand-subtle); border-color: var(--outline-brand); color: var(--outline-text); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(184,248,74,.08); }
+.script-workspace[data-view="script-studio"] .step.active .step-num { background: var(--outline-brand); color: var(--outline-inverse); box-shadow: 0 8px 22px rgba(184,248,74,.24); }
+.script-workspace[data-view="script-studio"] .step-line { background: var(--outline-border); }
+.script-workspace[data-view="script-studio"] :focus-visible { outline-color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .script-chat,
+.script-workspace[data-view="script-studio"] .script-detail { background: var(--outline-container); border-color: var(--outline-border); scrollbar-color: var(--outline-border-focus) transparent; }
+.script-workspace[data-view="script-studio"] .script-layout-resizer::before { background: var(--outline-border); }
+.script-workspace[data-view="script-studio"] .script-layout-resizer:hover::before,
+.script-workspace[data-view="script-studio"] .script-layout-resizer:focus-visible::before { background: var(--outline-brand); }
+
+/* 颜色映射：Agent 用户气泡与 AI 回复分别采用规范气泡色及卡片色；选择卡使用浅品牌选中底。 */
+.script-workspace[data-view="script-studio"] .drama-outline-heading { color: var(--outline-text); border-bottom-color: var(--outline-border); }
+.script-workspace[data-view="script-studio"] .script-user-bubble,
+.script-workspace[data-view="script-studio"] .script-user-bubble.has-script-selection { background: rgba(184,236,100,.29); color: #fff; }
+.script-workspace[data-view="script-studio"] .script-ai-text { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .drama-outline-card { background: var(--outline-container); border-color: var(--outline-border); color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .do-nav { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .do-nav button,
+.script-workspace[data-view="script-studio"] .do-option,
+.script-workspace[data-view="script-studio"] .drama-outline-card textarea,
+.script-workspace[data-view="script-studio"] .drama-outline-card input { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .do-nav button:hover:not(:disabled),
+.script-workspace[data-view="script-studio"] .do-option:hover:not(.selected) { border-color: var(--outline-border-focus); }
+.script-workspace[data-view="script-studio"] .do-option.selected { background: var(--outline-brand-subtle); border-color: var(--outline-brand); box-shadow: inset 0 0 0 1px var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .do-marker { background: var(--outline-border); color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .selected .do-marker { background: var(--outline-brand); color: var(--outline-inverse); }
+.script-workspace[data-view="script-studio"] .do-option small,
+.script-workspace[data-view="script-studio"] .do-option.selected small,
+.script-workspace[data-view="script-studio"] .do-custom button { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .do-actions button { background: var(--outline-brand); color: var(--outline-inverse); }
+.script-workspace[data-view="script-studio"] .do-actions button:hover:not(:disabled) { background: var(--outline-brand-hover); }
+.script-workspace[data-view="script-studio"] .do-actions button:active:not(:disabled) { background: var(--outline-brand-active); }
+.script-workspace[data-view="script-studio"] .do-actions button:disabled { background: var(--outline-brand-disabled); color: var(--outline-disabled-text); }
+.script-workspace[data-view="script-studio"] .do-nav button:disabled,
+.script-workspace[data-view="script-studio"] .drama-outline-card input:disabled,
+.script-workspace[data-view="script-studio"] .drama-outline-card textarea:disabled { background: var(--outline-disabled-bg); border-color: var(--outline-border-disabled); color: var(--outline-disabled-text); }
+.script-workspace[data-view="script-studio"] .script-input { background: var(--outline-card); border-color: var(--outline-border); }
+.script-workspace[data-view="script-studio"] .script-input.has-selected-script,
+.script-workspace[data-view="script-studio"] .script-input:focus-within { border-color: var(--outline-border-focus); }
+.script-workspace[data-view="script-studio"] .script-input [data-script-chat-input] { color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] input::placeholder,
+.script-workspace[data-view="script-studio"] textarea::placeholder { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .script-input-row { border-top-color: var(--outline-border-light); }
+.script-workspace[data-view="script-studio"] .script-input-tools .drama-option { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .script-input-tools .drama-option:hover { background: var(--outline-card); border-color: var(--outline-border-focus); color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .drama-divider { background: var(--outline-border-light); }
+.script-workspace[data-view="script-studio"] .script-input .script-send,
+.script-workspace[data-view="script-studio"] .script-input .script-send:not(:disabled) { background: var(--outline-brand); color: var(--outline-inverse); }
+.script-workspace[data-view="script-studio"] .script-input .script-send:not(:disabled):hover { background: var(--outline-brand-hover); }
+.script-workspace[data-view="script-studio"] .script-input .script-send:not(:disabled):active { background: var(--outline-brand-active); }
+.script-workspace[data-view="script-studio"] .script-input .script-send:disabled,
+.script-workspace[data-view="script-studio"] .script-input .script-send.is-locked { background: var(--outline-brand-disabled); color: var(--outline-disabled-text); }
+
+/* 颜色映射：梗概、世界观、角色、分集正文和三种视图使用同一套文本与边框层级。 */
+.script-workspace[data-view="script-studio"] .section-title,
+.script-workspace[data-view="script-studio"] .subject-card .card-caption { color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .story-summary,
+.script-workspace[data-view="script-studio"] .subject-card,
+.script-workspace[data-view="script-studio"] .scene-card { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .card-copy,
+.script-workspace[data-view="script-studio"] .episode-outline-copy,
+.script-workspace[data-view="script-studio"] .script-outline-beat-copy { color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .card-caption,
+.script-workspace[data-view="script-studio"] .character-detail-label,
+.script-workspace[data-view="script-studio"] .episode-outline-title { color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .script-detail-view-tabs { background: var(--outline-card); border-color: var(--outline-border); }
+.script-workspace[data-view="script-studio"] .script-detail-view-tab { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .script-detail-view-tab:hover { color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .script-detail-view-tab.active,
+.script-workspace[data-view="script-studio"] .script-detail-view-tab[aria-selected="true"] { background: var(--outline-brand-subtle); border-color: var(--outline-brand); color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .episode-outline-block { border-bottom-color: var(--outline-border-light); }
+.script-workspace[data-view="script-studio"] .episode-outline-copy:empty::before { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] .episode-outline-add { color: var(--outline-caption); }
+.script-workspace[data-view="script-studio"] .episode-outline-add::before { border-color: var(--outline-border-focus); }
+.script-workspace[data-view="script-studio"] .episode-outline-add.is-active,
+.script-workspace[data-view="script-studio"] .episode-outline-add:hover,
+.script-workspace[data-view="script-studio"] .episode-outline-add:focus-visible { color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .episode-outline-add.is-active::before,
+.script-workspace[data-view="script-studio"] .episode-outline-add:hover::before,
+.script-workspace[data-view="script-studio"] .episode-outline-add:focus-visible::before { border-color: var(--outline-brand); background: var(--outline-brand-subtle); }
+.script-workspace[data-view="script-studio"] .episode-outline-add::after { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] .episode-outline-insert { background: var(--outline-brand-subtle); border-color: var(--outline-brand-disabled); color: var(--outline-brand); }
+.script-workspace[data-view="script-studio"] .episode-outline-insert:hover,
+.script-workspace[data-view="script-studio"] .episode-outline-insert:focus-visible { background: var(--outline-brand-subtle); border-color: var(--outline-brand-hover); color: var(--outline-brand-hover); }
+.script-workspace[data-view="script-studio"] .episode-outline-delete:hover,
+.script-workspace[data-view="script-studio"] .episode-outline-delete:focus-visible { background: rgba(255,92,122,.14); }
+.script-workspace[data-view="script-studio"] .next-step { background: var(--outline-brand); color: var(--outline-inverse); box-shadow: 0 14px 36px rgba(184,248,74,.2), 0 18px 46px rgba(0,0,0,.34); }
+.script-workspace[data-view="script-studio"] .next-step:hover { background: var(--outline-brand-hover); }
+.script-workspace[data-view="script-studio"] .next-step:active { background: var(--outline-brand-active); }
+.script-workspace[data-view="script-studio"] .next-step:disabled { background: var(--outline-brand-disabled); color: var(--outline-disabled-text); }
+.script-workspace[data-view="script-studio"] .script-detail-empty,
+.script-workspace[data-view="script-studio"] .suspense-chain-guide,
+.script-workspace[data-view="script-studio"] .suspense-unresolved-label { color: var(--outline-caption); }
+.script-workspace[data-view="script-studio"] .script-loading { color: var(--outline-copy); }
+
+/* 颜色映射：悬念链保留“尾钩/承接”分类，尾钩使用浅品牌底，承接使用规范信息蓝；不改变内容或结构。 */
+.script-workspace[data-view="script-studio"] [data-script-outline-suspense] .suspense-chain-card.is-hook { background: var(--outline-brand-subtle); border-color: var(--outline-border); }
+.script-workspace[data-view="script-studio"] [data-script-outline-suspense] .suspense-chain-card.is-carry { background: rgba(77,163,255,.1216); border-color: var(--outline-border); }
+.script-workspace[data-view="script-studio"] .suspense-chain-card-kind { color: var(--outline-text); }
+.script-workspace[data-view="script-studio"] [data-script-outline-suspense] .suspense-chain-card-copy { color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .suspense-chain-card-meta,
+.script-workspace[data-view="script-studio"] .suspense-chain-direction { color: var(--outline-secondary); }
+.script-workspace[data-view="script-studio"] [data-script-outline-suspense] .suspense-question-chip { background: var(--outline-brand-subtle); border-color: var(--outline-border); color: var(--outline-copy); }
+.script-workspace[data-view="script-studio"] .suspense-chain-card.is-hook:not(:last-child)::after { border-left-color: var(--outline-border-focus); }
+.script-workspace[data-view="script-studio"] .suspense-chain-card [data-suspense-field]:focus-visible { box-shadow: 0 0 0 2px rgba(184,248,74,.38); }
+
+/* 颜色映射：大纲可见时，其原有确认/删除弹窗采用同一规范；保留共享弹窗的其他阶段样式。 */
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) :is(#scriptOutlineDeleteConfirmModal, #dramaLogicModal, #dramaStepChangeModal) { background: rgba(0,0,0,.55); }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) :is(#scriptOutlineDeleteConfirmModal .script-count-confirm-dialog, #dramaLogicModal .batch-generate-dialog, #dramaStepChangeModal .batch-generate-dialog) { background: rgba(15,21,28,.6); border-color: #2b3642; color: #f5f7fa; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) :is(#scriptOutlineDeleteConfirmMessage, #dramaLogicDescription, #dramaStepChangeDescription) { color: #d5dbe3; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) :is(#scriptOutlineDeleteCancel, #dramaLogicModal .batch-generate-action, #dramaStepChangeModal .batch-generate-action) { background: #171e27; border-color: #2b3642; color: #f5f7fa; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) :is(#dramaLogicModal .batch-generate-action.confirm, #dramaStepChangeModal .batch-generate-action.confirm) { background: #b8f84a; border-color: #b8f84a; color: #0d1308; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptOutlineDeleteConfirm { background: #ff5c7a !important; border-color: #ff5c7a !important; color: #fff !important; }
+
+/* 2026-11-03 Product Design 改动逻辑：名称与说明合并后使用相同的普通字重、字号、颜色与行高；长内容自然换行，无说明的简短选项保持一行。 */
+.script-workspace[data-view="script-studio"] .drama-outline-card .do-option .do-option-text {
+  display:block;min-width:0;font-size:14px;font-weight:400;line-height:20px;color:inherit;white-space:normal;
+}

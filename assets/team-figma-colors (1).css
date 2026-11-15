@@ -1,0 +1,40 @@
+/* 2026-09-30 Product Design 改动逻辑：团队管理三个页签沿用 Figma 规范的页面、卡片、边框、文字与品牌绿。
+ * 成员额度和项目制作进度均采用品牌绿；角色、正常、待处理和异常标记分别采用规范品牌、成功、警告与错误色。
+ * 概况卡保留渐变，调整为绿灰到蓝灰；所有覆盖仅涉及颜色，不修改头像、封面、布局、数据或管理逻辑。
+ */
+#teamConsoleOverlay, #teamConsole { background:#080d12; color:#f5f7fa; }
+#teamConsole .team-console-header { background:#0b1118; border-color:#2b3642; }
+#teamConsole .team-console-title, #teamConsole .team-name-display,
+#teamConsole .team-overview-heading h3, #teamConsole .team-metrics dd { color:#f5f7fa; }
+#teamConsole .team-summary-card { background:linear-gradient(120deg,#263327 0%,#202c31 58%,#171e27 100%); border-color:#2b3642; }
+#teamConsole .team-overview-card { background:linear-gradient(115deg,#263327 0%,#202c31 52%,#252d3a 100%); border-color:#2b3642; box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }
+#teamConsole .team-panel { background:#0f151c; border-color:#2b3642; }
+#teamConsole :is(.team-tabs,.team-toolbar,.team-overview-group,.team-metrics > div) { border-color:#2b3642; }
+#teamConsole :is(.team-id,.team-metrics dt,.team-metric-capacity,.team-tab,.team-toolbar) { color:#9aa6b2; }
+#teamConsole .team-tab:hover, #teamConsole .team-tab.is-active { color:#b8f84a; }
+#teamConsole .team-tab.is-active::after { background:#b8f84a; }
+#teamConsole .team-table th { background:#171e27; color:#d5dbe3; border-color:#2b3642; }
+#teamConsole .team-table td { color:#d5dbe3; border-color:#2b3642; }
+#teamConsole #teamMemberTableWrap .team-table th:first-child { background:#171e27; box-shadow:1px 0 0 #2b3642; }
+#teamConsole #teamMemberTableWrap .team-table td:first-child { background:#0f151c; box-shadow:1px 0 0 #2b3642; }
+#teamConsole .team-table tbody tr:hover td,
+#teamConsole #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:#171e27; }
+#teamConsole :is(.team-monthly-credits-track,.team-production-track span) { background:#2b3642; }
+#teamConsole .team-monthly-credits-fill,
+#teamConsole .team-production-track span.is-active { background:#b8f84a; }
+#teamConsole .team-production, #teamConsole .team-project-review-counts { color:#9aa6b2; }
+#teamConsole .team-table td.team-project-credits, #teamConsole #teamBalanceValue,
+#teamConsole .team-account-you { color:#b8f84a; }
+#teamConsole .team-tag { background:rgba(184,248,74,.1216); border-color:#3d4f2a; color:#b8f84a; }
+#teamConsole .team-tag.status { background:rgba(85,224,138,.12); border-color:rgba(85,224,138,.35); color:#55e08a; }
+#teamConsole .team-tag.pending { background:rgba(255,203,77,.12); border-color:rgba(255,203,77,.35); color:#ffcb4d; }
+#teamConsole .team-button { background:#b8f84a; border-color:#b8f84a; color:#0d1308; }
+#teamConsole .team-button:hover:not(:disabled) { background:#cfff5a; border-color:#cfff5a; color:#0d1308; }
+#teamConsole .team-button:active:not(:disabled) { background:#9fdb3e; border-color:#9fdb3e; }
+#teamConsole .team-button.secondary { background:#171e27; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-button.secondary:hover:not(:disabled) { background:#171e27; border-color:#3a4654; color:#f5f7fa; }
+#teamConsole .team-overview-heading .team-button.secondary.compact { background:rgba(184,248,74,.1216); border-color:#3d4f2a; color:#b8f84a; }
+#teamConsole .team-overview-heading .team-button.secondary.compact:hover:not(:disabled) { background:rgba(184,248,74,.18); border-color:#b8f84a; color:#cfff5a; }
+#teamConsole :is(.team-status-trigger,.team-search-input,.team-cell-name-input,.team-name-input) { background:#141a21; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-status-menu { background:#171e27; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-button:disabled { background:#141a21; border-color:#222b35; color:#4d5865; }

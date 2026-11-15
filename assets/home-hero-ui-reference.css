@@ -1,0 +1,759 @@
+/* 2026-10-26 Product Design 样式调整：按“UI 稿子”与用户红框，迁移首页模式胶囊、主标题及输入区域的视觉样式。
+   仅新增 CSS；全能创作/短剧的原按钮、标题两组文本、aria-selected、data-agent-mode、面板与原事件保持原样。
+   不替换标题 DOM，不使用 CSS content 写业务文案，不修改中文/英文/阿语字典与翻译选择器。
+   不迁移原稿 home-v15-glass.js 的发送状态处理，不更改 disabled、生成模式、附件或发送逻辑。
+   保留现有创作偏好入口；精选 Skills、我的项目、顶栏、侧栏及短剧流程使用原来的样式。 */
+.view[data-view="canvas"] :is(.hero > .home-agent-tabs,#main-title.home-agent-title,.home-composer-card) {
+ --va-bg:#080d12;--va-header:#0d141b;--va-container:rgba(15,21,28,.6);--va-surface:#171e27;--va-raised:#222b35;
+ --va-border:#2b3642;--va-border-light:rgba(255,255,255,.06);--va-border-focus:#3a4654;
+ --va-text:#f5f7fa;--va-secondary:#d5dbe3;--va-tertiary:#9aa6b2;--va-muted:#6f7b88;
+ --va-brand:#b8f84a;--va-brand-hover:#cfff5a;--va-brand-active:#9fdb3e;--va-brand-disabled:rgba(55,64,79,.9);--va-brand-ink:#0d1308;
+}
+/* V1.5 homepage visual treatment. Scoped to the home view so workspaces keep their own UI. */
+.view[data-view="canvas"] .hero {
+  padding-top: 98px;
+  background: #080d12 !important;
+}
+.view[data-view="canvas"] #main-title.home-agent-title {
+  width: min(100%, 1040px);
+  margin: 0 0 32px;
+  gap: 16px;
+  color: var(--va-text);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: -.6px;
+  text-shadow: 0 5px 24px rgba(0,0,0,.25);
+}
+.view[data-view="canvas"] .home-title-brand { white-space: nowrap; }
+.view[data-view="canvas"] .home-title-brand > span { color: #ffffff; }
+.view[data-view="canvas"] .home-title-gradient {
+  color: #ffffff;
+  background: linear-gradient(100deg, #ffffff 6%, #f4ffe0 54%, #c9fb87 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.view[data-view="canvas"] .home-agent-tabs {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--va-surface);
+  box-shadow: none;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  min-width: 76px;
+  line-height: 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--va-tertiary) !important;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  background: #ffffff !important;
+  color: var(--va-bg) !important;
+  font-weight: 500 !important;
+  box-shadow: none;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):hover {
+  background: var(--va-raised);
+  color: var(--va-text) !important;
+}
+.view[data-view="canvas"] .composer-stack { width: min(100%, 900px); }
+.view[data-view="canvas"] .home-composer-card {
+  position: relative;
+  height: auto;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Canvas composer: one masked border layer, faint at rest and localized around the pointer. */
+.view[data-view="canvas"] .home-composer-card .composer {
+  position: relative;
+  height: 276px;
+  min-height: 276px;
+  overflow: visible;
+  border: 1px solid transparent !important;
+  border-radius: 16px !important;
+  background: #0D141B !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+.view[data-view="canvas"] .home-composer-card .composer::before,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 1px solid var(--va-border-light);
+  border-radius: inherit;
+  pointer-events: none;
+  transition: border-color .25s ease;
+}
+.view[data-view="canvas"] .home-composer-card .composer::after,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%), #00FF90 0%, rgba(184,236,100,.48) 40%, rgba(250,255,159,.16) 70%, rgba(250,255,159,0) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .25s ease-out;
+}
+.view[data-view="canvas"] .home-composer-card .composer:is(:hover,:focus-within)::before,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within)::before { border-color: transparent; }
+.view[data-view="canvas"] .home-composer-card .composer:is(:hover,:focus-within)::after,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within)::after { opacity: 1; }
+.view[data-view="canvas"] .composer-body { padding: 27px 26px 8px; }
+.view[data-view="canvas"] #canvasPrompt,
+.view[data-view="canvas"] .home-canvas-mention-editor {
+  color: var(--va-text);
+  font-size: 14px;
+  line-height: 20px;
+}
+.view[data-view="canvas"] #canvasPrompt::placeholder { color: var(--va-tertiary) !important; }
+.view[data-view="canvas"] .home-canvas-mention-editor:empty::before { color: var(--va-tertiary); }
+.view[data-view="canvas"] .composer-tools {
+  min-height: 56px;
+  padding: 10px 22px 22px;
+  gap: 8px;
+  align-items: flex-end;
+}
+.view[data-view="canvas"] .home-composer-card .composer-tools :is(.tool-btn,.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger) {
+  min-height: 34px;
+  height: 34px;
+  border: 0 !important;
+  background: #151E28 !important;
+  color: var(--va-secondary) !important;
+  box-shadow: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background .18s ease;
+}
+.view[data-view="canvas"] .home-composer-card .composer-tools :is(.tool-btn,.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger):hover {
+  border: 0 !important;
+  background: #202B36 !important;
+  box-shadow: none !important;
+  transform: none;
+}
+.view[data-view="canvas"] .home-composer-card .composer-tools > .tool-btn {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Brand action uses the specified disabled fill until the prompt or attachment is valid. */
+.view[data-view="canvas"] .home-composer-card #canvasSend,
+.view[data-view="canvas"] #home-drama-panel .generate-now {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.view[data-view="canvas"] .home-composer-card #canvasSend:disabled,
+.view[data-view="canvas"] #home-drama-panel .generate-now:disabled {
+  background: var(--va-brand-disabled) !important;
+  color: var(--va-brand-ink) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.view[data-view="canvas"] .home-composer-card #canvasSend:not(:disabled),
+.view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled) {
+  background: var(--va-brand) !important;
+  color: var(--va-brand-ink) !important;
+  cursor: pointer;
+}
+.view[data-view="canvas"] .home-composer-card #canvasSend:not(:disabled):hover,
+.view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled):hover {
+  background: var(--va-brand-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(184,248,74,.12);
+}
+.view[data-view="canvas"] .home-composer-card #canvasSend:not(:disabled):active,
+.view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled):active {
+  background: var(--va-brand-active) !important;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Short-drama modes share the same glass surface and keep their original workflow nodes. */
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] {
+  background: #0D141B !important;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+/* Folder tabs share a continuous bottom edge with the input surface. */
+.view[data-view="canvas"] .home-drama-tabs {
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 16px 16px 0 0;
+  background: rgba(8,13,18,.35);
+}
+.view[data-view="canvas"] .home-drama-tab,
+.view[data-view="canvas"] .home-drama-tab:nth-child(2) {
+  display: flex;
+  isolation: isolate;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--va-tertiary);
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 400;
+  box-shadow: none !important;
+  transition: color .18s ease;
+}
+.view[data-view="canvas"] .home-drama-tab svg { width: 18px; height: 18px; }
+.view[data-view="canvas"] .home-drama-tab::before,
+.view[data-view="canvas"] .home-drama-tab.active::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0 -18px;
+  width: auto;
+  height: auto;
+  z-index: -1;
+  pointer-events: none;
+  transform: none;
+  background: transparent;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44C12 44 17 35 22 23L27 12Q32 0 47 0H253Q268 0 273 12L278 23C283 35 288 44 300 44Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transition: background .18s ease;
+}
+.view[data-view="canvas"] .home-drama-tab:first-child::before {
+  left: 0;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44V20Q0 0 20 0H253Q268 0 273 12L278 23C283 35 288 44 300 44Z'/%3E%3C/svg%3E");
+}
+.view[data-view="canvas"] .home-drama-tab:last-child::before {
+  right: 0;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44C12 44 17 35 22 23L27 12Q32 0 47 0H280Q300 0 300 20V44Z'/%3E%3C/svg%3E");
+}
+.view[data-view="canvas"] .home-drama-tab:not(.active):hover {
+  color: var(--va-secondary);
+}
+.view[data-view="canvas"] .home-drama-tab:not(.active):hover::before { background: #151E28; }
+.view[data-view="canvas"] .home-drama-tab.active {
+  z-index: 2;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+.view[data-view="canvas"] .home-drama-tab.active::before { background: #18212B; }
+.view[data-view="canvas"] .home-drama-tab.active::after { content: none; }
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.home-drama-reference-panel,.ai-script-box) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+.view[data-view="canvas"] .home-drama-dropzone {
+  border: 1px dashed var(--va-border);
+  border-radius: 14px;
+  background: var(--va-container);
+  color: var(--va-tertiary);
+  transition: border-color .2s ease, background .2s ease;
+}
+.view[data-view="canvas"] .home-drama-dropzone:hover,
+.view[data-view="canvas"] .home-drama-dropzone.is-dragover {
+  border-color: var(--va-border-focus);
+  background: var(--va-surface);
+}
+.view[data-view="canvas"] .home-drama-upload-primary { background: #ffffff; color: #0B121A; font-size: 14px; line-height: 20px; font-weight: 500; }
+.view[data-view="canvas"] .home-drama-upload-primary:hover { background: #ffffff; color: #0B121A; }
+.view[data-view="canvas"] .home-drama-upload-primary:active { background: #D5DBE3; }
+/* One owner for the inset prevents nested panel and toolbar padding from adding up. */
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools {
+  padding: 0 22px 22px;
+  gap: 8px;
+  align-items: flex-end;
+}
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-reference-panel {
+  padding: 12px 22px 22px;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-reference-panel .drama-generate-tools {
+  padding: 0;
+  min-height: 40px;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools :is(.drama-option,.drama-attachment-button) {
+  border: 0 !important;
+  background: #151E28 !important;
+  color: var(--va-secondary) !important;
+  box-shadow: none !important;
+}
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools :is(.drama-option,.drama-attachment-button):hover {
+  background: #202B36 !important;
+}
+.view[data-view="canvas"] .home-composer-card .ai-script-box textarea { padding: 24px 24px 8px; font-size: 14px; line-height: 20px; }
+
+/* Homepage references sit above the prompt, independently of its editable content. */
+.view[data-view="canvas"] #home-canvas-panel .composer-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px 24px 8px;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) {
+  position: static;
+  display: flex;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 10px;
+  padding: 2px 0 4px;
+  margin: 0 0 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  pointer-events: auto;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #566474 transparent;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]):empty {
+  display: none;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-card {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  border: 1px solid #2b3642;
+  border-radius: 10px;
+  background: #0d141b;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-card :is(img, video) {
+  border-radius: 9px;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-card img {
+  object-fit: contain;
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-remove {
+  top: 4px;
+  right: 4px;
+  background: rgba(13, 20, 27, .9);
+}
+
+.view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-remove:hover {
+  background: #e5484d;
+}
+
+.view[data-view="canvas"] #home-canvas-panel :is(.home-canvas-mention-editor, textarea:not(.home-canvas-mention-native)) {
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
+  padding: 0 !important;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* The shared workflow uploader keeps its existing layout; only the home one changes. */
+.view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments {
+  height: 276px;
+  min-height: 276px;
+}
+
+.view[data-view="canvas"] .home-composer-card [data-home-drama-attachment-strip]:not(:empty) {
+  width: calc(100% - 48px);
+  max-width: calc(100% - 48px);
+  margin: 24px 24px 12px;
+}
+
+.view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments textarea {
+  min-height: 60px;
+  padding: 0 24px 8px !important;
+}
+
+.view[data-view="canvas"] .ai-script-box.has-drama-attachments .home-setting-tags:not([hidden]) {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments:has(.home-setting-tags:not([hidden])) {
+  height: 316px;
+  min-height: 316px;
+}
+
+@media (hover: none) {
+  .view[data-view="canvas"] :is(#canvasAttachmentStrip, [data-home-drama-attachment-strip]) .canvas-attachment-remove {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+/* 2026-10-10 Product Design 本轮配色逻辑：参考修改前浅色选中态，胶囊补回蓝灰底，
+ * 选中玻璃提亮为雾白并改用深灰文字；光晕降低饱和度，外圈改为低对比灰绿，
+ * 缓解原透明黑底与黄绿强反光。仅改背景、文字、边框、阴影颜色及纹理色彩滤镜；
+ * 不改光晕透明度状态、位置、尺寸、动画曲线、动画时间或交互脚本。 */
+/* 2026-10-10 Product Design 改动逻辑：通过 ego 多轮滑动、点击提取 Pollo 首页
+ * 分类胶囊的透明玻璃、外圈渐变、滑动选中层与底部光晕。仅覆盖标题中的
+ * 创作 / 短剧主 Tab；配色调整为灰白玻璃与淡鼠尾草绿，尺寸、原面板事件及键盘逻辑继续复用。
+ * 光晕纹理来自 https://cdn.pollo.ai/prod/public/images/brand/tab-bg.png，
+ * 本地保存原始 WebP，CSS 转为绿色，保留原纹理的亮度层次与透明度。 */
+.view[data-view="canvas"] .home-agent-tabs {
+  --home-tab-brand: #b9d79f;
+  --home-tab-glow-x: 50%;
+  --home-tab-glow-opacity: .4;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  gap: 0;
+  background: #202832e6;
+  border-color: transparent;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+/* 参考光晕保持 400px 宽并贴合胶囊底边；420ms 缓动移动、240ms 淡入淡出，
+ * 悬停跟随分类中心，移出后恢复居中和 .4 透明度。 */
+.view[data-view="canvas"] .home-agent-tabs::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: var(--home-tab-glow-x);
+  width: 400px;
+  height: calc(100% - 2px);
+  background: url("./images/home-agent-tab-glow.webp") center bottom / 100% 100% no-repeat;
+  filter: hue-rotate(55deg) saturate(.22) brightness(1.45);
+  transform: translateX(-50%);
+  opacity: var(--home-tab-glow-opacity);
+  pointer-events: none;
+  transition: left 420ms cubic-bezier(.22, .61, .36, 1), opacity 240ms ease-out;
+}
+/* 按参考原始 0.8px 外圈遮罩绘制：顶部灰白反光，侧边透明，底部淡灰绿。
+ * 外圈覆盖光晕但不拦截鼠标，透明底能看到玻璃内随悬停移动的亮度。 */
+.view[data-view="canvas"] .home-agent-tabs::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  padding: .8px;
+  border-radius: inherit;
+  background: linear-gradient(177deg, #eef3f852 0%, #c8d2dd24 36%, #c8d2dd14 45%, #c8d2dd24 48%, #b9d79f66 91%, #e0ead652 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* 2026-10-10 Product Design 透明度调整：参考竞品选中玻璃，将雾白底从 85%
+ * 不透明度降至约 18%，让原胶囊底色与移动光晕透过；内反光和边框同步柔化。
+ * 单一玻璃选中层继续在两个原按钮之间滑动；
+ * 几何尺寸由脚本读取现有按钮，因此中文、英文与窄屏都贴合原胶囊。 */
+.view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass {
+  position: absolute;
+  z-index: 1;
+  top: var(--home-tab-glass-top, 4px);
+  left: var(--home-tab-glass-left, 4px);
+  width: var(--home-tab-glass-width, 76px);
+  height: var(--home-tab-glass-height, 42px);
+  border-radius: 999px;
+  background: #e4eaf02e;
+  box-shadow: inset 4px 4px 5px #24303b08, inset 0 -2.81px 7.5px #ffffff1f;
+  pointer-events: none;
+  transition: left 420ms cubic-bezier(.22, .61, .36, 1), width 420ms cubic-bezier(.22, .61, .36, 1);
+}
+.view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(100% 80% at 0 0, #ffffff99 0%, #ffffff40 82%, #ffffff0f 92%, transparent 98%), radial-gradient(100% 80% at 100% 100%, #f1f5f94d 50%, #f1f5f91a 88%, #f1f5f90d 92%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* 2026-10-10 Product Design 配色逻辑：玻璃底变透明后，选中项使用浅白字保证可读性；
+ * 仅调整选中颜色，文字独立于光晕，未选项悬停时
+ * 使用参考站 7.5px 白色文字辉光，选中态由上面的滑动玻璃层承载。 */
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab,
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active,
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):hover {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  box-shadow: none;
+  color: #b0bbc6;
+  font-weight: 400;
+  transition: color 200ms, text-shadow 200ms;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  color: #f5f7fa;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):is(:hover, :focus-visible) {
+  color: #eef3f8;
+  text-shadow: 0 0 7.5px #eef3f8a6;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:focus-visible {
+  outline: 2px solid var(--home-tab-brand);
+  outline-offset: -4px;
+}
+/* 首次定位前不播放进场位移动画；减少动态效果时保留玻璃与光晕并即时更新位置。 */
+.view[data-view="canvas"] .home-agent-tabs:not(.is-glass-ready) .home-agent-tab-glass {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-agent-tabs::before,
+  .view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass,
+  .view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+    transition: none;
+  }
+}
+/* Homepage: standalone mode switch, centered headline, then the existing composer. */
+.view[data-view="canvas"] .hero {
+  padding-top: 98px;
+}
+.view[data-view="canvas"] > .hero > .home-agent-tabs {
+  flex: 0 0 auto;
+  margin-bottom: 24px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 30px #0000001a, 0 5px 22px #b9d79f06;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+  min-width: 112px;
+  padding: 0 22px;
+  white-space: nowrap;
+  background: transparent !important;
+  color: #b0bbc6 !important;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  background: transparent !important;
+  color: #f5f7fa !important;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):hover {
+  background: transparent !important;
+  color: #eef3f8 !important;
+}
+.view[data-view="canvas"] #main-title.home-agent-title {
+  gap: 8px;
+  margin-bottom: 26px;
+}
+@media (max-width: 1000px) {
+  .view[data-view="canvas"] .hero { padding-top: 90px; }
+}
+@media (max-width: 760px) {
+  .view[data-view="canvas"] .hero { padding-top: 82px; }
+  .view[data-view="canvas"] > .hero > .home-agent-tabs { margin-bottom: 20px; }
+  .view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+    min-width: 100px;
+    padding: 0 16px;
+  }
+  .view[data-view="canvas"] #main-title.home-agent-title {
+    gap: 0 6px;
+    margin-bottom: 22px;
+    white-space: normal;
+    text-wrap: balance;
+  }
+  .view[data-view="canvas"] .home-agent-title > span:last-child {
+    flex-basis: auto;
+    white-space: normal;
+  }
+}
+
+/* Homepage composer controls match the supplied live-product toolbar reference. */
+html body .view[data-view="canvas"] .home-composer-card :is(.composer-tools,.drama-generate-tools) :is(.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger,.drama-option,.tool-btn,.drama-attachment-button,.home-creation-preferences-trigger) {
+  height:32px;
+  min-height:32px;
+  padding:0 12px;
+  gap:6px;
+  border:0 !important;
+  border-radius:999px;
+  background:var(--va-bg) !important;
+  color:var(--va-tertiary) !important;
+  font-size:14px;
+  font-weight:400;
+  line-height:20px;
+  box-shadow:none !important;
+}
+html body .view[data-view="canvas"] .home-composer-card :is(.composer-tools,.drama-generate-tools) :is(.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger,.drama-option,.tool-btn,.drama-attachment-button,.home-creation-preferences-trigger):is(:hover,[aria-expanded="true"]) {
+  background:var(--va-surface) !important;
+  color:#ffffff !important;
+}
+html body .view[data-view="canvas"] .home-composer-card :is(.composer-tools > .tool-btn,.drama-generate-tools > .drama-attachment-button) {
+  width:36px;
+  min-width:36px;
+  height:36px;
+  min-height:36px;
+  flex:0 0 36px;
+  padding:0;
+  border:1px solid var(--va-border) !important;
+  border-radius:50%;
+  color:var(--va-brand) !important;
+}
+html body .view[data-view="canvas"] .home-composer-card #canvasSend,
+html body .view[data-view="canvas"] #home-drama-panel .generate-now {
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
+}
+html body .view[data-view="canvas"] .home-composer-card #canvasSend:disabled,
+html body .view[data-view="canvas"] #home-drama-panel .generate-now:disabled {
+  background:var(--va-brand-disabled,rgba(55,64,79,.9)) !important;
+  color:var(--va-brand-ink) !important;
+  opacity:1 !important;
+  box-shadow:none !important;
+  transform:none;
+}
+html body .view[data-view="canvas"] .home-composer-card #canvasSend:not(:disabled),
+html body .view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled) {
+  background:var(--va-brand) !important;
+  color:var(--va-brand-ink) !important;
+}
+/* Keep the existing create-Agent indicator on its original control. */
+html body .view[data-view="canvas"] .home-composer-card .composer-tools .skill-chip.is-create-agent { border:1px solid #ffffffd1 !important; }
+
+/* Match the live upload plus and center the send glyph in its 40px circle. */
+html body .view[data-view="canvas"] #canvasUpload .tool-icon,
+html body .view[data-view="canvas"] #canvasUpload .tool-icon svg {
+  display:block; width:16px; height:16px; margin:0;
+}
+html body .view[data-view="canvas"] .home-composer-card #canvasSend,
+html body .view[data-view="canvas"] #home-drama-panel .generate-now {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:0 !important; line-height:1; flex-shrink:0; box-sizing:border-box;
+}
+html body .view[data-view="canvas"] #canvasSend .tool-icon,
+html body .view[data-view="canvas"] #canvasSend .tool-icon svg,
+html body .view[data-view="canvas"] #home-drama-panel .generate-now > svg {
+  display:block; width:24px; height:24px; margin:0; padding:0; transform:none;
+}
+
+/* 2026-10-26 Product Design 展示适配：沿用原两组标题与已有 aria-selected 显隐规则，
+   只将字形和强调词渐变对齐原稿；翻译仍由原语言适配器直接处理原文本节点。 */
+.view[data-view="canvas"] #main-title.home-agent-title {
+ display:block; margin-top:0; margin-bottom:26px; font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+ text-align:center; white-space:normal; text-wrap:balance; color:#f5f7fa;
+}
+.view[data-view="canvas"] #main-title.home-agent-title > :is(.home-headline-canvas,.home-headline-drama) { white-space:normal; }
+.view[data-view="canvas"] #main-title .home-title-accent { color:#c9fb87; }
+@supports (background-clip:text) or (-webkit-background-clip:text) {
+ .view[data-view="canvas"] #main-title .home-title-accent {
+  background-image:linear-gradient(100deg,#fff 6%,#f4ffe0 54%,#c9fb87 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
+ }
+}
+/* 原稿选中层由现有玻璃节点绘制；尺寸继续由已有脚本根据当前语言按钮宽度自动测量。 */
+.view[data-view="canvas"] .hero > .home-agent-tabs { margin-top:0; margin-bottom:24px; padding:4px; border:0; border-radius:999px; background:#202832e6; }
+.view[data-view="canvas"] .hero > .home-agent-tabs .home-composer-tab { min-width:112px; height:42px; padding:0 22px; font-size:14px; line-height:20px; white-space:nowrap; }
+/* 2026-11-04：恢复 home-hero-reference.css 中原有的首页绿色渐变弥散光背景。 */
+.view[data-view="canvas"] .hero > .composer-stack { width:min(100%,900px); }
+.view[data-view="canvas"] .home-composer-card { --home-input-surface:#0D141B; --home-toolbar-fill:#080d12; --home-toolbar-hover:#171e27; --home-toolbar-text:#9aa6b2; }
+.view[data-view="canvas"] #home-canvas-panel .composer { display:flex; flex-direction:column; box-sizing:border-box; }
+.view[data-view="canvas"] #home-canvas-panel .composer-body { flex:1 1 0; min-height:0; }
+.view[data-view="canvas"] .home-composer-card .composer-tools { flex:0 0 auto; min-width:0; }
+.view[data-view="canvas"] .home-composer-card .composer-tools :is(.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger,.home-creation-preferences-trigger) { flex-shrink:0; white-space:nowrap; }
+.view[data-view="canvas"] .home-composer-card .composer-tools .tool-spacer { flex:1 1 auto; min-width:0; }
+.view[data-view="canvas"] .home-composer-card .home-creation-preferences-trigger > img { width:16px; height:16px; flex:0 0 16px; }
+/* 文本型按钮可按翻译后的长度自然扩宽；发送节点保持 40px 圆形，不改任何启用条件。 */
+html body .view[data-view="canvas"] .home-composer-card #canvasSend,
+html body .view[data-view="canvas"] #home-drama-panel [data-home-open-script].generate-now { flex:0 0 40px; max-width:40px; }
+@media (max-width:1000px) {
+ .view[data-view="canvas"] .hero { padding-top:90px; }
+}
+@media (max-width:760px) {
+ .view[data-view="canvas"] .hero { padding-top:82px; }
+ .view[data-view="canvas"] .hero > .home-agent-tabs { margin-bottom:20px; }
+ .view[data-view="canvas"] .hero > .home-agent-tabs .home-composer-tab { min-width:100px; height:36px; padding:0 16px; }
+ .view[data-view="canvas"] #main-title.home-agent-title { margin-bottom:22px; font-size:24px; line-height:30px; }
+ .view[data-view="canvas"] .home-composer-card .composer-tools { flex-wrap:wrap; }
+}
+/* 2026-10-26 Product Design：减少动态效果时仅取消此次边框/发送按钮的视觉过渡，原切换及翻译照常。 */
+@media (prefers-reduced-motion:reduce) {
+ .view[data-view="canvas"] .home-composer-card .composer::before,
+ .view[data-view="canvas"] .home-composer-card .composer::after,
+ .view[data-view="canvas"] .home-composer-card #canvasSend,
+ .view[data-view="canvas"] #home-drama-panel .generate-now { transition:none; }
+}
+
+/* 2026-11-08 Product Design：首页全能创作也复用 ego 参考的同款发送按钮与图片。
+ * 必须限定 data-agent-mode=canvas；切回短剧后恢复原有 SVG、尺寸和状态，不影响短剧入口。
+ */
+.home-canvas-send-reference-icon { display: none; }
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"] #canvasSend {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 40px !important;
+  padding: 8px !important;
+  border: 0 !important;
+  border-radius: 24px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"] #canvasSend:not(:disabled) { background: #B8F84A !important; }
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"] #canvasSend:disabled { background: rgba(55,64,79,.9) !important; opacity: 1 !important; }
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"] #canvasSend > :not(.home-canvas-send-reference-icon) { display: none !important; }
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"] #canvasSend > img.home-canvas-send-reference-icon {
+  display: block !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  object-fit: contain !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+/* 2026-11-08：普通首页发送按钮原本不依赖 disabled 判断空草稿；仅补齐空内容的灰底展示。
+ * 有附件或引用时沿用原可提交展示，不更改按钮 disabled 或任何首页提交行为。
+ */
+html body .view[data-view="canvas"] .home-composer-card[data-agent-mode="canvas"]:has(#canvasPrompt:placeholder-shown):not(:has(.composer.has-canvas-attachments)):not(:has(.home-canvas-mention-token, .home-canvas-skill-token)) #canvasSend {
+  background: rgba(55,64,79,.9) !important;
+}

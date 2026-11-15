@@ -1,0 +1,1300 @@
+/* 2026-10-29 Product Design 团队设计稿样式迁移。
+ * 视觉依据：Downloads/团队设计稿/团队版V1.5.0独立预览.html 及随附样式。
+ * 覆盖范围：团队概况、三个数据页签、表格、筛选和团队操作弹窗；共享项目弹窗只在团队页应用。
+ * 不迁移设计稿脚本、数据、权限显隐、购买入口权限及其他业务页面样式，现有业务逻辑保持原样。
+ * 按用户要求保留笔记本顶部两张卡片同排及右侧 2:3 概况分区；窄于最小内容宽度时仅概况区横向滚动。
+ */
+html body #teamConsole, html body #teamSubmodal, html body #teamToast,
+html body .team-create-dialog, html body .team-calendar-popover, html body .team-page-size-menu,
+html body .team-member-project-tooltip, html body .team-owners-tooltip,
+html body.team-console-open .pm-dialog, html body.team-console-open .pm-confirm-dialog {
+ --va-bg:#080d12; --va-header:#0d141b; --va-container:rgba(15,21,28,.6);
+ --va-surface:#171e27; --va-raised:#222b35; --va-disabled-bg:#141a21;
+ --va-border:#2b3642; --va-border-light:rgba(255,255,255,.06); --va-border-focus:#3a4654;
+ --va-text:#f5f7fa; --va-secondary:#d5dbe3; --va-tertiary:#9aa6b2; --va-muted:#6f7b88; --va-disabled-text:#4d5865;
+ --va-brand:#b8f84a; --va-brand-hover:#cfff5a; --va-brand-ink:#0d1308;
+ --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+ font-family:var(--va-font); font-variant-numeric:tabular-nums;
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-batch-points.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .team-modal-card.manage-batch { width:min(860px,calc(100vw - 32px));height:540px;max-height:calc(100dvh - 48px);padding:0!important;display:flex;flex-direction:column;overflow:hidden; }
+html body #teamSubmodal .manage-batch .team-modal-head { flex:none;min-height:72px;padding:20px 24px;border-bottom:1px solid #2b3642; }
+html body #teamSubmodal .manage-batch .team-modal-head h3 { font-size:18px;line-height:28px;font-weight:600; }
+html body #teamSubmodal .manage-batch .team-manage-layout { flex:1;display:flex;flex-direction:row;min-height:0;padding:24px;gap:24px; }
+html body #teamSubmodal .manage-batch .team-manage-members { display:flex;flex:0 0 280px;width:280px;min-width:0;max-height:none;padding:0 24px 0 0;border:0;border-right:1px solid #2b3642;background:transparent;overflow:hidden; }
+html body #teamSubmodal .manage-batch .team-manage-members-head { flex:none;min-height:32px;padding:0 0 12px;border:0;font-size:14px;line-height:20px;font-weight:400;gap:8px; }
+html body #teamSubmodal .manage-batch .team-manage-count { font-size:12px;color:#9aa6b2; }
+html body #teamSubmodal .manage-batch .team-manage-list { flex:1;min-height:0;padding:0;gap:0;overflow-y:auto; }
+html body #teamSubmodal .manage-batch .team-manage-member,
+html body #teamSubmodal .manage-batch .team-manage-member:has(input:checked) { box-sizing:border-box;flex-shrink:0;min-height:54px;padding:10px 8px;border:0!important;border-radius:6px;background:transparent!important;box-shadow:none;gap:12px; }
+html body #teamSubmodal .manage-batch .team-manage-member:hover,
+html body #teamSubmodal .manage-batch .team-manage-member:has(input:checked):hover { background:rgba(255,255,255,.025)!important; }
+html body #teamSubmodal .manage-batch .team-manage-member-name { font-size:14px;line-height:20px;font-weight:400; }
+html body #teamSubmodal .manage-batch .team-manage-member-meta { font-size:12px;line-height:18px;color:#9aa6b2; }
+html body #teamSubmodal .manage-batch .team-manage-members input { accent-color:#fff; }
+html body #teamSubmodal .manage-batch .team-manage-layout>.team-modal-body { flex:1;min-height:0;padding:0!important;display:flex;flex-direction:column;gap:0;overflow:auto; }
+html body #teamSubmodal .manage-batch .team-form-field { gap:10px;margin:0; }
+html body #teamSubmodal .manage-batch .team-form-field>span { font-size:14px;line-height:20px;font-weight:500; }
+html body #teamSubmodal .manage-batch #teamManageAmount { box-sizing:border-box;width:100%;height:40px;min-height:40px;padding:10px 12px;border:1px solid #35414e;border-radius:8px;background:#111820;font-size:14px; }
+html body #teamSubmodal .manage-batch #teamManageHint { display:block;margin-top:16px;padding:14px 16px;background:#202a35;border:0;border-radius:8px;font-size:12px;line-height:20px;color:#a7b2bf; }
+html body #teamSubmodal .manage-batch .team-modal-actions { flex:none;display:flex;justify-content:flex-end;gap:12px;margin-top:auto;padding:24px 0 0;border:0; }
+@media(max-width:640px) {
+html body #teamSubmodal .team-modal-card.manage-batch { height:auto;max-height:calc(100dvh - 24px);overflow:auto; }
+html body #teamSubmodal .manage-batch .team-manage-layout { flex-direction:column;padding:20px;gap:24px;overflow:auto; }
+html body #teamSubmodal .manage-batch .team-manage-members { flex:0 0 auto;width:100%;max-height:230px;padding:0;border:0; }
+html body #teamSubmodal .manage-batch .team-manage-layout>.team-modal-body { flex:0 0 auto;overflow:visible; }
+html body #teamSubmodal .manage-batch .team-modal-head { padding:20px; }
+html body #teamSubmodal .manage-batch .team-modal-actions { margin-top:8px; }
+}
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-members { padding:0 24px 0 0!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-members-head { padding:0 0 12px!important;min-height:32px;border:0!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-list { display:flex;flex-direction:column;gap:0!important;padding:4px 8px!important;background:#111820;border:0;border-radius:8px; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member,
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member:has(input:checked) { display:flex;align-items:center;flex:0 0 48px;box-sizing:border-box;height:48px;min-height:48px!important;margin:0;padding:12px 8px!important;gap:12px;border:0!important;border-radius:4px;background:transparent!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member:hover { background:rgba(255,255,255,.03)!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member-info { display:flex;flex:1;min-width:0;flex-direction:row!important;align-items:center;justify-content:space-between;gap:12px; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member-name { font-size:14px;line-height:20px;font-weight:400; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-member-meta { font-size:12px;line-height:20px;white-space:nowrap;color:#8794a2; }
+@media(max-width:640px) {
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"].manage-batch .team-manage-members { padding:0!important; }
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-team-summary-polish.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamConsole .team-summary-grid { align-items:stretch; }
+html body #teamConsole .team-summary-card { display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;min-height:176px;padding:24px;gap:16px; }
+html body #teamConsole .team-summary-card .team-identity { display:flex;flex:0 0 auto;align-items:center;gap:16px;width:100%;margin:0; }
+html body #teamConsole .team-summary-card .team-name-row { height:28px; }
+html body #teamConsole .team-summary-card .team-name-display { font-size:16px;line-height:24px;font-weight:600; }
+html body #teamConsole .team-summary-card .team-id { margin-top:4px;line-height:18px; }
+html body #teamConsole .team-summary-card .team-settings-actions { display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:12px;width:100%;margin:0; }
+html body #teamConsole .team-summary-card .team-settings-actions .team-button { height:36px;min-height:36px;padding:0 16px;border-radius:999px;font-size:14px;line-height:20px;font-weight:400; }
+html body #teamConsole .team-summary-card [data-team-invite-open] { background:#fff!important;color:#111820!important;border:1px solid transparent!important;box-shadow:none; }
+html body #teamConsole .team-summary-card [data-team-invite-open]:hover:not(:disabled) { background:#e8edf2!important;color:#111820!important;border-color:transparent!important;transform:none; }
+html body #teamConsole .team-summary-card [data-team-invite-open]:active:not(:disabled) { background:#d5dbe3!important; }
+html body #teamConsole .team-summary-card [data-team-invite-open]:disabled { background:#35414e!important;color:#8794a2!important;opacity:1; }
+@media(max-width:640px) {
+html body #teamConsole .team-summary-card { min-height:160px;padding:20px; }
+}
+html body #teamConsole :is(#teamPermissionsOpen,#teamBatchManageOpen,#teamExpandButton,#teamCreditsButton) { display:inline-flex;align-items:center;justify-content:center;
+ height:36px;min-height:36px;padding:0 16px;
+ border:1px solid var(--va-border)!important;border-radius:999px;
+ background:var(--va-surface)!important;color:var(--va-secondary)!important;
+ font-size:14px!important;line-height:20px;font-weight:400!important;box-shadow:none;transform:none; }
+html body #teamConsole :is(#teamPermissionsOpen,#teamBatchManageOpen,#teamExpandButton,#teamCreditsButton):hover:not(:disabled) { background:var(--va-border)!important;border-color:var(--va-border-focus)!important;color:var(--va-text)!important;transform:none; }
+html body #teamConsole :is(#teamPermissionsOpen,#teamBatchManageOpen,#teamExpandButton,#teamCreditsButton):active:not(:disabled) { background:var(--va-raised)!important; }
+html body #teamConsole :is(#teamPermissionsOpen,#teamBatchManageOpen,#teamExpandButton,#teamCreditsButton):focus-visible { outline:2px solid var(--va-tertiary);outline-offset:3px; }
+html body #teamConsole :is(#teamPermissionsOpen,#teamBatchManageOpen,#teamExpandButton,#teamCreditsButton):disabled { background:var(--va-disabled-bg)!important;color:var(--va-disabled-text)!important;border-color:var(--va-border)!important;opacity:1; }
+html body #teamConsole .team-project-filter-menu button + button,
+html body #teamConsole .team-status-menu .team-status-option + .team-status-option,
+html body #teamSubmodal .team-role-menu .team-role-option + .team-role-option,
+html body .team-page-size-menu button + button { margin-top:4px; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 team-design-system.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamConsole,
+html body #teamSubmodal { font-family:var(--va-font); color:var(--va-secondary); }
+html body #teamConsole .team-console-header { background:var(--va-header); border-color:var(--va-border-light); }
+html body #teamConsole .team-console-title { font-size:20px; line-height:28px; font-weight:600; }
+html body #teamConsole .team-console-body { padding:28px 32px 32px; gap:24px; }
+html body #teamConsole .team-summary-grid { gap:20px; grid-template-columns:minmax(320px, .95fr) minmax(0, 2.65fr); }
+html body #teamConsole :is(.team-summary-card,.team-overview-card,.team-panel) { background:var(--va-container); border:1px solid var(--va-border); border-radius:16px; box-shadow:none; }
+html body #teamConsole .team-summary-card { padding:24px; min-height:176px; }
+html body #teamConsole .team-name-display { font-size:18px; line-height:26px; font-weight:600; }
+html body #teamConsole .team-id { font-size:12px; line-height:20px; color:var(--va-tertiary); }
+html body #teamConsole .team-console-avatar { width:52px; height:52px; flex-basis:52px; font-size:26px; }
+html body #teamConsole .team-settings-actions { gap:10px; }
+html body #teamConsole .team-overview-card { padding:24px 0; }
+html body #teamConsole .team-overview-group { padding:0 24px; gap:20px; }
+html body #teamConsole .team-overview-group + .team-overview-group { border-color:var(--va-border-light); }
+html body #teamConsole .team-overview-heading { min-height:32px; gap:12px; }
+html body #teamConsole .team-overview-heading h3 { font-size:14px; line-height:20px; font-weight:500; }
+html body #teamConsole .team-metrics dt { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body #teamConsole .team-metrics dd { font-size:30px; line-height:38px; font-weight:600; letter-spacing:-.6px; margin:8px 0 0; }
+html body #teamConsole .team-metrics > div + div { border-color:var(--va-border-light); padding-left:20px; }
+html body #teamConsole .team-metric-capacity { font-size:18px; color:var(--va-muted); font-weight:400; }
+html body #teamConsole #teamBalanceValue { color:var(--va-text); }
+html body #teamConsole .team-button,
+html body #teamSubmodal .team-button { min-height:36px; border-radius:18px; padding:0 16px; font-size:14px; line-height:20px; font-weight:500; box-shadow:none; transform:none; }
+html body #teamConsole .team-button.secondary,
+html body #teamSubmodal .team-button.secondary { background:var(--va-surface); color:var(--va-secondary); border-color:var(--va-border); }
+html body #teamConsole .team-overview-heading .team-button.secondary.compact { min-height:28px; height:28px; border-radius:14px; padding:0 12px; background:var(--va-surface); border-color:var(--va-border); color:var(--va-tertiary); font-size:12px; font-weight:400; }
+html body #teamConsole .team-button.secondary:hover:not(:disabled),
+html body #teamConsole .team-overview-heading .team-button.secondary.compact:hover:not(:disabled),
+html body #teamSubmodal .team-button.secondary:hover:not(:disabled) { background:var(--va-border); border-color:var(--va-border-focus); color:var(--va-text); transform:none; }
+html body #teamConsole .team-page-back { border-radius:50%; padding:0; }
+html body #teamConsole .team-tabs { height:64px; flex-basis:64px; align-items:center; gap:4px; padding:12px 20px; border-color:var(--va-border-light); }
+html body #teamConsole .team-tab { height:36px; padding:0 16px; border-radius:8px; color:var(--va-tertiary); font-size:14px; line-height:20px; font-weight:400; }
+html body #teamConsole .team-tab:hover { background:var(--va-surface); color:var(--va-text); }
+html body #teamConsole .team-tab.is-active { background:var(--va-border); color:var(--va-text); font-weight:500; }
+html body #teamConsole .team-tab.is-active::after { content:none; }
+html body #teamConsole .team-toolbar { padding:16px 20px; gap:12px; min-height:68px; background:transparent; border-color:var(--va-border-light); }
+html body #teamConsole .team-member-filters { margin-left:0; gap:12px; }
+html body #teamConsole .team-member-actions { margin-left:auto; }
+html body #teamConsole :is(.team-field,.team-status-trigger,.team-date-field,.team-project-filter-trigger),
+html body #teamSubmodal .team-field { background:var(--va-surface); border:1px solid var(--va-border); color:var(--va-secondary); border-radius:10px; min-height:36px; font-size:13px; box-shadow:none; }
+html body #teamConsole :is(.team-field,.team-status-trigger,.team-date-field):hover,
+html body #teamSubmodal .team-field:hover { border-color:var(--va-border-focus); }
+html body #teamConsole .team-field::placeholder,
+html body #teamSubmodal .team-field::placeholder { color:var(--va-muted); }
+html body #teamConsole :is(.team-status-menu,.team-project-filter-menu) { background:var(--va-surface); border-color:var(--va-border); border-radius:12px; box-shadow:0 16px 40px #0006; }
+html body #teamConsole .team-status-option:is(:hover,[aria-selected="true"]) { background:var(--va-border); color:var(--va-text); }
+html body #teamConsole .team-table th { height:44px; background:var(--va-surface); border-color:var(--va-border); font-size:12px; font-weight:400; color:var(--va-tertiary); }
+html body #teamConsole .team-table td { height:64px; border-color:var(--va-border-light); font-size:13px; color:var(--va-secondary); }
+html body #teamConsole #teamMemberTableWrap .team-table th:first-child { background:var(--va-surface); box-shadow:1px 0 0 var(--va-border-light); }
+html body #teamConsole #teamMemberTableWrap .team-table td:first-child { background:#0c1219; box-shadow:1px 0 0 var(--va-border-light); }
+html body #teamConsole .team-table tbody tr:hover td,
+html body #teamConsole #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:var(--va-surface); }
+html body #teamConsole .team-account-you { color:var(--va-tertiary); font-size:12px; }
+html body #teamConsole .team-tag { border:1px solid var(--va-border); background:var(--va-surface); color:var(--va-tertiary); border-radius:6px; font-size:12px; padding:3px 8px; font-weight:400; }
+html body #teamConsole .team-tag.status { background:rgba(85,224,138,.08); border-color:transparent; color:#55e08a; }
+html body #teamConsole .team-tag.pending { background:rgba(255,203,77,.08); border-color:transparent; color:#ffcb4d; }
+html body #teamConsole .team-text-action { height:30px; border:1px solid var(--va-border); background:var(--va-surface); color:var(--va-tertiary); border-radius:15px; padding:0 10px; font-size:12px; }
+html body #teamConsole .team-text-action:hover:not(:disabled) { background:var(--va-border); border-color:var(--va-border-focus); color:var(--va-text); }
+html body #teamConsole .team-monthly-credits-track { background:var(--va-border); height:3px; border-radius:2px; }
+html body #teamConsole .team-monthly-credits-fill { background:var(--va-tertiary); }
+html body #teamConsole .team-pagination { min-height:60px; padding:12px 20px; border-color:var(--va-border-light); background:transparent; }
+html body #teamConsole .team-page-button.active { background:var(--va-border); color:var(--va-text); }
+html body #teamConsole :is(button,input,[tabindex]):focus-visible,
+html body #teamSubmodal :is(button,input,[tabindex]):focus-visible { outline:2px solid var(--va-secondary); outline-offset:3px; }
+html body #teamSubmodal .team-modal-card { background:var(--va-surface); border-color:var(--va-border); border-radius:16px; box-shadow:0 24px 80px #0008; }
+html body #teamSubmodal :is(.team-modal-head,.team-modal-actions) { border-color:var(--va-border-light); }
+html body #teamSubmodal .team-modal-head h3 { color:var(--va-text); font-size:18px; line-height:26px; font-weight:600; }
+html body #teamSubmodal :is(.team-form-hint,.team-manage-count) { color:var(--va-tertiary); }
+html body #teamSubmodal .team-manage-current-quota { color:var(--va-secondary); }
+html body #teamSubmodal .team-manage-member { background:var(--va-container); border-color:var(--va-border); }
+html body #teamSubmodal .team-manage-member:has(input:checked) { background:var(--va-border); border-color:var(--va-tertiary); }
+@media(max-width:1440px) {
+html body #teamConsole .team-summary-grid { grid-template-columns:minmax(290px,.9fr) minmax(0,2.5fr); }
+html body #teamConsole .team-summary-card { padding:20px; }
+html body #teamConsole .team-overview-group { padding:0 20px; }
+html body #teamConsole .team-metrics dd { font-size:27px; }
+}
+@media(max-width:1180px) {
+html body #teamConsole .team-summary-grid { grid-template-columns:1fr; }
+html body #teamConsole .team-summary-card { min-height:110px; }
+html body #teamConsole .team-settings-actions { flex-direction:row; }
+}
+@media(max-width:760px) {
+html body #teamConsole .team-console-body { padding:16px; gap:16px; }
+html body #teamConsole .team-summary-grid { gap:16px; }
+html body #teamConsole .team-overview-card { grid-template-columns:1fr; padding:20px; gap:20px; }
+html body #teamConsole .team-overview-group { padding:0; }
+html body #teamConsole .team-overview-group + .team-overview-group { border-left:0; border-top:1px solid var(--va-border-light); padding-top:20px; }
+html body #teamConsole .team-metrics > div + div { padding-left:8px; }
+html body #teamConsole .team-metrics dd { font-size:clamp(20px,4.6vw,27px); }
+html body #teamConsole .team-tabs { padding:10px; gap:4px; }
+html body #teamConsole .team-tab { padding:0 12px; white-space:nowrap; }
+html body #teamConsole .team-toolbar { padding:12px; }
+}
+@media(prefers-reduced-motion:reduce) {
+html body #teamConsole *,
+html body #teamSubmodal * { transition:none!important; }
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-team.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamConsole { min-height:100dvh; }
+html body #teamConsole,
+html body #teamSubmodal,
+html body .team-create-dialog,
+html body .team-calendar-popover,
+html body .team-page-size-menu,
+html body.team-console-open .pm-dialog,
+html body.team-console-open .pm-confirm-dialog { font-family:var(--va-font); font-size:14px; line-height:20px; color:var(--va-secondary); font-variant-numeric:tabular-nums; }
+html body #teamConsole * { box-sizing:border-box; }
+html body #teamConsole .team-console-header { padding:0 32px; height:76px; background:var(--va-header); border-color:var(--va-border-light); }
+html body #teamConsole .team-console-title { font-size:20px; line-height:28px; font-weight:600; }
+html body #teamConsole .team-console-body { padding:28px 32px 32px; gap:24px; }
+html body #teamConsole .team-summary-grid { grid-template-columns:minmax(280px, .95fr) minmax(0,2.65fr); gap:20px; }
+html body #teamConsole :is(.team-summary-card,.team-overview-card,.team-panel) { background:var(--va-container); border-color:var(--va-border); border-radius:16px; box-shadow:none; }
+html body #teamConsole .team-summary-card { min-width:0; padding:24px; gap:20px; }
+html body #teamConsole .team-name-display { font-size:18px; line-height:28px; font-weight:600; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+html body #teamConsole .team-identity,
+html body #teamConsole .team-identity > div { min-width:0; }
+html body #teamConsole .team-console-avatar { width:48px; height:48px; flex-basis:48px; font-size:24px; }
+html body #teamConsole .team-overview-card { padding:24px 0; background:var(--va-container); }
+html body #teamConsole .team-overview-group { padding:0 24px; gap:18px; }
+html body #teamConsole .team-overview-heading { justify-content:space-between; gap:12px; }
+html body #teamConsole .team-overview-heading h3 { font-weight:500; }
+html body #teamConsole .team-metrics dd { font-size:28px; line-height:36px; font-weight:600; letter-spacing:-.4px; color:var(--va-text); }
+html body #teamConsole .team-metric-capacity { font-size:16px; color:var(--va-tertiary); }
+html body #teamConsole :is(.team-id,.team-metrics dt) { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body #teamConsole :is(.team-tabs,.team-toolbar,.team-pagination) { border-color:var(--va-border-light); }
+html body #teamConsole .team-tabs { gap:8px; height:64px; padding:12px 20px; overflow-x:auto; }
+html body #teamConsole .team-tab { font-size:14px; line-height:20px; font-weight:400; height:36px; padding:0 16px; border-radius:8px; white-space:nowrap; }
+html body #teamConsole .team-tab.is-active { background:var(--va-border); color:var(--va-text); font-weight:500; }
+html body #teamConsole .team-tab.is-active::after { display:none; }
+html body #teamConsole .team-tab:not(.is-active):hover { background:var(--va-surface); color:var(--va-text); }
+html body #teamConsole .team-toolbar { min-height:72px; padding:16px 20px; gap:12px; flex-wrap:wrap; }
+html body #teamConsole .team-member-filters { gap:12px; flex-wrap:wrap; }
+html body #teamConsole :is(.team-field,.team-status-trigger,.team-date-field,.team-select) { font-family:inherit; font-size:14px; line-height:20px; font-weight:400; min-height:36px; height:36px;
+ color:var(--va-secondary); border:1px solid var(--va-border); border-radius:8px; background:var(--va-surface); box-shadow:none; }
+html body #teamConsole :is(.team-field,.team-status-trigger,.team-date-field,.team-select):hover { border-color:var(--va-border-focus); }
+html body #teamConsole :is(.team-field,.team-status-trigger,.team-date-field,.team-select):focus-visible { outline:2px solid var(--va-tertiary); outline-offset:2px; }
+html body #teamConsole .team-field::placeholder { color:var(--va-muted); }
+html body #teamConsole .team-filter-label { color:var(--va-tertiary); font-size:12px; }
+html body #teamConsole .team-search-wrap { max-width:100%; }
+html body #teamConsole .team-project-name-search { margin-right:0; }
+html body #teamConsole .team-project-filter-menu,
+html body #teamConsole .team-status-menu,
+html body #teamSubmodal .team-role-menu,
+html body .team-page-size-menu,
+html body .team-calendar-popover { border:1px solid var(--va-border); border-radius:12px; background:var(--va-surface); box-shadow:0 12px 36px #0006; padding:6px; }
+html body #teamConsole .team-project-filter-menu button,
+html body #teamConsole .team-status-option,
+html body #teamSubmodal .team-role-option,
+html body .team-page-size-menu button { min-height:36px; padding:8px 12px; font-size:14px; line-height:20px; font-weight:400; color:var(--va-secondary); border-radius:6px; }
+html body #teamConsole .team-project-filter-menu button:is(:hover,[aria-checked=true]),
+html body #teamConsole .team-status-option:is(:hover,[aria-selected=true]),
+html body #teamSubmodal .team-role-option:is(:hover,[aria-selected=true]),
+html body .team-page-size-menu button:is(:hover,[aria-checked=true]) { background:var(--va-border); color:var(--va-text); }
+html body #teamConsole .team-table-wrap { overflow:auto; scrollbar-color:var(--va-border-focus) var(--va-bg); scrollbar-width:thin; }
+html body #teamConsole #teamMemberTableWrap .team-table { min-width:1580px; }
+html body #teamConsole .team-table { width:100%; background:var(--va-container)!important; }
+html body #teamConsole .team-table th { height:44px; padding:12px 16px; background:var(--va-surface)!important; color:var(--va-tertiary)!important; font-size:12px!important; line-height:18px; font-weight:400!important; border-color:var(--va-border-light); }
+html body #teamConsole .team-table td { height:64px; padding:14px 16px; background:var(--va-container); border-color:var(--va-border-light); color:var(--va-secondary); font-size:14px!important; line-height:20px!important; }
+html body #teamConsole .team-table tbody tr:hover td { background:#151e27; }
+html body #teamConsole #teamMemberTableWrap .team-table td:first-child { background:var(--va-container); }
+html body #teamConsole #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:#151e27; }
+html body #teamConsole .team-table th:nth-child(1) { text-align:left; }
+html body #teamConsole .team-cell-name { gap:8px; }
+html body #teamConsole .team-cell-name-input { background:var(--va-surface); border:1px solid var(--va-border-focus); color:var(--va-text); border-radius:6px; font-size:14px; }
+html body #teamConsole :is(.team-tag,.team-project-type) { padding:3px 8px; font-size:12px; line-height:18px; font-weight:400; border:1px solid var(--va-border); background:var(--va-surface); color:var(--va-secondary); border-radius:6px; }
+html body #teamConsole .team-tag.status { color:#55e08a; border-color:transparent; background:#55e08a12; }
+html body #teamConsole .team-tag.pending { color:#ffcb4d; border-color:transparent; background:#ffcb4d12; }
+html body #teamConsole .team-tag.v150-removed { color:var(--va-tertiary); background:var(--va-surface); border-color:var(--va-border); }
+html body #teamConsole .team-project-type.drama { color:#a7c5e5; background:#a7c5e512; border-color:transparent; }
+html body #teamConsole .team-monthly-credits-fill,
+html body #teamConsole .team-production-track span.is-active { background:#9aa6b2; }
+html body #teamConsole .team-credit-value { color:var(--va-secondary); }
+html body #teamConsole .team-credit-value img { opacity:.7; filter:grayscale(1); }
+html body #teamConsole :is(.team-member-projects,.team-project-owners) { color:var(--va-secondary); font-size:14px; line-height:20px; }
+html body #teamConsole .team-restricted-mark { color:var(--va-muted); }
+html body #teamConsole .team-actions { gap:8px; }
+html body #teamConsole .team-text-action { min-height:30px; padding:4px 10px; font-size:12px; line-height:18px; font-weight:400; border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); color:var(--va-secondary); }
+html body #teamConsole .team-text-action:hover:not(:disabled) { background:var(--va-border); color:var(--va-text); border-color:var(--va-border-focus); }
+html body #teamConsole .team-pagination { min-height:64px; height:auto; flex-basis:64px; padding:12px 20px; gap:8px; flex-wrap:wrap; }
+html body #teamConsole .team-page-current { display:grid; place-items:center; min-width:32px; height:32px; border-radius:8px; background:var(--va-border); color:var(--va-text); }
+html body #teamConsole .team-page-button { width:32px; height:32px; background:var(--va-surface); border-color:var(--va-border); }
+html body #teamConsole .team-page-size-trigger { display:flex; align-items:center; gap:8px; padding:0 12px; cursor:pointer; }
+html body #teamConsole .team-page-size-trigger img { width:14px; height:14px; }
+html body .team-page-size-menu { position:fixed; z-index:100030; min-width:132px; margin:0; }
+html body .team-page-size-menu[hidden] { display:none!important; }
+html body .team-page-size-menu button { display:flex; align-items:center; width:100%; border:0; background:none; text-align:left; cursor:pointer; font-family:var(--va-font); }
+html body #teamConsole .team-empty { height:260px!important; text-align:center!important; color:var(--va-tertiary); font-size:14px; }
+html body #teamConsole .team-empty::before,
+html body #teamSubmodal .team-detail-table td[colspan]::before,
+html body.team-console-open .pm-dialog .pm-empty::before { content:""; display:block; width:144px; height:104px; margin:0 auto 16px; background:url('./team-reference-empty.svg') center/contain no-repeat; }
+html body #teamConsole :is(.team-button),
+html body #teamSubmodal .team-button { font:500 14px/20px var(--va-font); min-height:36px; border-radius:18px; padding:8px 16px; box-shadow:none; transform:none; }
+html body #teamConsole .team-page-back { padding:0; border-radius:50%; }
+html body #teamConsole .team-overview-heading .team-button.secondary.compact { height:32px; min-height:32px; padding:0 12px; font-size:12px; font-weight:400; background:var(--va-surface); border-color:var(--va-border); color:var(--va-secondary); }
+html body #teamConsole .team-button.secondary:hover:not(:disabled),
+html body #teamSubmodal .team-button.secondary:hover:not(:disabled) { background:var(--va-border); border-color:var(--va-border-focus); color:var(--va-text); }
+html body #teamSubmodal { padding:24px; background:rgba(2,6,10,.72); backdrop-filter:none; }
+html body #teamSubmodal .team-modal-card { max-height:calc(100dvh - 48px); overflow:auto; background:var(--va-surface); border:1px solid var(--va-border); border-radius:16px; box-shadow:0 24px 80px #0008; }
+html body #teamSubmodal .team-modal-head { min-height:64px; height:auto; padding:16px 24px; border-bottom:1px solid var(--va-border-light); }
+html body #teamSubmodal :is(.team-modal-head h3,.team-permissions-heading h3) { font-size:18px; line-height:28px; font-weight:600; color:var(--va-text); }
+html body #teamSubmodal .team-modal-body { padding:24px; font-size:14px; line-height:24px; }
+html body #teamSubmodal .team-field,
+html body #teamSubmodal .team-role-trigger { min-height:40px; border:1px solid var(--va-border); border-radius:8px; background:var(--va-header); color:var(--va-secondary); font:400 14px/20px var(--va-font); padding:10px 12px; box-shadow:none; }
+html body #teamSubmodal .team-field:focus,
+html body #teamSubmodal .team-role-trigger:focus { border-color:var(--va-border-focus); }
+html body #teamSubmodal :is(.team-form-field > span,.team-form-hint,.team-manage-count) { font-size:14px; line-height:20px; color:var(--va-tertiary); }
+html body #teamSubmodal .team-form-field > span:first-child { color:var(--va-secondary); }
+html body #teamSubmodal .team-modal-actions { padding:0; margin-top:32px; gap:12px; border:0; border-color:var(--va-border-light); }
+html body #teamSubmodal .team-button:not(.secondary):not(.danger) { background:#fff; border-color:transparent; color:#0b121a; }
+html body #teamSubmodal .team-button:not(.secondary):not(.danger):hover:not(:disabled) { background:#f5f7fa; }
+html body #teamSubmodal .team-button:disabled { background:var(--va-border); border-color:var(--va-border); color:var(--va-muted); opacity:1; cursor:not-allowed; }
+html body #teamSubmodal .team-button.danger { color:#fff; background:#dc3f45; border-color:transparent; }
+html body #teamSubmodal .team-button.danger:hover:not(:disabled) { background:#c9353c; }
+html body #teamSubmodal .team-icon-button { color:var(--va-tertiary); }
+html body #teamSubmodal .team-permissions-heading { padding:0; gap:16px; }
+html body #teamSubmodal .team-modal-card.permissions { padding:24px; }
+html body #teamSubmodal .team-permissions-heading p { font-size:14px; line-height:24px; color:var(--va-tertiary); margin:6px 0 0; }
+html body #teamSubmodal :is(.team-permissions-note,.team-permissions-icon) { background:var(--va-raised); border-color:var(--va-border); color:var(--va-secondary); }
+html body #teamSubmodal .team-permissions-note { padding:12px 16px; margin:24px 0 16px; font-size:12px; line-height:18px; border-radius:8px; }
+html body #teamSubmodal .team-permission-row { background:var(--va-header); border:1px solid var(--va-border); border-radius:12px; padding:16px; gap:20px; }
+html body #teamSubmodal .team-permission-row strong { color:var(--va-text); font-size:14px; line-height:20px; font-weight:500; }
+html body #teamSubmodal .team-permission-row small { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body #teamSubmodal .team-permission-switch { background:#3a4654; border-color:transparent; }
+html body #teamSubmodal .team-permission-switch:checked { background:#d5dbe3; border-color:transparent; }
+html body #teamSubmodal .team-permission-switch:checked::before { background:#0b121a; }
+html body #teamSubmodal .team-manage-members { padding:20px; background:var(--va-header); border-color:var(--va-border); }
+html body #teamSubmodal .team-manage-member { padding:12px; background:var(--va-surface); border-color:var(--va-border); border-radius:8px; }
+html body #teamSubmodal .team-manage-member:has(input:checked),
+html body #teamSubmodal .team-authorization-project:has(input:checked) { background:var(--va-border); border-color:#566474; }
+html body #teamSubmodal :is(.team-manage-member input,.team-authorization input) { accent-color:#d5dbe3; }
+html body #teamSubmodal .team-authorization-project { background:var(--va-header); border-color:var(--va-border); }
+html body #teamSubmodal .team-authorization-modes { gap:12px; }
+html body #teamSubmodal .team-authorization-person strong { color:var(--va-text); font-size:16px; font-weight:500; }
+html body #teamSubmodal .team-captcha { background:var(--va-raised); border:1px solid var(--va-border); color:var(--va-text); border-radius:8px; font-size:18px; letter-spacing:4px; }
+html body #teamSubmodal .team-detail-table { width:100%; border-collapse:collapse; }
+html body #teamSubmodal .team-detail-table th { background:var(--va-raised); color:var(--va-tertiary); font-size:12px; font-weight:400; padding:12px; }
+html body #teamSubmodal .team-detail-table td { color:var(--va-secondary); font-size:14px; line-height:20px; padding:14px 12px; border-color:var(--va-border); }
+html body .team-create-dialog { width:min(520px,calc(100vw - 32px)); border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); color:var(--va-text); }
+html body .team-create-dialog::backdrop { background:rgba(2,6,10,.72); backdrop-filter:none; }
+html body .team-create-content { padding:24px; }
+html body .team-create-heading h2 { font-size:18px; line-height:28px; font-weight:600; letter-spacing:0; }
+html body .team-create-description { color:var(--va-tertiary); font-size:14px; line-height:24px; margin-top:8px; }
+html body .team-create-avatar-section { background:var(--va-header); border-color:var(--va-border); border-radius:12px; padding:20px; margin-top:24px; }
+html body .team-create-avatar-preview { background:var(--va-raised); border-color:var(--va-border); color:var(--va-secondary); border-radius:16px; }
+html body .team-create-label { font-size:14px; line-height:20px; font-weight:500; }
+html body .team-create-label small,
+html body .team-create-hint,
+html body .team-create-count { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body .team-create-upload { font-size:14px; line-height:20px; padding:8px 12px; background:var(--va-surface); border-color:var(--va-border); color:var(--va-secondary); }
+html body .team-create-upload:hover { background:var(--va-border); border-color:var(--va-border-focus); }
+html body .team-create-input-wrap { border-color:var(--va-border); background:var(--va-header); border-radius:8px; }
+html body .team-create-input-wrap input { height:44px; }
+html body .team-create-input-wrap:focus-within { border-color:var(--va-tertiary); box-shadow:none; }
+html body .team-create-note { background:var(--va-raised); border:1px solid var(--va-border); border-radius:12px; }
+html body .team-create-note strong { color:var(--va-secondary); font-size:14px; line-height:20px; font-weight:500; }
+html body .team-create-note p { color:var(--va-tertiary); font-size:12px; line-height:18px; }
+html body .team-create-note img { filter:grayscale(1); }
+html body .team-create-footer { padding:20px 24px; background:var(--va-surface); border-color:var(--va-border); }
+html body .team-create-footer button { min-height:36px; padding:8px 16px; font-size:14px; line-height:20px; font-weight:500; border-radius:18px; background:var(--va-raised); border-color:var(--va-border); color:var(--va-secondary); }
+html body .team-create-footer .team-create-submit { background:#fff; color:#0b121a; border-color:transparent; }
+html body .team-create-footer .team-create-submit:hover:not(:disabled) { background:#f5f7fa; border-color:transparent; }
+html body .team-create-footer button:disabled { background:var(--va-border); color:var(--va-muted); opacity:1; }
+html body.team-console-open .pm-dialog { background:var(--va-surface); color:var(--va-secondary); border-color:var(--va-border); border-radius:16px; }
+html body.team-console-open .pm-dialog::backdrop { background:rgba(2,6,10,.72); backdrop-filter:none; }
+html body.team-console-open .pm-dialog .pm-header { padding:20px 24px; border-color:var(--va-border-light); }
+html body.team-console-open .pm-dialog .pm-header h2 { font-size:18px; line-height:28px; font-weight:600; }
+html body.team-console-open .pm-dialog .pm-body { padding:24px; }
+html body.team-console-open .pm-dialog .pm-footer { padding:16px 24px; border-color:var(--va-border-light); }
+html body.team-console-open .pm-dialog :is(.pm-column,.pm-stat) { background:var(--va-header); border-color:var(--va-border); border-radius:12px; }
+html body.team-console-open .pm-dialog .pm-stat { padding:20px; }
+html body.team-console-open .pm-dialog .pm-stat span { color:var(--va-tertiary); font-size:12px; line-height:18px; }
+html body.team-console-open .pm-dialog .pm-stat strong { color:var(--va-text); font-size:28px; line-height:36px; }
+html body.team-console-open .pm-dialog .pm-column h3,
+html body.team-console-open .pm-dialog .pm-toolbar h3 { font-size:14px; line-height:20px; font-weight:500; }
+html body.team-console-open .pm-dialog .pm-tag { background:var(--va-surface); color:var(--va-secondary); border-color:var(--va-border); font-size:12px; line-height:18px; }
+html body.team-console-open .pm-dialog .pm-search { background:var(--va-surface); border-color:var(--va-border); color:var(--va-secondary); font-size:14px!important; line-height:20px; padding:8px 12px; }
+html body.team-console-open .pm-dialog :is(.pm-primary,.pm-secondary),
+html body.team-console-open .pm-confirm-dialog button { border-radius:18px; font-size:14px!important; line-height:20px; font-weight:500!important; padding:8px 16px; }
+html body.team-console-open .pm-dialog .pm-primary { background:#fff; border-color:transparent; color:#0b121a; }
+html body.team-console-open .pm-dialog .pm-primary:hover { background:#f5f7fa; }
+html body.team-console-open .pm-dialog .pm-secondary { background:var(--va-raised); border-color:var(--va-border); color:var(--va-secondary); }
+html body.team-console-open .pm-dialog .pm-link { color:var(--va-secondary); font-size:14px!important; }
+html body.team-console-open .pm-dialog .pm-link:hover { color:var(--va-text); text-decoration:underline; }
+html body.team-console-open .pm-dialog .pm-table th { background:var(--va-raised); color:var(--va-tertiary); font-size:12px; line-height:18px; font-weight:400; padding:12px; }
+html body.team-console-open .pm-dialog .pm-table td { color:var(--va-secondary); font-size:14px; line-height:20px; padding:14px 12px; border-color:var(--va-border); }
+html body.team-console-open .pm-dialog .pm-table-wrap { border-color:var(--va-border); }
+html body.team-console-open .pm-dialog .pm-empty { color:var(--va-tertiary)!important; font-size:14px; }
+html body .team-calendar-popover { padding:14px; }
+html body .team-calendar-heading strong { font-weight:500; }
+html body .team-calendar-weekdays span { font-size:12px; color:var(--va-tertiary); }
+html body .team-calendar-days button { font-size:14px; color:var(--va-secondary); }
+html body .team-calendar-days button:is(:hover,:focus-visible) { background:var(--va-border); color:var(--va-text); }
+html body .team-calendar-days button.is-today { border-color:#566474; }
+html body .team-calendar-days button.is-selected { background:var(--va-secondary); color:#0b121a; font-weight:500; }
+html body .team-calendar-footer { border-color:var(--va-border); }
+html body .team-calendar-footer button { color:var(--va-secondary); font-size:14px; }
+html body .team-calendar-footer button:hover { background:var(--va-border); }
+html body .team-member-project-tooltip,
+html body .team-owners-tooltip { background:var(--va-surface); color:var(--va-secondary); border-color:var(--va-border); border-radius:12px; font:400 14px/20px var(--va-font); }
+@media(max-width:1440px) {
+html body #teamConsole .team-console-body { padding:24px; }
+html body #teamConsole .team-summary-grid { grid-template-columns:1fr; }
+html body #teamConsole .team-summary-card { min-height:108px; }
+html body #teamConsole .team-settings-actions { flex-direction:row; margin-left:auto; }
+html body #teamConsole .team-name-display { max-width:50vw; }
+}
+@media(max-width:960px) {
+html body #teamConsole .team-overview-card { grid-template-columns:1fr; padding:20px; gap:20px; }
+html body #teamConsole .team-overview-group { padding:0; }
+html body #teamConsole .team-overview-group + .team-overview-group { padding-top:20px; border-left:0; border-top:1px solid var(--va-border); }
+html body #teamConsole .team-member-actions { margin-left:auto; }
+html body.team-console-open .pm-dialog .pm-columns { grid-template-columns:1fr; }
+html body.team-console-open .pm-dialog .pm-column { min-height:180px; }
+html body #teamSubmodal .team-manage-layout { grid-template-columns:1fr; }
+html body #teamSubmodal .team-manage-members { max-height:220px; overflow:auto; }
+}
+@media(max-width:640px) {
+html body #teamConsole .team-console-header { padding:0 16px; height:64px; }
+html body #teamConsole .team-console-title { font-size:18px; }
+html body #teamConsole .team-console-body { padding:16px; gap:16px; }
+html body #teamConsole .team-summary-card { padding:16px; }
+html body #teamConsole .team-settings-actions { width:100%; justify-content:flex-end; }
+html body #teamConsole .team-metrics dd { font-size:24px; line-height:32px; }
+html body #teamConsole .team-tabs { padding:10px; }
+html body #teamConsole .team-tab { padding:0 12px; }
+html body #teamConsole .team-toolbar { padding:12px; }
+html body #teamConsole .team-member-actions { width:100%; display:flex; justify-content:flex-end; }
+html body #teamSubmodal { padding:12px; }
+html body #teamSubmodal .team-modal-card { max-height:calc(100dvh - 24px); }
+html body #teamSubmodal .team-modal-body,
+html body #teamSubmodal .team-modal-card.permissions { padding:20px; }
+html body #teamSubmodal .team-modal-head { padding:16px 20px; }
+html body #teamSubmodal .team-invite-actions { flex-direction:column; align-items:stretch; }
+html body #teamSubmodal .team-invite-buttons { justify-content:flex-end; }
+html body.team-console-open .pm-dialog .pm-summary { grid-template-columns:1fr; gap:12px; }
+html body.team-console-open .pm-dialog .pm-stat { padding:16px; }
+html body.team-console-open .pm-dialog .pm-header,
+html body.team-console-open .pm-dialog .pm-body { padding:20px; }
+html body.team-console-open .pm-dialog .pm-header h2 { font-size:18px; }
+html body .team-create-content { padding:20px; }
+html body .team-create-footer { padding:16px 20px; }
+}
+@media(prefers-reduced-motion:reduce) {
+html body #teamConsole *,
+html body #teamSubmodal *,
+html body .team-create-dialog *,
+html body.team-console-open .pm-dialog * { transition:none!important; animation:none!important; }
+}
+html body > .team-page-size-menu:not([hidden]) { display:block!important; }
+html body #teamConsole .team-credit-detail-overview { gap:20px; }
+html body #teamConsole .team-credit-detail-overview > div { background:var(--va-container); border-color:var(--va-border); border-radius:16px; }
+html body #teamConsole .team-credit-detail-overview strong { font-size:28px; line-height:36px; color:var(--va-text); }
+html body #teamConsole .team-credit-detail-ledger { border-color:var(--va-border); background:var(--va-container); border-radius:16px; }
+html body #teamConsole .team-credit-detail-ledger th { background:var(--va-surface); color:var(--va-tertiary); font-size:12px; line-height:18px; font-weight:400; }
+html body #teamConsole .team-credit-detail-ledger td { font-size:14px; line-height:20px; color:var(--va-secondary); border-color:var(--va-border-light); }
+html body #teamSubmodal .team-modal-card:is(.role,[data-team-dialog="invite"],[data-team-dialog="remove"]),
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) { width:min(480px,calc(100vw - 32px)); padding:12px; }
+html body #teamSubmodal .team-modal-card:is(.role,[data-team-dialog="invite"],[data-team-dialog="remove"]) .team-modal-head,
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-head { min-height:36px; height:auto; gap:12px; padding:0; border:0; }
+html body #teamSubmodal .team-modal-card:is(.role,[data-team-dialog="invite"],[data-team-dialog="remove"]) .team-modal-body,
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-body { padding:12px 0 0; gap:12px; }
+html body #teamSubmodal .team-modal-actions { gap:12px; margin-top:32px; padding:0; border:0; }
+html body #teamSubmodal .team-invite-actions { align-items:flex-end; flex-wrap:wrap; }
+html body #teamSubmodal .team-invite-buttons { margin-left:auto; gap:12px; }
+html body #teamSubmodal :is(.team-form-hint,.team-permissions-heading p,.team-authorization-person small) { font-size:14px; line-height:24px; color:var(--va-tertiary); }
+html body #teamConsole :is(.team-field,.team-date-field):is(:focus,:focus-visible) { outline:none!important; box-shadow:none!important; border-color:var(--va-tertiary)!important; }
+html body #teamConsole input { caret-color:var(--va-secondary); }
+html body #teamConsole :is(.team-status-trigger,.team-project-filter-trigger,.team-page-size-trigger):focus-visible { outline:2px solid var(--va-tertiary); outline-offset:3px; }
+html body #teamConsole :is(.team-page-button,.team-text-action,.team-button.secondary):disabled { background:var(--va-disabled-bg); border-color:var(--va-border); color:var(--va-disabled-text); opacity:1; cursor:not-allowed; }
+html body #teamConsole .team-button.compact:not(.secondary) { background:var(--va-brand); color:var(--va-brand-ink); }
+html body #teamConsole .team-button.compact:not(.secondary):hover:not(:disabled) { background:var(--va-brand-hover); }
+html body #teamConsole :is(.team-account-you,.team-table td.team-project-credits) { color:var(--va-secondary); }
+html body #teamConsole .team-name-input { background:var(--va-surface); border:1px solid var(--va-border); border-radius:8px; color:var(--va-text); font:400 14px/20px var(--va-font); }
+html body #teamConsole .team-name-input:focus-visible { outline:none; border-color:var(--va-tertiary); box-shadow:none; }
+html body #teamConsole .team-project-filter[open] > summary { background:var(--va-raised); border-color:var(--va-border-focus); box-shadow:none; }
+html body #teamConsole .team-project-filter > summary:focus-visible { outline:2px solid var(--va-tertiary); outline-offset:3px; }
+html body #teamConsole .team-table { background:var(--va-bg)!important; }
+html body #teamConsole .team-table td,
+html body #teamConsole #teamMemberTableWrap .team-table td:first-child { background:var(--va-bg); }
+html body #teamConsole .team-table tbody tr:hover td,
+html body #teamConsole #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:var(--va-surface); }
+html body #teamConsole .team-project-review-counts { color:var(--va-tertiary); }
+html body #teamSubmodal .manage-batch .team-modal-actions { margin-top:auto; padding-top:32px; }
+html body #teamSubmodal .team-authorization-person { background:var(--va-header); border-color:var(--va-border); }
+html body #teamSubmodal .team-authorization-toolbar { font-size:14px; line-height:20px; color:var(--va-tertiary); }
+html body #teamSubmodal .team-authorization-project span { font-size:14px; line-height:20px; color:var(--va-secondary); }
+html body #teamSubmodal .team-authorization-list { border-color:var(--va-border); }
+html body #teamSubmodal .team-manage-members-head { font-size:14px; line-height:20px; font-weight:500; border-color:var(--va-border); }
+html body #teamSubmodal .team-invite-seats { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body #teamSubmodal .team-invite-seats strong { color:var(--va-secondary); font-weight:500; }
+html body.team-console-open .pm-dialog .pm-tabs { gap:8px; padding:12px 24px; border-color:var(--va-border); }
+html body.team-console-open .pm-dialog .pm-tabs button { min-height:36px; padding:8px 16px; border:1px solid transparent; border-radius:8px; font:400 14px/20px var(--va-font); }
+html body.team-console-open .pm-dialog :is(.pm-toolbar p,.pm-hint) { color:var(--va-tertiary); font-size:14px; line-height:24px; }
+html body.team-console-open .pm-dialog .pm-stat small { font-size:12px; line-height:18px; color:var(--va-tertiary); }
+html body.team-console-open .pm-dialog .pm-table .pm-table-action { min-height:30px; padding:0 10px; border-radius:999px; font-size:12px!important; line-height:18px; }
+@media(max-width:640px) {
+html body #teamSubmodal .team-authorization-modes { flex-direction:column; }
+html body #teamSubmodal .team-authorization-person { flex-wrap:wrap; gap:8px; }
+html body #teamConsole .team-credit-detail-overview { grid-template-columns:1fr; }
+html body.team-console-open .pm-dialog .pm-tabs { padding:12px 16px; flex-wrap:wrap; }
+}
+@media(max-height:650px) {
+html body #teamSubmodal .manage-batch .team-manage-layout > .team-modal-body { min-height:0; }
+html body #teamSubmodal .manage-batch .team-manage-members { max-height:240px; overflow:auto; }
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 modal-unified.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) { box-sizing: border-box !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 16px !important;
+  background: #171e27 !important;
+  color: #f5f7fa !important;
+  font-family: inherit;
+  box-shadow: 0 24px 80px #0008 !important; }
+html body.team-console-open :is(.pm-confirm-dialog) { width: min(480px, 100%) !important;
+  max-width: calc(100vw - 32px) !important;
+  min-width: 0 !important;
+  max-height: calc(100dvh - 32px) !important;
+  height: auto !important;
+  padding: 24px !important;
+  overflow: auto !important;
+  text-align: left !important; }
+html body.team-console-open :is(.pm-confirm-dialog) :is(h2,h3,.batch-generate-message:not(#batchGenerateMessage):not(#episodeActionNoticeMessage),.asset-delete-title),
+html body.team-console-open :is(.team-modal-card,.team-create-dialog,.pm-dialog) :is(header h2,header h3,[class$="-head"] h2,[class$="-head"] h3,.voice-dialog-title,.voice-edit-title,.team-modal-title,.team-create-title,.profile-demo-dialog > h2,.detail-quick-prompt-dialog-head h2) { margin: 0 !important;
+  color: #f5f7fa !important;
+  font-size: 18px !important;
+  line-height: 28px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important; }
+html body.team-console-open :is(.pm-confirm-dialog) :is(p,.asset-delete-copy,.skill-delete-confirm-copy) { margin: 12px 0 0 !important;
+  color: #b4bec8 !important;
+  font-size: 14px !important;
+  line-height: 24px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  overflow-wrap: anywhere; }
+html body.team-console-open :is(.pm-confirm-dialog) :is([class$="-actions"],.episode-agent-actions) { display: flex !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap;
+  gap: 12px !important;
+  margin: 32px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) :is([class$="-actions"],[class$="-foot"],[class$="-footer"],.dialog-footer) > button,
+html body.team-console-open :is(.pm-confirm-dialog) button { box-sizing: border-box !important;
+  min-width: 0 !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #d5dbe3 !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  cursor: pointer; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) :is([class$="-actions"],[class$="-foot"],[class$="-footer"],.dialog-footer) > :is(.confirm,.primary,.is-primary,.storyboard-sync-confirm-primary,.character-generate-confirm-button,[data-character-description-change-confirm],.save-asset-confirm,.asset-upload-confirm,[data-voice-save],[data-voice-generate-confirm],[data-voice-library-confirm],[data-quick-prompt-save]) { background: #fff !important; border-color: #fff !important; color: #0b121a !important; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) :is(.is-danger,.pm-confirm-remove,.script-outline-delete-confirm,.asset-delete-confirm,.project-delete-action.confirm) { background: #dc3f45 !important; border-color: #dc3f45 !important; color: #fff !important; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) button:focus-visible { outline: 2px solid #9aa6b2 !important; outline-offset: 3px !important; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) button:disabled { opacity: .4 !important; cursor: not-allowed; }
+html body.team-console-open :is(.pm-confirm-dialog,.team-modal-card,.team-create-dialog,.pm-dialog) :is([class$="-actions"],[class$="-foot"],[class$="-footer"]) > button:not(:disabled):hover { filter: brightness(.92) !important; }
+html body.team-console-open :is(.pm-confirm-dialog)::backdrop,
+html body.team-console-open :is(.team-modal-card,.team-create-dialog,.pm-dialog)::backdrop { background: rgba(2,6,10,.72) !important; backdrop-filter: none !important; }
+@media (max-width: 540px) {
+html body.team-console-open :is(.pm-confirm-dialog) { padding: 24px !important; }
+}
+html body :is(.team-modal-actions,.team-invite-buttons,.team-create-footer) button { min-width: 0 !important; width: auto !important; height: 36px !important; min-height: 36px !important; padding: 0 16px !important; border-radius: 999px !important; font-size: 14px !important; font-weight: 500 !important; }
+html body :is(.team-modal-actions,.team-invite-buttons) .team-button:not(.secondary):not(.danger),
+html body .team-create-submit { background: #fff !important; color: #0b121a !important; border-color: #fff !important; }
+html body .team-modal-actions .team-button.danger { background: #dc3f45 !important; border-color: #dc3f45 !important; color: #fff !important; }
+html body.team-console-open :is(.team-modal-card,.team-create-dialog,.pm-dialog) button[aria-label^="关闭"] { box-sizing: border-box; display: grid; place-items: center; width: 36px !important; height: 36px !important; min-width: 36px !important; padding: 0 !important; border: 1px solid transparent !important; border-radius: 8px !important; background: transparent !important; color: #b4bec8 !important; box-shadow: none !important; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-team-modal-refinement.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .team-modal-card,
+html body .team-create-dialog,
+html body.team-console-open .pm-dialog,
+html body.team-console-open .pm-confirm-dialog { background:#171e27!important;
+  border-color:#2b3642!important;
+  color:#d5dbe3!important; }
+html body #teamSubmodal .team-button:not(.secondary),
+html body .team-create-dialog .team-create-submit,
+html body.team-console-open .pm-dialog .pm-primary,
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove { background:#ffffff!important;
+  border-color:transparent!important;
+  color:#0b121a!important;
+  font-size:14px!important;
+  line-height:20px!important;
+  font-weight:500!important;
+  box-shadow:none!important;
+  transform:none!important;
+  opacity:1!important; }
+html body #teamSubmodal .team-button:not(.secondary):hover:not(:disabled),
+html body .team-create-dialog .team-create-submit:hover:not(:disabled),
+html body.team-console-open .pm-dialog .pm-primary:hover:not(:disabled),
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove:hover:not(:disabled) { background:#f5f7fa!important; }
+html body #teamSubmodal .team-button:not(.secondary):active:not(:disabled),
+html body .team-create-dialog .team-create-submit:active:not(:disabled),
+html body.team-console-open .pm-dialog .pm-primary:active:not(:disabled),
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove:active:not(:disabled) { background:#e5e9ef!important; }
+html body #teamSubmodal .team-button.secondary,
+html body .team-create-dialog .team-create-footer button:not(.team-create-submit),
+html body.team-console-open .pm-dialog .pm-secondary,
+html body.team-console-open .pm-confirm-dialog .pm-secondary { background:transparent!important;
+  border-color:#2b3642!important;
+  color:#d5dbe3!important;
+  box-shadow:none!important;
+  transform:none!important; }
+html body #teamSubmodal .team-button.secondary:hover:not(:disabled),
+html body .team-create-dialog .team-create-footer button:not(.team-create-submit):hover:not(:disabled),
+html body.team-console-open .pm-dialog .pm-secondary:hover:not(:disabled),
+html body.team-console-open .pm-confirm-dialog .pm-secondary:hover:not(:disabled) { background:#2b3642!important;
+  color:#ffffff!important; }
+html body #teamSubmodal .team-button.danger,
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove { background:#dc3f45!important; border-color:#dc3f45!important; color:#ffffff!important; }
+html body #teamSubmodal .team-button.danger:hover:not(:disabled),
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove:hover:not(:disabled) { background:#c9353c!important; }
+html body #teamSubmodal .team-button.danger:active:not(:disabled),
+html body.team-console-open .pm-confirm-dialog .pm-confirm-remove:active:not(:disabled) { background:#b52b33!important; }
+html body #teamSubmodal .team-button:disabled,
+html body .team-create-dialog .team-create-footer button:disabled,
+html body.team-console-open .pm-dialog :is(.pm-primary,.pm-secondary):disabled { background:#2b3642!important;
+  border-color:transparent!important;
+  color:#6f7b88!important;
+  opacity:1!important;
+  cursor:not-allowed; }
+html body #teamSubmodal .team-role-trigger { background:#10171f!important;
+  border-color:#3a4654!important;
+  color:#d5dbe3!important; }
+html body #teamSubmodal .team-role-menu { background:#171e27!important;
+  border-color:#2b3642!important; }
+html body #teamSubmodal .team-role-option[aria-selected="true"],
+html body #teamSubmodal .team-role-option:is(:hover,:focus-visible),
+html body #teamSubmodal .team-authorization-modes label:has(input:checked),
+html body #teamSubmodal .team-authorization-project:has(input:checked),
+html body #teamSubmodal .team-manage-member:has(input:checked),
+html body #teamSubmodal .team-segmented button.is-active,
+html body.team-console-open .pm-dialog .pm-tabs button[aria-selected="true"] { background:#2b3642!important;
+  border-color:#566474!important;
+  color:#ffffff!important;
+  box-shadow:none!important; }
+html body #teamSubmodal .team-authorization-modes label { background:#171e27;
+  border-color:#3a4654;
+  color:#9aa6b2;
+  font-size:14px;
+  line-height:20px; }
+html body #teamSubmodal .team-authorization-modes label:hover,
+html body #teamSubmodal .team-authorization-project:hover,
+html body #teamSubmodal .team-manage-member:hover { border-color:#566474!important; }
+html body #teamSubmodal :is(.team-authorization,.team-manage-members) input:not([role="switch"]) { accent-color:#ffffff!important; }
+html body #teamSubmodal :is(.team-authorization,.team-manage-members) input[type="checkbox"] { appearance:none;
+  width:16px;height:16px;min-width:16px;min-height:16px;
+  padding:0;margin:0;flex:0 0 16px;
+  border:1px solid #566474;border-radius:4px;background:transparent;
+  cursor:pointer; }
+html body #teamSubmodal :is(.team-authorization,.team-manage-members) input[type="checkbox"]:checked { background-color:#ffffff!important;border-color:#ffffff!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8 2.5 2.5L12 5' fill='none' stroke='%230b121a' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+html body #teamSubmodal .team-authorization input[type="radio"] { appearance:none;
+  width:16px;height:16px;min-width:16px;min-height:16px;
+  padding:0;margin:0;flex:0 0 16px;
+  border:1px solid #6f7b88;border-radius:50%;background:transparent; }
+html body #teamSubmodal .team-authorization input[type="radio"]:checked { background:radial-gradient(circle,#ffffff 0 3px,transparent 3.5px)!important;
+  border-color:#ffffff!important;
+  box-shadow:none!important; }
+html body #teamSubmodal .team-permission-switch:checked { background:#d5dbe3!important;border-color:transparent!important; }
+html body #teamSubmodal .team-permission-switch:checked::before { background:#0b121a!important; }
+html body #teamSubmodal :is(.team-field,.team-role-trigger):is(:focus,:focus-visible),
+html body .team-create-dialog input:not([type="checkbox"]):is(:focus,:focus-visible),
+html body.team-console-open .pm-dialog .pm-search:is(:focus,:focus-visible) { outline:none!important;
+  box-shadow:none!important;
+  border-color:#9aa6b2!important; }
+html body .team-create-dialog .team-create-input-wrap:focus-within { box-shadow:none!important;border-color:#9aa6b2!important; }
+html body #teamSubmodal :is(button,input[type="checkbox"],input[type="radio"]):focus-visible,
+html body .team-create-dialog button:focus-visible,
+html body.team-console-open .pm-dialog button:focus-visible,
+html body.team-console-open .pm-confirm-dialog button:focus-visible { outline:1px solid #9aa6b2!important;
+  outline-offset:3px!important;
+  box-shadow:none!important; }
+html body #teamSubmodal .team-role-trigger:focus-visible { outline:none!important; }
+html body #teamSubmodal .team-manage-current-quota { color:#d5dbe3!important; }
+html body #teamSubmodal .team-create-required { color:#d5dbe3!important; }
+html body #teamToast { background:#171e27!important;
+  border:1px solid #3a4654!important;
+  color:#d5dbe3!important;
+  font:400 14px/20px var(--va-font)!important;
+  box-shadow:0 12px 32px #0006!important; }
+html body.team-console-open :is(.team-create-dialog,.pm-dialog,.pm-confirm-dialog) button:disabled { background:var(--va-border)!important; border-color:transparent!important;
+  color:var(--va-muted)!important; opacity:1!important; cursor:not-allowed!important;
+  box-shadow:none!important; filter:none!important; transform:none!important; }
+html body #teamSubmodal :is(input,textarea) { caret-color:var(--va-secondary); }
+html body .team-create-dialog .team-create-required { color:var(--va-secondary)!important; }
+html body.team-console-open .pm-dialog button.pm-primary { background:#ffffff!important; border-color:#ffffff!important; color:#0b121a!important; }
+html body.team-console-open .pm-dialog button.pm-primary:hover:not(:disabled) { background:#f5f7fa!important; }
+html body.team-console-open .pm-dialog button.pm-primary:active:not(:disabled) { background:#e5e9ef!important; }
+html body.team-console-open .pm-dialog button.pm-primary:disabled { background:var(--va-border)!important; border-color:transparent!important;
+  color:var(--va-muted)!important; opacity:1!important; cursor:not-allowed!important;
+  filter:none!important; box-shadow:none!important; }
+html body .team-create-dialog button.team-create-submit:not(:disabled) { background:#ffffff!important; border-color:#ffffff!important; color:#0b121a!important; }
+html body .team-create-dialog button.team-create-submit:hover:not(:disabled) { background:#f5f7fa!important; }
+html body .team-create-dialog button.team-create-submit:active:not(:disabled) { background:#e5e9ef!important; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-layout-polish.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .team-modal-card.permissions { padding:24px; }
+html body #teamSubmodal .team-permissions-note { padding:0;margin:20px 0 8px;border:0;background:transparent;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal .team-permissions-options { gap:0; }
+html body #teamSubmodal .team-permission-row { padding:20px 0;margin:0;background:transparent;border:0;border-bottom:1px solid #2b3642;border-radius:0;gap:24px; }
+html body #teamSubmodal .team-permission-row:last-child { border-bottom:0; }
+html body #teamSubmodal .team-permission-row strong { margin:0 0 6px;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamSubmodal .team-permission-row small { font-size:12px;line-height:20px;color:#9aa6b2; }
+html body #teamSubmodal .team-permissions-icon { background:transparent;border:0;border-radius:0;width:40px;height:40px;flex-basis:40px; }
+html body .team-create-dialog .team-create-avatar-section { margin-top:24px;padding:0;border:0;border-radius:0;background:transparent; }
+html body .team-create-dialog .team-create-avatar-preview { border:1px solid #35414e;border-radius:14px;background:#222c38;box-shadow:none; }
+html body .team-create-dialog .team-create-input-wrap { height:40px;border:1px solid #35414e;border-radius:8px;background:#111820;box-shadow:none; }
+html body .team-create-dialog .team-create-input-wrap input { height:38px;padding:0;font-size:14px;line-height:20px; }
+html body .team-create-dialog .team-create-input-wrap:focus-within { border-color:#566474!important;box-shadow:none!important; }
+html body .team-create-dialog .team-create-input-wrap input:focus-visible { outline:none!important; }
+html body .team-create-dialog .team-create-note { background:transparent;border:0;border-top:1px solid #2b3642;border-radius:0;padding:16px 0 0; }
+html body .team-create-dialog .team-create-footer { background:transparent; }
+html body #teamSubmodal .manage-batch .team-manage-members { box-sizing:border-box;background:transparent;padding:12px 20px 20px;border-right:1px solid #2b3642; }
+html body #teamSubmodal .manage-batch .team-manage-members-head { padding:12px 0 16px;border-bottom:1px solid #2b3642;gap:12px; }
+html body #teamSubmodal .manage-batch .team-manage-list { padding:8px 0 0;gap:4px;scrollbar-width:thin;scrollbar-color:#35414e transparent; }
+html body #teamSubmodal .manage-batch .team-manage-member { padding:12px;border:1px solid transparent;border-radius:8px;background:transparent; }
+html body #teamSubmodal .manage-batch .team-manage-member:hover { background:#222c38;border-color:transparent!important; }
+html body #teamSubmodal .manage-batch .team-manage-member:has(input:checked) { background:#2b3642!important;border-color:#566474!important; }
+html body #teamSubmodal .manage-batch .team-modal-body { padding:24px; }
+html body #teamSubmodal .manage-batch #teamManageAmount { background:#111820;border:1px solid #35414e;border-radius:8px;height:40px;min-height:40px; }
+html body #teamSubmodal .manage-batch #teamManageAmount:focus { border-color:#566474!important; }
+html body #teamConsole .team-data-workspace { display:flex;flex-direction:column;gap:0;min-width:0;width:100%; }
+html body #teamConsole .team-data-workspace>.team-tabs { display:flex;flex-shrink:0;height:auto;min-height:42px;gap:34px;padding:0;margin:0 0 20px;border:0;border-bottom:1px solid #2b3642;background:transparent;overflow-x:auto; }
+html body #teamConsole .team-data-workspace .team-tab { position:relative;display:inline-flex;align-items:flex-start;flex-shrink:0;height:42px;min-height:42px;padding:2px 0 14px;border:0;border-radius:0;background:transparent!important;color:#9aa6b2;font-size:16px;line-height:24px;font-weight:500;box-shadow:none; }
+html body #teamConsole .team-data-workspace .team-tab.is-active { color:#f5f7fa; }
+html body #teamConsole .team-data-workspace .team-tab.is-active::after { content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:2px;background:#f5f7fa;border-radius:2px; }
+html body #teamConsole .team-data-workspace .team-tab:not(.is-active):hover { color:#d5dbe3; }
+html body #teamConsole .team-data-workspace>.team-toolbar { justify-content:flex-start;min-height:36px;height:auto;padding:0;margin:0 0 20px;gap:12px;border:0;background:transparent;flex-wrap:wrap; }
+html body #teamConsole .team-data-workspace .team-member-actions { margin-left:auto; }
+html body #teamConsole .team-data-workspace .team-project-name-search { margin-right:0; }
+html body #teamConsole .team-data-workspace>.team-toolbar[hidden] { display:none!important; }
+html body #teamConsole .team-data-workspace :is(.team-field,.team-date-field,.team-status-trigger,.team-project-filter>summary) { background:#111820;color:#b4bec8;border-color:#2b3642;box-shadow:none; }
+html body #teamConsole .team-data-workspace .team-panel { min-width:0;width:100%;overflow:hidden;background:#10171f;border:1px solid #2b3642;border-radius:12px; }
+html body #teamConsole .team-data-workspace .team-table-wrap { width:100%;max-width:100%;min-width:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#566474 #10171f; }
+html body #teamConsole .team-data-workspace .team-table { background:#10171f!important;border-collapse:separate;border-spacing:0; }
+html body #teamConsole .team-data-workspace .team-table th { background:#151e28!important;color:#9aa6b2!important;border-color:#222c38;height:44px; }
+html body #teamConsole .team-data-workspace .team-table td { background:#10171f!important;color:#d5dbe3;border-color:#222c38; }
+html body #teamConsole .team-data-workspace .team-table tbody tr:hover td { background:#19232e!important; }
+html body #teamConsole .team-data-workspace .team-pagination { background:#10171f;border-color:#222c38; }
+html body #teamConsole .team-project-type { background:#c4b5fd14;border:1px solid #c4b5fd38;color:#c4b5fd;border-radius:6px;padding:3px 9px; }
+html body #teamConsole .team-project-type.drama { background:#8ebbea18;border:1px solid #8ebbea38;color:#a7c8ee;border-radius:999px;padding:3px 9px; }
+html body #teamConsole #teamProjectTableWrap .project-table { table-layout:fixed;width:100%;min-width:1640px; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(1) { width:220px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(2) { width:180px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(3) { width:80px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(4) { width:160px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(5) { width:110px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(6) { width:110px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(7) { width:125px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(8),
+html body #teamConsole #teamProjectTableWrap col:nth-child(9) { width:100px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(10) { width:80px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(11) { width:135px!important; }
+html body #teamConsole #teamProjectTableWrap col:nth-child(12) { width:200px!important; }
+html body #teamConsole #teamProjectTableWrap :is(th,td):last-child { position:sticky;right:0;z-index:3;min-width:200px;width:200px;box-shadow:-10px 0 16px -12px #000b;border-left:1px solid #2b3642; }
+html body #teamConsole #teamProjectTableWrap th:last-child { z-index:5; }
+html body #teamConsole #teamProjectTableWrap :is(th,td):first-child { position:sticky;left:0;z-index:2; }
+html body #teamConsole .team-project-actions { gap:8px;justify-content:center;flex-wrap:nowrap; }
+html body #teamConsole .team-project-actions button { white-space:nowrap; }
+html body #teamConsole .team-table-overflow-note { display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 12px;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamConsole .team-table-overflow-note[hidden] { display:none!important; }
+html body #teamConsole .team-table-overflow-note button { width:28px;height:28px;border:1px solid #2b3642;border-radius:6px;background:#171e27;color:#d5dbe3;cursor:pointer; }
+html body #teamConsole .team-table-overflow-note button:disabled { color:#566474;cursor:not-allowed; }
+@media(max-width:960px) {
+html body #teamSubmodal .manage-batch .team-manage-layout { flex-direction:column; }
+html body #teamSubmodal .manage-batch .team-manage-members { width:100%;max-height:220px;border-right:0;border-bottom:1px solid #2b3642; }
+html body #teamSubmodal .manage-batch .team-modal-body { min-height:220px; }
+}
+@media(max-width:640px) {
+html body #teamConsole .team-data-workspace>.team-tabs { gap:24px; }
+html body #teamConsole #teamProjectTableWrap :is(th,td):first-child { position:static; }
+html body #teamConsole #teamProjectTableWrap :is(th,td):last-child { width:160px;min-width:160px;padding-left:8px;padding-right:8px; }
+html body #teamConsole #teamProjectTableWrap col:last-child { width:160px!important; }
+html body #teamConsole .team-project-actions { gap:6px;flex-direction:column; }
+html body #teamSubmodal .team-modal-card.permissions { padding:20px; }
+html body #teamSubmodal .manage-batch .team-modal-body { padding:20px; }
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-modal-spacing.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .team-modal-card[data-team-dialog="invite"] { box-sizing:border-box;width:min(480px,calc(100vw - 32px));padding:24px!important; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-modal-head { min-height:28px;gap:16px;padding:0;border:0;align-items:center; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-modal-head h3 { margin:0;font-size:18px;line-height:28px;font-weight:600; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-modal-body { padding:24px 0 0!important;gap:0; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-field { height:40px;min-height:40px;background:#111820;border-color:#35414e; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-invite-actions { display:flex;flex-direction:column;align-items:stretch;gap:24px;margin-top:12px; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-invite-seats { margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-invite-seats strong { color:#b4bec8;font-weight:400; }
+html body #teamSubmodal [data-team-dialog="invite"] .team-invite-buttons { display:flex;justify-content:flex-end;gap:12px;margin:0; }
+html body .team-create-dialog .team-create-avatar-section { display:grid;grid-template-columns:88px minmax(0,1fr);column-gap:20px;row-gap:0;margin-top:28px;padding:0;background:transparent;border:0; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-label { grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:0;padding-top:6px;font-size:14px;line-height:20px; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-label small { margin:0;color:#6f7b88;font-size:12px;font-weight:400; }
+html body .team-create-dialog .team-create-avatar-row { grid-column:2;display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:14px 16px; }
+html body .team-create-dialog .team-create-avatar-row>.team-create-avatar-preview { grid-column:1;grid-row:1;width:72px;height:72px;flex-basis:72px; }
+html body .team-create-dialog .team-create-avatar-row>div:not(.team-create-avatar-preview) { display:contents; }
+html body .team-create-dialog .team-create-upload-actions { grid-column:2;grid-row:1;display:flex;gap:8px;flex-wrap:wrap;margin:0; }
+html body .team-create-dialog .team-create-avatar-row .team-create-hint { grid-column:1 / -1;grid-row:2;margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body .team-create-dialog .team-create-upload-actions button { height:36px;min-height:36px;padding:0 14px;font-size:14px;line-height:20px; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-error { grid-column:2;margin:8px 0 0; }
+html body .team-create-dialog .team-create-name-section { display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px 20px;margin-top:28px;padding-top:24px;border-top:1px solid #2b3642; }
+html body .team-create-dialog .team-create-name-section>.team-create-label { grid-column:1;grid-row:1;align-self:center;margin:0;font-size:14px;line-height:20px; }
+html body .team-create-dialog .team-create-name-section>.team-create-input-wrap { grid-column:2;grid-row:1; }
+html body .team-create-dialog .team-create-name-section>:is(.team-create-hint,.team-create-error) { grid-column:2;margin:0;font-size:12px;line-height:20px; }
+html body #teamSubmodal .permissions .team-permissions-heading { display:block;padding:0 36px 20px 0;border-bottom:1px solid #2b3642; }
+html body #teamSubmodal .permissions .team-permissions-icon { display:none; }
+html body #teamSubmodal .permissions .team-permissions-heading h3 { font-size:18px;line-height:28px;font-weight:600;color:#f5f7fa; }
+html body #teamSubmodal .permissions .team-permissions-heading p { margin:6px 0 0;font-size:14px;line-height:22px;color:#9aa6b2; }
+html body #teamSubmodal .permissions .team-permissions-note { display:flex;align-items:flex-start;gap:16px;margin:16px 0 24px;padding:0;background:transparent;border:0;font-size:12px;line-height:20px;color:#b4bec8; }
+html body #teamSubmodal .permissions .team-permissions-scope-label { flex:0 0 auto;color:#6f7b88; }
+html body #teamSubmodal .permissions .team-permissions-section-label { margin:0 0 4px;font-size:12px;line-height:20px;font-weight:400;color:#9aa6b2; }
+html body #teamSubmodal .permissions .team-permission-row { padding:16px 0;gap:24px;align-items:center; }
+html body #teamSubmodal .permissions .team-permission-row>span { min-width:0;flex:1; }
+html body #teamSubmodal .permissions .team-permission-row strong { margin:0 0 6px;color:#f5f7fa;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamSubmodal .permissions .team-permission-row small { font-size:12px;line-height:20px;color:#9aa6b2; }
+html body #teamSubmodal .permissions .team-permission-switch { flex-shrink:0; }
+@media(max-width:540px) {
+html body .team-create-dialog .team-create-avatar-section,
+html body .team-create-dialog .team-create-name-section { grid-template-columns:minmax(0,1fr);gap:12px; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-label { grid-column:1;flex-direction:row;align-items:baseline;padding:0; }
+html body .team-create-dialog .team-create-avatar-row { grid-column:1;grid-row:2; }
+html body .team-create-dialog .team-create-name-section>.team-create-label { grid-column:1;grid-row:1; }
+html body .team-create-dialog .team-create-name-section>.team-create-input-wrap { grid-column:1;grid-row:2; }
+html body .team-create-dialog .team-create-name-section>:is(.team-create-hint,.team-create-error),
+html body .team-create-dialog .team-create-avatar-section>.team-create-error { grid-column:1; }
+}
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) { box-sizing:border-box;width:min(480px,calc(100vw - 32px));padding:24px!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-head { min-height:28px;padding:0;border:0; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-body { padding:24px 0 0!important; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-actions { margin-top:32px;padding:0;gap:12px; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-dialog-hierarchy.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .permissions .team-permissions-heading { padding:0 36px 0 0;border:0; }
+html body #teamSubmodal .permissions .team-permissions-note { display:flex;flex-wrap:wrap;gap:4px 12px;margin:20px 0 8px;padding:12px 16px;border:0;border-radius:8px;background:#111820;align-items:center; }
+html body #teamSubmodal .permissions .team-permissions-note strong { color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamSubmodal .permissions .team-permissions-note span { color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal .permissions .team-permissions-section-label { display:none; }
+html body #teamSubmodal .permissions .team-permissions-options { margin-top:8px; }
+html body .team-create-dialog .team-create-avatar-section { display:flex;flex-direction:column;gap:12px;margin-top:24px; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-label { display:flex;flex-direction:row;align-items:baseline;gap:8px;padding:0;margin:0;font-weight:500; }
+html body .team-create-dialog .team-create-avatar-row { display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;align-items:start; }
+html body .team-create-dialog .team-create-avatar-row>.team-create-avatar-preview { width:64px;height:64px;grid-column:1;grid-row:1;flex-basis:64px; }
+html body .team-create-dialog .team-create-avatar-row>div:not(.team-create-avatar-preview) { display:flex;flex-direction:column;align-items:flex-start;gap:10px;grid-column:2;grid-row:1; }
+html body .team-create-dialog .team-create-upload-actions { display:flex;grid-column:auto;grid-row:auto;gap:8px; }
+html body .team-create-dialog .team-create-avatar-row .team-create-hint { grid-column:auto;grid-row:auto;margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body .team-create-dialog .team-create-name-section { display:flex;flex-direction:column;gap:8px;margin-top:28px;padding:0;border:0; }
+html body .team-create-dialog .team-create-name-section>.team-create-label { align-self:flex-start;margin:0;font-weight:500; }
+html body .team-create-dialog .team-create-name-section>.team-create-input-wrap { width:100%; }
+html body .team-create-dialog .team-create-name-section>.team-create-hint { margin:0;color:#6f7b88; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="detail"] { box-sizing:border-box;width:min(860px,calc(100vw - 32px));height:560px;max-height:calc(100dvh - 48px);min-height:0;overflow:hidden; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="detail"]:not([hidden]) { display:flex;flex-direction:column; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-modal-head { flex:0 0 auto; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-modal-body { flex:1;min-height:0;max-height:none;overflow:auto;padding:24px;scrollbar-width:thin;scrollbar-color:#35414e transparent; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-table { width:100%;min-width:600px;border-collapse:separate;border-spacing:0; }
+html body #teamSubmodal [data-team-dialog="detail"] th { position:sticky;top:0;z-index:1;height:44px;background:#222c38;font-size:12px;line-height:18px; }
+html body #teamSubmodal [data-team-dialog="detail"] td { height:52px;vertical-align:middle; }
+html body #teamSubmodal [data-team-dialog="detail"] td[colspan] { height:320px;text-align:center; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="authorize"] { width:min(620px,calc(100vw - 32px));max-height:calc(100dvh - 48px); }
+html body #teamSubmodal [data-team-dialog="authorize"] .team-modal-body { display:flex;flex-direction:column;gap:20px;padding:24px; }
+html body #teamSubmodal .team-authorization-person { padding:0 0 16px;border:0;border-bottom:1px solid #2b3642;border-radius:0;background:transparent; }
+html body #teamSubmodal .team-authorization-person strong { font-size:14px;line-height:20px;font-weight:500; }
+html body #teamSubmodal .team-authorization-person small { color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal .team-authorization-modes { margin:0;padding:0;gap:12px;border:0; }
+html body #teamSubmodal .team-authorization-modes legend { width:100%;padding:0;margin:0 0 10px;color:#b4bec8;font-size:12px;line-height:20px; }
+html body #teamSubmodal .team-authorization-modes label { min-height:44px;padding:12px;border:1px solid #35414e;border-radius:8px;background:#111820;color:#b4bec8;font-size:14px;line-height:20px; }
+html body #teamSubmodal .team-authorization-modes label:has(input:checked) { background:#222c38!important;border-color:#566474!important;color:#f5f7fa!important; }
+html body #teamSubmodal #teamAuthorizeHint { margin:-8px 0 0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal #teamAuthorizeSelection { display:flex;flex-direction:column;gap:12px; }
+html body #teamSubmodal #teamAuthorizeSelection[hidden] { display:none!important; }
+html body #teamSubmodal .team-authorization-toolbar { display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin:0; }
+html body #teamSubmodal .team-authorization-search { grid-column:1/-1;grid-row:1;width:100%;max-width:none; }
+html body #teamSubmodal #teamAuthorizeSearch { width:100%;height:40px;min-height:40px;background:#111820;border-color:#35414e; }
+html body #teamSubmodal .team-authorization-toolbar>label { grid-column:1;grid-row:2;font-size:12px;line-height:20px; }
+html body #teamSubmodal #teamAuthorizeCount { grid-column:2;grid-row:2;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamSubmodal .team-authorization-list { max-height:280px;overflow:auto;border:1px solid #2b3642;border-radius:8px;background:#111820;scrollbar-width:thin;scrollbar-color:#35414e transparent; }
+html body #teamSubmodal .team-authorization-project { min-height:48px;padding:12px;border:0;border-bottom:1px solid #2b3642;background:transparent;gap:12px; }
+html body #teamSubmodal .team-authorization-project:last-child { border-bottom:0; }
+html body #teamSubmodal .team-authorization-project:hover { background:#222c38!important; }
+html body #teamSubmodal .team-authorization-project:has(input:checked) { background:#1c2632!important;border-color:#2b3642!important; }
+html body #teamSubmodal .team-authorization-project span { color:#d5dbe3;font-size:14px;line-height:20px; }
+html body #teamSubmodal [data-team-dialog="authorize"] .team-modal-actions { margin-top:4px;flex-shrink:0; }
+@media(max-width:540px) {
+html body #teamSubmodal [data-team-dialog="detail"] .team-modal-body,
+html body #teamSubmodal [data-team-dialog="authorize"] .team-modal-body { padding:20px; }
+html body #teamSubmodal .team-authorization-modes { display:flex;flex-direction:column; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="detail"] { height:560px;max-height:calc(100dvh - 24px); }
+}
+html body #teamSubmodal .permissions .team-permissions-note { display:block;margin:8px 0 20px;padding:0;border:0;border-radius:0;background:transparent;color:#9aa6b2;font-size:14px;line-height:22px;font-weight:400; }
+html body .team-create-dialog .team-create-avatar-row>div:not(.team-create-avatar-preview) { min-height:64px;justify-content:center; }
+html body .team-create-dialog .team-create-avatar-section>.team-create-hint { margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-table-selection-fixes.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal [data-team-dialog="detail"] .team-modal-body { display:flex;flex-direction:column;overflow:hidden;padding:24px; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-scroll { flex:1;min-height:0;width:100%;overflow:auto;isolation:isolate;scrollbar-width:thin;scrollbar-color:#35414e transparent; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-table thead { position:sticky;top:0;z-index:2;background:#222c38; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-table th { position:static!important;top:auto;background:#222c38;box-shadow:0 1px 0 #2b3642; }
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-table td[colspan],
+html body #teamSubmodal [data-team-dialog="detail"] .team-detail-table tr:has(td[colspan]) { border:0!important;box-shadow:none!important; }
+html body #teamConsole .team-cell-name:has(.team-cell-name-input) { outline:none!important;box-shadow:none!important;border:0!important; }
+html body #teamConsole .team-cell-name-input,
+html body #teamConsole .team-cell-name-input:is(:focus,:focus-visible) { outline:none!important;box-shadow:none!important;border:1px solid #566474!important;border-radius:6px;background:#111820;color:#f5f7fa; }
+html body #teamSubmodal .team-authorization-project,
+html body #teamSubmodal .team-authorization-project:has(input:checked),
+html body #teamSubmodal .team-authorization-project:hover,
+html body #teamSubmodal .team-authorization-project:has(input:checked):hover { background:transparent!important;border-color:#2b3642!important;color:#d5dbe3!important;box-shadow:none!important; }
+html body #teamSubmodal .team-authorization-modes { display:block; }
+html body #teamSubmodal .team-authorization-segments { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border:1px solid #2b3642;border-radius:10px;background:#111820; }
+html body #teamSubmodal .team-authorization-segments label { position:relative;display:flex;justify-content:center;align-items:center;min-height:36px;margin:0;padding:8px 12px;border:0!important;border-radius:6px;background:transparent!important;color:#9aa6b2;font-size:14px;line-height:20px;font-weight:400;cursor:pointer; }
+html body #teamSubmodal .team-authorization-segments label:has(input:checked) { background:#2b3642!important;color:#f5f7fa!important;border:0!important;box-shadow:none!important; }
+html body #teamSubmodal .team-authorization-segments label:hover { color:#d5dbe3; }
+html body #teamSubmodal .team-authorization-segments input[type="radio"] { position:absolute;opacity:0;width:1px!important;height:1px!important;min-width:0!important;min-height:0!important;margin:0;padding:0;border:0!important;outline:none!important;box-shadow:none!important; }
+html body #teamSubmodal .team-authorization-segments label:has(input:focus-visible) { outline:1px solid #9aa6b2;outline-offset:2px; }
+@media(max-width:540px) {
+html body #teamSubmodal [data-team-dialog="detail"] .team-modal-body { padding:20px; }
+html body #teamSubmodal .team-authorization-segments { grid-template-columns:1fr; }
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-four-visual.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-modal-body { gap:0; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-manage-member-summary { display:flex;flex-direction:column;align-items:stretch;gap:12px;margin:0 0 24px;font-size:14px;line-height:20px;font-weight:400; }
+html body #teamSubmodal .team-manage-person { display:flex;align-items:center;gap:8px; }
+html body #teamSubmodal .team-manage-person>strong { font-size:14px;line-height:20px;color:#f5f7fa;font-weight:500; }
+html body #teamSubmodal .team-manage-role { padding:2px 7px;border-radius:4px;background:#222c38;color:#b4bec8;font-size:12px;line-height:18px;font-weight:400; }
+html body #teamSubmodal .team-manage-current-quota { display:flex;align-items:center;justify-content:space-between;gap:12px;color:#9aa6b2!important;font-size:12px;line-height:20px;font-weight:400; }
+html body #teamSubmodal .team-manage-current-quota>strong { display:flex;align-items:baseline;gap:6px;color:#d5dbe3;font-size:16px;line-height:24px;font-weight:500;font-variant-numeric:tabular-nums; }
+html body #teamSubmodal .team-manage-current-quota small { font-size:12px;line-height:20px;font-weight:400;color:#9aa6b2; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-form-field { gap:8px;margin:0; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) .team-form-field>span { font-size:14px;line-height:20px;font-weight:400; }
+html body #teamSubmodal .team-modal-card[data-team-dialog="manage"]:not(.manage-batch) #teamManageHint { display:block;margin-top:10px;font-size:12px;line-height:20px;color:#9aa6b2; }
+html body #teamSubmodal .team-authorization-person { padding:0;border:0!important;margin:0;background:transparent; }
+html body #teamConsole .team-project-type,
+html body #teamConsole .team-project-type.drama { border-radius:999px!important; }
+html body #teamConsole .team-data-workspace>.team-tabs { box-sizing:border-box;flex:0 0 44px;height:44px;min-height:44px;align-items:stretch;padding:0;margin:0 0 20px;overflow-y:hidden;scrollbar-width:none; }
+html body #teamConsole .team-data-workspace>.team-tabs::-webkit-scrollbar { display:none; }
+html body #teamConsole .team-data-workspace .team-tab { box-sizing:border-box;align-self:stretch;height:44px;min-height:44px;margin:0;padding:2px 0 16px; }
+html body #teamConsole .team-data-workspace .team-tab.is-active::after { bottom:0;height:2px;border-radius:2px; }
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-project-dialogs.css 中的团队专属视觉规则，按原设计层叠顺序覆盖。 */
+html body.team-console-open .pm-dialog.pm-board-standalone { width:min(960px,calc(100vw - 32px));height:620px;max-height:calc(100dvh - 48px);overflow:hidden; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-header { padding:20px 24px;min-height:72px;flex:0 0 auto; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-header h2 { font-size:18px!important;line-height:28px!important;font-weight:600!important; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-body { display:flex;flex-direction:column;min-height:0;padding:24px;overflow:hidden; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-toolbar { flex:0 0 auto;min-height:20px;margin:0 0 20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-toolbar p { margin:0;color:#9aa6b2;font-size:14px;line-height:22px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-columns { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;flex:1;min-height:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column { display:flex;flex-direction:column;min-width:0;min-height:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column+.pm-column { padding-left:0;border-left:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column-head { flex:0 0 auto;min-height:40px;margin:0 0 12px;gap:12px;align-items:center; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column-head h3 { display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;font-weight:500;color:#f5f7fa; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column-head .pm-muted { font-size:12px;font-weight:400;color:#9aa6b2; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-search { height:36px;min-height:36px;width:180px;max-width:100%;padding:8px 12px;border:1px solid #35414e;border-radius:8px;background:#111820;color:#d5dbe3; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table-wrap { flex:1;min-height:0;overflow:auto;border:0;border-radius:0;background:transparent;scrollbar-width:thin;scrollbar-color:#35414e transparent;isolation:isolate; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table { width:100%;border-collapse:separate;border-spacing:0;background:transparent;font-size:14px;line-height:20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table thead { position:sticky;top:0;z-index:1;background:#222c38; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table th { position:static;height:40px;padding:10px 12px;background:#222c38;font-size:12px;line-height:20px;font-weight:400;color:#9aa6b2; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table td { height:52px;padding:12px;border:0;border-bottom:1px solid #26313d;background:transparent;font-size:14px;line-height:20px;color:#d5dbe3; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table tbody tr:hover td { background:rgba(255,255,255,.025); }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table td strong { font-weight:400; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-tag { display:inline-block;padding:0;border:0;border-radius:0;background:transparent;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table :is(.pm-table-action,.pm-link) { min-height:30px;height:30px;padding:4px 10px;border:1px solid #35414e!important;border-radius:999px;background:#222c38!important;color:#e5e9ef;font-size:12px!important;line-height:20px!important;font-weight:400!important; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table :is(.pm-table-action,.pm-link):hover { background:#2b3642!important;border-color:#566474!important;color:#fff; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-empty { height:220px;border:0!important; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-footer { padding:16px 24px;border-color:#2b3642;background:transparent; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-summary) { width:min(860px,calc(100vw - 32px));height:580px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;flex:0 0 auto;margin:0 0 28px;padding:0 0 8px;border:0;background:transparent; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat { min-width:0;padding:0 24px;border:0;border-radius:0;background:transparent;box-shadow:none; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child { padding-left:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat+.pm-stat { border-left:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat span { margin:0 0 10px;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { color:#f5f7fa;font-size:28px;line-height:36px;font-weight:600;letter-spacing:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat small { margin-left:6px;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-summary) .pm-toolbar { margin-bottom:12px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-toolbar h3 { font-size:14px;line-height:20px;font-weight:500;color:#d5dbe3; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-summary) .pm-table .pm-number { width:32%;text-align:right; }
+@media(max-width:760px) {
+html body.team-console-open .pm-dialog.pm-board-standalone { max-height:calc(100dvh - 24px); }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-body { padding:20px;overflow:auto; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-columns { display:flex;flex-direction:column;flex:0 0 auto;gap:24px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column+.pm-column { padding:8px 0 0;border:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column .pm-table-wrap { flex:none;max-height:240px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-column .pm-table { min-width:370px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat { padding:0 12px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { font-size:24px;line-height:32px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat small { display:block;margin:2px 0 0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-header,
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-footer { padding-left:20px;padding-right:20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-summary) .pm-body { overflow:hidden; }
+}
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table :is(.pm-table-action,.pm-link),
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-table :is(.pm-table-action,.pm-link):is(:hover,:focus,:focus-visible,:active) { text-decoration:none!important; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary { grid-template-columns:1.35fr 1fr 1.2fr;gap:24px;align-items:end;margin-bottom:32px;padding:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat { display:grid;grid-template-columns:max-content 1fr;column-gap:6px;row-gap:8px;align-items:baseline;padding:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat span { grid-column:1 / -1;margin:0;font-size:12px;line-height:20px;font-weight:400; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { font-size:24px;line-height:40px;font-weight:500;font-variant-numeric:tabular-nums;color:#d5dbe3; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child strong { font-size:32px;line-height:40px;font-weight:600;color:#f5f7fa; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat small { display:inline;margin:0;font-size:12px;line-height:20px;white-space:nowrap;color:#8794a2; }
+@media(max-width:520px) {
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary { grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px;margin-bottom:28px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child { grid-column:1 / -1; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat { row-gap:4px;padding:0; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { font-size:22px;line-height:32px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child strong { font-size:30px;line-height:36px; }
+}
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary { grid-template-columns:1.35fr 1fr 1.2fr;gap:24px;align-items:center;
+  padding:20px 24px;margin-bottom:28px;border:0;border-radius:10px;
+  background:#202a35;box-shadow:none; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat { padding:0;border:0;row-gap:6px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat span { color:#a7b2bf; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { font-size:24px;line-height:40px;font-weight:500;color:#e1e6ec; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child strong { font-size:32px;line-height:40px;font-weight:600;color:#fff; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat small { color:#9aa6b2; }
+@media(max-width:520px) {
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary { grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 20px;gap:16px 20px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child { grid-column:1 / -1; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat strong { font-size:22px;line-height:32px; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-stat:first-child strong { font-size:30px;line-height:36px; }
+}
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat span { font-size:12px;line-height:20px;font-weight:400;color:#a7b2bf; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat strong,
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat:first-child strong { font-size:28px;line-height:36px;font-weight:600;color:#f5f7fa; }
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat small { font-size:12px;line-height:20px;font-weight:400;color:#9aa6b2; }
+@media(max-width:520px) {
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat strong,
+html body.team-console-open .pm-dialog.pm-board-standalone .pm-summary .pm-stat:first-child strong { font-size:24px;line-height:32px; }
+}
+
+/* 2026-10-29 展示逻辑：团队页采用设计稿的整宽吸顶栏，只在团队页隐藏应用壳层；
+ * 关闭团队页后所有规则失效，返回按钮继续调用原有导航处理函数，共用账户组件仍保留原交互。
+ */
+html body.team-console-open > .app { display:none!important; }
+html body.team-console-open #teamConsoleOverlay { width:100%; margin-left:0; padding-top:0; }
+html body.team-console-open #teamConsole { min-height:100dvh; }
+html body.team-console-open > .global-account { top:18px; right:28px; transform:none; }
+html body.team-console-open #teamConsole .team-console-header {
+ position:sticky; top:0; z-index:12000; display:flex; align-items:center; justify-content:flex-start;
+ gap:12px; height:76px; min-height:76px; flex:0 0 76px; padding:0 28px;
+ background:#0d141b; border-bottom:1px solid rgba(255,255,255,.06);
+}
+html body.team-console-open #teamConsole .team-console-title { margin:0; font-size:20px; line-height:28px; font-weight:600; }
+html body.team-console-open #teamConsole .team-page-back { flex:0 0 40px; width:40px; height:40px; min-width:40px; min-height:40px; padding:0; border:0; border-radius:50%; background:#171e27; }
+html body.team-console-open #teamConsole .team-page-back .team-inline-icon { width:20px; height:20px; }
+html body.team-console-open #teamConsole .team-console-body { width:100%; max-width:none; padding:12px 28px 28px; gap:24px; }
+html body.team-console-open.requirements-panel-open #teamConsoleOverlay { width:calc(100vw - var(--requirements-panel-width)); }
+@media(max-width:980px) { html body.team-console-open.requirements-panel-open #teamConsoleOverlay { width:100%; } }
+
+/* 2026-10-29 展示逻辑：覆盖设计稿中会在 1440/1180px 把两张概况卡拆成上下两行的规则；
+ * 沿用现有代码的小屏同排策略和 240px/460px 最小宽度，仅更新间距、字号、边框和按钮外观。
+ */
+html body #teamConsole .team-summary-grid {
+ display:grid; grid-template-columns:minmax(280px,.95fr) minmax(0,2.65fr);
+ align-items:stretch; gap:20px; min-width:0; max-width:100%; flex:none;
+}
+html body #teamConsole :is(.team-summary-card,.team-overview-card) { min-height:176px; background:#0d141b; border:1px solid #2b3642; border-radius:16px; box-shadow:none; }
+html body #teamConsole .team-summary-card { display:flex; flex-direction:column; align-items:stretch; justify-content:space-between; padding:24px; gap:16px; }
+html body #teamConsole .team-summary-card .team-identity { flex:0 0 auto; align-items:center; width:100%; gap:16px; }
+html body #teamConsole .team-summary-card .team-identity > div { flex:1; min-width:0; }
+html body #teamConsole .team-summary-card .team-name-display { max-width:100%; font-size:16px; line-height:24px; font-weight:600; }
+html body #teamConsole .team-summary-card .team-name-row { height:28px; }
+html body #teamConsole .team-console-avatar { width:48px; height:48px; flex:0 0 48px; font-size:24px; }
+html body #teamConsole .team-summary-card .team-settings-actions { display:flex; flex:0 0 auto; flex-direction:row; align-self:stretch; justify-content:space-between; width:100%; margin:0; gap:12px; }
+html body #teamConsole .team-summary-card .team-settings-actions .team-button { flex:1 1 0; width:auto; min-width:0; height:36px; min-height:36px; padding:0 12px; font-size:14px; line-height:20px; font-weight:400; }
+html body #teamConsole .team-overview-card { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,3fr); padding:24px 0; gap:0; }
+html body #teamConsole .team-overview-group { display:flex; flex-direction:column; justify-content:space-between; min-width:0; padding:0 24px; gap:18px; }
+html body #teamConsole .team-overview-group + .team-overview-group { border-top:0; border-left:1px solid rgba(255,255,255,.06); }
+html body #teamConsole .team-overview-heading { min-height:36px; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+html body #teamConsole .team-overview-heading h3 { font-size:14px; line-height:20px; font-weight:500; }
+html body #teamConsole .team-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:0; }
+html body #teamConsole .team-overview-group:first-child .team-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+html body #teamConsole .team-metrics dt { min-height:18px; font-size:12px; line-height:18px; color:#9aa6b2; white-space:nowrap; }
+html body #teamConsole .team-metrics dd { margin:10px 0 0; font-size:28px; line-height:36px; font-weight:600; letter-spacing:-.4px; color:#f5f7fa; white-space:nowrap; }
+html body #teamConsole .team-metric-capacity { font-size:16px; color:#9aa6b2; font-weight:400; }
+html body #teamConsole .team-metrics > div + div { padding-left:20px; border-color:rgba(255,255,255,.06); }
+html body #teamConsole #teamBalanceValue { color:#f5f7fa; }
+@media(max-width:1180px) {
+ html body #teamConsole .team-summary-grid { grid-template-columns:minmax(240px,.75fr) minmax(460px,2fr); gap:16px; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#3a4654 transparent; }
+ html body #teamConsole .team-summary-card { min-height:176px; padding:18px; }
+ html body #teamConsole .team-overview-card { grid-template-columns:minmax(0,2fr) minmax(0,3fr); padding:20px 0; gap:0; }
+ html body #teamConsole .team-overview-group { padding:0 12px; gap:18px; }
+ html body #teamConsole .team-overview-group + .team-overview-group { padding-top:0; border-top:0; border-left:1px solid rgba(255,255,255,.06); }
+ html body #teamConsole .team-overview-heading { min-height:30px; gap:6px 8px; }
+ html body #teamConsole .team-metrics { gap:8px; }
+ html body #teamConsole .team-metrics > div + div { padding-left:8px; }
+ html body #teamConsole .team-metrics dt { font-size:11px; }
+ html body #teamConsole .team-metrics dd { font-size:clamp(20px,2.4vw,28px); }
+ html body #teamConsole .team-overview-heading :is(#teamExpandButton,#teamCreditsButton) { height:28px; min-height:28px; padding:0 8px; font-size:12px!important; }
+}
+@media(max-width:980px) {
+ html body #teamConsole .team-metrics dt { white-space:normal; min-height:32px; line-height:16px; }
+ html body #teamConsole .team-metrics dd { font-size:22px; }
+ html body #teamConsole .team-metric-capacity { margin-left:2px; }
+}
+@media(max-width:760px) {
+ html body.team-console-open #teamConsole .team-console-body { padding:16px; gap:20px; }
+ html body.team-console-open #teamConsole .team-console-header { padding:0 16px; }
+}
+
+/* 2026-10-29 展示逻辑：成员角色统一为设计稿灰色标签，保留正常/待处理等状态色；
+ * 姓名固定列与表头使用不透明底色，避免横向滚动穿透文字；可分配积分与本人标记取消品牌绿强调。
+ */
+html body #teamConsole :is(.team-tag.team-role-admin,.team-tag.team-role-member) { border-color:#2b3642; background:#171e27; color:#d5dbe3; font-weight:400; }
+html body #teamConsole .team-account-you { color:#9aa6b2; font-size:12px; }
+html body #teamConsole .team-data-workspace { flex:none; }
+html body #teamConsole .team-data-workspace .team-panel { background:#10171f; }
+html body #teamConsole .team-data-workspace #teamMemberTableWrap .team-table th:first-child { background:#151e28!important; box-shadow:1px 0 0 #222c38; }
+html body #teamConsole .team-data-workspace #teamMemberTableWrap .team-table td:first-child { background:#10171f!important; box-shadow:1px 0 0 #222c38; }
+html body #teamConsole .team-data-workspace #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:#19232e!important; }
+html body #teamConsole .team-monthly-credits-track { background:#2b3642; }
+html body #teamConsole .team-monthly-credits-fill { background:#9aa6b2; }
+html body #teamConsole .team-data-workspace .team-tab.is-active::after { content:""; display:block; }
+
+/* 2026-10-29 展示逻辑：补齐当前版本新增的邀请确认和团队资料弹窗视觉，不迁移设计稿的旧邀请流程。
+ * 白色主操作、透明次级操作、红色破坏性操作沿用设计稿；失效控件保持明确灰色，弹窗显隐始终尊重原 hidden。
+ */
+html body #teamSubmodal .team-modal-card[data-team-dialog="invite-confirm"],
+html body #teamSubmodal .team-modal-card[data-team-dialog="remove"],
+html body #teamSubmodal .team-modal-card.role { box-sizing:border-box; width:min(480px,calc(100vw - 32px)); padding:24px; }
+html body #teamSubmodal :is([data-team-dialog="invite-confirm"],[data-team-dialog="remove"],.role) .team-modal-head { padding:0; min-height:28px; border:0; }
+html body #teamSubmodal :is([data-team-dialog="invite-confirm"],[data-team-dialog="remove"],.role) .team-modal-body { padding:24px 0 0; }
+html body #teamSubmodal .team-permissions-heading p { display:block; }
+html body #teamSubmodal .team-modal-card.permissions { width:min(620px,calc(100vw - 32px)); }
+html body #teamSubmodal .team-modal-card .team-modal-actions .team-button { min-width:0; width:auto; height:36px; min-height:36px; border-radius:999px; padding:0 16px; }
+html body #teamSubmodal .team-button:not(.secondary):not(.danger):not(:disabled) { background:#fff!important; border-color:transparent!important; color:#0b121a!important; }
+html body #teamSubmodal .team-button:not(.secondary):not(.danger):hover:not(:disabled) { background:#e8edf2!important; }
+html body #teamSubmodal .team-button:not(.secondary):not(.danger):active:not(:disabled) { background:#d5dbe3!important; }
+html body #teamSubmodal .team-button:disabled,
+html body .team-create-dialog button:disabled,
+html body.team-console-open .pm-dialog button:disabled,
+html body.team-console-open .pm-confirm-dialog button:disabled { background:#2b3642!important; border-color:transparent!important; color:#6f7b88!important; opacity:1!important; cursor:not-allowed!important; }
+html body .team-create-dialog button.team-create-upload { border:1px solid #35414e; border-radius:999px; background:#222b35; color:#d5dbe3; }
+html body #teamConsole [hidden], html body #teamSubmodal [hidden], html body .team-create-dialog [hidden],
+html body .team-page-size-menu[hidden], html body .team-calendar-popover[hidden] { display:none!important; }
+@media(prefers-reduced-motion:reduce) {
+ html body #teamConsole *, html body #teamSubmodal *, html body .team-create-dialog *, html body.team-console-open .pm-dialog * { transition:none!important; animation:none!important; }
+}
+
+
+/* 2026-10-29 Product Design 展示改动逻辑：团队页内容恢复设计稿的 1920px 最大模块宽度，
+ * 统一居中与 32px 水平内边距；概况、页签、筛选器、三个看板和分页共用同一左右边界。
+ * 仅限制内容区，顶部栏继续整宽；保留既有小屏概况同排、2:3 分区及表格内部横向滚动策略，
+ * 不改变数据、筛选、排序、分页、权限及任何按钮事件，也不影响右上账号菜单或其他页面。
+ */
+html body.team-console-open #teamConsole .team-console-body {
+ box-sizing:border-box;width:100%;max-width:1920px;min-width:0;
+ margin:0 auto;padding:28px 32px 32px;gap:24px;
+}
+html body #teamConsole .team-console-body>.team-summary-grid,
+html body #teamConsole .team-console-body>.team-data-workspace {
+ box-sizing:border-box;width:100%;min-width:0;max-width:100%;
+}
+html body #teamConsole .team-data-workspace .team-panel,
+html body #teamConsole .team-data-workspace .team-table-wrap {
+ box-sizing:border-box;min-width:0;max-width:100%;
+}
+
+/* 2026-10-29 展示逻辑：月消耗／额度使用设计稿的白色数字与 3px 灰色进度线；
+ * 进度填充宽度继续使用原 monthlyPercent，零额度、受限行及实时更新保持原样。
+ */
+html body #teamConsole .team-table .team-monthly-credits {
+ display:inline-flex;flex-direction:column;align-items:flex-start;min-width:108px;
+ gap:8px;color:#fff;font-size:14px;line-height:20px;font-weight:400;
+ font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+html body #teamConsole .team-table .team-monthly-credits>span:first-child { color:#fff; }
+html body #teamConsole .team-table .team-monthly-credits-track {
+ display:block;width:88px;height:3px;border-radius:999px;background:#2b3642;overflow:hidden;
+}
+html body #teamConsole .team-table .team-monthly-credits-fill {
+ display:block;height:100%;border-radius:999px;background:#a7b4c4;
+}
+
+/* 2026-10-29 展示逻辑：迁移设计稿 v150-table-credit-emphasis.css 的最终积分样式，
+ * 累计消耗、项目消耗和成员消耗统一为 14px 常规数字、6px 图标间距与品牌绿。
+ * 保留原积分值及格式化方式；图标继续使用现有 mdi/star-four-points 资源，覆盖旧灰度滤镜。
+ */
+html body #teamConsole .team-table .team-consumption-total .team-consumption-number,
+html body #teamConsole .team-table .team-project-credits .team-credit-value {
+ display:inline-flex;align-items:center;box-sizing:border-box;justify-content:initial;
+ min-width:0;min-height:0;height:auto;margin:0;padding:0;gap:6px;
+ border:0;border-radius:0;background:transparent;box-shadow:none;
+ color:#b8f84a!important;font-size:14px!important;line-height:20px!important;font-weight:400!important;
+ font-variant-numeric:tabular-nums;letter-spacing:0;white-space:nowrap;
+}
+html body #teamConsole .team-table :is(.team-consumption-number,.team-credit-value) img {
+ display:block;flex:0 0 12px;width:12px;height:12px;opacity:1;filter:none;
+}
+html body #teamConsole .team-table .team-consumption-total .team-restricted-mark {
+ color:#9aa6b2;
+}
+@media(max-width:760px) {
+ html body.team-console-open #teamConsole .team-console-body { padding:16px;gap:20px; }
+}
+
+
+/* 2026-10-29 Product Design 文字颜色调整：按团队设计稿 v150-project-dialogs.css
+ * 的文字层级修正项目成员管理弹窗：标题 #f5f7fa、正文／输入 #d5dbe3、辅助文字 #9aa6b2、操作 #e5e9ef。
+ * 显式指定搜索占位符颜色和 opacity，避免浏览器默认占位符过暗；仅覆盖含双栏成员列表的弹窗。
+ * 不改变字号、尺寸、布局、搜索／添加／移除／保存逻辑，不影响积分明细弹窗。
+ */
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-header h2,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-column-head h3 { color:#f5f7fa; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-search,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-table td,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-table td strong { color:#d5dbe3; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-search::placeholder { color:#9aa6b2;opacity:1; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-toolbar p,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-muted,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-tag,
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-table th { color:#9aa6b2; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-table :is(.pm-table-action,.pm-link) { color:#e5e9ef; }
+html body.team-console-open .pm-dialog.pm-board-standalone:has(.pm-columns) .pm-table :is(.pm-table-action,.pm-link):hover { color:#fff; }
+/* 截图中的成员管理入口沿用设计稿按钮文字色；禁用和权限限制状态由原样式处理。 */
+html body #teamConsole [data-team-project-action="members"]:not(:disabled) { color:#d5dbe3; }
+html body #teamConsole [data-team-project-action="members"]:not(:disabled):hover { color:#f5f7fa; }
+
+
+/* 2026-10-29 Product Design 修复：移除项目成员确认弹窗显式重置最小高度与定位，
+ * 使用 fit-content 按标题、正文、按钮撑开，避免 auto 高度在其他定位／最小尺寸规则下拉成整屏。
+ * 仅命中专用 ID；小屏或长项目名称保留最大高度内滚动，关闭状态继续由原生 dialog 管理。
+ */
+html body dialog#pmProjectMemberRemoveDialog.pm-confirm-dialog {
+ position:fixed!important;inset:0!important;margin:auto!important;transform:none!important;
+ box-sizing:border-box!important;width:min(480px,calc(100vw - 32px))!important;
+ min-width:0!important;max-width:calc(100vw - 32px)!important;
+ height:fit-content!important;min-height:0!important;max-height:calc(100dvh - 32px)!important;
+ padding:24px!important;overflow:auto!important;align-self:center!important;
+}
+html body dialog#pmProjectMemberRemoveDialog.pm-confirm-dialog[open] {display:block!important;}
+html body dialog#pmProjectMemberRemoveDialog.pm-confirm-dialog:not([open]) {display:none!important;}
+
+
+/* 2026-10-29 Product Design 状态列展示调整：按团队设计稿 v150-table-credit-emphasis.css，
+ * 成员管理最右列“正常”采用白色常规文字、透明底色和透明边框，移除旧绿色底与绿色文字。
+ * 只限定成员列表状态单元格；邀请中／已移除等非正常状态继续沿用原样式，角色标签与其他列不受影响。
+ * 不改变成员状态数据、筛选、权限或任何事件。
+ */
+html body #teamConsole #teamMemberTableWrap .team-table td:last-child .team-tag.status {
+ padding:3px 8px;border-color:transparent!important;background:transparent!important;
+ color:#fff!important;font-size:12px;font-weight:400;
+}
+
+/* 2026-10-30 Product Design 改动逻辑：团队版账号进入团队页时沿用技能市场的 52px 顶部区域、
+ * 原 Logo、原账户信息组件和主侧栏，覆盖团队设计稿隐藏整个应用壳层的规则。
+ * 移除团队页自己的返回箭头与“团队管理”标题栏及其占位，概况内容从共用顶栏下方开始。
+ * 仅在团队版且团队页打开时生效；PRD 面板仍扣除侧栏及面板宽度，窄屏沿用面板覆盖方式。
+ */
+html body.team-console-open:has(.global-account.is-team-account) > .app {
+ display:grid!important;min-height:0;
+}
+html body.team-console-open:has(.global-account.is-team-account) .app::before {
+ display:block;top:0;background:#060b0f;
+}
+html body.team-console-open:has(.global-account.is-team-account) .app > .sidebar {
+ display:flex!important;inset:52px auto 0 0;width:var(--sidebar-w);
+}
+html body.team-console-open:has(.global-account.is-team-account) .sidebar .brand {
+ display:flex;top:0;
+}
+html body.team-console-open:has(.global-account.is-team-account) > .global-account {
+ top:26px;right:24px;transform:translateY(-50%);gap:12px;
+}
+html body.team-console-open:has(.global-account.is-team-account) #teamConsoleOverlay {
+ width:calc(100% - var(--sidebar-w));margin-left:var(--sidebar-w);padding-top:52px;
+}
+html body.team-console-open:has(.global-account.is-team-account) #teamConsole {
+ min-height:calc(100dvh - 52px);
+}
+html body.team-console-open:has(.global-account.is-team-account) #teamConsole:focus {
+ outline:none;
+}
+html body.team-console-open:has(.global-account.is-team-account) #teamConsole .team-console-header {
+ display:none;
+}
+html body.team-console-open:has(.global-account.is-team-account) #teamConsole .team-console-body {
+ padding-top:24px;
+}
+html body.team-console-open.requirements-panel-open:has(.global-account.is-team-account) #teamConsoleOverlay {
+ width:calc(100vw - var(--sidebar-w) - var(--requirements-panel-width));
+}
+@media(max-width:980px) {
+ html body.team-console-open.requirements-panel-open:has(.global-account.is-team-account) #teamConsoleOverlay {
+  width:calc(100vw - var(--sidebar-w));
+ }
+}
+@media(max-width:760px) {
+ html body.team-console-open:has(.global-account.is-team-account) > .global-account {
+  top:6px;transform:none;
+ }
+ html body.team-console-open:has(.global-account.is-team-account) #teamConsole .team-console-body {
+  padding-top:16px;
+ }
+}

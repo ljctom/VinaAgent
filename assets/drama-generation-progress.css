@@ -1,0 +1,55 @@
+/* 2026-11-10 Product Design：按图六统一“主标题...（百分比）+ 离页说明”两行结构，
+ * 沿用各页现有绿光/点阵/转圈，主标题保留各自文案；只在原生成态安装展示节点。
+ * 文案使用真实 DOM，生成完成立即移除；图片区保留原点阵伪元素并清空旧单行文字，避免重叠。
+ */
+body.drama-workflow-active .has-vina-drama-progress[data-vina-drama-progress-layout="inline"] > :not(.vina-drama-generation-copy):not(.asset-parsing-spinner) {
+  display: none !important;
+}
+body.drama-workflow-active .vina-drama-generation-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .7);
+}
+body.drama-workflow-active .vina-drama-generation-copy > .vina-drama-generation-title {
+  display: block;
+  margin: 0;
+  color: #f5f7fa;
+  font-size: var(--vina-drama-progress-title-size, 17px);
+  font-weight: 700;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+body.drama-workflow-active .vina-drama-generation-copy > .vina-drama-generation-hint {
+  display: block;
+  margin: 0;
+  color: #9aa6b2;
+  font-size: var(--vina-drama-progress-hint-size, 14px);
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+body.drama-workflow-active .script-loading .vina-drama-generation-copy {
+  --vina-drama-progress-title-size: 24px;
+}
+body.drama-workflow-active .has-vina-drama-progress[data-vina-drama-progress-layout="overlay"] > .vina-drama-generation-copy {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  --vina-drama-progress-title-size: 14px;
+  --vina-drama-progress-hint-size: 12px;
+}
+body.drama-workflow-active .drama-character-current.is-generating.has-vina-drama-progress::after {
+  content: "" !important;
+}

@@ -1,0 +1,172 @@
+/* 2026-10-28 Product Design 改动逻辑：第四步进入第五步时的全屏生成等待区，
+ * 沿用「设计稿/assets/drama-loading-motion.css」对应 episode-generating-state 的
+ * 三层暗绿色弥散光、背景尺寸和 4.2 秒关键帧，覆盖旧纯色等待背景。
+ * 仅在原 is-generating-episode-scripts 状态启用，保留顶部步骤栏、居中文字、
+ * 原生成时长及完成后的页面切换；减少动态效果偏好下保留同色静态背景。
+ */
+body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts .episode-generating-state {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(82% 92% at 18% 78%, rgba(18, 121, 93, .28), transparent 68%),
+    radial-gradient(76% 82% at 86% 22%, rgba(41, 137, 100, .20), transparent 70%),
+    radial-gradient(58% 68% at 54% 55%, rgba(111, 164, 69, .10), transparent 74%),
+    #080d12 !important;
+  background-size: 154% 154%, 148% 148%, 142% 142%, auto !important;
+  animation: vina-episode-transition-surface 4.2s ease-in-out infinite alternate !important;
+}
+
+/* 使用局部关键帧名称，参数与设计稿 vina-drama-surface 完全一致。 */
+@keyframes vina-episode-transition-surface {
+  0% { background-position: 8% 78%, 86% 16%, 44% 62%, 0 0; }
+  48% { background-position: 48% 34%, 52% 72%, 68% 38%, 0 0; }
+  100% { background-position: 76% 58%, 24% 30%, 32% 70%, 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts .episode-generating-state {
+    animation: none !important;
+  }
+}
+
+/* 2026-10-28 Product Design 修复逻辑：第五步的等待区旧高度按 58px 顶栏扣减，
+ * 实际顶栏为 74px，导致内容溢出 16px；聚焦等待区时浏览器会滚动并将顶栏向上顶。
+ * 列表态与生成态统一使用两行网格：顶栏按实际高度占位，正文只填满剩余空间，
+ * 同时适配窄屏顶栏换行；覆盖旧 calc 高度，避免生成前后高度变化及滚动锚定抖动。
+ * 限定可见的第五步工作区，隐藏视图继续由原 hidden 状态控制；绿色动效参数不变。
+ */
+body.drama-workflow-active .episode-workspace[data-view="episode-video"]:not([hidden]) {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow-anchor: none;
+}
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] > :is(.episode-main, .episode-generating-state) {
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+}
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] > .episode-generating-state {
+  outline: none;
+}
+
+/* 2026-11-05 Product Design 改动逻辑：第五步等待态保留已知内容与按钮。
+ * 标题右侧的完成/审核胶囊仅显示“分镜提示词生成中...”，不改写原生成或审核数据；结束后恢复实时标签。
+ * 左侧封面保留第四步的绿色柔光风格，移除白色波点；针对 72×128px 小封面改为两层明显位移的光晕，
+ * 模糊半径缩小至 8px/6px，并以 1.8s/2.3s 往返运动，避免大范围模糊把运动抹成近似静态底色。
+ * 动画只驱动 transform/opacity，不依赖被 !important 背景简写固定的 background-position。
+ * 暂时隐藏旧封面、播放图标和时长；动效仅作用于生成中的封面，不影响标题、简介、进度或卡片布局。
+ * 封面规则增加卡片类的优先级，覆盖原未完成封面的灰底及图片图标，保证所有待生成集数都展示波动。
+ * 减少动态效果偏好下保留同色静态背景；点击反馈由捕获阶段 Toast 处理，不静默禁用入口。
+ */
+html body .episode-workspace[data-view="episode-video"] [data-episode-card].is-prompt-generating .episode-status-capsule {
+  color:var(--va-secondary,#d5dbe3) !important;
+  border-color:var(--va-border,#2b3642) !important;
+  background:var(--va-bg,#080d12) !important;
+}
+html body .episode-workspace[data-view="episode-video"] [data-episode-card].is-prompt-generating .episode-status-capsule > :not(.episode-prompt-waiting) {
+  display:none !important;
+}
+html body .episode-workspace[data-view="episode-video"] .episode-status-capsule > .episode-prompt-waiting {
+  display:inline;
+  color:var(--va-secondary,#d5dbe3) !important;
+  white-space:nowrap;
+}
+/* 2026-11-05 Product Design 改动逻辑：仅生成中集数的右侧操作按钮适度置灰，
+ * 图标随文字继承灰色，边框减弱；悬停/按下时不恢复亮色、填充高亮或位移。
+ * 不使用原生 disabled 或 pointer-events:none，继续保留焦点及点击后的现有 Toast；
+ * 键盘焦点轮廓沿用原样，生成完成移除 is-prompt-generating 后自动恢复正常按钮样式。
+ * 此规则不作用于标题、简介、状态标签、封面波动或分镜进度。
+ */
+html body .episode-workspace[data-view="episode-video"] [data-episode-card].is-prompt-generating .episode-buttons .episode-button,
+html body .episode-workspace[data-view="episode-video"] [data-episode-card].is-prompt-generating .episode-buttons .episode-button:is(:hover,:active,:focus-visible) {
+  color:var(--va-muted,#6f7b88) !important;
+  border-color:var(--va-border-light,rgba(255,255,255,.06)) !important;
+  background:var(--va-disabled-bg,#141a21) !important;
+  opacity:1 !important;
+  box-shadow:none !important;
+  transform:none !important;
+  filter:none !important;
+  cursor:not-allowed;
+  pointer-events:auto;
+}
+/* 2026-11-05 Product Design：资产与视频封面共用绿色光晕和关键帧。 */
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb,
+html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(82% 92% at 18% 78%,rgba(18,121,93,.28),transparent 68%),
+    radial-gradient(76% 82% at 86% 22%,rgba(41,137,100,.20),transparent 70%),
+    radial-gradient(58% 68% at 54% 55%,rgba(111,164,69,.10),transparent 74%),
+    #080d12 !important;
+  background-size:154% 154%,148% 148%,142% 142%,auto !important;
+}
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb > *,
+html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover > * {
+  visibility:hidden !important;
+}
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb::before,
+html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover::before {
+  content:"";
+  position:absolute;
+  display:block !important;
+  inset:-35% !important;
+  z-index:1;
+  background:
+    radial-gradient(48% 38% at 30% 68%,rgba(26,151,112,.66),transparent 76%),
+    radial-gradient(38% 44% at 72% 31%,rgba(77,154,91,.42),transparent 78%) !important;
+  filter:blur(8px);
+  will-change:transform,opacity;
+  animation:vina-episode-cover-diffusion 1.8s ease-in-out infinite alternate !important;
+  pointer-events:none;
+}
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb::after,
+html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover::after {
+  content:"";
+  position:absolute;
+  display:block !important;
+  inset:-35%;
+  z-index:2;
+  background:radial-gradient(ellipse at 64% 38%,rgba(105,174,72,.38),rgba(30,145,109,.32) 36%,transparent 66%) !important;
+  filter:blur(6px);
+  will-change:transform,opacity;
+  animation:vina-episode-cover-undulation 2.3s ease-in-out infinite alternate !important;
+  pointer-events:none;
+}
+@keyframes vina-episode-cover-diffusion {
+  0% { transform:translate3d(-28%,22%,0) rotate(-16deg) scale(.92); opacity:.55; }
+  50% { transform:translate3d(5%,-10%,0) rotate(4deg) scale(1.12); opacity:1; }
+  100% { transform:translate3d(28%,-22%,0) rotate(18deg) scale(1.2); opacity:.7; }
+}
+@keyframes vina-episode-cover-undulation {
+  0% { transform:translate3d(26%,-24%,0) rotate(18deg) scale(1.15); opacity:.85; }
+  50% { transform:translate3d(-5%,8%,0) rotate(-6deg) scale(.95); opacity:.5; }
+  100% { transform:translate3d(-26%,24%,0) rotate(-18deg) scale(1.2); opacity:1; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb,
+  html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb::before,
+  html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-thumb::after,
+  html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover,
+  html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover::before,
+  html body .episode-workspace[data-view="episode-video"] .episode-video-card[data-episode-card].is-prompt-generating .episode-cover::after {
+    animation:none !important;
+    will-change:auto;
+  }
+}
+
+/* 2026-11-05：等待时覆盖原标签，窄屏按文字列宽缩放字号，完整文案只占一行。 */
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-copy {
+  container-type: inline-size;
+}
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-copy > span:not(.asset-prompt-waiting) {
+  display: none !important;
+}
+html body .asset-workspace[data-view="asset-library"] .asset-browser-row.is-asset-prompt-generating .drama-character-variant-copy > .asset-prompt-waiting {
+  display: block;
+  font-size: min(12px, 8.5cqi);
+  white-space: nowrap;
+  overflow-wrap: normal;
+}

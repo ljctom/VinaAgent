@@ -1,0 +1,96 @@
+/* 2026-10-27 Product Design 改动逻辑：第三步进入第四步的资产解析等待态，直接复用
+ * 设计稿交付包的暗绿基底、双层弥散光漂移及呼吸关键帧；保留居中转圈和解析文案。
+ * 仅在短剧资产解析状态启用，1.5 秒展示时长由 app.js 控制，完成后进入逐张提示词等待。
+ * 保留设计稿动效本身的节奏，减少动态效果偏好下关闭背景及转圈动画。
+ */
+/* 2026-11-05 Product Design：第五步的 1.5 秒前置等待复用资产解析的绿色光晕和关键帧。 */
+.episode-workspace:not(.is-episode-prompt-intro) .episode-prompt-intro-spinner {
+  display: none;
+}
+
+/* VinaAI short-drama generation background: reusable at any aspect ratio. */
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 82% at 16% 82%, rgba(18, 121, 93, .27), transparent 66%),
+    radial-gradient(90% 76% at 88% 18%, rgba(38, 132, 99, .18), transparent 69%),
+    #080d12 !important;
+  background-size: 155% 155%, 148% 148%, auto !important;
+  animation: vina-asset-parsing-ambient 4.2s ease-in-out infinite alternate !important;
+}
+
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state::before,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -32%;
+  background:
+    radial-gradient(40% 35% at 28% 68%, rgba(27, 150, 111, .34), transparent 74%),
+    radial-gradient(36% 42% at 72% 31%, rgba(75, 153, 91, .22), transparent 76%),
+    radial-gradient(31% 28% at 55% 57%, rgba(117, 174, 67, .10), transparent 78%);
+  filter: blur(clamp(22px, 4.2vmax, 68px));
+  transform: translate3d(-8%, 7%, 0) scale(1.08);
+  animation: vina-asset-parsing-glow 3.6s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  pointer-events: none;
+}
+
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state::after,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -34%;
+  background:
+    radial-gradient(35% 31% at 20% 26%, rgba(18, 113, 91, .20), transparent 78%),
+    radial-gradient(30% 37% at 78% 72%, rgba(34, 135, 101, .22), transparent 78%),
+    radial-gradient(25% 29% at 50% 45%, rgba(87, 153, 77, .12), transparent 80%);
+  filter: blur(clamp(28px, 5.4vmax, 82px));
+  transform: translate3d(9%, -5%, 0) scale(1.12);
+  animation: vina-asset-parsing-diffusion 4.6s cubic-bezier(.42, 0, .36, 1) infinite alternate;
+  pointer-events: none;
+}
+
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state > *,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state > * { position: relative; z-index: 2; }
+
+
+
+@keyframes vina-asset-parsing-ambient {
+  0% { background-position: 12% 76%, 82% 16%, 0 0; }
+  100% { background-position: 56% 34%, 47% 68%, 0 0; }
+}
+
+@keyframes vina-asset-parsing-glow {
+  0% { transform: translate3d(-11%, 10%, 0) scale(1.04); opacity: .76; }
+  48% { transform: translate3d(5%, -5%, 0) scale(1.16); opacity: 1; }
+  100% { transform: translate3d(12%, 8%, 0) scale(1.08); opacity: .82; }
+}
+
+@keyframes vina-asset-parsing-diffusion {
+  0% { transform: translate3d(11%, -7%, 0) scale(1.08); opacity: .72; }
+  52% { transform: translate3d(-5%, 5%, 0) scale(1.18); opacity: .96; }
+  100% { transform: translate3d(-12%, -1%, 0) scale(1.10); opacity: .78; }
+}
+
+
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state {
+  width: 100%;
+}
+body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state .asset-parsing-content {
+  position: relative;
+  z-index: 2;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state,
+  body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state::before,
+  body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state::after,
+  body.drama-workflow-active .asset-workspace.is-parsing-assets .asset-parsing-state .asset-parsing-spinner,
+  body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state,
+  body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state::before,
+  body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state::after,
+  body.drama-workflow-active .episode-workspace[data-view="episode-video"].is-generating-episode-scripts.is-episode-prompt-intro .episode-generating-state .asset-parsing-spinner { animation: none !important; }
+}

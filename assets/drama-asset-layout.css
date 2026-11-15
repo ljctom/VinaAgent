@@ -1,0 +1,397 @@
+/* 2026-09-30 Product Design：顶部导航保持原样，下方为左侧列表、右上预览、右下编辑。
+   所有规则限定资产主区；分集弹窗临时借用原卡时，包装容器恢复透明布局。 */
+.asset-preview-region, .asset-edit-region { display: contents; }
+/* 2026-09-30 Product Design 改动逻辑：场景、物品和资产主区以外保持原描述布局；只有角色资产展示独立确认行。 */
+.drama-character-description-field { display: contents; }
+.drama-character-description-actions { display: none; }
+.has-asset-browser .asset-main .is-character-description-confirm .drama-character-description-field {
+  display: flex; flex-direction: column; flex: 0 0 var(--asset-editor-field-height);
+  height: var(--asset-editor-field-height); min-height: 0; margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,.11); border-radius: 9px; background: #171a20; box-sizing: border-box; overflow: hidden;
+}
+/* 2026-09-30 Product Design 改动逻辑：正文独立滚动，底部 34px 只放操作按钮，描述不会流入或盖住确认行。 */
+.has-asset-browser .asset-main .is-character-description-confirm .drama-character-description-field .drama-character-description {
+  flex: 1 1 0; height: 0; min-height: 0; max-height: none; margin: 0;
+  border: 0; border-radius: 0; background: transparent; overflow-y: auto;
+}
+.has-asset-browser .asset-main .is-character-description-confirm .drama-character-description-actions {
+  display: flex; flex: 0 0 34px; align-items: center; justify-content: flex-end; padding: 3px 8px 5px; box-sizing: border-box;
+}
+/* 2026-09-30 Product Design 改动逻辑：确认按钮使用透明底、中性描边和文字，未修改或内容为空时禁用。 */
+.drama-character-description-confirm {
+  min-width: 58px; min-height: 26px; padding: 2px 12px; border: 1px solid rgba(255,255,255,.22);
+  border-radius: 6px; background: transparent; color: rgba(255,255,255,.82); font: inherit; font-size: 12px; cursor: pointer;
+}
+.drama-character-description-confirm:hover:not(:disabled) { border-color: rgba(255,255,255,.45); color: #fff; }
+/* 2026-10-01 Product Design 修复逻辑：禁用按钮以明确的浅灰文字和描边表示不可点击，取消整体透明度叠加，让“确认”始终可读。 */
+.drama-character-description-confirm:disabled { background: transparent; border-color: rgba(255,255,255,.16); color: #929ba9; opacity: 1; cursor: default; }
+.drama-character-description-confirm:focus-visible { outline: 2px solid rgba(255,255,255,.65); outline-offset: 2px; }
+/* 2026-09-30 Product Design 改动逻辑：描述二次确认复用已有深色弹窗尺寸，两颗按钮同样保持透明底。 */
+#characterDescriptionChangeModal .batch-generate-dialog { width: min(100%, 480px); padding: 32px; }
+#characterDescriptionChangeModal .batch-generate-description { margin-top: 12px; font-size: 15px; line-height: 1.75; }
+#characterDescriptionChangeModal .batch-generate-action { background: transparent; }
+/* 2026-09-30 Product Design 改动逻辑：资产列表态按导航实际高度分配剩余屏幕空间，
+   不再沿用减去 58px 的固定高度，避免 74px 导航导致左右框底部贴屏或被裁切。
+   两侧外框共用主区内边距：顶部从 16px 收紧至 10px，底部保留 16px；窄屏导航变高时仍自动适配。 */
+.asset-workspace.has-asset-browser:not([hidden]):not(.is-canvas-view):not(.is-parsing-assets) {
+  display: flex; flex-direction: column;
+}
+.asset-workspace.has-asset-browser > .script-status { flex: 0 0 auto; }
+.asset-workspace.has-asset-browser .asset-main {
+  flex: 1 1 0; min-height: 0; height: auto;
+  padding: 10px 24px 16px; overflow: hidden; box-sizing: border-box;
+}
+.has-asset-browser .asset-main .asset-inner { width: 100%; height: 100%; display: grid; grid-template-columns: 292px minmax(0,1fr); gap: 18px; }
+.asset-browser-sidebar { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; min-height: 0; background: #111318; border: 1px solid #2b2e34; border-radius: 14px; overflow: hidden; }
+.asset-browser-sidebar .asset-toolbar { flex: 0 0 auto; display: block; padding: 14px 10px; margin: 0; min-height: 0; }
+.asset-browser-sidebar .asset-tabs { position: static; transform: none; gap: 4px; width: 100%; justify-content: space-between; }
+.asset-browser-sidebar .asset-tab { flex: 1; justify-content: center; gap: 5px; padding: 9px 6px; font-size: 13px; min-width: 0; }
+.asset-browser-sidebar .asset-tab .script-icon { width: 16px; height: 16px; }
+.asset-browser-sidebar .asset-tab::after { display: none; }
+.asset-browser-list { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; scrollbar-width: thin; }
+/* 2026-09-30 Product Design 改动逻辑：单形象保持独立卡；同一角色的多个形象用低对比度底色归为一组，不加分组描边。 */
+.asset-browser-group, .asset-browser-group > div { display: contents; }
+.asset-browser-group.is-multi-variant { display: block; padding: 8px; margin: -2px -8px 12px; border-radius: 13px; background: #1b2027; }
+.asset-browser-group.is-multi-variant > div { display: block; }
+.asset-browser-group.is-multi-variant .asset-browser-row { margin-bottom: 8px; }
+.asset-browser-group.is-multi-variant .asset-browser-row:last-child { margin-bottom: 0; }
+/* 2026-09-30 Product Design 改动逻辑：分类切换时隐藏分组的优先级高于多形象背景，避免角色底框留在场景或物品列表。 */
+.asset-browser-group[hidden] { display: none; }
+.asset-browser-row { display: flex; align-items: center; width: 100%; min-height: 68px; gap: 10px; margin-bottom: 10px; padding: 9px; border: 1px solid #2b2e34; border-radius: 10px; background: #171a20; color: #cbd0d9; text-align: left; cursor: pointer; box-sizing: border-box; }
+.asset-browser-row:hover { background: #252c35; }
+.asset-browser-row.active { border-color: #6acded; background: #22323d; color: #fff; }
+.asset-browser-row:focus-visible { outline: 2px solid #6acded; outline-offset: 2px; }
+.asset-browser-row .drama-character-variant-thumb { flex: 0 0 66px; width: 66px; height: 44px; aspect-ratio: auto; border-radius: 5px; background-size: cover; background-position: center; }
+.asset-browser-row .drama-character-variant-thumb.is-empty { background-color: #3d4552; border: 1px solid #505965; }
+.asset-browser-row .drama-character-variant-copy { min-width: 0; }
+.asset-browser-row .drama-character-variant-copy strong { font-size: 12px; line-height: 18px; white-space: normal; }
+.asset-browser-row .drama-character-variant-copy span { display: block; font-size: 11px; color: #929ba9; margin-top: 3px; }
+.asset-browser-row .drama-character-variant-kind { display: none; }
+.asset-browser-add { padding: 12px; border-top: 1px solid #2b2e34; }
+.asset-browser-add .asset-add-character { width: 100%; justify-content: center; min-height: 40px; }
+/* 2026-09-30 Product Design 改动逻辑：右侧整体用统一深色底框包住预览、编辑和底部三个操作，
+   与左侧列表处于同一网格行并拉伸到相同高度；16px 内边距形成完整面板。
+   内容网格弹性占据剩余高度，底部按钮独立占位，短屏只滚动内容而不遮挡操作。 */
+.has-asset-browser .asset-main .asset-browser-detail-panel {
+  grid-column: 2; grid-row: 1; display: flex; flex-direction: column;
+  min-width: 0; min-height: 0; height: 100%; box-sizing: border-box;
+  padding: 16px; gap: 16px; border: 1px solid #2b2e34; border-radius: 14px;
+  background: #111318;
+}
+.has-asset-browser .asset-main .asset-grid { display: block; flex: 1 1 0; min-width: 0; min-height: 0; height: auto; box-sizing: border-box; }
+.has-asset-browser .asset-main .asset-grid[hidden], .has-asset-browser .asset-main .asset-card:not(.is-browser-selected) { display: none; }
+.has-asset-browser .asset-main .asset-inline-card { height: 100%; border: 0; background: transparent; border-radius: 0; }
+.has-asset-browser .asset-main .drama-character-editor-dialog { background: transparent; border-radius: 0; }
+.has-asset-browser .asset-main .drama-character-editor-head { display: none; }
+/* 2026-09-30 Product Design 改动逻辑：编辑卡按描述、音色和提示词的实际内容高度排列，取消 310px 最小高度和比例扩张。
+   大小屏幕都只保留内容下方 16px 内边距，多余高度交给图片预览，不再在音色和生成参数下方产生大块空白。 */
+.has-asset-browser .asset-main .drama-character-editor-right { display: grid; grid-template-rows: minmax(270px,1fr) auto; padding: 0; gap: 14px; }
+.has-asset-browser .asset-main .asset-preview-region, .has-asset-browser .asset-main .asset-edit-region { display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 16px; border: 1px solid #2b2e34; border-radius: 14px; background: #111318; gap: 8px; }
+.has-asset-browser .asset-main .drama-character-preview-head { flex-wrap: nowrap; min-height: 28px; gap: 12px; }
+.has-asset-browser .asset-main .asset-preview-title { flex: 0 0 auto; margin: 0; color: #f6f7f9; font-size: 16px; font-weight: 760; line-height: 24px; white-space: nowrap; }
+/* 2026-09-30 Product Design 改动逻辑：“当前使用图片”以预览区为基准水平居中，不再跟随左侧标题的宽度偏移；来源按钮仍靠右。 */
+.has-asset-browser .asset-main .drama-character-preview-head > .drama-character-section-label {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  margin: 0 !important; white-space: nowrap;
+}
+.has-asset-browser .asset-main .drama-character-preview-actions { margin-left: auto; }
+/* 2026-09-30 Product Design 改动逻辑：将短剧资产图片预览留白底色从 #1b1f27 调暗为 #101216，使图片两侧更深；仅调整底色，继续 contain 居中展示完整图片。 */
+.has-asset-browser .asset-main .drama-character-current { flex: 1 1 0; min-height: 80px; max-height: none; background-color: #101216; background-size: contain; background-repeat: no-repeat; background-position: center; }
+.has-asset-browser .asset-main .drama-character-editor-left [data-character-variants-label],
+.has-asset-browser .asset-main .drama-character-editor-left [data-character-variant-list] { display: none; }
+/* 2026-09-30 Product Design 改动逻辑：角色描述由 150px 收紧到 132px，将音色绑定上移 18px；完整描述仍在框内滚动。左栏描述和音色的实际高度决定编辑区内容行高度。
+   提示词跨满该内容行，底边随已绑定音色或未绑定音色入口自动对齐；取消底部空白网格行。 */
+.has-asset-browser .asset-main .asset-edit-region {
+  --asset-editor-field-height: 132px;
+  /* 2026-09-30 Product Design 改动逻辑：编辑卡上边距从 16px 减至 10px，描述和提示词标题、输入框同步上移 6px。 */
+  padding-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 14px auto;
+  column-gap: 24px;
+  row-gap: 8px;
+}
+.has-asset-browser .asset-main .drama-character-editor-left {
+  grid-column: 1; grid-row: 1 / 3; margin: 0; min-width: 0; min-height: 0; align-self: start;
+  display: flex; flex-direction: column; padding-bottom: 56px;
+}
+.has-asset-browser .asset-main .drama-character-editor-left [data-character-description-label] { margin: 0 0 8px; }
+.has-asset-browser .asset-main .drama-character-description {
+  flex: 0 0 var(--asset-editor-field-height); height: var(--asset-editor-field-height);
+  min-height: var(--asset-editor-field-height); max-height: var(--asset-editor-field-height); margin-bottom: 8px;
+}
+/* 2026-09-30 Product Design 改动逻辑：按箭头标注将资产编辑区的描述和提示词正文从 12px 调大到 14px，
+   行高同步设为 20px，提高阅读清晰度；规则仅作用于资产主区，两栏仍在原框内滚动。 */
+.has-asset-browser .asset-main .drama-character-description,
+.has-asset-browser .asset-main .drama-character-prompt-field .drama-character-prompt {
+  font-size: 14px; line-height: 20px;
+}
+.has-asset-browser .asset-main .drama-character-voice-section { flex: 0 0 auto; min-width: 0; }
+.has-asset-browser .asset-main .asset-edit-region > .drama-character-section-label { grid-column: 2; grid-row: 1; margin: 0 !important; }
+/* 2026-09-30 Product Design 改动逻辑：提示词外框内按参考图、可滚动正文、不可输入的操作栏排列。
+   外框允许向上展开参数菜单；仅 textarea 滚动且禁止手动拉伸，确保生成按钮行始终独立可见。 */
+.has-asset-browser .asset-main .drama-character-prompt-field {
+  grid-column: 2; grid-row: 2; align-self: stretch; display: flex; flex-direction: column;
+  flex: initial; height: auto; min-height: 0; max-height: none; min-width: 0; overflow: visible;
+}
+/* 2026-09-30 Product Design 改动逻辑：按标注红框把提示词参考图加号按钮从 27px 放大到 40px 正方形，
+   加号同步放大到 28px；参考图行预留 50px 高度，防止按钮挤压正文或被裁切，仅作用于短剧资产主区的添加入口。 */
+.has-asset-browser .asset-main .drama-character-reference-row {
+  flex: 0 0 50px; min-height: 50px;
+}
+.has-asset-browser .asset-main .drama-character-reference[data-character-reference] {
+  width: 40px; height: 40px; flex-basis: 40px; border-radius: 8px; box-sizing: border-box;
+}
+.has-asset-browser .asset-main .drama-character-reference-plus { font-size: 28px; }
+.has-asset-browser .asset-main .drama-character-prompt-field .drama-character-prompt {
+  flex: 1 1 0; height: 0; min-height: 0; resize: none; overflow-y: auto;
+}
+.has-asset-browser .asset-main .drama-character-prompt-field .drama-character-source-actions {
+  flex: 0 0 auto; margin: 0; min-width: 0; min-height: 52px; padding: 4px 8px 8px; box-sizing: border-box;
+}
+/* 2026-09-30 Product Design 改动逻辑：画布编辑、批量生成和下一步统一靠面板右下角排列，
+   改为正常布局中的独立操作行；下一步按原状态隐藏时，其余按钮仍保持右对齐。 */
+.has-asset-browser .asset-stage-actions {
+  position: static; flex: 0 0 auto; width: 100%; min-height: 44px;
+  gap: 12px; flex-wrap: nowrap; justify-content: flex-end; max-width: none;
+}
+.has-asset-browser .asset-stage-actions .asset-view-controls { margin: 0; }
+/* 2026-09-30 Product Design 改动逻辑：短剧底部画布编辑与批量生成、下一步统一为 44px 高的椭圆胶囊按钮；
+   通过 border-box 将描边计入高度，底色及悬停底色保持透明，仅用描边呈现按钮边界。 */
+.has-asset-browser .asset-stage-actions .asset-view-switch button {
+  height: 44px; min-height: 44px; box-sizing: border-box;
+  border-radius: 999px; background: transparent; border: 1px solid rgba(255,255,255,.16);
+}
+.has-asset-browser .asset-stage-actions .asset-view-switch button:hover {
+  background: transparent; border-color: rgba(255,255,255,.28);
+}
+/* 2026-09-30 Product Design 改动逻辑：底部流程按钮离开描述栏后，不再占用音色下方空间。 */
+.has-asset-browser .asset-main .drama-character-editor-left { padding-bottom: 0; }
+/* 2026-09-30 Product Design 改动逻辑：窄屏同样采用内容高度的编辑卡，取消原 340px 下限；图片预览保留最小可用高度，底部按钮压缩间距。 */
+@media (max-width: 1250px) {
+  .has-asset-browser .asset-main .drama-character-editor-right { grid-template-rows: minmax(260px,1fr) auto; }
+  .has-asset-browser .asset-stage-actions { gap: 6px; }
+  /* 2026-09-30 Product Design 改动逻辑：窄屏时标签独占居中的第二行，避免与标题和图片来源按钮相叠。 */
+  .has-asset-browser .asset-main .drama-character-preview-head > .drama-character-section-label {
+    position: static; transform: none; order: 1; flex-basis: 100%; text-align: center;
+  }
+}
+/* 2026-09-30 Product Design 改动逻辑：短屏滚动区与面板底部操作行分别占位，
+   卡片最小高度从 680px 收紧到 620px，降低笔记本上的滚动距离，左侧列表保持独立滚动。 */
+@media (max-height: 780px) {
+  .has-asset-browser .asset-main .asset-grid { overflow-y: auto; scrollbar-width: thin; box-sizing: border-box; }
+  .has-asset-browser .asset-main .asset-inline-card { min-height: 620px; }
+}
+@media (max-width: 1000px) {
+  .has-asset-browser .asset-main .asset-inner { grid-template-columns: 242px minmax(0,1fr); gap: 12px; }
+  .asset-workspace.has-asset-browser .asset-main { padding-left: 12px; padding-right: 12px; }
+  .has-asset-browser .asset-stage-actions { gap: 6px; }
+  .has-asset-browser .asset-main .drama-character-preview-head { flex-wrap: wrap; }
+  .asset-browser-sidebar .asset-tab { font-size: 12px; gap: 3px; }
+  .asset-browser-sidebar .asset-tab .script-icon { display: none; }
+}
+@media (max-width: 680px) {
+  .has-asset-browser .asset-main .asset-inner { grid-template-columns: 180px minmax(280px,1fr); gap: 10px; overflow-x: auto; }
+  .asset-browser-list { padding: 6px; }
+  .asset-browser-row { gap: 6px; padding: 5px; }
+  .asset-browser-row .drama-character-variant-thumb { width: 42px; flex-basis: 42px; height: 36px; }
+  .has-asset-browser .asset-stage-actions { gap: 4px; }
+}
+
+/* 2026-10-30 Product Design：张曼基础形象的初始生成失败复用现有大图容器，保持点阵背景和编辑布局；
+ * 图标、单行文案、红色重新生成按钮纵向居中，失败时隐藏原“图片未生成”伪元素。
+ * 生成/成功时由脚本撤掉专用状态类，立即交回原生成动效和图片；其他形象无此类，不受影响。 */
+.asset-character-image-failure { display:none; }
+.asset-workspace .drama-character-current.is-character-generation-failed::after { content:none !important; display:none !important; }
+.asset-workspace .drama-character-current.is-character-generation-failed > .asset-character-image-failure:not([hidden]) {
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  text-align:center;
+}
+.asset-character-image-failure > img { display:block; width:42px; height:42px; }
+/* 2026-10-30：退款文案及翻译按预览宽度自然换行，不再固定单行。 */
+.asset-character-image-failure > p { margin:0; max-width:100%; color:#ff5c7a; font-size:16px; font-weight:600; line-height:24px; white-space:normal; overflow-wrap:anywhere; }
+.asset-character-image-failure > button {
+  min-height:36px;
+  padding:7px 20px;
+  border:1px solid #e5484d;
+  border-radius:8px;
+  background:transparent;
+  color:#ff5f5f;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  line-height:20px;
+  cursor:pointer;
+}
+.asset-character-image-failure > button:hover { border-color:#f2555a; color:#ff7b7f; }
+.asset-character-image-failure > button:focus-visible { outline:2px solid #ff9b9e; outline-offset:3px; }
+.asset-workspace .drama-character-variant-copy > .asset-character-failure-status { color:#ff5c7a !important; }
+
+/* 2026-10-30 Product Design：侧栏失败状态高于 steps45 通用状态色及 media 通用灰色，克隆后的形象条也保持错误红色。 */
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-copy > .asset-character-failure-status,
+body.drama-workflow-active .asset-workspace[data-view="asset-library"] .drama-character-variant .drama-character-variant-copy > .asset-character-failure-status {
+  color:#ff5c7a !important;
+}
+.asset-workspace .asset-character-image-failure { box-sizing:border-box; width:min(100%,420px); max-width:100%; min-width:0; padding-inline:20px; }
+
+/* 2026-11-01 Product Design：出海转绘标题名称与常显铅笔按钮同行；输入态沿用深色面板、
+   当前标题字号和现有中性色焦点描边，形象后缀不可编辑，长名字收缩避免挤压图片工具栏。 */
+html.redraw-embedded .redraw-asset-name-control {
+  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto;
+}
+html.redraw-embedded .asset-main .redraw-asset-name-control .asset-preview-title {
+  display: flex; align-items: center; min-width: 0; flex: 0 1 auto;
+}
+html.redraw-embedded [data-redraw-asset-name] {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis;
+}
+html.redraw-embedded .redraw-asset-name-suffix { flex-shrink: 0; white-space: pre; }
+html.redraw-embedded .redraw-asset-name-edit {
+  display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px;
+  padding: 5px; border: 0; border-radius: 6px; background: transparent; color: #9aa6b2; cursor: pointer;
+}
+html.redraw-embedded .redraw-asset-name-edit img { display: block; width: 18px; height: 18px; filter: invert(70%); }
+html.redraw-embedded .redraw-asset-name-edit:hover { background: #2b3642; color: #fff; }
+html.redraw-embedded .redraw-asset-name-edit:disabled { opacity: .4; cursor: default; }
+html.redraw-embedded .redraw-asset-name-edit:focus-visible,
+html.redraw-embedded .redraw-asset-name-input:focus { outline: 2px solid #566474; outline-offset: 2px; }
+html.redraw-embedded .redraw-asset-name-input {
+  /* 2026-11-01 Product Design：名称编辑框最小宽度增至 160px、上限增至 320px，配合脚本的 12em 默认宽度，让短名称编辑时也有更长的输入区域。 */
+  min-width: 160px; max-width: 320px; height: 30px; box-sizing: border-box; padding: 2px 6px;
+  border: 1px solid #566474; border-radius: 5px; background: #181f27; color: #f5f7fa;
+  font: inherit; line-height: 24px;
+}
+
+/* 2026-11-01 Product Design：铅笔悬浮提示沿用现有深色工具提示样式，放在按钮下方，
+   避免被预览卡顶部裁切；仅悬浮或键盘聚焦时出现，不占据标题布局空间。 */
+html.redraw-embedded .redraw-asset-name-edit { position: relative; }
+html.redraw-embedded .redraw-asset-name-tooltip {
+  position: absolute; left: 50%; top: calc(100% + 8px); z-index: 30;
+  padding: 6px 9px; border: 1px solid rgba(255,255,255,.12); border-radius: 7px;
+  background: rgba(7,11,15,.96); color: #f2f5f7; box-shadow: 0 8px 22px rgba(0,0,0,.38);
+  font-size: 12px; font-weight: 500; line-height: 18px; white-space: nowrap;
+  opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(-50%);
+}
+html.redraw-embedded .redraw-asset-name-edit:not(:disabled):is(:hover, :focus-visible) .redraw-asset-name-tooltip {
+  opacity: 1; visibility: visible;
+}
+/* 2026-11-01 Product Design：名字输入态覆盖工作流通用绿色焦点规则，
+   移除外层 outline 和阴影，只保留灰色细边框；鼠标与键盘聚焦统一使用该样式。 */
+html.redraw-embedded body.drama-workflow-active .asset-workspace[data-view="asset-library"] .redraw-asset-name-input:is(:focus, :focus-visible) {
+  outline: none !important; box-shadow: none !important; border-color: #566474 !important;
+}
+
+/* 2026-11-01 Product Design：所有对照样式严格限定出海转绘角色容器。
+   左右按 9:16 与 16:9 的同高宽度比例（81:256）分配，中间独立 1px 竖线；
+   两侧标题分别居中，图片居中，右侧仍用原节点显示已生成/待生成/生成中的实时状态。 */
+html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface.redraw-character-comparison {
+  display: grid; grid-template-columns: minmax(0,81fr) 1px minmax(0,256fr);
+  gap: 20px; padding: 20px; min-height: 0;
+}
+html.redraw-embedded .redraw-character-pane {
+  display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0;
+}
+/* 2026-11-01 Product Design：原图和转绘图标题分别在各自图片区域上方水平居中，
+   与下方图片中心对齐；仅调整出海转绘对照标题，不影响图片大小、分隔线或普通短剧。 */
+html.redraw-embedded .redraw-character-image-label {
+  flex: 0 0 auto; margin: 0; color: #f5f7fa; font-size: 14px; font-weight: 500; line-height: 20px;
+  text-align: center;
+}
+html.redraw-embedded .redraw-character-image-divider { align-self: stretch; background: #2b3642; }
+html.redraw-embedded .redraw-character-pane-body {
+  display: grid; place-items: center; flex: 1 1 0; min-width: 0; min-height: 0; container-type: size;
+}
+html.redraw-embedded .redraw-character-original-image {
+  display: block; width: min(100cqw,56.25cqh); height: min(100cqh,177.7778cqw);
+  aspect-ratio: 9 / 16; object-fit: cover; object-position: center; border-radius: 4px;
+}
+html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .redraw-character-result .drama-character-current {
+  flex: none; width: min(100cqw,177.7778cqh); height: min(100cqh,56.25cqw);
+  min-height: 0; max-height: none; aspect-ratio: 16 / 9; margin: 0;
+  background-size: contain; background-position: center; background-repeat: no-repeat;
+  /* 2026-11-02 Product Design：仅出海转绘的右侧转绘图使用与左侧原图一致的 4px 小圆角，并裁切内部图片层；不改变图片比例、大小和预览交互。 */
+  border-radius: 4px !important; overflow: hidden;
+}
+/* 生成态也仅作用于右侧；原图、标签和竖线始终保留，避免通用 loading 样式吞掉对照区内边距。 */
+html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface.redraw-character-comparison:has(.drama-character-current.is-generating) {
+  padding: 20px; background-color: var(--va-bg); background-image: radial-gradient(circle,rgba(154,166,178,.2) 1px,transparent 1px); background-size: 20px 20px;
+}
+@media (max-width: 1000px) {
+  html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface.redraw-character-comparison { gap: 12px; padding: 12px; }
+  html.redraw-embedded .redraw-character-pane { gap: 8px; }
+}
+
+/* 2026-11-01 Product Design：出海转绘原图使用与转绘图一致的放大查看指针；
+   键盘焦点用中性灰描边，弹窗仍复用现有大图样式，图片以 contain 完整展示。 */
+html.redraw-embedded .redraw-character-original-image[data-asset-lightbox][aria-disabled="false"] { cursor: zoom-in; }
+html.redraw-embedded .redraw-character-original-image[data-asset-lightbox]:focus-visible {
+  outline: 2px solid #566474 !important; outline-offset: 3px;
+}
+
+/* 2026-11-02 Product Design 改动逻辑：普通短剧资产预览中的“图片未生成”提示改为纯白色，
+   角色、场景和物品共用此空态样式；通过排除 redraw-embedded 将改动限定于普通短剧。 */
+html:not(.redraw-embedded) .drama-character-current.is-empty::after {
+  color: #fff;
+}
+
+
+/* 2026-11-02 Product Design 改动逻辑：出海转绘场景、物品采用左右等宽的 16:9 原图/转绘图对照。
+   复用角色对照的分栏、标题、竖线和放大交互；原图完整 contain，结果图仍由原节点维护生成与历史状态。 */
+html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface.redraw-character-comparison.redraw-wide-comparison {
+  grid-template-columns: minmax(0,1fr) 1px minmax(0,1fr);
+}
+html.redraw-embedded .redraw-wide-comparison .redraw-character-original-image {
+  width: min(100cqw,177.7778cqh); height: min(100cqh,56.25cqw);
+  aspect-ratio: 16 / 9; object-fit: contain;
+}
+/* 2026-11-02 Product Design：仅出海转绘场景、物品的操作组作为资料栏内独立底行，
+   与角色浮层统一右侧 12px、底部 6px 外留白；共用底板四边 10px 内边距后，按钮底部总留白仍为 16px。
+   描述区弹性占据剩余高度，底板不会覆盖正文或左侧添加入口；窄栏继续使用原按钮换行规则。 */
+html.redraw-embedded .asset-workspace.has-asset-browser[data-view="asset-library"]:not(.is-canvas-view) .asset-main :is([data-asset-panel="scene"],[data-asset-panel="prop"]) .asset-profile-inspector > .asset-stage-actions {
+  position: static !important; inset: auto !important; flex: 0 0 auto; align-self: flex-end;
+  margin: 0 12px 6px;
+}
+html.redraw-embedded .asset-browser-add { flex-shrink: 0; }
+
+
+/* 2026-11-02 Product Design 改动逻辑：所有出海转绘结果图在真实可见图片边缘使用与左侧原图相同的 4px 圆角。
+   img 按自身比例完整缩放并在原预览框中居中，避免 contain 留白导致外框圆角无法作用于图片；不改变图片尺寸或预览交互。
+   背景只在图片层加载成功时隐藏，原 inline background-image 继续作为业务与大图预览的数据来源。 */
+html.redraw-embedded .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .redraw-character-result .drama-character-current.has-redraw-rounded-image {
+  position: relative; background-image: none !important;
+}
+html.redraw-embedded .redraw-character-result .drama-character-current > .redraw-rounded-result-image {
+  display: none; position: absolute; inset: 0; margin: auto;
+  width: auto; height: auto; max-width: 100%; max-height: 100%;
+  object-fit: contain; border-radius: 4px; pointer-events: none;
+}
+html.redraw-embedded .redraw-character-result .drama-character-current.has-redraw-rounded-image > .redraw-rounded-result-image {
+  display: block;
+}
+
+/* 2026-11-03 Product Design 改动逻辑：左侧所有资产名称固定单行，文本列可收缩；
+   省略文案由脚本按实际行宽生成“...”，覆盖窄屏原有的自动换行规则。 */
+.asset-workspace[data-view="asset-library"] .asset-browser-list .asset-browser-row .drama-character-variant-copy {
+  flex: 1 1 0; min-width: 0; overflow: hidden;
+}
+.asset-workspace[data-view="asset-library"] .asset-browser-list .asset-browser-row .drama-character-variant-copy strong {
+  display: block; max-width: 100%; white-space: nowrap !important; overflow: hidden !important;
+  overflow-wrap: normal !important; text-overflow: clip; -webkit-line-clamp: unset;
+}
+/* 2026-11-03 Product Design：按 UI 稿同步长名称 hover 的深色胶囊样式，单行高 32px、
+   左右留白 16px、14px 居中文字；保留最大宽度与超长文案换行，不影响资产列表布局。 */
+.asset-browser-full-name-tooltip {
+  position: fixed; z-index: 10000; width: max-content;
+  max-width: min(320px, calc(100vw - 16px)); box-sizing: border-box;
+  min-height: 32px; padding: 5px 16px; border: 1px solid #2b3642; border-radius: 999px;
+  background: #171e27; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, .16);
+  font: 500 14px/20px "Noto Sans SC", sans-serif; white-space: normal; text-align: center;
+  overflow-wrap: anywhere; pointer-events: none;
+}
+.asset-browser-full-name-tooltip[hidden] { display: none !important; }

@@ -1,0 +1,111 @@
+/* 2026-11-14 Product Design：以 Figma 原节点 6815:30277 / 30377 / 27487 为准。
+ * 880px 购买弹窗、三列两行 264×206 套餐、会员 780px／非会员 842px、520px 支付结果；小屏内部滚动。
+ * 首页和会员页共用独立 ID，不覆盖会员方案、账户区或账单页其他组件；所有图标均为 Figma 本地原资产。 */
+#vinaVPointStore, #vinaVPointResult { position: fixed; inset: 0; width: 100%; height: 100%; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 24px; border: 0; box-sizing: border-box; background: transparent; color: #f5f7fa; color-scheme: dark; font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; outline: none; overflow: auto; }
+#vinaVPointStore:not([open]), #vinaVPointResult:not([open]) { display: none; }
+#vinaVPointStore[open], #vinaVPointResult[open] { display: grid; place-items: center; }
+#vinaVPointStore::backdrop { background: rgba(0,0,0,.64); }
+#vinaVPointResult::backdrop { background: rgba(0,0,0,.55); }
+#vinaVPointStore *, #vinaVPointResult *, #vinaVPointStore *::before, #vinaVPointResult *::before { box-sizing: border-box; }
+#vinaVPointStore button, #vinaVPointResult button { font: inherit; cursor: pointer; }
+#vinaVPointStore button:focus-visible, #vinaVPointResult button:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+#vinaVPointStore .vsp-card { width: min(880px,100%); max-height: calc(100dvh - 48px); overflow: auto; border: 1px solid #2b3642; border-radius: 24px; background: #171e27; }
+#vinaVPointStore .vsp-header { display: flex; align-items: center; justify-content: space-between; padding: 23px 23px 0; }
+#vinaVPointStore .vsp-header h2 { margin: 0; font-size: 24px; font-weight: 700; line-height: 30px; }
+#vinaVPointStore .vsp-close { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; background: transparent; }
+#vinaVPointStore .vsp-close img { display: block; }
+/* 真实余额位数可能多于 Figma 的示例 0，左侧按内容伸缩，避免与会员横幅重叠。 */
+#vinaVPointStore .vsp-overview { display: grid; grid-template-columns: max-content minmax(0,1fr); align-items: center; gap: 21px; margin: 18px 23px 0; min-height: 66px; }
+#vinaVPointStore .vsp-account { display: flex; flex-direction: column; gap: 12px; }
+#vinaVPointStore .vsp-balances { display: flex; align-items: center; gap: 24px; white-space: nowrap; color: #9aa6b2; font-size: 14px; font-weight: 500; line-height: 24px; }
+#vinaVPointStore .vsp-balances b { margin-inline-start: 4px; color: #f5f7fa; font-size: 16px; font-weight: 400; }
+#vinaVPointStore .vsp-balances i { flex: 0 0 1px; width: 1px; height: 16px; background: #2b3642; }
+#vinaVPointStore .vsp-notice { display: flex; align-items: center; gap: 12px; color: #9aa6b2; font-size: 12px; line-height: 18px; white-space: nowrap; }
+#vinaVPointStore .vsp-notice button { display: inline-flex; align-items: center; padding: 0; border: 0; background: transparent; color: #4da3ff; font-size: 12px; }
+#vinaVPointStore .vsp-notice img { display: block; }
+#vinaVPointStore .vsp-banner { position: relative; display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 12px; overflow: hidden; border-radius: 12px; padding: 12px 20px; background: linear-gradient(90deg,#1b332b,#162a3d); }
+#vinaVPointStore .vsp-banner > div { z-index: 1; display: flex; flex-direction: column; }
+#vinaVPointStore .vsp-banner strong { color: #4cfebf; background: linear-gradient(90deg,#4cfebf,#4da3fe); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 16px; font-weight: 500; line-height: 24px; }
+#vinaVPointStore .vsp-banner span { color: #f5f7fa; font-size: 12px; line-height: 18px; }
+#vinaVPointStore .vsp-banner button { z-index: 1; flex: 0 0 auto; border: 0; padding: 0; background: transparent; color: #b8f84a; font-size: 14px; font-weight: 500; line-height: 20px; }
+#vinaVPointStore .vsp-banner button span { color: inherit; }
+#vinaVPointStore .vsp-banner-points { display: none; position: absolute; inset-inline-end: -8px; top: 50%; opacity: .32; transform: translateY(-50%); }
+#vinaVPointStore[data-member="true"] .vsp-banner-points { display: block; }
+#vinaVPointStore[data-member="true"] .vsp-banner button { display: none; }
+#vinaVPointStore .vsp-pack-section { margin: 24px 23px 31px; }
+#vinaVPointStore .vsp-pack-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+#vinaVPointStore .vsp-pack-heading h3 { margin: 0; font-size: 18px; font-weight: 700; line-height: 28px; }
+#vinaVPointStore [data-member-applied] { color: #9aa6b2; font-size: 12px; line-height: 18px; }
+#vinaVPointStore[data-member="false"] [data-member-applied] { display: none; }
+#vinaVPointStore .vsp-packages { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px 20px; }
+#vinaVPointStore .vsp-pack { position: relative; display: flex; min-width: 0; height: 206px; flex-direction: column; padding: 19px; border: 1px solid #2b3642; border-radius: 12px; background: #171e27; color: #f5f7fa; text-align: start; }
+#vinaVPointStore .vsp-pack.is-selected, #vinaVPointStore .vsp-pack:hover { border-color: #b8f84a; }
+#vinaVPointStore .vsp-points { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; }
+#vinaVPointStore .vsp-points strong { font-size: 28px; font-weight: 700; line-height: 34px; }
+#vinaVPointStore .vsp-points em { color: #fff; font-size: 14px; font-weight: 500; line-height: 20px; font-style: normal; }
+#vinaVPointStore .is-selected .vsp-points strong { color: #b8f84a; }
+#vinaVPointStore .vsp-regular { margin-top: 12px; color: #9aa6b2; font-size: 14px; line-height: 20px; }
+#vinaVPointStore .vsp-price-label { margin-top: 4px; color: #b8f84a; font-size: 14px; line-height: 20px; }
+#vinaVPointStore .vsp-price { font-size: 32px; font-weight: 700; line-height: 40px; }
+#vinaVPointStore .vsp-saving { align-self: start; margin-top: 12px; border-radius: 12px; padding: 3px 8px; color: #b8f84a; background: rgba(184,248,74,.12); font-size: 12px; line-height: 18px; }
+#vinaVPointStore .vsp-check { position: absolute; top: 19px; inset-inline-end: 19px; display: none; place-items: center; width: 24px; height: 24px; border-radius: 12px; background: #b8f84a; }
+#vinaVPointStore .is-selected .vsp-check { display: grid; }
+#vinaVPointStore .vsp-check img { display: block; }
+#vinaVPointStore .vsp-summary { display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "metrics metrics" "saving actions"; align-items: center; gap: 20px; min-height: 178px; border-top: 1px solid #2b3642; padding: 24px 23px 23px; background: #171e27; }
+#vinaVPointStore .vsp-metrics { grid-area: metrics; display: flex; align-items: center; gap: 56px; }
+#vinaVPointStore .vsp-metrics > div { display: flex; min-width: 102px; flex-direction: column; gap: 12px; }
+#vinaVPointStore .vsp-metrics span { color: #9aa6b2; font-size: 15px; line-height: 22px; }
+#vinaVPointStore .vsp-metrics strong { color: #f5f7fa; font-size: 28px; font-weight: 700; line-height: 34px; white-space: nowrap; }
+#vinaVPointStore .vsp-metrics i { width: 1px; height: 52px; background: #2b3642; }
+#vinaVPointStore .vsp-savings-summary { grid-area: saving; }
+#vinaVPointStore .vsp-savings-summary p { margin: 0; color: #f5f7fa; font-size: 14px; line-height: 20px; }
+#vinaVPointStore .vsp-savings-summary strong { color: #b8f84a; }
+#vinaVPointStore .vsp-savings-summary > span { display: block; color: #9aa6b2; font-size: 12px; line-height: 18px; }
+#vinaVPointStore .vsp-actions { grid-area: actions; display: flex; gap: 16px; }
+#vinaVPointStore .vsp-actions button { min-height: 40px; padding: 8px 32px; border: 1px solid #2b3642; border-radius: 10px; white-space: nowrap; font-size: 16px; line-height: 24px; }
+#vinaVPointStore .vsp-secondary { color: #f5f7fa; background: #171e27; }
+#vinaVPointStore .vsp-actions .vsp-primary { padding-inline: 48px; border: 0; color: #0d1308; background: #b8f84a; font-weight: 700; }
+#vinaVPointStore[data-member="true"] .vsp-summary { grid-template-areas: "metrics actions"; min-height: 116px; }
+#vinaVPointStore[data-member="true"] .vsp-savings-summary, #vinaVPointStore[data-member="true"] .vsp-actions [data-store-membership] { display: none; }
+#vinaVPointResult .vsp-result-card { display: flex; flex-direction: column; gap: 44px; width: min(520px,100%); max-height: calc(100dvh - 48px); overflow: auto; padding: 23px; border: 1px solid #2b3642; border-radius: 24px; background: #171e27; }
+#vinaVPointResult header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+#vinaVPointResult header h2 { margin: 0; color: #fff; font-family: "MiSans", "Noto Sans SC", sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; }
+#vinaVPointResult .vsp-result-close { display: grid; place-items: center; flex: 0 0 20px; width: 20px; height: 20px; padding: 0; border: 0; background: transparent; }
+#vinaVPointResult .vsp-result-close img { display: block; }
+#vinaVPointResult .vsp-success-content { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+#vinaVPointResult .vsp-success-icon { padding: 8.8px; line-height: 0; }
+#vinaVPointResult .vsp-success-icon img { display: block; }
+#vinaVPointResult .vsp-success-content > p { margin: 0; color: #fff; font-size: 16px; font-weight: 500; line-height: 24px; }
+#vinaVPointResult .vsp-success-content > div:last-child { display: flex; flex-direction: column; gap: 4px; }
+#vinaVPointResult .vsp-success-content > div:last-child p { margin: 0; color: #9aa6b2; font-size: 14px; line-height: 20px; }
+#vinaVPointResult .vsp-result-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+#vinaVPointResult .vsp-result-actions button { min-width: 108px; min-height: 32px; padding: 6px 16px; border: 0; border-radius: 24px; font-size: 14px; line-height: 20px; }
+#vinaVPointResult .vsp-secondary { color: #fff; background: #2b3642; }
+#vinaVPointResult .vsp-primary { color: #0d1308; background: #b8f84a; font-weight: 500; }
+#vinaVPointResult .vsp-checkout-info p { display: flex; justify-content: space-between; gap: 20px; color: #9aa6b2; }
+#vinaVPointResult .vsp-checkout-info strong { color: #f5f7fa; }
+#vinaVPointResult .vsp-checkout-info [role="status"] { margin-top: 24px; color: #9aa6b2; font-size: 14px; line-height: 22px; }
+#vinaVPointResult .vsp-payment-qr { display: block; width: 200px; height: 200px; margin: 20px auto 0; }
+#vinaVPointResult[data-kind="rules"] .vsp-result-card { width: min(720px,100%); }
+#vinaVPointResult .vsp-rules-content { color: #d5dbe3; font-size: 14px; line-height: 1.7; }
+#vinaVPointResult .vsp-rules-content header { display: none; }
+@media (max-width: 1000px) {
+  #vinaVPointStore .vsp-overview { grid-template-columns: 1fr; gap: 12px; }
+  #vinaVPointStore .vsp-notice { flex-wrap: wrap; }
+  #vinaVPointStore .vsp-summary { display: flex; flex-wrap: wrap; }
+  #vinaVPointStore .vsp-metrics { flex: 1 0 100%; }
+  #vinaVPointStore .vsp-actions { margin-inline-start: auto; }
+}
+@media (max-width: 600px) {
+  #vinaVPointStore, #vinaVPointResult { padding: 12px; }
+  #vinaVPointStore .vsp-card, #vinaVPointResult .vsp-result-card { max-height: calc(100dvh - 24px); }
+  #vinaVPointStore .vsp-packages { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #vinaVPointStore .vsp-pack { padding: 12px; }
+  #vinaVPointStore .vsp-check { top: 12px; inset-inline-end: 12px; }
+  #vinaVPointStore .vsp-metrics { gap: 20px; }
+  #vinaVPointStore .vsp-metrics strong { font-size: 24px; }
+  #vinaVPointStore .vsp-actions { flex-wrap: wrap; width: 100%; }
+  #vinaVPointStore .vsp-actions button { flex: 1; padding-inline: 12px; }
+  #vinaVPointStore .vsp-banner { padding-inline: 12px; }
+  #vinaVPointStore .vsp-banner button { font-size: 12px; }
+}

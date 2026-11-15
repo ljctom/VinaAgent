@@ -1,0 +1,2 @@
+<!-- 2026-10-02 Product Design 改动逻辑：保留 Liblib 原图标路径与变换，统一使用 #A0A0A0，移除局部透明度以避免设定图标明暗不一致。来源：https://www.liblib.tv/canvas -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" color="#A0A0A0"><path d="M9.25 2A3.75 3.75 0 0 1 10 9.42v8.08a3 3 0 1 0 6 0v-3.69l-1.72 1.72a.75.75 0 1 1-1.06-1.06l3-3a.75.75 0 0 1 1.28.53v5.5a4.5 4.5 0 1 1-9 0V9.42A3.75 3.75 0 0 1 9.25 2m0 1.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5" fill="currentColor" fill-opacity=".55"></path></svg>

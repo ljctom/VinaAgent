@@ -1,0 +1,17 @@
+/* 2026-10-22 Product Design 改动逻辑：沿用 UI 稿第一步的滚动及挂载方式；
+   所有替换原面板的规则限定在 setup-page=true，避免改变后续大纲、剧本、资产或视频页面。 */
+/* Only the split workflow's first step uses the approved V19 page. */
+.script-workspace[data-drama-flow="split"][data-setup-page="true"] [data-script-setup-modal].has-v19 {
+ display:block!important;position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;padding:0!important;margin:0!important;overflow:visible!important;background:#080d12!important;border:0!important;box-shadow:none!important;
+}
+.script-workspace[data-drama-flow="split"][data-setup-page="true"] [data-script-setup-modal].has-v19 > :not(#vinaStep1V19){display:none!important}
+[data-script-setup-modal].has-v19[hidden]{display:none!important}
+/* 2026-10-22：仅在第一步显示新版界面，后续步骤仍可使用原设定摘要及编辑控件。 */
+#vinaStep1V19{display:none;width:100%;min-width:0}
+.script-workspace[data-drama-flow="split"][data-setup-page="true"] #vinaStep1V19{display:block}
+/* The setting content scrolls below the fixed workflow header. */
+.script-workspace[data-drama-flow="split"][data-setup-page="true"] > .script-status{flex:none}
+.script-workspace[data-drama-flow="split"][data-setup-page="true"] [data-script-setup-modal].has-v19{
+ flex:1 1 0%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;scroll-padding-bottom:132px;scrollbar-width:thin;scrollbar-color:#35414e transparent;
+}

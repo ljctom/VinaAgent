@@ -1,0 +1,171 @@
+/* 2026-09-30 Product Design 改动逻辑：上传按钮位于大分类右侧；弹窗按参考图使用深灰双栏、白色保存按钮，窄屏上下排布。 */
+.library-upload-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 18px; border: 0; border-radius: 12px; background: #fff; color: #262626; font-size: 14px; font-weight: 500; cursor: pointer; flex-shrink: 0; }
+/* 2026-10-12 Product Design 改动逻辑：资产库页头上传按钮向上微移 6px，与下方来源分隔线保持空隙，保留原按钮尺寸和上传交互。 */
+.view[data-view="subject-library"] .subject-library-head .library-upload-trigger { transform: translateY(-6px); }
+.library-upload-trigger:hover { background: #eaeaea; }
+.library-upload-trigger img { width: 20px; height: 20px; }
+.library-upload-dialog { box-sizing: border-box; width: min(900px, calc(100vw - 40px)); max-width: none; max-height: calc(100dvh - 40px); padding: 0; border: 1px solid #393939; border-radius: 20px; background: #262626; color: #f5f5f5; font: inherit; overflow: auto; }
+.library-upload-dialog::backdrop { background: rgba(0,0,0,.82); }
+.library-upload-dialog *, .library-upload-preview * { box-sizing: border-box; }
+.library-upload-dialog [hidden] { display: none !important; }
+.library-upload-dialog button, .library-upload-dialog input { font: inherit; }
+.library-upload-head { display: flex; align-items: center; justify-content: space-between; height: 62px; padding: 0 30px; border-bottom: 1px solid #414141; }
+.library-upload-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.library-upload-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 6px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+.library-upload-icon:hover { background: #3d3d3d; }
+.library-upload-icon img { width: 20px; height: 20px; }
+/* 2026-09-30 Product Design 改动逻辑：关闭和移除图标统一为白色，增加底色、边框和点击范围。 */
+.library-upload-head .library-upload-icon { width: 36px; height: 36px; padding: 7px; border: 1px solid #555; border-radius: 8px; background: #373737; }
+.library-upload-head .library-upload-icon img, .library-upload-remove img { filter: brightness(0) invert(1); }
+.library-upload-head .library-upload-icon:hover { background: #4b4b4b; border-color: #888; }
+.library-upload-body { display: grid; grid-template-columns: minmax(0, 1fr) 295px; gap: 30px; padding: 30px 30px 0; }
+.library-upload-files { display: grid; grid-template-columns: repeat(auto-fill, 150px); align-content: start; gap: 16px; min-height: 470px; max-height: 470px; overflow-y: auto; padding: 15px; border: 1px solid #454545; border-radius: 16px; background: #292929; }
+.library-upload-files.is-dragging { border-color: #b7f34e; background: #30332a; }
+.library-upload-add { width: 150px; height: 150px; display: grid; place-items: center; padding: 0; border: 1px dashed #4b4b4b; border-radius: 10px; background: #303030; cursor: pointer; }
+.library-upload-add:hover { background: #373737; border-color: #858585; }
+.library-upload-add img { width: 36px; height: 36px; opacity: .8; }
+.library-upload-file { position: relative; min-width: 0; }
+.library-upload-thumb { position: relative; display: grid; place-items: center; width: 150px; height: 150px; overflow: hidden; border: 1px solid #494949; border-radius: 10px; padding: 0; background: #303030; cursor: pointer; }
+.library-upload-file.is-selected .library-upload-thumb { border-color: #aaa; }
+.library-upload-thumb > img { width: 100%; height: 100%; object-fit: contain; }
+.library-upload-thumb > img.library-upload-audio-icon { width: 44px; height: 44px; }
+.library-upload-file-name { margin: 8px 0 0; font-size: 14px; line-height: 22px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-upload-remove { position: absolute; top: 5px; right: 5px; width: 28px; height: 28px; padding: 4px; border: 1px solid #777; background: rgba(20,20,20,.95); }
+/* 2026-09-30 改动逻辑：读取文件和保存期间，转圈覆盖在文件预览内部；不绘制任何进度条。 */
+.library-upload-loading { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.46); border-radius: 9px; pointer-events: none; }
+.library-upload-loading img { width: 30px; height: 30px; filter: grayscale(1) brightness(2); animation: library-upload-spin .9s linear infinite; }
+@keyframes library-upload-spin { to { transform: rotate(360deg); } }
+.library-upload-fields { min-width: 0; }
+.library-upload-label { display: block; margin: 0 0 10px; color: #929292; font-size: 17px; font-weight: 400; }
+.library-upload-label b { color: #ed4545; font-weight: 400; }
+.library-upload-name-wrap { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px; margin-bottom: 18px; border-radius: 10px; background: #333; }
+.library-upload-name-wrap input { min-width: 0; width: 100%; border: 0; outline: 0; padding: 0; color: #fff; background: transparent; font-size: 14px; }
+.library-upload-name-wrap span { flex-shrink: 0; color: #818181; font-size: 14px; }
+.library-upload-location { position: relative; }
+.library-upload-location-trigger { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 40px; padding: 8px 14px; border: 0; border-radius: 10px; background: #333; color: #f5f5f5; font-size: 14px; text-align: left; cursor: pointer; }
+.library-upload-location-trigger img { width: 16px; height: 16px; flex-shrink: 0; }
+.library-upload-location-trigger[aria-expanded="true"] img { transform: rotate(180deg); }
+/* 2026-09-30 改动逻辑：保存位置固定向下展开，两大类各有四个子分类，选择后回显“资产库 / 分类”路径。 */
+.library-upload-location-menu { position: absolute; top: calc(100% + 10px); left: 0; right: 0; z-index: 2; max-height: 330px; overflow-y: auto; padding: 8px 6px; border: 1px solid #3e3e3e; border-radius: 15px; background: #222; box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+.library-upload-location-group + .library-upload-location-group { margin-top: 6px; padding-top: 6px; border-top: 1px solid #3b3b3b; }
+.library-upload-location-group summary { display: flex; align-items: center; justify-content: space-between; list-style: none; padding: 9px 8px; font-size: 15px; cursor: pointer; }
+.library-upload-location-group summary::-webkit-details-marker { display: none; }
+.library-upload-location-group summary img { width: 16px; height: 16px; }
+.library-upload-location-group[open] summary img { transform: rotate(180deg); }
+.library-upload-location-option { display: block; width: 100%; padding: 8px 14px 8px 32px; border: 0; border-radius: 7px; background: transparent; color: #eee; font-size: 14px; text-align: left; cursor: pointer; }
+/* 2026-09-30 改动逻辑：不匹配文件类型的分类置灰，禁止点击和悬停高亮。 */
+.library-upload-location-option:not(:disabled):hover, .library-upload-location-option[aria-selected="true"]:not(:disabled) { background: #383838; }
+.library-upload-location-option:disabled { color: #666; background: transparent; cursor: not-allowed; }
+.library-upload-error { margin: 15px 0 0; color: #ff9393; font-size: 13px; line-height: 1.6; }
+.library-upload-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 20px 30px; }
+.library-upload-formats { color: #909090; font-size: 13px; line-height: 1.9; }
+.library-upload-actions { display: flex; gap: 15px; }
+.library-upload-action { min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: #3b3b3b; color: #f5f5f5; cursor: pointer; white-space: nowrap; }
+.library-upload-action.is-primary { background: #fff; color: #262626; }
+.library-upload-action:disabled { color: #a8a8a8; cursor: default; }
+.library-upload-dialog button:focus-visible, .library-upload-dialog summary:focus-visible, .library-upload-trigger:focus-visible { outline: 2px solid #b7f34e; outline-offset: 3px; }
+.library-upload-name-wrap:focus-within { outline: 1px solid #999; }
+/* 2026-09-30 改动逻辑：上传的图片使用真实封面，音频使用可播放的本地资源；卡片跟随现有来源和分类切换。 */
+.view[data-view="subject-library"] .library-upload-card { position: relative; overflow: hidden; border: 1px solid #242a30; border-radius: 14px; background: #191b1d; }
+.library-upload-card-cover { display: grid; place-items: center; width: 100%; height: 280px; padding: 0; border: 0; background: #111619; cursor: pointer; }
+.library-upload-card-cover img { width: 100%; height: 100%; object-fit: cover; }
+.library-upload-card-cover img.library-upload-audio-icon { width: 50px; height: 50px; object-fit: contain; }
+.library-upload-card-copy { display: flex; align-items: center; gap: 8px; padding: 12px 14px; }
+.library-upload-card-copy strong { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.library-upload-card-delete { width: 26px; height: 26px; padding: 4px; border: 0; border-radius: 5px; background: transparent; cursor: pointer; }
+.library-upload-card-delete img { width: 18px; height: 18px; }
+.library-upload-card-delete:hover { background: #3a2a2a; }
+.library-upload-preview { width: min(800px, calc(100vw - 40px)); padding: 0; border: 1px solid #414141; border-radius: 16px; color: #fff; background: #262626; }
+.library-upload-preview::backdrop { background: rgba(0,0,0,.8); }
+.library-upload-preview-media { display: grid; place-items: center; min-height: 200px; padding: 24px; }
+.library-upload-preview-media img { max-width: 100%; max-height: 65dvh; object-fit: contain; }
+.library-upload-preview-media audio { width: 100%; }
+.library-upload-toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 2147483647; padding: 12px 22px; border: 1px solid #484848; border-radius: 10px; background: #262626; color: #f5f5f5; font-size: 14px; box-shadow: 0 5px 20px #0006; }
+@media (max-width: 700px) {
+  .library-upload-body { grid-template-columns: 1fr; gap: 20px; padding: 20px 20px 0; }
+  .library-upload-files { min-height: 230px; max-height: 300px; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .library-upload-add, .library-upload-thumb { width: 100%; height: 130px; }
+  .library-upload-location-menu { position: relative; top: auto; margin-top: 10px; }
+  .library-upload-footer { padding: 20px; flex-wrap: wrap; }
+  .library-upload-actions { margin-left: auto; }
+  .library-upload-head { padding: 0 20px; }
+}
+/* 2026-09-30 Product Design 改动逻辑：按新参考图将个人和团队音频改为横向卡片，左侧70px方形播放按钮，右侧文件名、细进度条、当前/总时长；编辑删除仅悬停或聚焦出现。 */
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid.subject-library-voice-grid { grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: 18px; align-content: start; align-items: start; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card { display: grid; grid-template-columns: 70px minmax(0,1fr) 76px; grid-template-rows: 35px 35px; column-gap: 18px; height: 106px; min-height: 106px; max-height: 106px; aspect-ratio: auto; padding: 17px; border: 1px solid #3b4856; border-radius: 14px; background: #181f28; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:hover,
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:focus-within { border-color: #526273; background: #181f28; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-copy { grid-column: 2 / 4; grid-row: 1; align-self: center; padding-right: 0; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-name { display: block; font-size: 16px; line-height: 24px; font-weight: 700; color: #f2f5fa; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-desc { display: none; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-preview { display: contents; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-play { grid-column: 1; grid-row: 1 / 3; width: 70px; height: 70px; border-radius: 9px; background: #2a3642; color: #dce5f3; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-play svg,
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-play img { width: 26px; height: 26px; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-play.is-playing { background: #354555; color: #dce5f3; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-track,
+.library-upload-audio-seek { grid-column: 2; grid-row: 2; align-self: center; width: 100%; min-width: 0; height: 3px; margin: 0; border-radius: 4px; background: #2d3945; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-time { grid-column: 3; grid-row: 2; align-self: center; color: #788594; font-size: 12px; line-height: 20px; white-space: nowrap; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-actions { top: 17px; right: 17px; gap: 8px; opacity: 0; pointer-events: none; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:hover .subject-library-voice-actions,
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:focus-within .subject-library-voice-actions { opacity: 1; pointer-events: auto; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:hover .subject-library-voice-copy,
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:focus-within .subject-library-voice-copy { padding-right: 88px; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-action { width: 36px; height: 36px; border-radius: 50%; background: #2a3642; }
+.view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-action img { width: 17px; height: 17px; }
+.library-upload-audio-seek { appearance: none; cursor: pointer; background: linear-gradient(to right, #a8b9d2 var(--audio-progress, 0%), #2d3945 var(--audio-progress, 0%)); }
+.library-upload-audio-seek::-webkit-slider-thumb { appearance: none; width: 8px; height: 8px; border-radius: 50%; background: #a8b9d2; }
+.library-upload-audio-seek::-moz-range-thumb { width: 8px; height: 8px; border: 0; border-radius: 50%; background: #a8b9d2; }
+.library-upload-audio-seek:disabled { cursor: default; }
+@media (hover: none) {
+  .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-actions { opacity: 1; pointer-events: auto; }
+  .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-copy { padding-right: 88px; }
+}
+@media (prefers-reduced-motion: reduce) { .library-upload-loading img { animation-duration: 2s; } }
+
+/* 2026-10-13 Product Design 改动逻辑：个人与团队图片封面改为公共角色同款 201:330 竖向整图卡片；名称置于图片内左下角，底部渐暗遮罩保证可读性；音频卡片与 16:9 大图弹窗保持原有布局。 */
+.view[data-view="subject-library"] .subject-asset-browser .personal-subject-grid:not(.subject-library-voice-grid) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 16px; }
+.view[data-view="subject-library"] .subject-asset-browser .owned-asset-card,
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio) { position: relative; height: auto; aspect-ratio: 201 / 330; overflow: hidden; border: 1px solid #2b3642; border-radius: 8px; background: #080d12; box-shadow: none; transform: none; }
+.view[data-view="subject-library"] .subject-asset-browser .owned-asset-card:hover,
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio):hover { border-color: #b8f84a; background: #080d12; }
+.view[data-view="subject-library"] .subject-asset-browser .owned-asset-card::after,
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio)::after { content: ""; position: absolute; inset: auto 0 0; z-index: 1; display: block; height: 45%; background: linear-gradient(180deg, transparent, rgba(0,0,0,.82)); pointer-events: none; }
+/* 2026-10-13 改动逻辑：竖向缩略图居中裁剪填满整张封面，点击仍预览原图；遮罩和名称不拦截图片按钮，完整保留鼠标和键盘预览入口。 */
+.view[data-view="subject-library"] .owned-asset-cover,
+.view[data-view="subject-library"] .library-upload-card-cover { position: absolute; inset: 0; display: block; width: 100%; height: 100%; aspect-ratio: auto; overflow: hidden; margin: 0; padding: 0; border: 0; border-radius: 7px; background: #080d12; cursor: pointer; }
+.view[data-view="subject-library"] .owned-asset-cover > img,
+.view[data-view="subject-library"] .library-upload-card-cover > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; background: #080d12; }
+.view[data-view="subject-library"] .subject-asset-browser .owned-asset-card .subject-name { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; display: block; height: auto; min-height: 18px; margin: 0; padding: 0; overflow: hidden; color: #fff; font-size: 12px; font-weight: 700; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+.view[data-view="subject-library"] .owned-asset-card .personal-material-action img { width: 17px; height: 17px; filter: brightness(0) invert(1); }
+/* 2026-10-13 改动逻辑：改名输入框随名称移到图片底部并保持可点击，上传图片名称与删除按钮共用底部叠加层，不占用图片外部空间。 */
+.view[data-view="subject-library"] .owned-asset-card .personal-material-name-input { position: absolute; left: 10px; right: 10px; bottom: 8px; z-index: 4; display: block; box-sizing: border-box; width: calc(100% - 20px); height: 34px; margin: 0; }
+.view[data-view="subject-library"] .owned-asset-card .subject-name[hidden] { display: none; }
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio) .library-upload-card-copy { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 2; box-sizing: border-box; display: flex; align-items: center; gap: 8px; height: auto; min-height: 22px; padding: 0; pointer-events: none; }
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio) .library-upload-card-copy strong { color: #fff; font-size: 12px; font-weight: 700; line-height: 18px; }
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio) .library-upload-card-delete { pointer-events: auto; }
+.view[data-view="subject-library"] .library-upload-card:not(.is-uploaded-audio) .library-upload-card-delete img { filter: brightness(0) invert(1); }
+.view[data-view="subject-library"] .owned-asset-cover:focus-visible,
+.view[data-view="subject-library"] .library-upload-card-cover:focus-visible { outline: 2px solid #b8f84a; outline-offset: -3px; }
+/* 2026-10-13 Product Design 改动逻辑：独立预览弹窗保持 16:9 黑色画幅，移除图片左上角信息块，关闭入口在右上；按钮独占图片下方区域，短屏按可用高度缩小弹窗以保留完整画面和操作。 */
+.owned-asset-preview { box-sizing: border-box; width: min(1000px, calc(100vw - 40px), calc((100dvh - 160px) * 16 / 9)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow: auto; border: 1px solid #34404d; border-radius: 18px; background: #171e27; color: #f5f7fa; box-shadow: 0 32px 100px rgba(0,0,0,.65); }
+.owned-asset-preview::backdrop { background: rgba(0,0,0,.8); backdrop-filter: blur(8px); }
+.owned-asset-preview-media { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #000; }
+.owned-asset-preview-media > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.owned-asset-preview-close { box-sizing: border-box; position: absolute; z-index: 2; top: 20px; right: 20px; display: grid; place-items: center; width: 36px; height: 36px; padding: 8px; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; background: rgba(0,0,0,.72); cursor: pointer; }
+/* 2026-10-13 Product Design 修复逻辑：关闭 SVG 作为 img 加载时 currentColor 默认呈黑色，无法继承按钮文字颜色；只把此弹窗的叉号转为白色，确保黑色画幅上可见，并固定按钮盒模型与图标居中。 */
+.owned-asset-preview-close img { display: block; flex-shrink: 0; width: 20px; height: 20px; filter: brightness(0) invert(1); }
+.owned-asset-preview-close:hover { background: #2b3642; }
+.owned-asset-preview-footer { display: flex; justify-content: center; padding: 20px 24px; border-top: 1px solid #2b3642; }
+.owned-asset-preview-use { min-width: 180px; min-height: 46px; padding: 0 32px; border: 0; border-radius: 999px; background: #b8f84a; color: #091006; font: inherit; font-size: 15px; font-weight: 750; cursor: pointer; }
+.owned-asset-preview-use:hover { background: #c8ff6a; }
+.owned-asset-preview button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .owned-asset-preview { width: min(calc(100vw - 24px), calc((100dvh - 130px) * 16 / 9)); border-radius: 12px; }
+  .owned-asset-preview-close { top: 10px; right: 10px; width: 30px; height: 30px; padding: 5px; }
+  .owned-asset-preview-footer { padding: 14px 16px; }
+  .owned-asset-preview-use { width: 100%; min-height: 42px; }
+}
+
+/* 2026-10-13 Product Design 改动逻辑：预览名称仅供辅助技术识别弹窗，视觉上不再显示名称、资产来源或分类标签。 */
+.owned-asset-preview-accessible-title { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }

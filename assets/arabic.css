@@ -1,0 +1,609 @@
+/* 2026-10-25 Product Design：所有规则仅在 ar 激活。
+ * 画布与媒体时间轴保持 LTR；资产、Skill 与短剧第四/五步工作区按 RTL 排列，不翻转素材、Logo 或坐标。
+ * 阿拉伯语使用系统原生连写字体与正常字距，短控件单行，说明/报错允许换行；不改变其他语言样式。
+ */
+html[data-vina-ar] body {
+  font-family: Tahoma, "Geeza Pro", Arial, sans-serif;
+  letter-spacing: normal;
+}
+html[data-vina-ar] [data-vina-ar-copy] {
+  unicode-bidi: isolate;
+  letter-spacing: normal;
+}
+html[data-vina-ar] :is(p, div, td, th, label, h1, h2, h3, h4, h5, h6)[data-vina-ar-copy] {
+  text-align: start;
+}
+/* 2026-10-25 文字异常修复：翻译层不统一强加按钮宽度/裁切。
+ * 绝对定位父级可能没有宽度，max-width:100% 会让文案消失；尺寸和省略由各控件自身样式负责。 */
+html[data-vina-ar] :is(button, a)[data-vina-ar-copy] { letter-spacing:normal; }
+/* 连写字体与正常断词直接作用到译文/输入，覆盖局部组件的中文字体和 break-all；英文模型/数字保留自身方向。 */
+html[data-vina-ar] :is([data-vina-ar-copy],[data-vina-ar-input]) { font-family:Tahoma,"Geeza Pro",Arial,sans-serif;word-break:normal;font-variant-ligatures:normal; }
+html[data-vina-ar] :is(.nav-item span, .profile-popover-row-label, .home-skill-chip-label, .setup-tile-label, .setup-tile-value, .detail-video-action-label, .detail-storyboard-sync-label, .episode-button span, .canvas-skill-tab, .skill-tab, .home-generation-mode-title, .auto-mode-title) {
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  letter-spacing: normal;
+}
+html[data-vina-ar] :is(.nav-item, .profile-popover-row, .detail-generate-btn, .detail-storyboard-sync, .episode-button, .home-generation-mode-trigger, .auto-mode-trigger) {
+  letter-spacing: normal;
+}
+html[data-vina-ar] :is(.home-generation-mode-title, .home-generation-mode-desc, .auto-mode-title, .auto-mode-desc, .creative-skip, [data-confirmation-continue]) {
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+html[data-vina-ar] :is(.home-generation-mode-desc, .auto-mode-desc, .creation-preferences-head p, .script-count-confirm-message, .detail-param-confirm-message, .batch-generate-description, .skill-detail-description, .skill-detail-desc, .canvas-skill-description, .canvas-skill-desc, .team-form-hint, .detail-generation-failure-message, .confirmation-batch-option-description) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+  letter-spacing: normal;
+}
+html[data-vina-ar] :is(.home-generation-mode-desc, .auto-mode-desc) {
+  text-align: right;
+}
+html[data-vina-ar] :is(input, textarea, [contenteditable])[data-vina-ar-input] {
+  text-align: start;
+  letter-spacing: normal;
+  unicode-bidi: plaintext;
+}
+html[data-vina-ar] [data-vina-ar-input][dir="ltr"] {
+  text-align: left;
+  unicode-bidi: isolate;
+}
+html[data-vina-ar] :is(.episode-timeline-panel, .review-storyboard-timeline, .canvas-stage, .libtv-timeline, .video-composer-timeline) {
+  direction: ltr;
+}
+
+/* 2026-10-25 Product Design 改动逻辑：短剧第4步资产列表从右起，网格列号和原宽度不变。
+ * 预览详情保持纵向结构，只将描述/音色与提示词两列、标题来源按钮及底部操作左右对调。
+ * 限定列表态资产主区，不影响被分集借用的编辑弹窗、画布坐标或图片自身方向。 */
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-main .asset-inner,
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-main :is(.asset-browser-sidebar,.asset-tabs,.asset-browser-row,.asset-edit-region,.drama-character-preview-head,.drama-character-preview-actions,.drama-character-source-actions,.drama-character-reference-row,.drama-character-reference-images,.drama-character-voice-bound,.drama-character-description-actions),
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-stage-actions {
+  direction: rtl;
+}
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-main .asset-browser-detail-panel {
+  direction: ltr;
+}
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-main :is(.asset-browser-row,.asset-preview-title,.drama-character-section-label,.drama-character-description,.drama-character-prompt) {
+  text-align: right;
+}
+html[data-vina-ar] .asset-workspace.has-asset-browser .asset-main .drama-character-preview-actions {
+  margin-left: 0;
+  margin-right: auto;
+}
+/* 第5步总览：封面、分集文字、状态与操作列从右向左，卡片顺序与项目数据不变。 */
+html[data-vina-ar] .episode-workspace[data-view="episode-video"] :is(.episode-inner,.episode-project-panel,.episode-project-heading,.episode-project-tags,.episode-video-card,.episode-info,.episode-heading,.episode-buttons) {
+  direction: rtl;
+  text-align: right;
+}
+html[data-vina-ar] .episode-workspace[data-view="episode-video"] .episode-project-heading h1 {
+  margin-right: 0;
+  margin-left: 8px;
+}
+@media (min-width: 761px) {
+  html[data-vina-ar] .episode-workspace[data-view="episode-video"] .episode-project-progress {
+    padding-left: 0;
+    padding-right: 24px;
+    border-left: 0;
+    border-right: 1px solid var(--va-border-light);
+  }
+}
+/* 第5步分集：仅工作区网格启用 RTL，沿用原列宽、响应式行号和侧栏显隐。
+ * 播放器移至左边，剧本/审核侧栏移至右边；画面及播放进度仍为 LTR。
+ * 分镜表列与片段卡按逻辑顺序从右起排，不反转 DOM 或视频合成顺序。
+ * 底部片段栏采用 RTL 原生滚动，其自定义滚动条通过 app.js 统一映射物理位置。 */
+html[data-vina-ar] .episode-detail-workspace #episodeVideoStoryboardPanel,
+html[data-vina-ar] .episode-detail-workspace :is(.detail-prompt-panel,.detail-prompt-head,.detail-prompt-title-row,.detail-view-switch,.detail-reference-list,.detail-prompt-tools,.detail-prompt-tool-left,.detail-prompt-action-group,.episode-global-params,.detail-storyboard,.detail-storyboard table,.shot-strip,.detail-story-panel,.detail-player-actions) {
+  direction: rtl;
+}
+html[data-vina-ar] .episode-detail-workspace :is(.detail-player-panel,.detail-preview-controls,.detail-preview-timeline-wrap,.shot-scrollbar,.storyboard-duration-field,.detail-duration-range),
+html[data-vina-ar] .asset-workspace.has-asset-browser :is([data-character-model-label],[data-character-settings-label]) {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+html[data-vina-ar] .episode-detail-workspace .detail-prompt-action-group,
+html[data-vina-ar] .episode-detail-workspace .detail-prompt-title-row > .episode-detail-header-actions,
+html[data-vina-ar] .episode-detail-workspace .detail-player-actions .detail-fullscreen {
+  margin-left: 0;
+  margin-right: auto;
+}
+/* 拖拽命中线跟随镜像后的列起点；真实宽度由原参数控制，脚本同步使用镜像后的指针方向。 */
+/* 展开侧栏时匹配原 :has 选择器，确保清除其高优先级的左侧负边距。 */
+html[data-vina-ar] .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .detail-sidebar-resizer,
+html[data-vina-ar] .episode-detail-workspace #episodeVideoStoryboardPanel :is(.detail-panel-resizer,.detail-sidebar-resizer) {
+  direction: rtl;
+  margin-left: 0;
+  margin-right: -11px;
+}
+html[data-vina-ar] .episode-detail-workspace #episodeVideoStoryboardPanel :is(.detail-panel-resizer,.detail-sidebar-resizer)::before {
+  margin-left: 0;
+  margin-right: 5px;
+}
+html[data-vina-ar] .episode-detail-workspace #episodeVideoStoryboardPanel :is(.detail-panel-resizer,.detail-sidebar-resizer):is(:hover,:focus-visible,.is-dragging)::before {
+  margin-right: 4px;
+}
+html[data-vina-ar] .episode-detail-workspace .detail-story-panel.episode-agent-sidebar {
+  left: auto;
+  right: 0;
+}
+html[data-vina-ar] .episode-detail-workspace .episode-agent-close {
+  right: auto;
+  left: 20px;
+}
+html[data-vina-ar] .episode-detail-workspace .episode-agent-sidebar:has(.detail-review-panel:not([hidden])) .episode-agent-close {
+  right: auto;
+  left: 4px;
+}
+html[data-vina-ar] .episode-detail-workspace .episode-agent-script .episode-script-scroll-close {
+  float: left;
+  margin: -8px 8px 0 6px;
+}
+/* 竖向分隔线跟随表格反向列顺序；数值、时长仍居中且按正常数字方向阅读。 */
+html[data-vina-ar] .episode-detail-workspace .detail-storyboard :is(th,td) {
+  text-align: right;
+  border-right: 0;
+  border-left: 1px solid #2d333a;
+}
+html[data-vina-ar] .episode-detail-workspace .detail-storyboard :is(th,td):last-child {
+  border-left: 0;
+}
+html[data-vina-ar] .episode-detail-workspace .detail-storyboard :is(.storyboard-index-cell,.storyboard-duration-cell,.storyboard-shot-size-cell,.storyboard-image-cell) {
+  text-align: center;
+}
+html[data-vina-ar] .episode-detail-workspace .shot-delete-btn {
+  right: auto;
+  left: 8px;
+}
+html[data-vina-ar] .episode-detail-workspace .shot-card .shot-thumb::before {
+  left: auto;
+  right: 8px;
+}
+html[data-vina-ar] .episode-detail-workspace .detail-reference-remove {
+  right: auto;
+  left: 4px;
+}
+/* 操作区左右互换后，位于文字旁的积分分隔线也移到对应一侧；弹层靠其触发器右沿展开。 */
+html[data-vina-ar] .episode-detail-workspace .detail-video-action-cost {
+  border-left: 0;
+  border-right: 1px solid rgba(255,255,255,.12);
+}
+html[data-vina-ar] .episode-detail-workspace .detail-generate-btn.detail-video-action .detail-video-action-cost {
+  border-right-color: rgba(16,32,6,.2);
+}
+html[data-vina-ar] .episode-detail-workspace :is(#detailSettingsPopover,#detailModelPopover,.detail-duration-popover,.episode-switcher-menu) {
+  left: auto;
+  right: 0;
+}
+/* 2026-10-25 镜像后的播放器位于左侧，历史浮层从左沿向右展开，避免菜单越过屏幕左边界。 */
+html[data-vina-ar] .episode-detail-workspace .detail-history-popover {
+  right: auto;
+  left: 0;
+  direction: rtl;
+  text-align: right;
+}
+/* 分镜列由工作区 RTL 样式排列；阿语正文向右阅读，数字/时长/分辨率仍按独立 LTR 字段展示。 */
+html[data-vina-ar] :is(.detail-storyboard td, .detail-storyboard th)[data-vina-ar-copy] {
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+html[data-vina-ar] :is(.detail-duration-input, .detail-time, .detail-duration, .episode-duration, .review-player-time, .video-time, .libtv-timecode, .node-param-summary, .profile-popover-balance, .team-captcha, input[type="number"], input[type="range"]) {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+html[data-vina-ar] :is(.detail-mention-token, .script-mention-token, .node-mention, .mention-chip) {
+  unicode-bidi: isolate;
+}
+/* 语言菜单保留各语言的自称与现有选项位置，只给新增 العربية 指定文字方向。 */
+.profile-language-option[data-page-language="ar"] > span:first-child {
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+/* 2026-10-25 Product Design / 局部 RTL：只调整阅读/导航相关控件。
+ * 主侧栏在阿语产品壳层靠右；对话栏与编辑/预览分栏保持原位；步骤业务顺序、画布坐标、表格列和媒体时间轴不变。
+ * Logo、素材、播放/快进图标、向上发送图标、侧栏实际折叠箭头均不镜像。
+ */
+html[data-vina-ar] :is(.steps) { flex-direction:row-reverse;direction:ltr; }
+html[data-vina-ar] :is(.steps .step,.sidebar .nav-item,.profile-popover-row,.profile-popover-heading,.profile-popover-value-row,.profile-account-option,.team-select,.home-skill-scope-tabs,.style-categories,.canvas-skill-tabs,.skill-tabs,.plain-tabs,.material-category-tabs,.script-detail-view-tabs,.reference-asset-tabs,.episode-video-mode-tabs,.vm-tabs,.vm-cycle) { direction:rtl; }
+html[data-vina-ar] :is(.sidebar .nav-item,.profile-popover-row,.profile-popover-heading,.team-select) { text-align:right; }
+/* 2026-10-26 Product Design / 阿语个人菜单对齐修复：语言、退出按钮的 ID 规则原先强制左对齐，
+ * 需用带 ar 状态的 ID 选择器覆盖；标签也显式右对齐，让订单、邀请码、语言、退出共用文字右边缘。
+ * 沿用行内 RTL 顺序和原有间距：图标在右、文字在其左，语言展开箭头在最左；其他语言不受影响。 */
+html[data-vina-ar] #profileLanguageTrigger,
+html[data-vina-ar] #profileDemoSignOut,
+html[data-vina-ar] .profile-popover-row-label { text-align:right; }
+/* 2026-10-26 Product Design / 个人中心上半区 RTL 修复：账号卡从右排列头像、账号信息、进入箭头，
+ * 姓名与角色、账号 ID 图标也跟随右向布局；姓名、公司名、切换账号按钮统一靠右。
+ * 套餐与团队额度从右起读，查看团队文字在右、箭头在左；保留卡片尺寸、显隐及点击逻辑。
+ * 额度数值使用独立 LTR 片段，避免 0/10,000 等混排数字顺序被 RTL 改变；仅 ar 状态生效。 */
+html[data-vina-ar] :is(.profile-popover-user,.profile-popover-user-copy,.profile-popover-name-row,.profile-popover-id,.profile-team-plan,.profile-team-credits,.profile-team-credits-top,.profile-team-credits-bottom,.profile-popover-team) {
+  direction:rtl;
+  text-align:right;
+}
+html[data-vina-ar] :is(.profile-popover-name,.profile-popover-team-name,.profile-switch-trigger) { text-align:right; }
+html[data-vina-ar] :is(.profile-team-credits-top,.profile-team-credits-bottom) { width:100%; }
+html[data-vina-ar] :is(.profile-team-credits-top strong,.profile-team-credits-bottom strong) {
+  display:inline-block;
+  direction:ltr;
+  unicode-bidi:isolate;
+}
+/* 团队余额的进入箭头与其他个人中心进入箭头一致朝左，图像、头像和复制图标不镜像。 */
+html[data-vina-ar] .profile-team-credits-bottom > img { transform:scaleX(-1); }
+html[data-vina-ar] :is(.script-back > svg,.script-detail-back > svg,.skill-detail-back > svg,.showcase-player-back > svg,.profile-popover-chevron,.profile-popover-row > img:last-child,.profile-popover-heading > img:last-child) { transform:scaleX(-1); }
+html[data-vina-ar] :is(.script-back-group,.redraw-back-group,.episode-detail-header-left) { direction:rtl; }
+/* 短剧/全能确认卡：选项序号、勾选标记位于右侧，正文从右起读。 */
+html[data-vina-ar] :is(.drama-outline-card,.confirmation-batch-card,.confirmation-card-shell,.creative-direction-card,.do-head,.do-option,.do-actions,.do-custom,.confirmation-batch-head,.confirmation-batch-option-copy,.confirmation-card-head,.confirmation-card-options,.confirmation-card-actions,.creative-direction-options,.creative-direction-actions) { direction:rtl;text-align:right; }
+html[data-vina-ar] :is(.do-option > span:last-child,.confirmation-batch-option-copy,.creative-option,.confirmation-card-question,.confirmation-card-hint) { text-align:right; }
+html[data-vina-ar] :is(.do-option,.creative-option,.confirmation-card-option) { min-width:0;white-space:normal;overflow-wrap:anywhere; }
+html[data-vina-ar] :is(.do-option small,.do-option b,.confirmation-batch-option-description) { line-height:1.55; }
+html[data-vina-ar] .do-nav { direction:rtl; }
+html[data-vina-ar] .do-nav :is([data-do="prev"],[data-do="next"]) { transform:scaleX(-1); }
+html[data-vina-ar] .confirmation-batch-nav { direction:rtl; }
+html[data-vina-ar] [data-confirmation-previous] svg { transform:none!important; }
+html[data-vina-ar] [data-confirmation-next] svg { transform:scaleX(-1)!important; }
+/* 页码/问题编号保留真实数值，上一页和下一页按阅读顺序排列。 */
+html[data-vina-ar] :is(.team-pagination,.team-pagination-pages,.pagination,.team-page-size,.episode-pagination,.subject-role-pagination) { direction:rtl; }
+html[data-vina-ar] :is(.team-pagination,.episode-pagination,.subject-role-pagination) :is(button svg,button > img) { transform:scaleX(-1); }
+/* 标签、复选框和单选框局部跟随 RTL，不移动所在表单或弹窗。 */
+html[data-vina-ar] :is(.team-form-row,.team-form-field,.team-permission-item,.team-permission-row,.team-modal-field,.team-project-option,.team-member-option,.save-asset-tabs,.asset-upload-dialog label,.drama-voice-field,.voice-edit-field,.creation-preferences-tabs,.creation-preferences-footer,.creation-preferences-field,.creation-preferences-model,.creation-preferences-model-copy) { direction:rtl;text-align:right; }
+html[data-vina-ar] label:has(> input[type="checkbox"]),html[data-vina-ar] label:has(> input[type="radio"]) { direction:rtl; }
+html[data-vina-ar] :is(.story-summary,.editable-content,.card-copy,.episode-outline-copy,.script-scene-line-copy,.script-scene-card-body,.script-ai-text,.episode-agent-message-text,.episode-project-outline,.episode-meta,.subject-name,.asset-info,.script-scene-heading,.script-suspense-chain) { text-align:right; }
+html[data-vina-ar] :is(.script-scene-line,.script-scene-heading,.character-detail-block,.script-episode-summary-card,.script-scene-card) { direction:rtl; }
+html[data-vina-ar] :is(.script-scene-line-copy,.script-scene-card-body,.script-ai-text,.card-copy,.episode-outline-copy) { overflow-wrap:anywhere;line-height:1.6; }
+html[data-vina-ar] :is(.script-ai-head,.episode-script-section-title,.section-title,.detail-reference-card,.subject-library-voice-copy) { direction:rtl; }
+/* 文本型段落/清单从右起读；嵌入的英文与数值保持独立书写方向。 */
+html[data-vina-ar] :is(.script-detail ul,.script-detail ol,.skill-detail-body ul,.skill-detail-body ol) { direction:rtl;padding-inline-start:1.5em;padding-inline-end:0; }
+html[data-vina-ar] :is(.script-detail,.skill-detail-body) li { text-align:right; }
+html[data-vina-ar] :is(.drama-model-name,.creation-preferences-model-name,.detail-model-name,.node-param-summary,.spec-media-meta) { direction:ltr;unicode-bidi:isolate; }
+
+/* 2026-10-25：空输入框的阿语占位提示右对齐；有值后继续按内容自动识别方向。 */
+html[data-vina-ar] :is(input,textarea)[data-vina-ar-input][dir="auto"]:placeholder-shown { text-align:right; }
+
+/* 2026-10-25 Product Design：仅阿语互换产品顶栏两端；模板页与独立 3D 页面排除。
+ * 只移动品牌/返回标题与账户组，保留侧栏菜单顺序、对话分栏、步骤 ID、标题编辑和账户事件。
+ * 账户使用原节点，头像最靠左；二级弹层改向右展开，避免移到左侧后出屏。
+ */
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .global-account {
+  left:24px; right:auto; flex-direction:row-reverse;
+}
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .global-account > .account-avatar { order:1; }
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .brand { left:auto; right:24px; }
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .global-account > .profile-popover { left:0; right:auto; }
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) :is(.profile-language-popover,.profile-account-popover) { left:calc(100% + 14px); right:auto; }
+/* 网格方向只覆盖顶栏：第一列从右起；步骤自身继续按已有 RTL 顺序显示，主体不继承。 */
+html[data-vina-ar] .script-status { direction:rtl; }
+html[data-vina-ar] .script-status > :is(.script-back-group,.redraw-back-group,.episode-detail-header-left) { direction:rtl; text-align:right; }
+html[data-vina-ar] .script-status > .script-back-group > :is(.script-back-title,.script-title-input) { left:auto;right:56px;text-align:right; }
+html[data-vina-ar] :is(.script-back,.script-detail-back,.canvas-return) { direction:rtl; }
+html[data-vina-ar] .canvas-return > svg { transform:scaleX(-1); }
+html[data-vina-ar] .view[data-view="canvas-workbench"] > .canvas-return { left:auto;right:24px; }
+html[data-vina-ar] .episode-detail-header-left { padding-left:0;padding-right:0; }
+/* 资产库：来源、类型、筛选与卡片网格从右起排；DOM、数据顺序、图片方向均不变。 */
+html[data-vina-ar] .view[data-view="subject-library"] :is(.subject-library-head,.material-category-tabs,.character-tag-filter-bar,.character-tag-filter-item,.character-tag-filter-trigger,.character-tag-filter-option,.public-subject-grid,.personal-subject-grid,.subject-library-voice-grid) { direction:rtl; }
+html[data-vina-ar] .view[data-view="subject-library"] .character-tag-filter-menu { left:auto;right:0;text-align:right; }
+html[data-vina-ar] .view[data-view="subject-library"] .character-tag-filter-clear { margin-right:0;margin-left:-7px;padding:0 7px 1px 0; }
+html[data-vina-ar] .view[data-view="subject-library"] .subject-name { left:auto;right:12px;text-align:right; }
+html[data-vina-ar] .view[data-view="subject-library"] .material-category-tabs { width:max-content;max-width:100%;margin-left:auto;margin-right:0; }
+/* Skill 独立页：一级导航靠右，创建入口靠左，预留 148px 防止两者相互覆盖。
+ * 原按钮绝对定位容器没有宽度，通用 max-width:100% 裁掉翻译；显式宽度和不压缩恢复完整文案。
+ * 弹窗态及其他语言沿用原规则，事件仍由 data-skill-create-open 接管。
+ */
+html[data-vina-ar] .skill-library-page:not(.is-modal) .skill-popover-head { left:0;right:auto;width:132px; }
+html[data-vina-ar] .skill-library-page:not(.is-modal) .skill-create { left:0;right:auto;width:max-content;min-width:124px;max-width:none;flex-shrink:0;overflow:visible;direction:rtl; }
+html[data-vina-ar] .skill-library-page:not(.is-modal) .skill-library-tabs { direction:rtl;padding-left:148px;padding-right:0; }
+html[data-vina-ar] .skill-library-page:not(.is-modal) .skill-tabs { margin-left:auto;margin-right:0;direction:rtl; }
+html[data-vina-ar] .skill-library-page:not(.is-modal) :is(.skill-list,.skill-item-copy,.skill-item-actions) { direction:rtl;text-align:right; }
+html[data-vina-ar] .skill-library-page:not(.is-modal) :is(.skill-favorite,.skill-delete) { margin-left:0;margin-right:auto; }
+/* 全能创作 iframe：只平移顶部项目胶囊，保留其原占位，避免对话内容上跳。
+ * 运行时用实际顶栏边界计算平移量，侧栏拖拽/收起/视口变化时同步；角色资产画布排除。
+ */
+/* 解除原对话容器对已移出栏宽的顶栏裁切；消息区自己的滚动/裁切继续保留。 */
+html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat { overflow:visible!important; }
+html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat > .chat-head {
+  translate:var(--vina-ar-header-shift,0px) 0;
+  direction:rtl;
+}
+html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat-project-title { direction:rtl; }
+html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .canvas-home-logo { border-right:0;border-left:1px solid #34434e;padding-right:0;padding-left:13px; }
+/* 审片导航与 Skill 详情也使用原节点的 RTL 顶栏；模板详情明确排除。 */
+html[data-vina-ar] :is(.review-viewer-head,.review-viewer-title-line) { direction:rtl; }
+html[data-vina-ar] .review-episode-navigation { padding-left:0;padding-right:0; }
+html[data-vina-ar] .skill-detail-modal:not(.is-template-detail) .skill-detail-head { direction:rtl;text-align:right; }
+html[data-vina-ar] .showcase-player-header { justify-content:flex-end; }
+/* 2026-10-25 Product Design 改动逻辑：首页精选示例的标题和分类导航改为从右起排。
+ * column 容器启用 RTL 后，flex-start 即右侧；分类使用 RTL 的正常 row 顺序，
+ * 首项广告营销位于最右，窄屏仍由原 overflow-x:auto 支持横向滚动。
+ * 规则只作用于首页该导航，保留标题在上、分类在下的结构，卡片网格、轮播和分类事件沿用原逻辑。 */
+html[data-vina-ar] .view[data-view="canvas"] .showcase-example-panel .showcase-category-nav {
+  direction: rtl;
+  align-items: flex-start;
+  text-align: right;
+}
+html[data-vina-ar] .view[data-view="canvas"] .showcase-example-panel .showcase-category-tabs {
+  direction: rtl;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+@media(max-width:999.98px) {
+  html[data-vina-ar] .script-status > .script-back-group > :is(.script-back-title,.script-title-input) { right:54px; }
+  html[data-vina-ar] .episode-detail-header-left { padding-right:0;padding-left:64px; }
+}
+@media(max-width:760px) {
+  html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .global-account { left:12px;right:auto; }
+  html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .brand { left:auto;right:12px; }
+  /* 窄屏二级菜单回到账户面板内部，避免右侧横向溢出。 */
+  html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) :is(.profile-language-popover,.profile-account-popover) { left:0;right:auto;max-width:calc(100vw - 48px); }
+}
+
+/* 2026-10-25 Product Design：用户确认将共用主导航改为右侧，仅 ar 且排除模板/转绘隔离页。
+ * 不改变 DOM/菜单业务顺序，不给整个 app 设置 RTL，避免短剧对话、画布坐标或媒体方向被继承翻转。
+ * main 同步把原左留白换成右留白；流程全屏页继续隐藏导航并使用完整宽度。
+ */
+html[data-vina-ar]:not(.redraw-embedded) body:has(> div.app):is(:not([data-primary-view="template-library"]),.team-console-open) { --vina-ar-rail-offset:0px; }
+html[data-vina-ar]:not(.redraw-embedded) body:is(:not([data-primary-view="template-library"]),.team-console-open) div.app > .sidebar {
+  left:auto;right:var(--vina-ar-rail-offset);border-right:0;border-left:1px solid #222b35;
+}
+html[data-vina-ar]:not(.redraw-embedded) body:is(:not([data-primary-view="template-library"]),.team-console-open):not(.canvas-workbench-active):not(.drama-workflow-active):not(.marketing-entry-active) div.app > main {
+  margin-left:0;margin-right:var(--sidebar-w);width:calc(100% - var(--sidebar-w));
+}
+/* 团队页容器挂在 body，而非 app/main；单独切换留白，保留既有内容宽度及表格滚动。 */
+html[data-vina-ar]:not(.redraw-embedded) body.team-console-open #teamConsoleOverlay {
+  margin-left:0;margin-right:calc(var(--sidebar-w) + var(--vina-ar-rail-offset));
+}
+/* 导航标注允许自然分词/两行，避免“技能市场”阿语被单行省略号截断；图标形状不镜像。 */
+/* 两行文字需要额外高度；取消固定 62px，保持最小高度和原热区，避免与下一项重叠。 */
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) div.app > .sidebar > .nav > .nav-item { height:auto;min-height:62px; }
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) div.app > .sidebar > .nav .nav-label {
+  white-space:normal;word-break:normal;overflow-wrap:normal;text-overflow:clip;text-align:center;line-height:18px;
+}
+/* 共享 Skill 弹层为右侧主导航预留命中区；全屏画布/短剧没有主导航，不减侧栏宽度。 */
+html[data-vina-ar]:not(.redraw-embedded) body:is(:not([data-primary-view="template-library"]),.team-console-open):not(.canvas-workbench-active):not(.drama-workflow-active) .skill-library-page.is-modal {
+  left:0;right:calc(var(--sidebar-w) + var(--vina-ar-rail-offset));width:calc(100vw - var(--sidebar-w) - var(--vina-ar-rail-offset));
+}
+/* 补齐主页/项目页阅读起点：分类、项目和标题从右开始；日期仍按 LTR 独立展示。
+ * 仅调整展示流，不重排项目数组，不改变卡片目标、筛选值或编辑/删除按钮行为。
+ */
+html[data-vina-ar] .view[data-view="canvas"] :is(.home-agent-tabs,.home-drama-tabs,.home-projects-head,.home-projects-row,.home-projects-all) { direction:rtl; }
+html[data-vina-ar] .view[data-view="canvas"] .home-projects-all svg { transform:scaleX(-1); }
+html[data-vina-ar] .view[data-view="projects"] :is(.plain-tabs,.project-grid,.project-info,.project-status-filter summary) { direction:rtl; }
+html[data-vina-ar] :is(.view[data-view="canvas"],.view[data-view="projects"]) :is(.project-title,.project-title-input,.project-info) { text-align:right; }
+html[data-vina-ar] :is(.view[data-view="canvas"],.view[data-view="projects"]) .project-time { direction:ltr;unicode-bidi:isolate; }
+html[data-vina-ar] .view[data-view="projects"] .project-status-filter { margin-left:0;margin-right:auto; }
+html[data-vina-ar] .view[data-view="projects"] .project-status-menu { left:0;right:auto; }
+html[data-vina-ar] .view[data-view="projects"] .project-status-menu button { text-align:right; }
+html[data-vina-ar] .view[data-view="projects"] .project-episode-count { margin-left:0;margin-right:8px; }
+/* 桌面 PRD 辅助面板仍固定在最右侧；开启时右侧导航及品牌跟随内容边界内移，避免互相遮挡。
+ * 小屏面板沿用原覆盖模式，不移动产品导航；模板继续沿用原布局。
+ */
+@media(min-width:981px) {
+  html[data-vina-ar]:not(.redraw-embedded) body.requirements-panel-open:has(> div.app):is(:not([data-primary-view="template-library"]),.team-console-open) { --vina-ar-rail-offset:var(--requirements-panel-width); }
+  html[data-vina-ar]:not(.redraw-embedded) body.requirements-panel-open:is(:not([data-primary-view="template-library"]),.team-console-open) .brand { right:calc(var(--requirements-panel-width) + 24px); }
+}
+
+/* 项目封面中的类型/阶段标识跟随阅读起点，编辑/删除仍作为另一侧辅助操作，避免覆盖。 */
+html[data-vina-ar] :is(.view[data-view="canvas"],.view[data-view="projects"]) :is(.project-type,.project-stage-badge) { left:auto;right:12px; }
+html[data-vina-ar] :is(.view[data-view="canvas"],.view[data-view="projects"]) .project-delete { left:12px;right:auto; }
+html[data-vina-ar] :is(.view[data-view="canvas"],.view[data-view="projects"]) .project-edit { left:50px;right:auto; }
+html[data-vina-ar] .view[data-view="projects"] .plain-tabs { margin-left:auto;margin-right:0; }
+
+/* 2026-10-26 Product Design / 镜像遗漏补齐：所有新增选择器均以 data-vina-ar 为开关，
+ * 不修改全局 html/body 方向、不反转 DOM 或业务数组；退出阿语后自动回到各语言原布局。
+ * 只镜像阅读、导航、表单与选择器；图片、视频、画布节点和媒体时间坐标不做 scaleX 翻转。 */
+
+/* 账号二级菜单：语言自称、账号头像与文案从右开始，勾选保留在另一端；覆盖旧 text-align:left。 */
+html[data-vina-ar] :is(.profile-language-option,.profile-account-option,.profile-account-details,.profile-account-heading,.profile-account-create,.profile-identity-options button,.profile-popover-summary) {
+  direction:rtl;
+  text-align:right;
+}
+html[data-vina-ar] .profile-language-option > span:first-child { unicode-bidi:isolate; }
+
+/* 首页工具栏、生成模式、模型列表和 Skill 紧凑弹层：图标在文字右侧、辅助操作在左侧。
+ * 模型名与时长单独隔离为 LTR，阿语说明继续靠右；不改变模型 ID、选中项和浮层定位脚本。 */
+html[data-vina-ar] .view[data-view="canvas"] :is(.composer-tools,.select-chip,.home-inspiration-trigger,.home-creation-preferences-trigger) { direction:rtl; }
+html[data-vina-ar] :is(.home-generation-mode-trigger,.home-generation-mode-option,.auto-mode-trigger,.auto-mode-option,.drama-model-trigger,.drama-model-option,.drama-model-copy,.drama-model-name-row,.home-skill-dropdown .skill-item,.home-skill-dropdown .skill-title-row,.home-skill-dropdown .skill-item-copy,.vina-home-skill-hover-preview-desc) {
+  direction:rtl;
+  text-align:right;
+}
+html[data-vina-ar] .home-skill-create { margin-left:0;margin-right:auto;direction:rtl; }
+html[data-vina-ar] .home-skill-category-strip .skill-tabs { padding-left:34px;padding-right:6px; }
+html[data-vina-ar] :is(.drama-model-name,.drama-model-duration,.drama-character-model-copy strong,.detail-model-name,.model-name,.model-duration-tag) { direction:ltr;unicode-bidi:isolate;text-align:right; }
+
+/* 风格/偏好弹层：分类列位于右侧，分隔线与内边距跟随；ID 选择器覆盖组件原有高优先级样式。 */
+html[data-vina-ar] :is(.home-setting-body,.home-setting-category,.home-setting-option,.home-setting-tags,.home-setting-tag,.home-setting-custom) { direction:rtl;text-align:right; }
+html[data-vina-ar] .home-setting-categories { padding-right:0;padding-left:18px;border-right:0;border-left:1px solid #3a3a3a; }
+html[data-vina-ar] .home-setting-options { padding-left:0;padding-right:20px; }
+html[data-vina-ar] .home-setting-option::before { margin-right:0;margin-left:10px; }
+html[data-vina-ar] #homeCreationPreferencesDialog :is(.creation-preferences-head,.creation-preferences-layout,.creation-preferences-model,.creation-preferences-model-title,.creation-preferences-parameters) { direction:rtl;text-align:right; }
+html[data-vina-ar] #homeCreationPreferencesDialog .creation-preferences-parameters { border-left:0;border-right:1px solid #2b3642; }
+html[data-vina-ar] #homeCreationPreferencesDialog :is(.creation-preferences-model-title strong,.creation-preferences-duration,[data-preferences-param]) { direction:ltr;unicode-bidi:isolate; }
+
+/* Skill 创建/详情与画布内的选择菜单只改变内容布局，保留浮层脚本计算的物理坐标和画布方向。 */
+html[data-vina-ar] :is(.skill-library-page.is-modal .skill-popover-head,.skill-popover-actions,.skill-modal-tabs,.skill-modal-actions,.skill-modal-tab,.skill-detail-select-trigger,.skill-detail-select-option,.canvas-skill-item,.node-param-option,.node-param-option .model-visual,.node-param-option .model-copy) { direction:rtl;text-align:right; }
+html[data-vina-ar] .skill-modal-close { right:auto;left:14px; }
+html[data-vina-ar] .skill-modal-tabs { padding-right:0;padding-left:44px; }
+
+/* 资产库及引用/上传：分类、音色筛选、选择卡片与弹窗头尾从右起排；删除控件移至辅助侧。
+ * 素材图片和音频进度仍按原方向，参数值仍保留正常的数字/比例顺序。 */
+html[data-vina-ar] :is(.voice-filter-bar,.voice-filter-trigger,.voice-filter-option,.home-asset-browser-shell,.character-filter-sidebar button,.home-asset-add-option,.reference-asset-head,.reference-asset-list,.reference-asset-item,.reference-asset-entry,.reference-library-categories,.reference-library-grid,.reference-library-card,.reference-library-foot,.home-asset-library-grid,.detail-mention-option,.home-canvas-mention-option,.asset-character-detail-head,.asset-character-detail-content,.asset-character-detail-info,.asset-character-detail-attributes,.asset-character-detail-attribute,.library-upload-head,.library-upload-body,.library-upload-files,.library-upload-fields,.library-upload-name-wrap,.library-upload-location-trigger,.library-upload-location-group summary,.library-upload-location-option,.library-upload-footer,.library-upload-actions) {
+  direction:rtl;
+  text-align:right;
+}
+html[data-vina-ar] .view[data-view="subject-library"] :is(.subject-library-voice-card,.subject-library-voice-copy) { direction:rtl;text-align:right; }
+html[data-vina-ar] .voice-filter-menu { left:auto;right:0; }
+html[data-vina-ar] .character-filter-sidebar { border-right:0;border-left:1px solid #252c33; }
+html[data-vina-ar] .character-filter-children button { padding-left:16px;padding-right:26px; }
+html[data-vina-ar] .library-upload-location-option { padding-left:14px;padding-right:32px; }
+html[data-vina-ar] .library-upload-remove { right:auto;left:5px; }
+html[data-vina-ar] .home-asset-library-card .home-asset-library-check { left:12px;right:auto; }
+html[data-vina-ar] .view[data-view="subject-library"] .subject-library-voice-actions { right:auto;left:14px; }
+html[data-vina-ar] .view[data-view="subject-library"] .personal-material-card.subject-library-voice-card .subject-library-voice-copy { padding-right:0;padding-left:78px; }
+html[data-vina-ar] .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-actions { right:auto;left:17px; }
+html[data-vina-ar] .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-copy { padding-right:0;padding-left:0; }
+html[data-vina-ar] .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-card:is(:hover,:focus-within) .subject-library-voice-copy { padding-right:0;padding-left:88px; }
+html[data-vina-ar] .view[data-view="subject-library"] :is(.subject-library-voice-progress,.subject-library-voice-time) { direction:ltr;unicode-bidi:isolate; }
+
+/* 短剧摘要与模型/音色/生成历史：补齐左右排列、摘要强调线、弹窗操作和导出选项。
+ * 保留已有对话/编辑分栏及播放器坐标，只对各控件内部使用 RTL。 */
+html[data-vina-ar] :is(.script-detail-setup-heading,.script-detail-setup-summary,.script-detail-setup-values,.script-setup-settings,.script-setup-selection,.script-outline-view-tabs,.subject-role-tabs,.drama-character-model-option,.drama-voice-history-card,.drama-voice-library-tabs,.drama-voice-library-grid,.drama-voice-library-card,.drama-character-history-version,.detail-model-option,.detail-param-choice-grid,.detail-param-apply-row,.detail-param-confirm-actions,.episode-export-option) { direction:rtl;text-align:right; }
+html[data-vina-ar] .script-detail-setup-value { border-left:0;border-right:2px solid rgba(106,243,239,.46);text-align:right; }
+html[data-vina-ar] :is(.script-outline-view-tabs,.subject-role-tabs) { margin-left:0;margin-right:auto; }
+html[data-vina-ar] .script-detail-setup-toggle { margin-left:2px;margin-right:auto; }
+html[data-vina-ar] .episode-export-cancel { margin-left:0;margin-right:auto; }
+html[data-vina-ar] .detail-param-apply-switch::after { left:auto;right:3px; }
+html[data-vina-ar] .detail-param-apply-switch[aria-checked="true"]::after { transform:translateX(-16px); }
+
+/* 审片仅镜像版本菜单、剧集条目与评论头部；不镜像播放控件、时间轴、标注坐标或视频画面。 */
+html[data-vina-ar] :is(.review-episode-item,.review-episode-item-meta,.review-comments-head,.review-comment-card-head,.review-header-actions,.review-version-option,.review-version-option-heading) { direction:rtl;text-align:right; }
+html[data-vina-ar] .episode-review-workspace .review-version-option { direction:rtl;text-align:right; }
+html[data-vina-ar] .episode-review-workspace .review-version-select { direction:rtl;padding-left:32px;padding-right:14px; }
+html[data-vina-ar] .episode-review-workspace summary.review-version-select { padding-left:32px; }
+html[data-vina-ar] .episode-review-workspace .review-version-chevron { left:12px;right:auto; }
+html[data-vina-ar] .episode-review-workspace .review-version-menu { left:auto;right:0; }
+html[data-vina-ar] :is(.review-comment-time,.review-comment-current-time,.review-submitted-at) { direction:ltr;unicode-bidi:isolate; }
+
+/* 团队管理和独立表单均为普通文档 UI：概况、工具栏、页签、表格、弹窗从右起排。
+ * 表格只改变视觉阅读起点，不改变列索引；固定姓名列同步吸附右侧，避免横向滚动时遮错列。 */
+html[data-vina-ar] :is(.team-console,.team-modal-card,.team-create-dialog,.pm-dialog,.pm-confirm-dialog,.team-calendar-popover,.team-owners-tooltip,.team-member-project-tooltip) { direction:rtl;text-align:right; }
+html[data-vina-ar] :is(.team-status-trigger,.team-status-option,.team-calendar-trigger,.team-project-filter-menu button,.team-page-size-menu button,.team-project-title,.team-project-owners,.team-production,.team-manage-member,.pm-table) { direction:rtl;text-align:right; }
+html[data-vina-ar] #teamProjectToolbar .team-project-name-search { margin-right:0;margin-left:auto; }
+html[data-vina-ar] :is(.team-member-filters,.team-invite-buttons) { margin-left:0;margin-right:auto; }
+html[data-vina-ar] .team-project-filter > summary img { margin-left:0;margin-right:auto; }
+html[data-vina-ar] .team-field { padding-left:38px;padding-right:12px; }
+html[data-vina-ar] .team-search-icon { right:auto;left:11px; }
+html[data-vina-ar] .team-select { padding-left:32px;padding-right:11px; }
+html[data-vina-ar] #teamManageAmount { padding-left:12px; }
+html[data-vina-ar] #teamConsole .team-overview-group + .team-overview-group { border-left:0;border-right:1px solid rgba(186,205,230,.15); }
+html[data-vina-ar] #teamConsole .team-metrics > div + div { padding-left:0;padding-right:8px;border-left:0;border-right:1px solid rgba(186,205,230,.12); }
+html[data-vina-ar] #teamMemberTableWrap .team-table :is(th,td):first-child { left:auto;right:0;box-shadow:-1px 0 0 #2a333c; }
+html[data-vina-ar] .team-table.project-table th:first-child { padding-left:12px;padding-right:72px;text-align:right; }
+html[data-vina-ar] .team-table.project-table :is(th,td):nth-child(2) { text-align:right; }
+html[data-vina-ar] .team-account-you { left:auto;right:calc(100% + 5px); }
+html[data-vina-ar] body.team-member-view .team-cell-name.is-own-name .team-edit-button { left:auto;right:calc(100% + 7px); }
+html[data-vina-ar] .team-permissions-heading { padding-right:0;padding-left:24px; }
+html[data-vina-ar] .team-permissions-close { right:auto;left:18px; }
+html[data-vina-ar] .team-permission-switch::before { left:auto;right:3px; }
+html[data-vina-ar] .team-permission-switch:checked::before { transform:translateX(-20px); }
+html[data-vina-ar] .team-calendar-heading button img { transform:scaleX(-1); }
+html[data-vina-ar] :is(.team-account-id,.team-monthly-credits,.team-production-count,.team-credit-value,.team-project-review-counts,.team-metrics dd,.team-create-count,.pm-number,.pm-stat strong) { direction:ltr;unicode-bidi:isolate; }
+html[data-vina-ar] .team-metrics dd { text-align:right; }
+html[data-vina-ar] .pm-table :is(th,td):not(.pm-number):not(.pm-empty) { text-align:right; }
+
+/* 独立会员页：套餐顺序、权益列表、咨询和购买弹窗使用 RTL；价格数值保持 LTR。
+ * 关闭与积分入口移到左侧；二维码、品牌和模型图标维持原图。 */
+html[data-vina-ar] .vm-page { direction:rtl; }
+html[data-vina-ar] :is(.vm-plan,.vm-team-benefit-list li,.vm-modal-option,.vm-enterprise-copy,.vm-enterprise-card,.vm-faq details) { text-align:right; }
+html[data-vina-ar] .vm-close { right:auto;left:22px; }
+html[data-vina-ar] .vm-vpoint-button { right:auto;left:0; }
+html[data-vina-ar] .vm-cycle b,
+html[data-vina-ar] :is(.vm-price-meta s,.vm-save-badge) { margin-left:0;margin-right:5px; }
+html[data-vina-ar] .vm-points::before { margin-right:0;margin-left:6px; }
+html[data-vina-ar] .vm-team-benefit-list { padding-left:0;padding-right:16px; }
+html[data-vina-ar] .vm-enterprise-info div { padding-left:0;padding-right:17px; }
+html[data-vina-ar] .vm-enterprise-info div::before { left:auto;right:0; }
+html[data-vina-ar] .vm-model-output-table th { text-align:right; }
+html[data-vina-ar] .vm-model-output-table td { direction:ltr;unicode-bidi:isolate;text-align:left; }
+html[data-vina-ar] :is(.vm-price em,.vm-price strong,.vm-modal-option b) { direction:ltr;unicode-bidi:isolate; }
+
+/* 双栏分隔线只在双栏尺寸下镜像；窄屏沿用原上下布局，避免多出竖线或错误缩进。 */
+@media(min-width:1101px) {
+  html[data-vina-ar] .asset-character-detail-info { border-left:0;border-right:1px solid rgba(255,255,255,.08); }
+}
+@media(min-width:761px) {
+  html[data-vina-ar] .vm-enterprise-card { border-left:0;border-right:1px solid rgba(214,228,220,.11); }
+}
+@media(max-width:760px) {
+  html[data-vina-ar] #homeCreationPreferencesDialog .creation-preferences-parameters { border-right:0; }
+  html[data-vina-ar] .library-upload-actions { margin-left:0;margin-right:auto; }
+  html[data-vina-ar] .vm-vpoint-button { margin-left:0;margin-right:auto; }
+}
+@media(hover:none) {
+  html[data-vina-ar] .view[data-view="subject-library"] .subject-panel .personal-subject-grid .subject-library-voice-copy { padding-right:0;padding-left:88px; }
+}
+
+/* 2026-10-26 Product Design / 阿语控件异常变长修复：项目状态原规则包含更高优先级的 left:12px，
+ * 旧镜像只设置 right 时未能清掉 left，绝对定位标签被左右同时拉满。
+ * 匹配原选择器优先级并显式清除另一侧，标签按内容收缩；不改变中文及其他语言的尺寸。 */
+html[data-vina-ar] .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-stage-badge {
+  left:auto;
+  right:12px;
+  width:max-content;
+  min-width:0;
+  max-width:calc(100% - 24px);
+  box-sizing:border-box;
+  white-space:nowrap;
+}
+/* 首页项目类型有独立的高优先级定位，同步解除双侧约束，保留原 10px 封面内边距。 */
+html[data-vina-ar] .view[data-view="canvas"] .home-projects-row .project-type { left:auto;right:10px; }
+/* 排查同类短状态/角标：宽度只取文字与内边距，不随封面或父容器伸长；窄卡片限制在可用区域内。
+ * 保留各组件原 display/hidden、颜色和高度，不把整行菜单、表单输入框或正文卡片收成胶囊。 */
+html[data-vina-ar] :is(.project-type,.project-stage-badge,.asset-badge,.sample-badge,.shot-state-badge,.ai-generated-badge) {
+  box-sizing:border-box;
+  width:max-content;
+  min-width:0;
+  max-width:calc(100% - 24px);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* 创建 Skill 原阿语规则为 max-content 且无宽度上限，可能越过仅 132px 的独立入口槽。
+ * 改为在原入口槽内按内容收缩，使用既有简短译文；首页入口也限制为紧凑按钮。 */
+html[data-vina-ar] .skill-library-page:not(.is-modal) .skill-create {
+  box-sizing:border-box;
+  width:fit-content;
+  min-width:0;
+  max-width:132px;
+  padding-inline:12px;
+  white-space:nowrap;
+}
+html[data-vina-ar] .home-skill-create { box-sizing:border-box;width:fit-content;min-width:0;max-width:160px;white-space:nowrap; }
+
+/* 短筛选触发器不随阿语长选项无限扩宽；标签允许收缩，箭头保留固定占位。
+ * 选项列表本身保留整行热区，长译文在限定宽度内换行，不通过缩小字体压缩内容。 */
+html[data-vina-ar] :is(.voice-filter-trigger,.character-tag-filter-trigger) { box-sizing:border-box;min-width:0;max-width:180px; }
+html[data-vina-ar] :is(.voice-filter-trigger,.character-tag-filter-trigger) > span:not(.voice-filter-caret) { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+html[data-vina-ar] :is(.voice-filter-menu,.team-project-filter-menu) { box-sizing:border-box;max-width:min(240px,calc(100vw - 32px)); }
+html[data-vina-ar] :is(.voice-filter-option,.team-project-filter-menu button) { height:auto;white-space:normal;overflow-wrap:anywhere;line-height:1.45;padding-block:8px; }
+
+/* 2026-10-26 Product Design / 用户确认镜像整个创作分栏：阿语 Agent 在右，编辑/画布在左。
+ * 仅将分栏网格设为 RTL，子工作区恢复 LTR，避免网格方向传入画布坐标、媒体或消息排列。
+ * 列宽、分集顺序、DOM 与业务事件不变；窄屏继续使用原上下堆叠布局。 */
+html[data-vina-ar] .script-workspace .script-layout { direction:rtl; }
+html[data-vina-ar] .script-workspace .script-layout > :is(.script-chat,.script-detail) { direction:ltr; }
+html[data-vina-ar] .script-workspace .script-layout .drama-outline-heading { direction:rtl; }
+/* 流程按钮与分集栏一起移到编辑区的左侧，跟随网格镜像后的视觉边界。 */
+html[data-vina-ar] .script-workspace .next-step { right:auto;left:calc(74px + 70px); }
+html[data-vina-ar] .script-workspace[data-script-stage="overall"] .next-step { right:auto;left:70px; }
+html[data-vina-ar] .script-workspace .script-state-next { right:auto;left:24px; }
+
+@media(min-width:761px) {
+  /* 全能创作的两个模式共用原第一列 Agent；RTL 将该列移到右侧，不交换列宽变量。 */
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame { direction:rtl; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame > :is(.chat,.workspace) { direction:ltr; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame > .chat { padding:24px 24px 24px 0!important; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame > .chat::before { left:0;right:24px; }
+  /* 标题随右侧 Agent 保持原位，不再把左栏标题单独平移到页面右上，避免重复位移。 */
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat > .chat-head { translate:0 0;align-self:flex-end; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .canvas-conversation-head { direction:rtl; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat:not(.is-conversation-collapsed) .canvas-conversation-close { margin-right:0!important;margin-left:-7px!important; }
+  /* 分隔热区位于右侧 Agent 的左边缘；拖拽和键盘方向由对应脚本按同一 RTL 条件换算。 */
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .vina-agent-resize-handle { left:auto;right:calc(var(--vina-agent-panel-width) - 7px); }
+  /* 故事板三栏从右到左为 Agent、生成结果、历史；媒体及结果内部坐标维持 LTR。 */
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .vina-direct-workspace { direction:rtl; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .vina-direct-main { direction:ltr; }
+  /* 收起对话后从右侧保留恢复入口，画布恢复为整宽第一列。 */
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame:has(> .chat.is-conversation-collapsed) { grid-template-columns:minmax(0,1fr)!important; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .content-frame:has(> .chat.is-conversation-collapsed) > .workspace { grid-column:1!important; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed { left:auto!important;right:0!important; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .chat-project-title { padding-left:0;padding-right:14px; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .chat-project-title::before { left:auto;right:0; }
+  html[data-vina-ar] body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .canvas-conversation-restore { margin-left:0;margin-right:auto; }
+}
+@media(max-width:760px) {
+  html[data-vina-ar] .script-workspace .next-step { left:90px; }
+  html[data-vina-ar] .script-workspace .script-state-next { left:16px; }
+}

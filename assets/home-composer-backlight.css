@@ -1,0 +1,13 @@
+/* 2026-11-05：首页输入框的背光与贴边投影。
+ * 右上灰绿、左下青蓝复用背景光色；负扩散使光贴着框体轮廓逸出，
+ * 暗色投影提供悬浮层次。仅绘制外阴影，不占用描边的两个伪元素。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer:is(:hover,:focus-within),
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"],
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within) {
+  box-shadow:
+    0 14px 28px -18px rgba(0, 0, 0, .7),
+    22px -18px 48px -28px rgba(87, 139, 124, .24),
+    -24px 20px 52px -28px rgba(65, 136, 151, .22),
+    0 2px 8px -3px rgba(0, 0, 0, .45) !important;
+}

@@ -1,0 +1,675 @@
+/* 2026-10-29 Product Design 展示改动逻辑：依据“团队设计稿”中的 profile-popover-v15、
+ * v150-membership-cards、v150-pending-invitation 及创建弹窗最终样式迁移。
+ * 仅作用于既有账号菜单与切换浮层、邀请确认、#teamCreateDialog；不导入参考脚本或任何业务状态。
+ * 原账号切换、积分导航、邀请接受／拒绝及创建团队流程保持原样；创建弹窗继续使用原 5 MB 上传限制。
+ */
+/* Account menu sized to the original 1920px V1.5 personal-center boards. */
+html body .global-account .profile-popover {
+  box-sizing:border-box;
+  width:min(340px,calc(100vw - 24px));
+  max-width:none;
+  height:auto !important;
+  padding:18px;
+  border:1px solid #303b46 !important;
+  border-radius:16px;
+  background:#1b232c !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.42) !important;
+}
+html body .global-account .profile-popover-stack,
+html body .global-account.is-team-account .profile-popover-stack {
+  height:auto !important;
+  gap:14px;
+}
+html body .global-account .profile-popover-card { border-radius:11px; }
+html body .global-account.is-team-account .profile-personal-summary { display:none !important; }
+html body .global-account:not(.is-team-account) .profile-team-plan,
+html body .global-account:not(.is-team-account) .profile-team-credits { display:none !important; }
+html body .global-account:not(.is-team-account) .profile-popover-team { display:none !important; }
+
+/* Account details and account switching have separate controls. */
+html body .global-account .profile-popover-user {
+  position:relative;
+  width:100%;
+  height:72px;
+  padding:10px 12px;
+  gap:10px;
+  border:0;
+  appearance:none;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  background:#10171d !important;
+  cursor:pointer;
+  transition:background .16s ease;
+}
+html body .global-account .profile-popover-user:hover,
+html body .global-account .profile-popover-user:focus-within { background:#252e38 !important; }
+html body .global-account .profile-popover-user:focus-visible { outline:2px solid #9aa6b2; outline-offset:2px; }
+html body .global-account .profile-popover-avatar,
+html body .global-account .profile-popover-team-avatar {
+  width:44px;
+  height:44px;
+  flex-basis:44px;
+  font-size:20px;
+}
+html body .global-account .profile-popover-user-copy { min-width:0; padding-right:2px; }
+html body .global-account .profile-popover-name-row { gap:7px; }
+html body .global-account .profile-popover-name {
+  min-width:0;
+  font-size:15px;
+  line-height:22px;
+  font-weight:500;
+}
+html body .global-account .profile-popover-id,
+html body .global-account .profile-popover-team-name {
+  margin-top:2px;
+  font-size:12px;
+  line-height:17px;
+  color:#7f8b98;
+}
+html body .global-account .profile-popover-copy { width:13px; height:13px; }
+html body .global-account .profile-popover-role,
+html body .global-account .profile-popover-personal-tier {
+  flex:none;
+  padding:3px 8px;
+  border-radius:6px;
+  background:#29323b;
+  color:#c5ced8;
+  font-size:12px;
+  line-height:17px;
+  font-weight:500;
+  white-space:nowrap;
+}
+html body .global-account.is-team-account .profile-popover-personal-tier { display:none; }
+html body .global-account:not(.is-team-account) .profile-popover-personal-tier { display:inline-flex; }
+html body .global-account .profile-popover-role { background:#2b3a2b; color:#b8f84a; }
+html body .global-account .profile-popover-user>.profile-popover-chevron {
+  width:18px;
+  height:18px;
+  flex-basis:18px;
+  opacity:.75;
+}
+html body .global-account .profile-switch-trigger {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  flex:0 0 44px;
+  width:100%;
+  height:44px;
+  margin:0;
+  padding:0 14px;
+  gap:9px;
+  border:0;
+  border-radius:11px;
+  appearance:none;
+  background:#10171d;
+  color:#d5dbe3;
+  font:inherit;
+  font-size:14px;
+  text-align:left;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease;
+}
+html body .global-account .profile-switch-trigger:hover,
+html body .global-account .profile-switch-trigger[aria-expanded="true"] { background:#252e38; color:#f5f7fa; }
+html body .global-account .profile-switch-trigger:focus-visible {
+  outline:2px solid #9aa6b2;
+  outline-offset:2px;
+}
+html body .global-account .profile-switch-icon { display:grid;place-items:center;width:18px;height:18px;flex:0 0 18px;color:#9aa6b2;font-size:17px; }
+html body .global-account .profile-switch-label { flex:1;min-width:0;white-space:nowrap; }
+html body .global-account .profile-switch-current { display:inline-flex;align-items:center;gap:6px;color:#cbd3dc;font-size:13px;white-space:nowrap; }
+html body .global-account .profile-switch-current-avatar { display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#19c493;color:#fff;font-size:11px;line-height:18px; }
+html body .global-account:not(.is-team-account) .profile-switch-current-avatar { background:#455362; }
+html body .global-account .profile-switch-trigger>.profile-popover-chevron { width:16px;height:16px;flex-basis:16px;opacity:.8; }
+
+/* Personal account: paired actions and a dedicated V-point summary. */
+/* 2026-10-29 展示调整：个人版双操作改为独立链接，容器维持原双列外观与高度。 */
+html body .global-account .profile-popover-summary.profile-membership-actions {
+  display:flex;
+  flex-direction:row;
+  align-items:stretch;
+  height:40px;
+  padding:0;
+  gap:10px;
+  border:0;
+  background:transparent !important;
+  box-shadow:none !important;
+  text-decoration:none;
+}
+html body .global-account .profile-membership-actions>a {
+  text-decoration:none;cursor:pointer;
+  display:grid;
+  place-items:center;
+  flex:1 1 0;
+  min-width:0;
+  border-radius:999px;
+  font-size:14px;
+  line-height:20px;
+  font-weight:500;
+  transition:background .16s ease,color .16s ease;
+}
+html body .global-account .profile-buy-points { background:#303c47; color:#e7ecf1; }
+html body .global-account .profile-buy-points:hover { background:#43505d; }
+html body .global-account .profile-member-action { background:#b8f84a; color:#101710; }
+html body .global-account .profile-member-action:hover { background:#cbff66; }
+html body .global-account .profile-popover-summary.profile-personal-balance {
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  height:auto;
+  /* 2026-10-29 展示调整：取消余额卡原 120px 最小高度，内容自然撑开为约 90px，去掉底部空白；外层菜单已有自适应高度并随之缩短。 */
+  min-height:0;
+  padding:14px;
+  gap:10px;
+  background:#10171d !important;
+  color:#f5f7fa;
+  text-decoration:none;
+}
+/* 2026-10-30 Product Design：个人余额已改为展示容器，悬停保持原背景。 */
+html body .global-account .profile-popover-summary.profile-personal-balance:hover { background:#10171d !important; }
+html body .global-account .profile-balance-heading,
+html body .global-account .profile-team-credits-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  width:100%;
+  color:#e7ecf1;
+  font-size:14px;
+  line-height:20px;
+}
+html body .global-account .profile-balance-more,
+html body .global-account .profile-team-credits-heading>span {
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  color:#8f9ba8;
+  font-size:12px;
+  white-space:nowrap;
+}
+html body .global-account .profile-balance-more img,
+html body .global-account .profile-team-credits-heading img { width:16px; height:16px; flex-basis:16px; }
+html body .global-account .profile-popover-balance {
+  color:#f5f7fa;
+  font-size:25px;
+  line-height:32px;
+  font-weight:600;
+}
+
+/* Team account keeps its existing quota and team-console actions. */
+html body .global-account .profile-team-plan {
+  position:relative;
+  display:flex;
+  align-items:center;
+  height:70px;
+  padding:0 16px;
+  gap:12px;
+  overflow:hidden;
+  border:0;
+  background:radial-gradient(ellipse 145px 90px at 84% 15%,rgba(159,173,190,.06),transparent 72%),linear-gradient(105deg,#252e37 0%,#29333d 58%,#242d36 100%);
+  color:#f0f3f6;
+  box-shadow:none;
+}
+html body .global-account .profile-team-plan::before { content:"";position:absolute;right:46px;top:-60px;width:70px;height:180px;transform:rotate(29deg);background:linear-gradient(90deg,transparent,rgba(180,194,209,.04) 48%,rgba(232,238,246,.09) 50%,rgba(154,173,192,.03) 52%,transparent);pointer-events:none; }
+html body .global-account .profile-team-plan::after { content:none; }
+html body .global-account .profile-team-plan-emblem { position:relative;z-index:1;display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:0;border-radius:11px;background:linear-gradient(145deg,#586574,#394550 74%);color:#f1f5f9;font-size:22px;line-height:1;box-shadow:none; }
+html body .global-account .profile-team-plan-copy { display:flex;flex:1;min-width:0;flex-direction:column;gap:3px;z-index:1; }
+html body .global-account .profile-team-plan-title { display:flex;align-items:center;gap:8px;color:#f5f7fa;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap; }
+html body .global-account .profile-team-plan-title strong { padding:2px 8px;border:0;border-radius:5px;background:rgba(176,194,211,.13);color:#dce6ef;font-size:11px;font-weight:600;line-height:14px; }
+html body .global-account .profile-team-plan-copy small { color:#aab7c4;font-size:11px;line-height:15px; }
+html body .global-account .profile-team-plan-spark { z-index:1;margin-right:2px;color:#d3e0eb;font-size:24px;line-height:1;opacity:.8; }
+html body .global-account .profile-team-credits {
+  height:auto;
+  min-height:134px;
+  padding:14px;
+  gap:8px;
+  border:1px solid transparent;
+  background:#10171d !important;
+  cursor:default;
+}
+html body .global-account .profile-team-credits:hover {
+  border-color:transparent;
+  background:#10171d !important;
+}
+html body .global-account .profile-team-credits-detail { display:inline-flex;align-items:center;gap:2px;margin:-6px -7px -6px 0;padding:6px 7px;border:0;border-radius:6px;background:transparent;color:#8f9ba8;font:inherit;font-size:12px;line-height:18px;white-space:nowrap;cursor:pointer;transition:background .16s ease,color .16s ease; }
+html body .global-account .profile-team-credits-detail:hover { background:#252e38;color:#f5f7fa; }
+html body .global-account .profile-team-credits-detail:focus-visible { outline:2px solid #9aa6b2;outline-offset:1px;color:#f5f7fa; }
+html body .global-account .profile-team-credits-detail img { width:16px;height:16px; }
+html body .global-account .profile-team-credits-bottom {
+  display:flex;
+  align-items:baseline;
+  gap:4px;
+  color:#9aa6b2;
+  font-size:12px;
+}
+html body .global-account .profile-team-credits-bottom strong {
+  color:#f5f7fa;
+  font-size:25px;
+  line-height:32px;
+  font-weight:600;
+}
+html body .global-account .profile-team-credits-divider {
+  display:block;
+  width:100%;
+  height:1px;
+  margin:4px 0;
+  background:#27313b;
+}
+html body .global-account .profile-team-credits-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  width:100%;
+  color:#8f9ba8;
+  font-size:12px;
+  line-height:18px;
+}
+html body .global-account .profile-team-credits-top strong {
+  color:#cbd3dc;
+  font-weight:500;
+  white-space:nowrap;
+}
+
+html body .global-account .profile-popover-team {
+  height:44px;
+  padding:0 14px;
+  border:1px solid transparent;
+  background:transparent;
+  color:#d5dbe3;
+  font-size:14px;
+}
+html body .global-account .profile-popover-team:hover,
+html body .global-account .profile-popover-team:focus-visible {
+  border-color:transparent;
+  background:#111820;
+  color:#f5f7fa;
+}
+html body .global-account .profile-popover-team>.profile-popover-chevron { width:18px; height:18px; flex-basis:18px; }
+
+html body .global-account .profile-popover-nav {
+  height:auto;
+  gap:2px;
+}
+html body .global-account .profile-popover-nav .profile-popover-row {
+  height:42px;
+  flex-basis:42px;
+  padding:0 10px;
+  gap:10px;
+  border-radius:11px;
+  color:#d5dbe3;
+  font-size:14px;
+  line-height:20px;
+}
+html body .global-account .profile-popover-nav .profile-popover-row-icon { width:18px; height:18px; flex-basis:18px; }
+html body .global-account .profile-popover-nav .profile-popover-chevron { width:18px; height:18px; flex-basis:18px; }
+html body .global-account .profile-popover-nav button.profile-popover-row {
+  width:100%;
+  margin:0;
+  border:0;
+  appearance:none;
+  background:transparent;
+  font-family:inherit;
+  font-weight:400;
+  font-size:14px;
+  text-align:left;
+  cursor:pointer;
+  transition:background-color .16s ease,color .16s ease;
+}
+html body .global-account #profileLanguageTrigger:hover,
+html body .global-account #profileDemoSignOut:hover,
+html body .global-account .profile-popover-nav button.profile-popover-row:hover { background:#111820; color:#f5f7fa; }
+html body .global-account .profile-popover-nav button.profile-popover-row:active { background:#0d1319; color:#fff; }
+html body .global-account #profileLanguageTrigger:focus-visible,
+html body .global-account #profileDemoSignOut:focus-visible,
+html body .global-account .profile-popover-nav button.profile-popover-row:focus-visible {
+  background:#111820;
+  outline:2px solid #9aa6b2;
+  outline-offset:1px;
+}
+
+html body .global-account .profile-account-popover,
+html body .global-account .profile-language-popover {
+  border-color:#35414e;
+  border-radius:12px;
+  background:#1b232c;
+}
+html body .global-account .profile-account-popover { top:104px;right:calc(100% + 12px);width:260px;max-width:calc(100vw - 370px);padding:10px;box-shadow:0 18px 42px rgba(0,0,0,.46); }
+html body .global-account .profile-account-heading { margin:2px 0 6px;padding:3px 9px;color:#87939f;font-size:12px;line-height:18px; }
+html body .global-account .profile-account-heading.is-team { display:none; }
+html body .global-account .profile-account-option { min-height:58px;padding:8px 10px;gap:10px;border-radius:9px; }
+html body .global-account .profile-account-avatar { width:32px;height:32px;flex-basis:32px; }
+html body .global-account .profile-account-kind { color:#e8edf2;font-size:13px;font-weight:500;line-height:18px; }
+html body .global-account .profile-account-details { gap:1px; }
+html body .global-account .profile-account-details strong { color:#8f9ba8;font-size:11px;font-weight:400;line-height:16px; }
+html body .global-account .profile-account-details small { display:none; }
+html body .global-account .profile-account-option.has-invitation .profile-account-details small { display:block; }
+html body .global-account .profile-account-option:hover,
+html body .global-account .profile-language-option:hover { background:#2b3540; }
+html body .global-account .profile-account-option.is-active { background:#111820; }
+html body .global-account .profile-language-option.is-active { background:#29362c; }
+
+/* 2026-10-29：保留原头像资料区的静态行为；长切换文案与版本标记同排显示。 */
+html body .global-account .profile-popover *,
+html body .global-account .profile-popover *::before,
+html body .global-account .profile-popover *::after { box-sizing:border-box; }
+html body .global-account .profile-popover-user { cursor:default; }
+html body .global-account .profile-popover-user:hover { background:#10171d!important; }
+html body .global-account .profile-popover-role { background:#222b35;color:#d5dbe3; }
+html body .global-account .profile-switch-trigger { gap:6px;padding:0 10px; }
+html body .global-account .profile-switch-label { font-size:13px;line-height:20px; }
+html body .global-account .profile-switch-current { font-size:12px;gap:4px; }
+html body .global-account .profile-switch-current-avatar { object-fit:contain; }
+html body .global-account .profile-switch-team { display:none; }
+html body .global-account.is-team-account .profile-switch-personal { display:none; }
+html body .global-account.is-team-account .profile-switch-team { display:inline-flex; }
+html body .global-account .profile-switch-trigger:hover,
+html body .global-account .profile-switch-trigger:focus-visible,
+html body .global-account .profile-switch-trigger[aria-expanded="true"] { background:#222b35;color:#f5f7fa;border-color:transparent; }
+html body .global-account .profile-team-credits { justify-content:flex-start;cursor:pointer; }
+html body .global-account .profile-team-credits:focus-visible { border-color:#566474;outline:1px solid #9aa6b2;outline-offset:2px; }
+html body .global-account .profile-account-option.is-active { background:#2b3642; }
+html body .global-account .profile-account-check { color:#d5dbe3; }
+html body .global-account .profile-account-option ~ .profile-account-option { margin-top:8px; }
+html body .global-account .profile-account-create { color:#d5dbe3;border-top-color:#2b3642; }
+html body .global-account .profile-account-create:hover { background:#222b35;color:#f5f7fa;border-radius:6px; }
+html body .global-account .profile-account-create:focus-visible { outline:2px solid #9aa6b2;outline-offset:3px; }
+
+/* 2026-10-30 Product Design 改动逻辑：个人会员使用用户提供的“个人.png”，团队会员使用“团队.png”，原图分别保存为 account-personal-membership-v22.png 和 account-team-membership-v22.png；共用 70px 高度及排版，背景居中等比铺满卡片；显隐继续复用既有账号规则。 */
+html body .global-account .va-membership-card {
+ position:relative;display:flex;box-sizing:border-box;align-items:center;justify-content:space-between;
+ width:100%;height:70px;min-height:70px;gap:8px;padding:0 20px;overflow:hidden;
+ border:1px solid transparent;border-radius:11px;
+ background:#101215 url("./account-personal-membership-v22.png") center / cover no-repeat;
+ color:#f4f7fa;box-shadow:none;
+}
+/* 2026-10-30 改动逻辑：团队卡片单独覆盖背景图片，使个人和团队分别展示对应素材，文案与会员页入口保持原逻辑。 */
+html body .global-account .profile-team-plan.va-membership-card {
+ background-image:url("./account-team-membership-v22.png");
+}
+html body .global-account .va-membership-card::before,
+html body .global-account .va-membership-card::after { content:none; }
+html body .global-account .va-membership-copy { position:relative;display:flex;flex:1;min-width:0;flex-direction:column;gap:6px; }
+html body .global-account .va-membership-title { display:flex;align-items:center;gap:8px;color:#f4f7fa;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap; }
+html body .global-account .va-membership-title strong { padding:1px 6px;border:1px solid rgba(220,229,235,.15);border-radius:4px;background:rgba(220,229,235,.065);color:#dce5eb;font-size:10px;font-weight:400;line-height:16px; }
+html body .global-account .va-membership-copy small { color:#a8b6c1;font-size:11px;line-height:15px; }
+
+/* 2026-10-29：待处理邀请卡及邀请弹窗沿用设计稿最终排版，原 hidden 和过期禁用状态继续生效。 */
+/* Pending team membership follows the same neutral account and modal system. */
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation {display:flex;align-items:center;gap:12px;padding:12px;border:1px solid transparent;border-radius:8px;background:#111820;box-shadow:none;color:#d5dbe3;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation:hover {background:#222b35;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 8px;flex:1;min-width:0;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-kind {grid-column:1;display:block;font-size:14px;line-height:20px;font-weight:500;color:#f5f7fa;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details strong {grid-column:2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:20px;font-weight:400;color:#9aa6b2;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-invitation-badge {grid-column:1 / -1;justify-self:start;padding:2px 8px;border:0;border-radius:999px;background:#2b3642;color:#d5dbe3;font-size:12px;line-height:18px;font-weight:400;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation small {grid-column:1 / -1;display:block;width:auto;margin:0;font-size:12px;line-height:18px;color:#8794a2;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-create {margin-top:12px;padding:12px 10px;border:0;border-top:1px solid #2b3642;border-radius:0;background:transparent;color:#d5dbe3;font-size:14px;line-height:20px;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-create:hover {background:#222b35;border-radius:6px;}
+html body .profile-demo-dialog.profile-invitation-dialog {box-sizing:border-box;width:min(480px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:24px!important;border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#d5dbe3;text-align:left;overflow:auto;outline:none;box-shadow:0 24px 64px #0006;font:400 14px/22px var(--va-font);}
+html body .profile-invitation-dialog:has(#profileInvitationTitle)::backdrop {background:rgba(0,0,0,.65);}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-head {display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0;margin:0 0 24px;border:0;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-head h2 {margin:0;font-size:18px!important;line-height:28px!important;font-weight:600!important;color:#f5f7fa;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-head form {margin:0;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-head button {font-size:22px;line-height:24px;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-team {display:flex;align-items:center;gap:16px;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-avatar {flex:0 0 48px;width:48px;height:48px;margin:0;border-radius:50%;object-fit:cover;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-team>div {min-width:0;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-team-name {display:block;font-size:16px;line-height:24px;font-weight:600;color:#f5f7fa;overflow-wrap:anywhere;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) p.profile-invitation-description {margin:4px 0 0!important;font-size:14px;line-height:22px;color:#9aa6b2;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) #profileInvitationExpiry {margin:20px 0 0!important;font-size:12px;line-height:20px;color:#9aa6b2;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions {display:flex;justify-content:flex-end;gap:12px;margin:32px 0 0;padding:0;border:0;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions button {flex:0 0 auto!important;box-sizing:border-box;height:36px!important;min-height:36px!important;padding:0 16px!important;border:1px solid #2b3642!important;border-radius:999px!important;background:#171e27!important;color:#d5dbe3!important;font:400 14px/20px var(--va-font)!important;box-shadow:none;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions button:hover:not(:disabled) {background:#2b3642!important;color:#fff!important;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions [data-accept-invitation] {background:#fff!important;color:#111820!important;border-color:transparent!important;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions [data-accept-invitation]:hover:not(:disabled) {background:#e8edf2!important;color:#111820!important;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) .profile-invitation-actions button:disabled {background:#35414e!important;color:#8794a2!important;border-color:transparent!important;opacity:1!important;cursor:not-allowed;}
+html body .profile-invitation-dialog:has(#profileInvitationTitle) button:focus-visible {outline:2px solid #9aa6b2!important;outline-offset:3px;}
+html body .profile-demo-dialog:has(.profile-identity-options):focus {outline:none;}
+@media(max-width:540px) {html body .profile-demo-dialog.profile-invitation-dialog {padding:20px!important;}}
+
+/* Invitation notice: team identity first, invitation and expiry on one metadata row. */
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation {
+ position:relative;display:flex;align-items:flex-start;gap:12px;padding:14px 12px;min-height:76px;
+ background:#111820;border:0;border-radius:8px;text-align:left;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-avatar {flex:0 0 32px;width:32px;height:32px;margin:0;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details {
+ display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:8px 6px;align-items:center;min-width:0;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-kind {display:none;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details strong {
+ grid-column:1 / -1;grid-row:1;margin:0;padding-right:14px;font-size:14px;line-height:20px;font-weight:500;color:#f5f7fa;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-invitation-badge {
+ grid-column:1;grid-row:2;justify-self:start;align-self:center;white-space:nowrap;margin:0;padding:0;border:0;border-radius:0;background:transparent;color:#d5dbe3;font-size:12px;line-height:18px;font-weight:400;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation small {
+ grid-column:2;grid-row:2;justify-self:end;margin:0;font-size:12px;line-height:18px;color:#8794a2;white-space:nowrap;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation::after {
+ content:"";position:absolute;right:14px;top:21px;width:5px;height:5px;border-top:1px solid #8794a2;border-right:1px solid #8794a2;transform:rotate(45deg);
+}
+
+/* Translation-safe notice: one flexible text column, no competing inline labels. */
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation {
+ display:grid;grid-template-columns:32px minmax(0,1fr);align-items:start;gap:12px;
+ height:auto;min-height:0;padding:14px 28px 14px 12px;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details {
+ display:flex;flex-direction:column!important;align-items:stretch;justify-content:flex-start;
+ min-width:0;width:100%;gap:4px;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-details strong {
+ display:block;margin:0;padding:0;font-size:14px;line-height:20px;
+ white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-invitation-badge {
+ display:block;align-self:stretch;margin:4px 0 0;padding:0;
+ white-space:normal;overflow:visible;overflow-wrap:anywhere;font-size:12px;line-height:18px;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation small {
+ display:block;width:auto;margin:0;white-space:normal;overflow:visible;
+ overflow-wrap:anywhere;font-size:12px;line-height:18px;text-align:start;
+}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-account-kind {display:none;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation::after {right:12px;top:21px;}
+
+/* The invisible account check must not create an extra grid row in invitation mode. */
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation > .profile-account-check {display:none;}
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation {grid-template-rows:auto;row-gap:0;padding-top:12px;padding-bottom:12px;min-height:0;height:auto;align-content:start;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation > .profile-account-avatar {grid-column:1;grid-row:1;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation > .profile-account-details {grid-column:2;grid-row:1;gap:4px;}
+html body.team-invitation-pending .global-account #profileAccountPopover .has-invitation .profile-invitation-badge {margin-top:2px;}
+
+/* 图标使用既有资源；只覆盖邀请确认的关闭按钮，不修改其他身份弹窗。 */
+html body .profile-invitation-dialog { --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+html body .profile-invitation-dialog .profile-invitation-head button { display:grid;place-items:center;width:28px;height:28px;padding:4px;border:0;border-radius:8px;background:transparent;color:#9aa6b2; }
+html body .profile-invitation-dialog .profile-invitation-head button:hover { background:#2b3642; }
+html body .profile-invitation-dialog .profile-invitation-head button img { width:18px;height:18px; }
+html body.team-invitation-pending .global-account #profileAccountPopover .profile-account-option.has-invitation::after { width:12px;height:14px;right:10px;top:18px;border:0;transform:none;background:url("./icons/profile-caret-right.svg") center / contain no-repeat; }
+
+/* 2026-10-29：创建团队弹窗单独限定 ID，避免改变编辑团队以及其他使用相同类名的弹窗。 */
+html body #teamCreateDialog { box-sizing:border-box;width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:0;border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#d5dbe3;box-shadow:0 24px 80px #0008;font:400 14px/20px "Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+html body #teamCreateDialog::backdrop { background:rgba(2,6,10,.72);backdrop-filter:none; }
+html body #teamCreateDialog .team-create-content { padding:24px; }
+html body #teamCreateDialog .team-create-heading { gap:16px; }
+html body #teamCreateDialog .team-create-heading h2 { margin:0;color:#f5f7fa;font-size:18px;line-height:28px;font-weight:600;letter-spacing:0; }
+html body #teamCreateDialog .team-create-description { margin:8px 0 0;color:#9aa6b2;font-size:14px;line-height:24px; }
+html body #teamCreateDialog .team-create-close { flex:0 0 36px;width:36px;height:36px;padding:0;border:1px solid transparent;border-radius:8px;background:transparent; }
+html body #teamCreateDialog .team-create-close:hover { background:#2b3642; }
+html body #teamCreateDialog .team-create-avatar-section { display:flex;flex-direction:column;gap:12px;margin-top:24px;padding:0;border:0;border-radius:0;background:transparent; }
+html body #teamCreateDialog .team-create-label { margin:0;color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamCreateDialog .team-create-avatar-section>.team-create-label { display:flex;align-items:baseline;gap:8px; }
+html body #teamCreateDialog .team-create-label small { margin:0;color:#6f7b88;font-size:12px;font-weight:400; }
+html body #teamCreateDialog .team-create-avatar-row { display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;align-items:start; }
+html body #teamCreateDialog .team-create-avatar-preview { width:64px;height:64px;flex-basis:64px;border:1px solid #35414e;border-radius:14px;background:#222c38;color:#d5dbe3;box-shadow:none; }
+html body #teamCreateDialog .team-create-avatar-preview .team-create-placeholder { filter:grayscale(1); }
+html body #teamCreateDialog .team-create-avatar-row>div:not(.team-create-avatar-preview) { display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:64px;gap:10px; }
+html body #teamCreateDialog .team-create-upload-actions { display:flex;align-items:center;flex-wrap:wrap;gap:8px; }
+html body #teamCreateDialog .team-create-upload { min-height:36px;padding:0 14px;border:1px solid #2b3642;border-radius:999px;background:transparent;color:#d5dbe3;font-size:14px;line-height:20px; }
+html body #teamCreateDialog .team-create-upload:hover:not(:disabled) { border-color:#566474;background:#2b3642; }
+html body #teamCreateDialog .team-create-remove { color:#9aa6b2;font-size:12px; }
+html body #teamCreateDialog .team-create-hint { margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamCreateDialog .team-create-name-section { display:flex;flex-direction:column;gap:8px;margin-top:28px;padding:0;border:0; }
+html body #teamCreateDialog .team-create-name-section>.team-create-label { align-self:flex-start; }
+html body #teamCreateDialog .team-create-required { color:#d5dbe3; }
+html body #teamCreateDialog .team-create-input-wrap { width:100%;height:40px;padding:0 14px;border:1px solid #35414e;border-radius:8px;background:#111820;box-shadow:none; }
+html body #teamCreateDialog .team-create-input-wrap input { height:38px;padding:0;color:#f5f7fa;font-size:14px;line-height:20px; }
+html body #teamCreateDialog .team-create-input-wrap input::placeholder { color:#9aa6b2; }
+html body #teamCreateDialog .team-create-input-wrap:focus-within { border-color:#566474;box-shadow:none; }
+html body #teamCreateDialog .team-create-input-wrap:has([aria-invalid="true"]) { border-color:#f28c8c; }
+html body #teamCreateDialog .team-create-name-section>.team-create-hint { color:#6f7b88; }
+html body #teamCreateDialog .team-create-count { color:#9aa6b2;font-size:12px;line-height:18px; }
+/* 2026-10-29 Product Design 间距调整：创建团队的名称提示与管理员说明卡之间增加 12px 上间距，仅调整该卡片位置，不改变表单和其他弹窗。 */
+html body #teamCreateDialog .team-create-note { display:flex;flex-direction:column;align-items:stretch;gap:6px;margin:12px 0 0;padding:16px;border:0;border-radius:8px;background:#202a35; }
+html body #teamCreateDialog .team-create-note strong { display:block;margin:0;color:#f5f7fa;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamCreateDialog .team-create-note p { margin:6px 0 0;color:#9aa6b2;font-size:12px;line-height:20px;overflow-wrap:anywhere; }
+html body #teamCreateDialog .team-create-footer { display:flex;justify-content:flex-end;gap:12px;padding:8px 24px 24px;border:0;background:transparent; }
+html body #teamCreateDialog .team-create-footer button { flex:0 0 auto;min-width:0;width:auto;min-height:36px;height:36px;padding:0 16px;border:1px solid #2b3642;border-radius:999px;background:transparent;color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500;box-shadow:none; }
+html body #teamCreateDialog .team-create-footer button:hover:not(:disabled) { background:#2b3642;border-color:#2b3642;color:#fff; }
+html body #teamCreateDialog .team-create-footer .team-create-submit { background:#fff;border-color:transparent;color:#0b121a; }
+html body #teamCreateDialog .team-create-footer .team-create-submit:hover:not(:disabled) { background:#f5f7fa;border-color:transparent;color:#0b121a; }
+html body #teamCreateDialog .team-create-footer .team-create-submit:active:not(:disabled) { background:#e5e9ef; }
+html body #teamCreateDialog button:disabled { background:#2b3642;border-color:transparent;color:#6f7b88;opacity:1;cursor:not-allowed; }
+html body #teamCreateDialog button:focus-visible { outline:1px solid #9aa6b2;outline-offset:3px;box-shadow:none; }
+@media (max-width:700px) {
+ html body .global-account .profile-account-popover { position:fixed;left:12px;right:auto;top:112px;width:min(260px,calc(100vw - 24px));max-width:calc(100vw - 24px); }
+}
+@media (max-height:700px) and (min-width:701px) {
+ html body .global-account .profile-popover { max-height:calc(100dvh - 64px);overflow-y:auto; }
+ html body .global-account .profile-account-popover:not([hidden]) { position:fixed;top:140px;right:calc(min(340px,100vw - 24px) + 22px); }
+ html body .global-account .profile-language-popover:not([hidden]) { position:fixed;top:auto;right:calc(min(340px,100vw - 24px) + 22px);bottom:70px; }
+}
+@media (max-width:540px) {
+ html body #teamCreateDialog .team-create-content { padding:20px; }
+ html body #teamCreateDialog .team-create-footer { padding:8px 20px 20px; }
+}
+
+/* 2026-10-29：个人版两个独立会员链接支持明确键盘焦点，不影响团队套餐卡。 */
+html body .global-account .profile-membership-actions>a:focus-visible { outline:2px solid #9aa6b2;outline-offset:3px; }
+
+
+/* 2026-10-29 Product Design 编辑团队展示改动：依据团队设计稿的最终表单层级，
+ * 编辑弹窗采用 520px 深色面板、24px 内边距、64px 头像、独立提示行、40px 输入框与胶囊按钮。
+ * 仅限定 #teamEditDialog；保持名称／头像草稿、5 MB 上传限制、校验、取消及保存事件不变。
+ * 头像提示移至上传行下方仅调整模板排列，创建团队与其他弹窗不受本组样式影响。
+ */
+html body #teamEditDialog { box-sizing:border-box;width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:0;border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#d5dbe3;box-shadow:0 24px 80px #0008;font:400 14px/20px "Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+html body #teamEditDialog::backdrop { background:rgba(2,6,10,.72);backdrop-filter:none; }
+html body #teamEditDialog .team-create-content { padding:24px; }
+html body #teamEditDialog .team-create-heading { gap:16px; }
+html body #teamEditDialog .team-create-heading h2 { margin:0;color:#f5f7fa;font-size:18px;line-height:28px;font-weight:600;letter-spacing:0; }
+html body #teamEditDialog .team-create-description { margin:8px 0 0;color:#9aa6b2;font-size:14px;line-height:24px; }
+html body #teamEditDialog .team-create-close { flex:0 0 36px;width:36px;height:36px;padding:0;border:1px solid transparent;border-radius:8px;background:transparent; }
+html body #teamEditDialog .team-create-close:hover { background:#2b3642; }
+html body #teamEditDialog .team-create-avatar-section { display:flex;flex-direction:column;gap:12px;margin-top:24px;padding:0;border:0;border-radius:0;background:transparent; }
+html body #teamEditDialog .team-create-label { margin:0;color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500; }
+html body #teamEditDialog .team-create-avatar-section>.team-create-label { display:flex;align-items:baseline;gap:8px; }
+html body #teamEditDialog .team-create-label small { margin:0;color:#6f7b88;font-size:12px;font-weight:400; }
+html body #teamEditDialog .team-create-avatar-row { display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;align-items:start; }
+html body #teamEditDialog .team-create-avatar-preview { width:64px;height:64px;flex-basis:64px;border:1px solid #35414e;border-radius:14px;background:#222c38;color:#d5dbe3;box-shadow:none; }
+html body #teamEditDialog .team-create-avatar-preview .team-create-placeholder { filter:grayscale(1); }
+html body #teamEditDialog .team-create-avatar-row>div:not(.team-create-avatar-preview) { display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:64px;gap:10px; }
+html body #teamEditDialog .team-create-upload-actions { display:flex;align-items:center;flex-wrap:wrap;gap:8px; }
+html body #teamEditDialog .team-create-upload { min-height:36px;padding:0 14px;border:1px solid #2b3642;border-radius:999px;background:transparent;color:#d5dbe3;font-size:14px;line-height:20px; }
+html body #teamEditDialog .team-create-upload:hover:not(:disabled) { border-color:#566474;background:#2b3642; }
+html body #teamEditDialog .team-create-remove { color:#9aa6b2;font-size:12px; }
+html body #teamEditDialog .team-create-hint { margin:0;color:#9aa6b2;font-size:12px;line-height:20px; }
+html body #teamEditDialog .team-create-name-section { display:flex;flex-direction:column;gap:8px;margin-top:28px;padding:0;border:0; }
+html body #teamEditDialog .team-create-name-section>.team-create-label { align-self:flex-start; }
+html body #teamEditDialog .team-create-required { color:#d5dbe3; }
+html body #teamEditDialog .team-create-input-wrap { width:100%;height:40px;padding:0 14px;border:1px solid #35414e;border-radius:8px;background:#111820;box-shadow:none; }
+html body #teamEditDialog .team-create-input-wrap input { height:38px;padding:0;color:#f5f7fa;font-size:14px;line-height:20px; }
+html body #teamEditDialog .team-create-input-wrap input::placeholder { color:#9aa6b2; }
+html body #teamEditDialog .team-create-input-wrap:focus-within { border-color:#566474;box-shadow:none; }
+html body #teamEditDialog .team-create-input-wrap:has([aria-invalid="true"]) { border-color:#f28c8c; }
+html body #teamEditDialog .team-create-name-section>.team-create-hint { color:#6f7b88; }
+html body #teamEditDialog .team-create-count { color:#9aa6b2;font-size:12px;line-height:18px; }
+html body #teamEditDialog .team-create-footer { display:flex;justify-content:flex-end;gap:12px;padding:8px 24px 24px;border:0;background:transparent; }
+html body #teamEditDialog .team-create-footer button { flex:0 0 auto;min-width:0;width:auto;min-height:36px;height:36px;padding:0 16px;border:1px solid #2b3642;border-radius:999px;background:transparent;color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500;box-shadow:none; }
+html body #teamEditDialog .team-create-footer button:hover:not(:disabled) { background:#2b3642;border-color:#2b3642;color:#fff; }
+html body #teamEditDialog .team-create-footer .team-create-submit { background:#fff;border-color:transparent;color:#0b121a; }
+html body #teamEditDialog .team-create-footer .team-create-submit:hover:not(:disabled) { background:#f5f7fa;border-color:transparent;color:#0b121a; }
+html body #teamEditDialog .team-create-footer .team-create-submit:active:not(:disabled) { background:#e5e9ef; }
+html body #teamEditDialog button:disabled { background:#2b3642;border-color:transparent;color:#6f7b88;opacity:1;cursor:not-allowed; }
+html body #teamEditDialog button:focus-visible { outline:1px solid #9aa6b2;outline-offset:3px;box-shadow:none; }
+/* 编辑弹窗保留设计稿的底部描边与 20px/24px 留白，不采用创建团队的说明卡布局。 */
+html body #teamEditDialog .team-create-footer {padding:20px 24px;border-top:1px solid #2b3642;background:transparent;}
+@media(max-width:540px) {
+ html body #teamEditDialog .team-create-content {padding:20px;}
+ html body #teamEditDialog .team-create-footer {padding:16px 20px;}
+}
+
+
+/* 2026-10-29 展示调整：团队账号下的个人 V 点余额卡保留原有层级、尺寸和分隔线，
+ * 按用户最新要求恢复整卡进入团队管理；不恢复明细文字，下方独立查看团队入口继续保留。
+ */
+/* 2026-10-29：整卡可点击进入团队管理，沿用原按钮的键盘焦点样式。 */
+html body .global-account #profileTeamCreditsOpen {cursor:pointer;}
+html body .global-account #profileTeamCreditsOpen:hover {background:#10171d!important;border-color:transparent;}
+
+
+/* 2026-10-29 Product Design 展示调整：查看团队复用下面菜单的 42px 行高、18px 图标、
+ * 10px 图文间距与 14px 文字；按用户要求，hover／按下不加背景或边框。
+ * 只限定该入口，保留原个人／团队身份显隐及键盘 focus-visible 轮廓。
+ */
+html body .global-account .profile-popover-nav #teamConsoleOpen {
+ display:flex;align-items:center;justify-content:flex-start;width:100%;height:42px;flex-basis:42px;
+ margin:0;padding:0 10px;gap:10px;border:0;border-radius:11px;
+ background:transparent;color:#d5dbe3;font-family:inherit;font-size:14px;line-height:20px;font-weight:400;text-align:left;cursor:pointer;
+}
+html body .global-account .profile-popover-nav #teamConsoleOpen .profile-popover-row-icon {width:18px;height:18px;flex:0 0 18px;}
+html body .global-account .profile-popover-nav #teamConsoleOpen:is(:hover,:active,:focus-visible) {
+ background:transparent;border-color:transparent;color:#f5f7fa;
+}
+html body .global-account .profile-popover-nav #teamConsoleOpen:focus-visible {outline:2px solid #9aa6b2;outline-offset:1px;}
+
+
+/* 2026-10-29 Product Design 最新 hover 调整：个人中心底部所有菜单项统一使用
+ * 页面语言相同的 #111820 整行圆角背景和 #f5f7fa 文字，包括查看团队、订单、邀请码、语言及退出。
+ * 同时覆盖 button 与原静态菜单行，覆盖此前查看团队无背景的要求；仅调整 hover 外观，不新增点击行为。
+ */
+html body .global-account .profile-popover-nav .profile-popover-row:hover {
+ background:#111820!important;color:#f5f7fa!important;
+}
+
+
+/* 2026-10-29 Product Design 菜单文字统一：查看团队、我的订单、邀请码、页面语言和退出登录
+ * 统一采用 #d5dbe3、14px／20px、400 字重及同一字体；显式覆盖语言和退出按钮旧 ID 的继承样式。
+ * 标签继承整行文字样式，hover 继续使用上一组规则的整行背景及高亮文字；不修改图标、间距或点击逻辑。
+ */
+html body .global-account .profile-popover-nav :is(#teamConsoleOpen,#profileLanguageTrigger,#profileDemoSignOut,.profile-popover-row) {
+ color:#d5dbe3;font-family:inherit;font-size:14px;line-height:20px;font-weight:400;
+}
+html body .global-account .profile-popover-nav .profile-popover-row-label {
+ color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;font-weight:inherit;
+}
+
+/* 2026-10-30 Product Design 改动逻辑：按最新设计稿将个人版 V 点来源纵向排列，
+ * 三行间距为 8px；复用既有分隔线、左右对齐和金额样式，余额卡与菜单随内容自然增高。
+ * 选择器仅作用于个人版新增明细，团队版余额和每月额度保持原样。
+ */
+html body .global-account .profile-personal-credit-sources {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:100%;
+}
+
+/* 2026-10-30 Product Design 改动逻辑：个人和团队余额均为纯展示区域，
+ * 禁止整卡及子元素鼠标交互，移除手形光标、悬停和焦点反馈，保留原尺寸、背景及数据排版。
+ * 已开通个人会员时隐藏个人会员横幅；此规则不匹配团队会员卡片。
+ */
+html body .global-account :is(.profile-personal-balance,#profileTeamCreditsOpen),
+html body .global-account :is(.profile-personal-balance,#profileTeamCreditsOpen) * {
+  pointer-events:none !important;
+  cursor:default !important;
+}
+html body .global-account :is(.profile-personal-balance,#profileTeamCreditsOpen):is(:hover,:active,:focus-visible) {
+  background:#10171d !important;
+  border-color:transparent !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+html body .global-account .profile-personal-summary.va-membership-card[hidden] { display:none !important; }

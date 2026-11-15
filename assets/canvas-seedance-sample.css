@@ -1,0 +1,51 @@
+/* 2026-11-09 Product Design：tab 位于视频节点与提示词面板之间，跟随原浮层定位。
+ * 2026-11-09：480p保留原输入区域；1080p使用320px紧凑面板，两行说明下方放积分箭头，提交期间保持布局。
+ */
+#nodeGeneratePanel .seedance-sample-tabs[hidden],
+#nodeGeneratePanel .seedance-final-card[hidden] { display: none !important; }
+#nodeGeneratePanel .seedance-sample-tabs {
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+  display: flex; width: max-content; max-width: calc(100vw - 40px); padding: 4px; gap: 2px;
+  border: 1px solid #2b3642; border-radius: 10px; background: #181e27;
+}
+#nodeGeneratePanel .seedance-sample-tabs button {
+  padding: 8px 14px; border: 0; border-radius: 7px; background: transparent;
+  color: #9aa6b2; font: inherit; font-size: 13px; font-weight: 500;
+  line-height: 20px; white-space: nowrap; cursor: pointer;
+}
+#nodeGeneratePanel .seedance-sample-tabs button[aria-selected="true"] { color: #fff; background: #303946; }
+#nodeGeneratePanel .seedance-sample-tabs button:hover { color: #fff; }
+#nodeGeneratePanel .seedance-sample-tabs button:focus-visible { outline: 2px solid #b8f84a; outline-offset: 1px; }
+/* 2026-11-09：保留角色画布排除条件并重复ID提高专属状态优先级，确保独立宽高覆盖原媒体面板及上游引用留白规则。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel#nodeGeneratePanel.seedance-final-mode {
+  box-sizing: border-box !important; width: min(320px, calc(100% - 36px)) !important;
+  min-width: 0 !important; max-width: 320px !important; min-height: 0 !important;
+  height: auto !important; max-height: none !important; padding: 16px !important;
+  border-radius: 18px !important;
+}
+/* 只切换展示，原编辑器、上传素材及提示词草稿都保留在原 DOM 上。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel#nodeGeneratePanel.seedance-final-mode > :not(.seedance-sample-tabs):not(.seedance-final-card) { display: none !important; }
+#nodeGeneratePanel .seedance-final-card { display: flex; flex-direction: column; align-items: center; gap: 16px; color: #fff; font-size: 14px; }
+#nodeGeneratePanel .seedance-final-description { display: flex; flex-direction: column; align-items: center; margin: 0; color: #cbd2db; line-height: 22px; }
+#nodeGeneratePanel .seedance-final-description > span { display: block; }
+#nodeGeneratePanel .seedance-final-generate {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  box-sizing: border-box; height: 40px; padding: 8px 8px 8px 12px; margin: 0; flex: 0 0 auto;
+  border: 1px solid #2b3642; border-radius: 30px; background: #080d12 !important; color: #fff !important;
+  font-family: inherit; font-size: 14px; font-weight: 500; box-shadow: none; cursor: pointer;
+}
+#nodeGeneratePanel .seedance-final-generate > img { width: 20px; height: 20px; }
+/* 2026-11-09 Product Design：正片箭头圆底与480P使用同一绿色；important覆盖全局send-circle的白色重要样式。 */
+#nodeGeneratePanel .seedance-final-generate .send-circle {
+  box-sizing: border-box; display: grid; place-items: center; width: 24px; height: 24px;
+  padding: 4px; border-radius: 50%; color: #0d1308 !important; background: #b8f84a !important; box-shadow: none;
+}
+#nodeGeneratePanel .seedance-final-generate .send-circle > svg { display: none; }
+#nodeGeneratePanel .seedance-final-generate:disabled { cursor: wait; }
+#nodeGeneratePanel .seedance-final-generate:disabled .send-circle { background: #486725 !important; }
+#nodeGeneratePanel .seedance-final-generate:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+
+/* 2026-11-09：与480P按钮共用现有向上箭头资源。 */
+#nodeGeneratePanel .seedance-final-generate .send-circle::before {
+  content: ""; display: block; width: 16px; height: 16px; background: currentColor; -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDE2IDE2IiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTggMTNWM000LjUgNi41IDggM2wzLjUgMy41Ij48L3BhdGg+PC9zdmc+") center / contain no-repeat; mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDE2IDE2IiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTggMTNWM000LjUgNi41IDggM2wzLjUgMy41Ij48L3BhdGg+PC9zdmc+") center / contain no-repeat; mask-mode: alpha;
+}

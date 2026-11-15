@@ -1,0 +1,81 @@
+/* 2026-10-27 Product Design 改动逻辑：采用「UI 稿最新/assets/drama-loading-motion.css」
+   的原始配色、渐变、模糊范围和关键帧，仅接入短剧第五步右侧预览及底部片段生成态。
+   生成时隐藏旧视频和 AI 角标，用两层绿色柔光扩散替换旧棕色渐变，完成后随 is-rendering 移除恢复。
+   显式显示右侧 ::after，覆盖现有播放器隐藏遮罩的规则；生成中标签保留原绝对定位并置于柔光之上。 */
+body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering video,
+body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering :is(.ai-generated-badge,.detail-ungenerated-text,.detail-generation-failure) {
+  visibility:hidden !important;
+  opacity:0 !important;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering,
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(110% 82% at 16% 82%,rgba(18,121,93,.27),transparent 66%),
+    radial-gradient(90% 76% at 88% 18%,rgba(38,132,99,.18),transparent 69%),
+    #080d12 !important;
+  background-size:155% 155%,148% 148%,auto !important;
+  animation:vina-drama-ambient 4.2s ease-in-out infinite alternate !important;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering::before,
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb::before {
+  content:"";
+  display:block;
+  position:absolute;
+  z-index:0;
+  inset:-32%;
+  background:
+    radial-gradient(40% 35% at 28% 68%,rgba(27,150,111,.34),transparent 74%),
+    radial-gradient(36% 42% at 72% 31%,rgba(75,153,91,.22),transparent 76%),
+    radial-gradient(31% 28% at 55% 57%,rgba(117,174,67,.10),transparent 78%);
+  filter:blur(clamp(22px,4.2vmax,68px));
+  transform:translate3d(-8%,7%,0) scale(1.08);
+  animation:vina-drama-glow 3.6s cubic-bezier(.45,0,.55,1) infinite alternate;
+  pointer-events:none;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering::after,
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb::after {
+  content:"";
+  display:block;
+  position:absolute;
+  z-index:1;
+  inset:-34%;
+  background:
+    radial-gradient(35% 31% at 20% 26%,rgba(18,113,91,.20),transparent 78%),
+    radial-gradient(30% 37% at 78% 72%,rgba(34,135,101,.22),transparent 78%),
+    radial-gradient(25% 29% at 50% 45%,rgba(87,153,77,.12),transparent 80%);
+  filter:blur(clamp(28px,5.4vmax,82px));
+  transform:translate3d(9%,-5%,0) scale(1.12);
+  animation:vina-drama-diffusion 4.6s cubic-bezier(.42,0,.36,1) infinite alternate;
+  pointer-events:none;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-state-badge {
+  z-index:3;
+}
+@keyframes vina-drama-ambient {
+  0% { background-position:12% 76%,82% 16%,0 0; }
+  100% { background-position:56% 34%,47% 68%,0 0; }
+}
+@keyframes vina-drama-glow {
+  0% { transform:translate3d(-11%,10%,0) scale(1.04);opacity:.76; }
+  48% { transform:translate3d(5%,-5%,0) scale(1.16);opacity:1; }
+  100% { transform:translate3d(12%,8%,0) scale(1.08);opacity:.82; }
+}
+@keyframes vina-drama-diffusion {
+  0% { transform:translate3d(11%,-7%,0) scale(1.08);opacity:.72; }
+  52% { transform:translate3d(-5%,5%,0) scale(1.18);opacity:.96; }
+  100% { transform:translate3d(-12%,-1%,0) scale(1.10);opacity:.78; }
+}
+/* 沿用设计稿的减少动态效果偏好：保留同色背景，但关闭柔光运动。 */
+@media(prefers-reduced-motion:reduce) {
+  body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering,
+  body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb,
+  body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering::before,
+  body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb::before,
+  body.drama-workflow-active .episode-detail-workspace .detail-preview.is-rendering::after,
+  body.drama-workflow-active .episode-detail-workspace .shot-card.is-rendering .shot-thumb::after {
+    animation:none !important;
+  }
+}

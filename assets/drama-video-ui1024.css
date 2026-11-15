@@ -1,0 +1,320 @@
+/* 2026-10-26 Product Design 样式调整：完整沿用“UI 稿子”第五步的视频总览样式。
+   变量仅在视频页内定义；保留原项目内容、五集数据、状态统计、审核权限、封面素材和所有按钮事件。
+   本次同步原稿新增的进度轨道及卡片底色，未引入原稿业务脚本。 */
+.episode-workspace[data-view="episode-video"] {
+ --va-bg:#080d12;--va-container:rgba(15,21,28,.6);--va-surface:#171e27;
+ --va-disabled-bg:#141a21;--va-border:#2b3642;--va-border-light:rgba(255,255,255,.06);
+ --va-border-focus:#3a4654;--va-text:#f5f7fa;--va-secondary:#d5dbe3;
+ --va-tertiary:#9aa6b2;--va-muted:#6f7b88;--va-disabled-text:#4d5865;
+ --va-brand:#b8f84a;--va-brand-ink:#0d1308;
+ --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+/* Video overview and episode list use the established workflow design tokens. */
+.episode-workspace[data-view="episode-video"] { background:var(--va-bg) !important; color:var(--va-secondary); font-family:var(--va-font); }
+/* 2026-10-27 Product Design 改动逻辑：按 UI 稿的顶部留白效果，将桌面视频总览内容
+   上内边距由 28px 增至 40px，让项目概览卡片与导航之间增加 12px；左右、底部及卡片间距沿用原值。
+   窄屏继续使用下方响应式规则中的 24px/20px 上内边距。 */
+.episode-workspace[data-view="episode-video"] .episode-main { padding:40px 32px 48px !important; box-sizing:border-box; }
+.episode-workspace[data-view="episode-video"] .episode-inner { width:min(100%,1360px) !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step { background:var(--va-surface) !important; border-color:var(--va-border) !important; color:var(--va-tertiary) !important; box-shadow:none !important; font-weight:500 !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step.active { background:var(--va-border) !important; border-color:var(--va-border) !important; color:var(--va-text) !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step.active .step-num { background:var(--va-brand) !important; color:var(--va-brand-ink) !important; box-shadow:none !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step.complete { color:var(--va-secondary) !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step.complete .step-num { background:var(--va-border) !important; color:var(--va-secondary) !important; }
+.episode-workspace[data-view="episode-video"] .script-status .step-line { background:var(--va-border) !important; }
+
+.episode-workspace[data-view="episode-video"] .episode-project-panel { grid-template-columns:minmax(0,1fr) 228px; padding:24px !important; gap:32px; margin-bottom:32px !important; min-height:160px; box-sizing:border-box; background:var(--va-container) !important; border:1px solid var(--va-border) !important; border-radius:16px !important; box-shadow:none !important; }
+.episode-workspace[data-view="episode-video"] .episode-project-heading { gap:8px; margin-bottom:16px; }
+.episode-workspace[data-view="episode-video"] .episode-project-heading h1 { color:var(--va-text) !important; font:500 24px/32px var(--va-font) !important; margin-right:8px; }
+.episode-workspace[data-view="episode-video"] :is(.episode-project-count,.episode-project-tag) { padding:4px 10px; border:0 !important; border-radius:8px !important; background:var(--va-surface) !important; color:var(--va-tertiary) !important; font:400 12px/20px var(--va-font) !important; }
+.episode-workspace[data-view="episode-video"] .episode-project-outline { color:var(--va-secondary) !important; font:400 14px/24px var(--va-font) !important; }
+.episode-workspace[data-view="episode-video"] .episode-project-progress { padding-left:24px; border-color:var(--va-border-light) !important; gap:20px; color:var(--va-tertiary) !important; font:400 12px/18px var(--va-font); }
+.episode-workspace[data-view="episode-video"] .episode-project-progress strong { color:var(--va-text) !important; font:500 24px/28px var(--va-font); font-variant-numeric:tabular-nums; }
+.episode-workspace[data-view="episode-video"] :is(.episode-project-outline-tooltip,.episode-project-tags-tooltip) { border:1px solid var(--va-border) !important; border-radius:16px !important; background:var(--va-surface) !important; color:var(--va-secondary) !important; padding:16px; font:400 14px/24px var(--va-font); box-shadow:0 8px 24px #0004 !important; }
+.episode-workspace[data-view="episode-video"] :is(.episode-project-outline,.episode-project-tags-wrap):focus-visible { outline-color:var(--va-border-focus); }
+
+.episode-workspace[data-view="episode-video"] .episode-grid { display:grid; grid-template-columns:minmax(0,1fr) !important; gap:16px !important; }
+.episode-workspace[data-view="episode-video"] .episode-video-card { display:grid; grid-template-columns:72px minmax(0,1fr) !important; gap:20px !important; padding:16px !important; min-height:160px !important; box-sizing:border-box; border:1px solid var(--va-border) !important; border-radius:16px !important; background:var(--va-surface) !important; box-shadow:none !important; transform:none !important; transition:border-color .16s ease; }
+.episode-workspace[data-view="episode-video"] .episode-video-card:hover { border-color:var(--va-border-focus) !important; }
+.episode-workspace[data-view="episode-video"] .episode-video-card::before { display:none !important; }
+.episode-workspace[data-view="episode-video"] button.episode-cover { width:72px !important; height:128px !important; min-height:128px !important; align-self:center; border:0 !important; border-radius:10px !important; box-shadow:none !important; }
+.episode-workspace[data-view="episode-video"] .episode-cover::before { display:none; }
+.episode-workspace[data-view="episode-video"] .episode-cover-play { color:#fff; transition:transform .16s ease; }
+.episode-workspace[data-view="episode-video"] .episode-cover:hover .episode-cover-play { transform:scale(1.08); color:#fff !important; }
+.episode-workspace[data-view="episode-video"] .episode-duration { font:500 12px/18px var(--va-font); color:#fff; }
+.episode-workspace[data-view="episode-video"] .episode-info { display:grid; grid-template-columns:minmax(0,1fr) 224px !important; grid-template-rows:auto auto auto; align-content:center; column-gap:24px; row-gap:8px; padding:0 !important; min-width:0; }
+.episode-workspace[data-view="episode-video"] .episode-heading { grid-column:1; gap:8px 12px; margin:0; }
+.episode-workspace[data-view="episode-video"] .episode-name { color:var(--va-text) !important; font:500 16px/24px var(--va-font) !important; margin:0 !important; overflow-wrap:anywhere; }
+.episode-workspace[data-view="episode-video"] .episode-meta { grid-column:1; color:var(--va-tertiary) !important; font:400 14px/24px var(--va-font) !important; margin:0 !important; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+.episode-workspace[data-view="episode-video"] .episode-video-progress { grid-column:1; align-items:center; gap:10px; color:var(--va-tertiary) !important; font:400 12px/18px var(--va-font); }
+.episode-workspace[data-view="episode-video"] .episode-video-progress strong { color:var(--va-secondary) !important; font-weight:500; }
+.episode-workspace[data-view="episode-video"] :is(.episode-video-progress,.episode-project-progress) progress { appearance:none; border:0; border-radius:999px; overflow:hidden; height:4px !important; background:var(--va-disabled-bg) !important; color:var(--va-brand) !important; accent-color:var(--va-brand); }
+.episode-workspace[data-view="episode-video"] progress::-webkit-progress-bar { background:var(--va-disabled-bg) !important; border-radius:999px; }
+.episode-workspace[data-view="episode-video"] progress::-webkit-progress-value { background:var(--va-brand) !important; border-radius:999px; }
+.episode-workspace[data-view="episode-video"] progress::-moz-progress-bar { background:var(--va-brand) !important; border-radius:999px; }
+.episode-workspace[data-view="episode-video"] .episode-buttons { grid-column:2; grid-row:1 / span 3; align-self:center; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px !important; margin:0 !important; }
+.episode-workspace[data-view="episode-video"] .episode-button { min-width:0; height:36px !important; min-height:36px; padding:0 12px !important; gap:6px; justify-content:center; border:1px solid var(--va-border) !important; border-radius:18px !important; background:transparent !important; color:var(--va-tertiary) !important; box-shadow:none !important; opacity:1; font:500 14px/20px var(--va-font) !important; }
+.episode-workspace[data-view="episode-video"] .episode-button:hover:not(:disabled) { background:var(--va-border) !important; border-color:var(--va-border-focus) !important; color:#fff !important; transform:none !important; }
+.episode-workspace[data-view="episode-video"] .episode-button svg { width:16px !important; height:16px !important; flex:0 0 16px; }
+.episode-workspace[data-view="episode-video"] .episode-button:is(:disabled,.is-unavailable,.is-unavailable:hover) { color:var(--va-disabled-text) !important; background:var(--va-disabled-bg) !important; cursor:not-allowed; }
+.episode-workspace[data-view="episode-video"] :is(.episode-button,.episode-cover):focus-visible { outline:2px solid var(--va-tertiary); outline-offset:3px; }
+
+/* Completion stays neutral; only review results carry a semantic color. */
+.episode-workspace[data-view="episode-video"] [data-episode-card] .episode-status-capsule { background:var(--va-bg) !important; border:1px solid var(--va-border) !important; border-radius:16px; padding:4px 10px; font:400 12px/18px var(--va-font); box-shadow:none !important; }
+.episode-workspace[data-view="episode-video"] .episode-status-capsule :is(.episode-status-completion,.episode-status-review) { color:var(--va-secondary) !important; }
+.episode-workspace[data-view="episode-video"] .episode-status-divider { background:var(--va-border-focus) !important; margin-inline:8px; }
+.episode-workspace[data-view="episode-video"] .episode-status-capsule.is-incomplete :is(.episode-status-completion,.episode-status-review) { color:var(--va-tertiary) !important; }
+.episode-workspace[data-view="episode-video"] .episode-status-capsule[data-review-status="通过"] .episode-status-review { color:#5BDBA4 !important; }
+.episode-workspace[data-view="episode-video"] .episode-status-capsule[data-review-status="不通过"] .episode-status-review { color:#FF5C7A !important; }
+.episode-workspace[data-view="episode-video"] .episode-status-capsule[data-review-status="待审核"] .episode-status-review { color:#F6BD6A !important; }
+.episode-workspace[data-view="episode-video"] .episode-review-button { border:0 !important; background:transparent !important; color:var(--va-tertiary) !important; }
+.episode-workspace[data-view="episode-video"] .episode-review-button:hover { background:var(--va-border) !important; color:#fff !important; }
+.episode-workspace[data-view="episode-video"] :is(.episode-main,.episode-project-outline-tooltip) { scrollbar-width:thin; scrollbar-color:transparent transparent; }
+.episode-workspace[data-view="episode-video"] :is(.episode-main,.episode-project-outline-tooltip):hover { scrollbar-color:var(--va-muted) transparent; }
+.episode-workspace[data-view="episode-video"] ::-webkit-scrollbar { width:6px; height:6px; }
+.episode-workspace[data-view="episode-video"] ::-webkit-scrollbar-track,.episode-workspace[data-view="episode-video"] ::-webkit-scrollbar-corner { background:transparent; }
+.episode-workspace[data-view="episode-video"] ::-webkit-scrollbar-thumb { background:transparent; border-radius:999px; }
+.episode-workspace[data-view="episode-video"] :hover::-webkit-scrollbar-thumb { background:var(--va-muted); }
+.episode-workspace[data-view="episode-video"] .episode-generating-state { background:var(--va-bg) !important; color:var(--va-secondary); font:500 16px/24px var(--va-font); }
+@media (max-width:900px) {
+  .episode-workspace[data-view="episode-video"] .episode-main { padding:24px 20px 40px !important; }
+  .episode-workspace[data-view="episode-video"] .episode-info { grid-template-columns:minmax(0,1fr) !important; }
+  .episode-workspace[data-view="episode-video"] .episode-buttons { grid-column:1; grid-row:auto; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:4px !important; }
+  .episode-workspace[data-view="episode-video"] .episode-project-panel { grid-template-columns:minmax(0,1fr) 204px; gap:24px; }
+}
+@media (max-width:600px) {
+  .episode-workspace[data-view="episode-video"] .episode-main { padding:20px 16px 32px !important; }
+  .episode-workspace[data-view="episode-video"] .episode-project-panel { grid-template-columns:minmax(0,1fr); padding:20px !important; gap:20px; }
+  .episode-workspace[data-view="episode-video"] .episode-project-progress { padding:16px 0 0; border-left:0; border-top:1px solid var(--va-border-light); flex-direction:row; gap:20px; }
+  .episode-workspace[data-view="episode-video"] .episode-project-stat { flex:1; }
+  .episode-workspace[data-view="episode-video"] .episode-video-card { gap:12px !important; }
+  .episode-workspace[data-view="episode-video"] .episode-buttons { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：顶部生成完成/审核通过进度条与下方分集进度条
+   共用 #3a4654 灰蓝色背景轨道，零进度时也完整显示；绿色填充和进度数值沿用原逻辑。 */
+.episode-workspace[data-view="episode-video"] :is(.episode-video-progress,.episode-project-progress) progress,
+.episode-workspace[data-view="episode-video"] :is(.episode-video-progress,.episode-project-progress) progress::-webkit-progress-bar {
+  background:var(--va-border-focus) !important;
+}
+
+/* Same fill as the approved step-one creation-setting cards. */
+.episode-workspace[data-view="episode-video"] :is(.episode-project-panel,.episode-video-card) {
+  background:rgba(23,29,36,.7) !important;
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：第五步单集片段编辑页的两层底色与切换按钮
+   对齐 UI 稿 1027 的 storyboard-workspace-design-system.css。
+   上方片段/参考素材区 #18212a，下方提示词/分镜编辑区及工具栏 #111820；
+   分镜表/提示词切换采用中性灰蓝选中态 #2b3642，不再使用绿色选中底。
+   仅作用于原片段编辑页，保留 aria-pressed 状态控制、视图显隐、正文编辑和按钮事件；
+   不影响独立剪辑器、视频总览、播放素材及生成逻辑。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-panel {
+  background:#18212a !important; border-color:#35414e !important; box-shadow:none !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-card {
+  background:#111820 !important; border-color:#2b3642 !important; box-shadow:none !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText {
+  background:transparent !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-tools {
+  background:#111820 !important; border-top-color:#2b3642 !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch {
+  padding:3px; gap:3px; border:1px solid #2b3642;
+  background:#171e27 !important; border-radius:9px;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button {
+  padding:6px 14px; border:0; border-radius:6px; background:transparent !important;
+  color:#9aa6b2 !important; font-size:12px; font-weight:500; box-shadow:none;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button[aria-pressed="true"] {
+  background:#2b3642 !important; color:#f5f7fa !important; box-shadow:0 1px 3px #0003;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button:hover {
+  color:#f5f7fa !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button:focus-visible {
+  outline:2px solid #3a4654; outline-offset:2px;
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：第五步顶部切集弹层、审核数字、剧本入口选中态
+   和左侧剧本栏完整沿用 UI 稿 1027 的 interface-dropdown-refinement.css /
+   episode-panels-refinement.css 对应规则，限定单集编辑工作区并提高旧主题覆盖优先级。
+   切集弹层使用 #1b232c，选中项 #252e38；审核数字使用 #354252 中性灰蓝徽标。
+   剧本入口选中态 #2b3642，侧栏 #0d141b，内容卡 #171e27，正文 13px/22px。
+   仅修改视觉，菜单展开、切集、审核数量计算/隐藏、侧栏显隐、拖宽和大纲视图状态继续使用原逻辑。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button { height:38px !important; padding:0 14px !important; gap:8px !important; border:1px solid #2b3642 !important; border-radius:19px !important; background:#111820 !important; color:#9aa6b2 !important; font-size:13px !important; line-height:20px !important; font-weight:500 !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button:hover:not(:disabled) { background:#202936 !important; border-color:#566474 !important; color:#f5f7fa !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button:is(.is-active,[aria-expanded="true"]) { background:#2b3642 !important; border-color:#718093 !important; color:#f5f7fa !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button img { filter:grayscale(1) brightness(1.15) !important; opacity:.8 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button:is(.is-active,[aria-expanded="true"]) img { filter:brightness(0) invert(1) !important; opacity:1 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls #detailReviewBadge { min-width:20px !important; height:20px !important; padding:0 5px !important; box-sizing:border-box !important; display:inline-grid !important; place-items:center !important; background:#354252 !important; color:#e6ebf1 !important; border-radius:10px !important; font-size:11px !important; font-weight:500 !important; line-height:20px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls #detailReviewBadge[hidden] { display:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-side-panel-controls button:disabled { color:#566474 !important; background:#111820 !important; border-color:#26313d !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] :is(.episode-side-panel-controls button,.episode-agent-close):focus-visible { outline:2px solid #9aa6b2 !important; outline-offset:3px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-agent-sidebar { background:#0d141b !important; border:1px solid #2b3642 !important; border-radius:16px !important; backdrop-filter:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-agent-script { padding:20px 16px 24px !important; scrollbar-width:thin !important; scrollbar-color:#35414e transparent !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-agent-close { width:28px !important; height:28px !important; border-radius:7px !important; color:#9aa6b2 !important; font-size:24px !important; line-height:28px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-agent-close:hover { background:#2b3642 !important; color:#f5f7fa !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-agent-script .episode-script-scroll-close { margin:-4px 0 0 8px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-section { margin-bottom:24px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-section-title { min-height:24px !important; margin:0 0 12px !important; gap:8px !important; color:#f5f7fa !important; font-size:14px !important; font-weight:500 !important; line-height:24px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-section-title svg { width:16px !important; height:16px !important; stroke-width:1.5 !important; color:#9aa6b2 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] :is(.episode-script-readonly,.episode-script-scene) { padding:14px !important; border:0 !important; border-radius:10px !important; background:#171e27 !important; box-shadow:none !important; color:#c5ced8 !important; font-size:13px !important; line-height:22px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-scene+.episode-script-scene { margin-top:12px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-scene-title { display:inline-block !important; margin:0 0 12px !important; padding:3px 9px !important; border-radius:6px !important; background:#26313d !important; color:#d5dbe3 !important; font-size:12px !important; line-height:18px !important; font-weight:500 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-outline-view-tabs { display:flex !important; padding:3px !important; gap:3px !important; margin-bottom:12px !important; border:0 !important; border-radius:9px !important; background:#171e27 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-outline-view-tabs button { flex:1 !important; min-width:0 !important; padding:6px 8px !important; border:0 !important; border-radius:6px !important; background:transparent !important; color:#9aa6b2 !important; box-shadow:none !important; font-size:12px !important; font-weight:400 !important; line-height:20px !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-outline-view-tabs button:hover { background:#202936 !important; color:#f5f7fa !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-outline-view-tabs button:is(.active,[aria-selected="true"]) { background:#2b3642 !important; color:#f5f7fa !important; font-weight:500 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-script-media-card { border-color:#2b3642 !important; border-radius:10px !important; background:#171e27 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .script-status #episodeSwitcherMenu,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu { box-sizing:border-box !important; width:min(320px,calc(100vw - 32px)) !important; min-width:100% !important; max-height:min(480px,calc(100vh - 80px)) !important; overflow-y:auto !important; padding:7px !important; border:1px solid #35414e !important; border-radius:12px !important; background:#1b232c !important; box-shadow:0 18px 42px rgba(0,0,0,.42) !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button { position:relative !important; box-sizing:border-box !important; min-width:0 !important; height:40px !important; padding:0 14px !important; border-radius:8px !important; background:transparent !important; color:#c7d0d9 !important; font-size:13px !important; font-weight:500 !important; transition:background .15s ease,color .15s ease !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-option-label { display:block !important; min-width:0 !important; overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button:hover,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button:focus-visible { background:#29323b !important; color:#f5f7fa !important; outline:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button[aria-current="true"] { background:#252e38 !important; color:#f5f7fa !important; font-weight:600 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button[aria-current="true"]::before { content:"" !important; position:absolute !important; top:11px !important; bottom:11px !important; left:4px !important; width:3px !important; border-radius:3px !important; background:#b8f84a !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button[aria-current="true"]:hover,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-menu button[aria-current="true"]:focus-visible { background:#303b46 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-toggle { height:38px !important; padding:0 12px !important; border:1px solid #2b3642 !important; border-radius:999px !important; background:#111820 !important; color:#c7d0d9 !important; font-size:13px !important; font-weight:500 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .episode-switcher-toggle:is(:hover,:focus-visible,[aria-expanded="true"]) { border-color:#ffffff38 !important; background:#19222c !important; color:#f4f7fa !important; outline:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] :is(.episode-agent-script,.episode-side-panel-controls,.episode-switcher-menu) { font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .detail-sidebar-resizer:is(:hover,:focus-visible,.is-dragging)::before { background:#718093 !important; box-shadow:none !important; }
+
+
+/* 2026-10-27 Product Design 改动逻辑：第五步提示词文字和 @ 引用按 UI 稿 1027
+   prompt-editor-refinement.css 对齐：14px/28px 正文，主体标签与描述分列，引用标签
+   28px 高、20px 缩略图和 7px 圆角；保留原始提示词字符串、引用内容和编辑/选择事件。
+   工具栏仅覆盖用户红框内的模型、参数、时长、快捷提示词四个按钮；其他按钮不覆盖。
+   缩略图已生成标记采用设计稿灰蓝背景与浅灰文字，状态判断不变。 */
+/* Preserve editable prompt text and mentions, while improving reading rhythm. */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText{padding:24px!important;white-space:normal!important;color:#c5ced8!important;font-size:14px!important;line-height:28px!important;scrollbar-width:thin;scrollbar-color:#35414e transparent!important;outline:0;caret-color:#f5f7fa!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-content-line{display:block;min-height:28px!important;white-space:pre-wrap!important;overflow-wrap:anywhere}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-section-heading{margin:8px 0 14px;color:#f5f7fa!important;font-size:14px!important;line-height:24px!important;font-weight:600!important;min-height:24px!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-section-heading:first-child{margin-top:0}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-empty-line{height:20px!important;min-height:20px!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-subject-line{display:grid;grid-template-columns:156px minmax(0,1fr);align-items:start;column-gap:14px;margin-bottom:10px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-subject-line>.detail-mention-token{justify-self:start;max-width:156px;margin:0;box-sizing:border-box}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-subject-description{min-width:0;padding-top:2px;white-space:pre-wrap!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .detail-mention-token{height:28px!important;gap:6px;padding:3px 8px 3px 4px!important;vertical-align:middle;font-size:12px!important;line-height:18px!important;font-weight:400!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .detail-mention-thumb{width:20px;height:20px!important;border-radius:5px!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-shot-line{padding-block:2px;line-height:30px!important}
+@media(max-width:900px){body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText{padding:18px!important}body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText .prompt-subject-line{grid-template-columns:140px minmax(0,1fr);gap:10px}}
+
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptText { font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; font-weight:400 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-mention-token { background:rgba(184,248,74,.12) !important; border-color:#b8f84a !important; color:#fff !important; border-radius:7px !important; font-size:12px !important; font-weight:400 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-mention-token:hover { background:#2b3642 !important; border-color:#718093 !important; color:#f5f7fa !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailModelButton,#detailSettingsButton,#detailDurationButton,#detailQuickPromptButton) { height:36px !important; min-height:36px !important; border:1px solid #35414e !important; border-radius:18px !important; background:#171e27 !important; color:#aab5c2 !important; font-weight:500 !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailModelButton,#detailSettingsButton,#detailDurationButton,#detailQuickPromptButton):is(:hover,:focus-visible):not(:disabled):not([aria-disabled="true"]) { background:#2b3642 !important; border-color:#718093 !important; color:#f5f7fa !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailModelButton,#detailSettingsButton,#detailDurationButton,#detailQuickPromptButton):is(:active,[aria-expanded="true"]):not(:disabled) { background:#26313d !important; border-color:#718093 !important; color:#f5f7fa !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailModelButton,#detailSettingsButton,#detailDurationButton,#detailQuickPromptButton):disabled { background:#111820 !important; border-color:#26313d !important; color:#566474 !important; opacity:1; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailModelButton,#detailSettingsButton,#detailDurationButton,#detailQuickPromptButton):focus-visible { outline:2px solid #9aa6b2 !important; outline-offset:2px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailDurationButton,#detailQuickPromptButton) { width:36px !important; min-width:36px !important; padding:0 !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-tool-left .episode-global-param,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-tool-left .episode-global-param:is(:hover,:focus-within) { height:36px; min-height:36px; border:0 !important; background:transparent !important; box-shadow:none !important; outline:none; padding:0; }
+/* 2026-11-10 Product Design 改动逻辑：生成中和已生成标签共用暗色底、灰色描边及文字颜色，
+ * 仅统一标签外观，不改生成中文字、背景动效和失败态样式。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:not(.is-ungenerated):not(.is-rendering):not(.is-failed) .shot-thumb::before,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.is-rendering .shot-state-badge { background:rgba(23,30,39,.9) !important; border:1px solid rgba(154,166,178,.35) !important; color:#d5dbe3 !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-state-badge { background:rgba(17,24,32,.88); border:1px solid #ffffff24; border-radius:6px; color:#d5dbe3; font-size:10px; font-weight:400; box-shadow:none; }
+
+
+/* 2026-10-27 Product Design 改动逻辑：审核侧栏箭头标出的版本标签和提交按钮
+   采用 UI 稿 1027 episode-panels-refinement.css 的尺寸、配色和留白。
+   版本标签 11px 灰字/5px 圆角；提交按钮 40px 高/10px 圆角/14px 中等字重，
+   底栏上下 14px、左右 16px；按钮状态色沿用原稿 drama-media-colors.css。
+   只改这两个控件及按钮所在底栏的视觉，不改版本值、显隐、提交、撤销和禁用逻辑。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .detail-review-version {
+  display:inline-block; padding:2px 6px; border-radius:5px; background:#222b35;
+  color:#9aa6b2; font-size:11px; font-weight:400; vertical-align:middle;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .detail-review-version[hidden] { display:none; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .detail-review-complete-footer {
+  padding:14px 16px; border-color:#2b3642; background:#0d141b;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete {
+  height:40px; border-radius:10px; font-size:14px; font-weight:500;
+  background:#b8f84a; border-color:#b8f84a; color:#0d1308;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete:hover:not(:disabled) {
+  background:#cfff5a; border-color:#cfff5a; color:#0d1308;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete:active:not(:disabled) {
+  background:#9fdb3e; border-color:#9fdb3e; color:#0d1308;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete.is-approved {
+  background:rgba(184,248,74,.1216); border-color:#b8f84a; color:#b8f84a;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete.is-approved:hover:not(:disabled) {
+  background:rgba(255,92,122,.16); border-color:#ff5c7a; color:#ff5c7a;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete:is(:disabled,[aria-disabled="true"]) {
+  background:rgba(55,64,79,.9) !important; border-color:transparent !important;
+  color:#0d1308 !important; opacity:1; box-shadow:none;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] #detailReviewComplete:focus-visible {
+  outline:2px solid #9aa6b2; outline-offset:3px;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：仅将第五步 @ 与优化生成提示词（魔法棒）的外部按钮对齐 UI 稿 1027 storyboard-workspace-design-system.css：36px 圆形、灰蓝底色、浅灰图标及中性悬停/选中态；选择器只命中按钮及魔法棒图标，不覆盖内部弹窗、提示词数据或点击事件。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailMentionButton,#detailPromptOptimizeButton) { box-sizing:border-box;display:inline-grid;place-items:center;flex:0 0 36px !important;width:36px !important;min-width:36px !important;height:36px !important;min-height:36px !important;padding:0 !important;border:1px solid #35414e !important;border-radius:18px !important;background:#171e27 !important;color:#aab5c2 !important;font-weight:500 !important;box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailMentionButton,#detailPromptOptimizeButton):is(:hover,:focus-visible):not(:disabled):not([aria-disabled="true"]) { background:#2b3642 !important;border-color:#718093 !important;color:#f5f7fa !important;box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailMentionButton,#detailPromptOptimizeButton):is(:active,[aria-expanded="true"]):not(:disabled) { background:#26313d !important;border-color:#718093 !important;color:#f5f7fa !important;box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailMentionButton,#detailPromptOptimizeButton):disabled { background:#111820 !important;border-color:#26313d !important;color:#566474 !important;opacity:1;cursor:not-allowed; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailMentionButton,#detailPromptOptimizeButton):focus-visible { outline:2px solid #9aa6b2 !important;outline-offset:2px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptOptimizeButton img { width:15px;height:15px;display:block;filter:brightness(0) saturate(100%) invert(71%) !important;opacity:.85; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPromptOptimizeButton:hover img { filter:brightness(0) invert(1) !important;opacity:1; }
+
+/* 2026-10-27 Product Design 改动逻辑：第五步所有“未完成”集数（包括部分分镜已生成的第4集、
+   零分镜生成的第5集）均使用 UI 稿的灰色占位封面，不再复用已完成集数的图片及播放图标。
+   灰色渐变、28px 图片图标及其路径直接沿用 UI 稿 drama-video-design-system.css / app.js。
+   根据现有 is-incomplete 状态自动切换；完成后恢复原封面，不改变分镜进度、底部文案或按钮事件。
+   图片图标作为伪元素背景显示，避免增加业务脚本或在状态刷新时重复插入节点。 */
+html body .episode-workspace[data-view="episode-video"] [data-episode-card]:has(.episode-status-capsule.is-incomplete) .episode-cover {
+  background:linear-gradient(145deg,#303b47,#1c252f) !important;
+}
+html body .episode-workspace[data-view="episode-video"] [data-episode-card]:has(.episode-status-capsule.is-incomplete) .episode-cover :is(.episode-cover-image,.episode-cover-play) {
+  display:none !important;
+}
+html body .episode-workspace[data-view="episode-video"] [data-episode-card]:has(.episode-status-capsule.is-incomplete) .episode-cover::before {
+  content:"";
+  display:block !important;
+  position:absolute;
+  inset:0;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239aa6b2%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%223%22%2F%3E%3Ccircle%20cx%3D%228.5%22%20cy%3D%229%22%20r%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m3%2016%205-4%204%203%204-5%205%206%22%2F%3E%3C%2Fsvg%3E") center / 28px 28px no-repeat !important;
+  pointer-events:none;
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：对齐用户提供的设计稿，补全第五步片段编辑区
+   工具栏上方 1px #2b3642 分隔线（原规则 border-top:0，仅设置颜色不会显示）。
+   编辑面板统一使用现有上角的 16px 圆角，提示词卡片及工具栏同步补上左右下角圆角，
+   防止不透明工具栏背景伸出面板形成直角缺口；继续保留 overflow:visible，
+   让模型、参数等向上展开的弹层完整显示。仅覆盖短剧片段编辑页。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-panel {
+  border-radius:16px !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-card {
+  border-bottom-left-radius:16px !important;
+  border-bottom-right-radius:16px !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-prompt-tools {
+  border-top:1px solid #2b3642 !important;
+  border-bottom-left-radius:16px !important;
+  border-bottom-right-radius:16px !important;
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：第五步右侧视频预览拉伸分隔线的悬停、
+   键盘聚焦及拖动状态与左侧剧本分隔线统一，使用 #718093 灰色并去掉绿色光晕；
+   保留原有分隔线宽度、拖动热区、宽度调整和双击恢复默认的交互。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"] .detail-panel-resizer:is(:hover,:focus-visible,.is-dragging)::before {
+  background:#718093 !important;
+  box-shadow:none !important;
+}

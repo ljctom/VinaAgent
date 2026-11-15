@@ -1,0 +1,121 @@
+/* 2026-10-10 Product Design 本轮配色逻辑：参考修改前浅色选中态，胶囊补回蓝灰底，
+ * 选中玻璃提亮为雾白并改用深灰文字；光晕降低饱和度，外圈改为低对比灰绿，
+ * 缓解原透明黑底与黄绿强反光。仅改背景、文字、边框、阴影颜色及纹理色彩滤镜；
+ * 不改光晕透明度状态、位置、尺寸、动画曲线、动画时间或交互脚本。 */
+/* 2026-10-10 Product Design 改动逻辑：通过 ego 多轮滑动、点击提取 Pollo 首页
+ * 分类胶囊的透明玻璃、外圈渐变、滑动选中层与底部光晕。仅覆盖标题中的
+ * 创作 / 短剧主 Tab；配色调整为灰白玻璃与淡鼠尾草绿，尺寸、原面板事件及键盘逻辑继续复用。
+ * 光晕纹理来自 https://cdn.pollo.ai/prod/public/images/brand/tab-bg.png，
+ * 本地保存原始 WebP，CSS 转为绿色，保留原纹理的亮度层次与透明度。 */
+.view[data-view="canvas"] .home-agent-tabs {
+  --home-tab-brand: #b9d79f;
+  --home-tab-glow-x: 50%;
+  --home-tab-glow-opacity: .4;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  gap: 0;
+  background: #202832e6;
+  border-color: transparent;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+}
+/* 参考光晕保持 400px 宽并贴合胶囊底边；420ms 缓动移动、240ms 淡入淡出，
+ * 悬停跟随分类中心，移出后恢复居中和 .4 透明度。 */
+.view[data-view="canvas"] .home-agent-tabs::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: var(--home-tab-glow-x);
+  width: 400px;
+  height: calc(100% - 2px);
+  background: url("./images/home-agent-tab-glow.webp") center bottom / 100% 100% no-repeat;
+  filter: hue-rotate(55deg) saturate(.22) brightness(1.45);
+  transform: translateX(-50%);
+  opacity: var(--home-tab-glow-opacity);
+  pointer-events: none;
+  transition: left 420ms cubic-bezier(.22, .61, .36, 1), opacity 240ms ease-out;
+}
+/* 按参考原始 0.8px 外圈遮罩绘制：顶部灰白反光，侧边透明，底部淡灰绿。
+ * 外圈覆盖光晕但不拦截鼠标，透明底能看到玻璃内随悬停移动的亮度。 */
+.view[data-view="canvas"] .home-agent-tabs::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  padding: .8px;
+  border-radius: inherit;
+  background: linear-gradient(177deg, #eef3f852 0%, #c8d2dd24 36%, #c8d2dd14 45%, #c8d2dd24 48%, #b9d79f66 91%, #e0ead652 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* 2026-10-10 Product Design 透明度调整：参考竞品选中玻璃，将雾白底从 85%
+ * 不透明度降至约 18%，让原胶囊底色与移动光晕透过；内反光和边框同步柔化。
+ * 单一玻璃选中层继续在两个原按钮之间滑动；
+ * 几何尺寸由脚本读取现有按钮，因此中文、英文与窄屏都贴合原胶囊。 */
+.view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass {
+  position: absolute;
+  z-index: 1;
+  top: var(--home-tab-glass-top, 4px);
+  left: var(--home-tab-glass-left, 4px);
+  width: var(--home-tab-glass-width, 76px);
+  height: var(--home-tab-glass-height, 42px);
+  border-radius: 999px;
+  background: #e4eaf02e;
+  box-shadow: inset 4px 4px 5px #24303b08, inset 0 -2.81px 7.5px #ffffff1f;
+  pointer-events: none;
+  transition: left 420ms cubic-bezier(.22, .61, .36, 1), width 420ms cubic-bezier(.22, .61, .36, 1);
+}
+.view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(100% 80% at 0 0, #ffffff99 0%, #ffffff40 82%, #ffffff0f 92%, transparent 98%), radial-gradient(100% 80% at 100% 100%, #f1f5f94d 50%, #f1f5f91a 88%, #f1f5f90d 92%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* 2026-10-10 Product Design 配色逻辑：玻璃底变透明后，选中项使用浅白字保证可读性；
+ * 仅调整选中颜色，文字独立于光晕，未选项悬停时
+ * 使用参考站 7.5px 白色文字辉光，选中态由上面的滑动玻璃层承载。 */
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab,
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active,
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):hover {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  box-shadow: none;
+  color: #b0bbc6;
+  font-weight: 400;
+  transition: color 200ms, text-shadow 200ms;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  color: #f5f7fa;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):is(:hover, :focus-visible) {
+  color: #eef3f8;
+  text-shadow: 0 0 7.5px #eef3f8a6;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:focus-visible {
+  outline: 2px solid var(--home-tab-brand);
+  outline-offset: -4px;
+}
+/* 首次定位前不播放进场位移动画；减少动态效果时保留玻璃与光晕并即时更新位置。 */
+.view[data-view="canvas"] .home-agent-tabs:not(.is-glass-ready) .home-agent-tab-glass {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-agent-tabs::before,
+  .view[data-view="canvas"] .home-agent-tabs .home-agent-tab-glass,
+  .view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+    transition: none;
+  }
+}

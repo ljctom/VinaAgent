@@ -1,0 +1,17 @@
+/* 品牌原始 SVG 等比缩放，导航栏采用克制的视觉尺寸。 */
+html body .sidebar .brand .brand-logo,
+html body .marketing-entry-brand #marketingEntryLogo {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 22px !important;
+  min-height: 0 !important;
+  max-width: 145px;
+  object-fit: contain;
+  object-position: left center;
+  flex: 0 0 auto;
+}
+html body .marketing-entry-brand #marketingEntryLogo { height: 20px !important; }
+@media (max-width: 768px) {
+  html body .sidebar .brand .brand-logo { height: 20px !important; max-width: 130px; }
+  html body .marketing-entry-brand #marketingEntryLogo { height: 18px !important; max-width: 120px; }
+}

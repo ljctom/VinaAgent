@@ -1,0 +1,488 @@
+/* 2026-11-09 Product Design：文本编辑沿用短剧中性深色规范；正文 14/24，H1–H6 为 28/24/20/18/16/14px。画布、全屏与故事板共用，不改变编辑及生成流程。 */
+/* 视觉值映射自 VinaAI 2026-11-04 交接包，只作用于 Markdown 组件入口。 */
+:where(.vina-markdown-node, .vina-md-reference-edge, #vinaMarkdownActions, #vinaMarkdownPrompt, .vina-md-fullscreen, .vina-md-storyboard, .vina-md-agent-file, .vina-direct-history-thumb.is-markdown) {
+  --md-header: #0d141b;
+  --md-container: #0f151c;
+  --md-surface: #171e27;
+  --md-raised: #222b35;
+  --md-border: #2b3642;
+  --md-focus: #566474;
+  --md-selected: #2b3642;
+  --md-divider: rgba(255,255,255,.06);
+  --md-title: #f5f7fa;
+  --md-copy: #d5dbe3;
+  --md-secondary: #9aa6b2;
+  --md-muted: #6f7b88;
+  --md-disabled: #4d5865;
+  --md-brand: #b8f84a;
+  --md-brand-hover: #cfff5a;
+  --md-brand-active: #9fdb3e;
+  --md-error: #ff5c7a;
+  --md-font: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+body.vina-direct-mode .vina-markdown-node,
+body.vina-direct-mode [data-add-markdown-node],
+body.vina-direct-mode #vinaMarkdownActions { display: none !important; }
+.workspace.vina-markdown-selected #nodeActionBar,
+.workspace.vina-markdown-selected #nodeGeneratePanel { display: none !important; }
+#nodeTypeMenu [data-add-markdown-node] { display:flex; align-items:center; gap:12px; width:100%; text-align:left; }
+[data-add-markdown-node] img { width:18px; height:18px; filter:brightness(0) invert(1); }
+/* 2026-11-05 Product Design：默认文本框与 JS 创建尺寸统一为 420 × 440；用户手动缩放保存在自定义属性中，继续优先使用。 */
+.workspace .node.vina-markdown-node { box-sizing:border-box; width:var(--md-node-width,420px) !important; height:var(--md-node-height,440px) !important; min-width:360px; max-width:1120px; min-height:200px; max-height:760px; padding:0 !important; border:1px solid var(--md-border) !important; border-radius:24px !important; background:var(--md-container) !important; box-shadow:none !important; overflow:visible !important; }
+.workspace .node.vina-markdown-node.selected { border-color:var(--md-focus) !important; box-shadow:0 0 0 1px var(--md-focus) !important; }
+/* 文本正文自带滚动区。通用节点的透明热区不能拦住正文双击、滚轮和滚动条。 */
+.workspace .node.vina-markdown-node::before { pointer-events:none !important; }
+.workspace .node.vina-markdown-node > .node-header { position:absolute !important; top:auto !important; bottom:calc(100% + 6px) !important; left:6px !important; height:22px !important; padding:0 !important; border:0 !important; background:transparent !important; color:var(--md-secondary) !important; font-size:13px !important; cursor:grab; pointer-events:auto; }
+/* 缩小后的默认标题宽度跟随文本框，长标题继续省略显示。 */
+.vina-markdown-node .node-type { display:flex; align-items:center; gap:6px; max-width:calc(var(--md-node-width,420px) - 24px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vina-markdown-node .node-type img { width:16px; height:16px; flex:none; filter:brightness(0) invert(.8); }
+.vina-md-filename { min-width:0; overflow:hidden; text-overflow:ellipsis; }
+/* 空白预览与编辑器占位都在左上角；选中后正文可编辑并在节点内双向滚动。 */
+/* 2026-11-09：滚动视口上下内收 16px、左右 8px，滚动条避开圆角/手柄；扣减内边距后，正文起点仍保持 24px。 */
+.vina-markdown-node .vina-md-preview { box-sizing:border-box; position:absolute; inset:16px 8px; height:auto; overflow:hidden; padding:8px 16px; border-radius:8px; user-select:none; touch-action:none; cursor:grab; scrollbar-width:thin; scrollbar-color:var(--md-focus) transparent; }
+.workspace .node.vina-markdown-node:has(> .vina-md-preview.is-editing) { background:var(--md-surface) !important; }
+.vina-markdown-node .vina-md-preview.is-editing { overflow:auto; overscroll-behavior:contain; user-select:text; touch-action:pan-x pan-y; cursor:text; background:var(--md-surface); }
+.vina-markdown-node .vina-md-preview:focus-visible { outline:2px solid var(--md-secondary); outline-offset:-3px; }
+/* 2026-11-05 Product Design：画布表格沿用下方通用自适应规则，移除 max-content 撑宽及独立列宽限制，节点缩放后重新分配空间。 */
+.vina-md-document { color:var(--md-copy); font-family:var(--md-font); font-size:14px; font-weight:400; line-height:24px; overflow-wrap:anywhere; text-align:left; }
+/* 标题使用文档层级；工具栏字号保持 14px，加粗只改变字重。 */
+.vina-md-document :is(h1,h2,h3,h4,h5,h6) { color:var(--md-title); font-weight:600; margin:24px 0 12px; letter-spacing:0; }
+.vina-md-document h1 { font-size:28px; line-height:38px; font-weight:700; margin-top:32px; margin-bottom:16px; }
+.vina-md-document h2 { font-size:24px; line-height:34px; font-weight:700; margin-top:28px; }
+.vina-md-document h3 { font-size:20px; line-height:30px; }
+.vina-md-document h4 { font-size:18px; line-height:28px; }
+.vina-md-document h5 { font-size:16px; line-height:24px; margin-top:20px; margin-bottom:8px; }
+.vina-md-document h6 { font-size:14px; line-height:24px; margin-top:20px; margin-bottom:8px; }
+.vina-md-document p { margin:8px 0; min-height:1em; }
+.vina-md-document > :first-child { margin-top:0; }
+.vina-md-document > :last-child { margin-bottom:0; }
+.vina-md-document ::selection { background:var(--md-selected); color:var(--md-title); }
+.vina-md-document strong,.vina-md-document b { font-weight:700; color:var(--md-title); }
+.vina-md-document blockquote { margin:.8em 0; padding:0 0 0 16px; border-left:3px solid var(--md-focus); color:var(--md-secondary); }
+.vina-md-document blockquote p { margin:.35em 0; }
+.vina-md-document hr { border:0; border-top:1px solid var(--md-border); margin:1em 0; }
+.vina-md-document ul,.vina-md-document ol { padding-left:1.5em; margin:.6em 0; }.vina-md-document li { margin:.25em 0; }
+/* 2026-11-05 Product Design：所有文本表格统一按内容与容器宽度自动分配列宽，不再等分。
+ * 时间、集数等短内容列自然收窄，长描述列获得更多空间并按可用宽度换行；画布、全屏、故事板及以后新增表格共用此规则。 */
+.vina-md-document table { border-collapse:collapse; width:100%; table-layout:auto; margin:16px 0 24px; font-size:inherit; line-height:24px; font-variant-numeric:tabular-nums; }
+.vina-md-document th,.vina-md-document td { border:1px solid var(--md-border); box-sizing:border-box; padding:10px 12px; min-width:64px; height:44px; vertical-align:top; overflow-wrap:anywhere; text-align:left; }
+.vina-md-document :is(th,td)[align="center"] { text-align:center; }
+.vina-md-document :is(th,td)[align="right"] { text-align:right; }
+.vina-md-document th { background:var(--md-raised); color:var(--md-title); font-weight:600; }
+.vina-md-document code { border-radius:4px; background:var(--md-raised); padding:2px 5px; font-family:ui-monospace,SFMono-Regular,monospace; font-size:.88em; }
+.vina-md-document pre { background:var(--md-surface); border:1px solid var(--md-border); border-radius:8px; padding:16px; overflow:auto; white-space:pre-wrap; }.vina-md-document pre code { padding:0; background:none; }
+.vina-md-document a { color:var(--md-title); text-decoration:underline; }.vina-md-document img { max-width:100%; height:auto; }
+.vina-md-preview .vina-md-empty { margin:0; color:var(--md-muted); }
+/* 2026-11-09：缩放控件与边框共用轮廓，四角为 24px 短弧、边中为细胶囊；可视形状与 24px 命中区分离。 */
+.vina-md-resize-handles { display:none; position:absolute; inset:-1px; z-index:6; pointer-events:none; }
+.workspace.vina-markdown-selected .vina-markdown-node.selected > .vina-md-resize-handles { display:block; }
+.vina-md-resize-handles button { position:absolute; display:grid; place-items:center; width:24px; height:24px; padding:0; border:0; outline:0; background:none; transform:translate(-50%,-50%); pointer-events:auto; touch-action:none; }
+.vina-md-resize-handles button::before { content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); box-sizing:border-box; width:24px; height:3px; border:0; border-radius:999px; background:var(--md-copy); }
+.vina-md-resize-handles button:is(:hover,:focus-visible)::before,.vina-markdown-node.is-resizing .vina-md-resize-handles button::before { background:var(--md-title); }
+.vina-md-resize-handles :is([data-md-resize="n"],[data-md-resize="s"]) { left:50%; cursor:ns-resize; }
+.vina-md-resize-handles [data-md-resize="n"] { top:.5px; }
+.vina-md-resize-handles [data-md-resize="s"] { top:calc(100% - .5px); }
+.vina-md-resize-handles :is([data-md-resize="w"],[data-md-resize="e"]) { top:50%; cursor:ew-resize; }
+.vina-md-resize-handles [data-md-resize="w"] { left:.5px; }
+.vina-md-resize-handles [data-md-resize="e"] { left:calc(100% - .5px); }
+.vina-md-resize-handles :is([data-md-resize="w"],[data-md-resize="e"])::before { width:3px; height:24px; }
+.vina-md-resize-handles :is([data-md-resize="nw"],[data-md-resize="se"]) { cursor:nwse-resize; }
+.vina-md-resize-handles :is([data-md-resize="ne"],[data-md-resize="sw"]) { cursor:nesw-resize; }
+/* 2026-11-09：手柄容器还原至节点外接矩形，伪元素绝对居中，避免 28px 图形撑开 24px 网格造成 2px 偏移。弧线沿 1px 边框中心线绘制。 */
+.vina-md-resize-handles [data-md-resize="nw"] { top:12px; left:12px; }
+.vina-md-resize-handles [data-md-resize="ne"] { top:12px; left:calc(100% - 12px); }
+.vina-md-resize-handles [data-md-resize="sw"] { top:calc(100% - 12px); left:12px; }
+.vina-md-resize-handles [data-md-resize="se"] { top:calc(100% - 12px); left:calc(100% - 12px); }
+/* 2026-11-09：内嵌 SVG 弧线提供真正的圆头端点；28px 视口为 3px 描边预留空间，避免圆头裁切。默认提亮至 #D5DBE3，与底层选中边框区分。 */
+.vina-md-resize-handles :is([data-md-resize="nw"],[data-md-resize="ne"],[data-md-resize="sw"],[data-md-resize="se"])::before {
+  width:28px; height:28px; border:0; border-radius:0; background:var(--md-copy);
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 28 28'%3E%3Cpath d='M0.5 24 A23.5 23.5 0 0 1 24 0.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.vina-md-resize-handles [data-md-resize="ne"]::before { transform:translate(-50%,-50%) rotate(90deg); }
+.vina-md-resize-handles [data-md-resize="se"]::before { transform:translate(-50%,-50%) rotate(180deg); }
+.vina-md-resize-handles [data-md-resize="sw"]::before { transform:translate(-50%,-50%) rotate(270deg); }
+.vina-md-resize-handles :is([data-md-resize="nw"],[data-md-resize="ne"],[data-md-resize="sw"],[data-md-resize="se"]):is(:hover,:focus-visible)::before,
+.vina-markdown-node.is-resizing .vina-md-resize-handles :is([data-md-resize="nw"],[data-md-resize="ne"],[data-md-resize="sw"],[data-md-resize="se"])::before { background:var(--md-title); }
+
+/* 入边用中性虚线区分参考关系，保留原连线命中区域和剪断操作。 */
+#stage > .vina-md-reference-edge .edge-line { stroke:var(--md-secondary); stroke-dasharray:5 5; }
+#stage > .vina-md-reference-edge.cut-hover .edge-line { stroke:var(--md-copy); filter:none; }
+#vinaMarkdownActions { position:absolute; z-index:45; display:flex; align-items:center; gap:4px; max-width:calc(100% - 24px); padding:6px; border:1px solid var(--md-border); border-radius:999px; background:var(--md-surface); box-shadow:0 8px 24px #0004; }
+#vinaMarkdownActions[hidden],#vinaMarkdownPrompt[hidden] { display:none !important; }
+/* 画布紧凑工具栏在全屏按钮左边，窄视口只滚动格式项，保留全屏入口。 */
+#vinaMarkdownActions > .vina-md-editor-toolbar { flex:0 1 auto; min-width:0; min-height:0; padding:0 4px; border:0; background:transparent; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin; }
+#vinaMarkdownActions > .vina-md-editor-toolbar > button { flex:none; }
+/* 2026-11-09：顶部胶囊工具栏的按钮底色始终跟随胶囊轮廓，包括悬停、选中及按下。 */
+#vinaMarkdownActions > .vina-md-editor-toolbar > button,
+#vinaMarkdownActions > .vina-md-editor-toolbar > button:is(:hover,:active,:focus-visible,[aria-pressed="true"],[aria-expanded="true"]) { border-radius:999px; }
+
+#vinaMarkdownActions .vina-md-toolbar-divider { flex:0 0 1px; }
+#vinaMarkdownActions .vina-md-close { display:none; }
+/* 2026-11-05 Product Design：全屏入口默认仅显示图标与文字，去掉圆角左描边形成的圈形轮廓；悬停和键盘焦点仍保留反馈。 */
+#vinaMarkdownActions .vina-md-expand { flex:none; display:flex; align-items:center; justify-content:center; gap:6px; min-height:36px; padding:0 12px; border:0 !important; border-radius:999px; box-shadow:none !important; color:var(--md-secondary); background:transparent; font:500 14px/20px var(--md-font); white-space:nowrap; cursor:pointer; }
+#vinaMarkdownActions .vina-md-expand:hover:not(:disabled) { background:var(--md-raised); color:var(--md-title); }
+#vinaMarkdownActions .vina-md-expand:disabled { color:var(--md-disabled); cursor:default; }
+#vinaMarkdownActions .vina-md-expand img { width:20px; height:20px; }
+#vinaMarkdownActions .vina-md-expand:disabled img { opacity:.4; }
+/* 2026-11-05 Product Design：输入面板匹配其他节点的 24px 圆角、2px 内描边和顶部引用/展开托盘。 */
+#vinaMarkdownPrompt { box-sizing:border-box; position:absolute; z-index:44; display:flex; flex-direction:column; width:698px; min-height:212px; padding:60px 16px 16px; border:0; border-radius:24px; background:#141a21; box-shadow:inset 0 0 0 2px var(--md-border); }
+#vinaMarkdownPrompt.has-incoming-references { padding-top:76px; }
+.vina-md-references { position:absolute; top:12px; inset-inline-start:14px; display:flex; align-items:center; gap:6px; max-width:calc(100% - 76px); overflow-x:auto; list-style:none; margin:0; padding:0; scrollbar-width:thin; scrollbar-color:var(--md-focus) transparent; }
+.vina-md-references[hidden] { display:none; }
+.vina-md-reference { box-sizing:content-box; flex:0 0 auto; display:grid; place-items:center; width:34px; height:34px; padding:0; border:1px solid rgba(255,255,255,.76); border-radius:8px; background:var(--md-container); color:var(--md-copy); overflow:hidden; box-shadow:0 8px 16px rgba(15,23,42,.18); }
+.vina-md-reference > img { box-sizing:border-box; display:block; width:100%; height:100%; padding:9px; object-fit:contain; }
+.vina-md-reference.has-image > img { object-fit:cover; padding:0; }
+#vinaMarkdownPrompt textarea { box-sizing:border-box; display:block; flex:1 1 auto; width:100%; height:72px; min-height:72px; max-height:132px; padding:0; resize:none; overflow-y:auto; border:0; outline:0; color:var(--md-copy); background:transparent; font:400 14px/24px var(--md-font); scrollbar-width:thin; scrollbar-color:var(--md-focus) transparent; }
+#vinaMarkdownPrompt.expanded textarea { height:clamp(180px,28vh,310px); min-height:180px; max-height:min(34vh,310px); }
+#vinaMarkdownPrompt textarea::placeholder { color:var(--md-muted); }
+#vinaMarkdownPrompt:focus-within { box-shadow:inset 0 0 0 2px var(--md-focus); }
+.vina-md-prompt-footer { flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; }
+.vina-md-prompt-status { color:var(--md-secondary); font-size:12px; line-height:1.5; white-space:pre-wrap; }.vina-md-prompt-status.is-error { color:var(--md-error); }
+/* 展开按钮使用现有 expand.svg，发送按钮独立限定样式，避免把右上角按钮染成品牌绿。 */
+#vinaMarkdownPrompt .vina-md-prompt-expand { box-sizing:border-box; position:absolute; z-index:1; top:16px; right:auto; inset-inline-end:16px; display:grid; place-items:center; width:32px; height:32px; padding:8px; border:0; border-radius:12px; color:var(--md-copy) !important; background:#080d12 !important; cursor:pointer; }
+#vinaMarkdownPrompt .vina-md-prompt-expand img { display:block; width:16px; height:16px; }
+#vinaMarkdownPrompt .vina-md-prompt-expand:hover img { filter:brightness(1.15); }
+#vinaMarkdownPrompt button[type="submit"] { flex:none; display:grid; place-items:center; width:36px; height:36px; border:0; border-radius:50%; background:var(--md-brand); cursor:pointer; }
+#vinaMarkdownPrompt button[type="submit"]:hover:not(:disabled) { background:var(--md-brand-hover); }
+#vinaMarkdownPrompt button[type="submit"]:active:not(:disabled) { background:var(--md-brand-active); }
+#vinaMarkdownPrompt button[type="submit"]:disabled { background:var(--md-raised); cursor:default; }
+#vinaMarkdownPrompt button[type="submit"] img { width:24px; height:24px; filter:brightness(0); }
+#vinaMarkdownPrompt button[type="submit"]:disabled img { filter:none; opacity:.6; }
+/* 参照图 4 的居中大弹窗，编辑区和遮罩留在现有导航下方。 */
+.vina-md-editor-scrim { position:fixed; z-index:9990; inset:var(--vina-md-nav-bottom,76px) 0 0; background:rgba(0,0,0,.55); }
+.vina-md-editor-scrim[hidden] { display:none; }
+dialog.vina-md-fullscreen { position:fixed; z-index:9991; inset:var(--vina-md-nav-bottom,76px) 0 14px; width:min(80vw,calc(100vw - 36px)); height:min(82dvh,calc(100dvh - var(--vina-md-nav-bottom,76px) - 28px)); max-width:none; max-height:none; margin:auto; padding:0; border:1px solid var(--md-border); border-radius:24px; background:var(--md-surface); color:var(--md-copy); overflow:hidden; }
+dialog.vina-md-fullscreen[open] { display:flex; flex-direction:column; }
+.vina-md-editor-surface { position:relative; display:flex; flex:1 1 auto; flex-direction:column; min-height:0; min-width:0; }
+.vina-md-editor-toolbar { flex:none; display:flex; align-items:center; gap:4px; min-height:64px; padding:12px 24px; border-bottom:1px solid var(--md-divider); background:var(--md-header); }
+.vina-md-editor-toolbar button { display:grid; place-items:center; min-width:32px; height:36px; padding:0 10px; border:0; border-radius:999px; background:transparent; color:var(--md-secondary); font:500 14px/20px var(--md-font); cursor:pointer; }
+.vina-md-editor-toolbar button:not(:disabled):hover { background:var(--md-raised); color:var(--md-title); }
+.vina-md-editor-toolbar button:not(:disabled):is([aria-pressed="true"],[aria-expanded="true"]) { background:var(--md-selected); color:var(--md-title); }
+.vina-md-editor-toolbar button:active:not(:disabled) { background:var(--md-focus); color:var(--md-title); }
+/* 2026-11-09：B 的字重与颜色直接反映选区状态；混合选区保留常规样式，由点击统一加粗。 */
+.vina-md-editor-toolbar button[data-format="bold"] { font-weight:400; color:var(--md-secondary); }
+/* 已加粗仅用纯白粗体回显，底色只在 hover 出现。 */
+.vina-md-editor-toolbar button[data-format="bold"][aria-pressed="true"] { font-weight:700; color:#fff; background:transparent; }
+.vina-md-editor-toolbar button[data-format="bold"][aria-pressed="true"]:hover:not(:disabled) { background:var(--md-raised); }
+.vina-md-editor-toolbar button[data-format="bold"]:not([aria-pressed="true"]):hover { color:var(--md-copy); }
+.vina-md-editor-toolbar button[data-format="bold"]:disabled { color:var(--md-disabled); }
+.vina-md-editor-toolbar button:focus-visible,#vinaMarkdownActions button:focus-visible,#vinaMarkdownPrompt button:focus-visible { outline:2px solid var(--md-secondary); outline-offset:2px; }
+.vina-md-editor-toolbar button:disabled { color:var(--md-disabled); cursor:default; }
+.vina-md-editor-toolbar button:disabled img { opacity:.3; }
+.vina-md-editor-toolbar img { width:20px; height:20px; filter:brightness(0) invert(1); opacity:.85; }.vina-md-toolbar-divider { width:1px; height:26px; margin:0 8px; background:var(--md-raised); }
+/* 2026-11-09：关闭按钮固定为 36px 正圆，清除通用格式按钮的水平内边距，避免 20px SVG 撑开网格后偏心。 */
+.vina-md-editor-toolbar .vina-md-close { box-sizing:border-box; flex:0 0 36px; margin-left:auto; width:36px; min-width:36px; height:36px; min-height:36px; padding:0; border:0; border-radius:999px; }
+.vina-md-editor-toolbar .vina-md-close > :is(svg,img) { display:block; width:20px; height:20px; margin:0; }
+.vina-md-editor-scroll { flex:1; min-height:0; overflow:auto; padding:24px; scrollbar-color:var(--md-focus) transparent; scrollbar-width:thin; }
+.vina-md-editor { position:relative; min-height:100%; outline:0; cursor:text; white-space:normal; }
+.vina-md-editor.is-empty::before { position:absolute; inset-block-start:0; inset-inline:0; content:attr(data-placeholder); color:var(--md-muted); pointer-events:none; }
+.vina-md-editor tr.vina-md-selected-row > * { background:var(--md-selected); }.vina-md-editor td.vina-md-selected-cell,.vina-md-editor th.vina-md-selected-cell { box-shadow:inset 0 0 0 1px var(--md-secondary); }
+.vina-md-table-menu { position:absolute; top:64px; z-index:4; display:flex; flex-direction:column; box-sizing:border-box; width:228px; max-width:calc(100% - 16px); max-height:calc(100% - 80px); padding:8px; border:1px solid var(--md-border); border-radius:16px; background:var(--md-surface); box-shadow:0 18px 40px #0006; overflow:auto; }
+/* 2026-11-05 Product Design：删除表格仅在可操作时显示红字；光标不在表格内时沿用原 disabled 状态和灰字，不再被危险操作颜色覆盖。 */
+.vina-md-table-menu[hidden] { display:none; }.vina-md-table-menu button { display:block; width:100%; min-height:36px; height:auto; padding:8px 12px; border:0; border-radius:999px; background:transparent; text-align:left; color:var(--md-copy); font:500 14px/20px var(--md-font); }.vina-md-table-menu button:disabled { color:var(--md-disabled); cursor:default; background:transparent; }.vina-md-table-menu button[data-table-action="delete-table"]:not(:disabled) { color:var(--md-error); }
+.vina-md-table-menu button:hover:not(:disabled) { background:var(--md-raised); }
+.vina-md-table-menu hr { width:100%; border:0; border-top:1px solid var(--md-border); margin:7px 0; }
+@media(max-width:760px) { .vina-md-editor-toolbar { gap:1px; padding:12px; flex-wrap:wrap; min-height:64px; }.vina-md-editor-toolbar button { min-width:32px; height:34px; padding:0 6px; }.vina-md-toolbar-divider { margin:0 3px; }.vina-md-editor-scroll { padding:20px 20px 60px; }.vina-md-document th,.vina-md-document td { padding:7px; } }
+@media(max-width:760px) { dialog.vina-md-fullscreen { width:calc(100vw - 24px); } }
+/* Agent 文件卡复用同一个文本节点，文件名跟随正文标题。 */
+.vina-md-agent-file { font:500 14px/20px var(--md-font); display:flex; align-items:center; gap:10px; width:100%; min-height:62px; margin:0 0 12px; padding:10px 12px; border:1px solid var(--md-border); border-radius:12px; background:var(--md-surface); color:var(--md-title); text-align:left; cursor:pointer; }
+.vina-md-agent-file:hover { background:var(--md-raised); border-color:var(--md-focus); }
+.vina-md-agent-file:focus-visible { outline:2px solid var(--md-secondary); outline-offset:2px; }
+.vina-md-agent-file-icon { display:grid; place-items:center; flex:0 0 32px; height:32px; border-radius:8px; background:var(--md-raised); }
+.vina-md-agent-file-icon img { width:18px; height:18px; filter:brightness(0) invert(.85); }
+.vina-md-agent-file-meta { display:grid; flex:1 1 auto; min-width:0; gap:4px; }
+.vina-md-agent-file-meta :is(strong,small) { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vina-md-agent-file-meta small { color:var(--md-secondary); font-size:12px; line-height:18px; }
+.vina-md-agent-file-action { flex:none; color:var(--md-copy); font-size:12px; white-space:nowrap; }
+/* 2026-11-05 Product Design：文本参考使用真实 img，与右侧历史记录的文档图标一致；明确图标尺寸和颜色，覆盖通用媒体铺满预览框的规则。 */
+[data-canvas-text-reference] :is(.selected-node-preview,.selected-node-popover-preview) { display:grid !important; place-items:center; background-image:none !important; }
+[data-canvas-text-reference] :is(.selected-node-preview,.selected-node-popover-preview) > img.vina-md-reference-icon { position:static !important; inset:auto !important; display:block !important; width:24px !important; height:24px !important; min-width:0 !important; min-height:0 !important; max-width:none !important; max-height:none !important; margin:auto !important; padding:0 !important; border:0 !important; border-radius:0 !important; object-fit:contain !important; background:transparent !important; filter:brightness(0) invert(.8); pointer-events:none; }
+
+/* 故事板沿用现有三栏，只在选中文本记录时让文档占满中央面板。 */
+/* 2026-11-05 Product Design：文本故事板分为可滚动文档与固定底栏两行，正文高度让出按钮区；复用视频的图标、悬停文字与按钮样式。 */
+body.vina-direct-mode .vina-direct-main.is-markdown { grid-template-rows:minmax(0,1fr) auto; gap:0; padding:0; }
+body.vina-direct-mode .vina-direct-main.is-markdown > :is(.vina-direct-result-head,.vina-direct-redraw-composer,.vina-direct-quick-composer) { display:none; }
+/* 2026-11-05 Product Design：文本底部操作栏改为铺满查看区的独立色带，使用上方格式栏同款 #0d141b，配淡分隔线区分正文。
+ * 仅覆盖文本故事板，沿用原按钮位置与交互，不改变视频等媒体操作栏；颜色变量带默认值以兼容底栏在编辑器外的层级。 */
+body.vina-direct-mode .vina-direct-main.is-markdown > .vina-direct-actions { box-sizing:border-box; display:flex; justify-self:stretch; width:auto; min-width:0; min-height:76px; margin:0; padding:12px 36px; border:0; border-top:1px solid rgba(255,255,255,.06) !important; border-radius:0; background:var(--md-header,#0d141b) !important; }
+/* 仅三个文本操作可见，防止上一条媒体记录的额外按钮残留。 */
+body.vina-direct-mode .vina-direct-main.is-markdown > .vina-direct-actions > button:not(#vinaDirectDownload):not(#vinaDirectAddSession):not(#vinaDirectDelete) { display:none !important; }
+/* 编辑器四边贴齐查看区，避免沿用媒体内容居中的尺寸行为。 */
+body.vina-direct-mode .vina-direct-main.is-markdown > .vina-direct-viewer { position:relative; display:block; place-self:stretch; min-height:0; min-width:0; border:0; border-radius:inherit; background:transparent !important; }
+.vina-direct-viewer > .vina-md-storyboard { position:absolute; inset:0; display:flex; flex-direction:column; min-height:0; min-width:0; background:var(--md-container); }
+.vina-md-storyboard-head { display:flex; flex:none; align-items:center; gap:10px; padding:12px 24px; border-bottom:1px solid var(--md-border); background:var(--md-container); color:var(--md-title); font:600 16px/24px var(--md-font); }
+.vina-md-storyboard-head strong { min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.vina-md-table-menu button:focus-visible { outline:2px solid var(--md-secondary); outline-offset:2px; }
+/* 2026-11-05 Product Design：格式栏下方改用 6% 白色细线，弱于上方文档标题分割线，保留区域层次与原高度。 */
+.vina-md-storyboard .vina-md-editor-toolbar { min-height:0; padding:8px 24px; flex-wrap:wrap; border-color:var(--md-divider); background:var(--md-header); }
+/* 故事板直接编辑，保留置顶格式栏并隐藏弹窗专用关闭按钮。 */
+.vina-md-storyboard .vina-md-close { display:none; }
+.vina-md-storyboard .vina-md-editor-scroll { padding:24px; overscroll-behavior:contain; }
+.vina-md-storyboard .vina-md-editor[aria-readonly="true"] { cursor:default; }
+.vina-md-storyboard-empty { color:var(--md-secondary); }
+/* 故事板同样使用通用自动列宽，不再单独放大短内容列或限制长内容列。 */
+body.vina-direct-mode .vina-direct-viewer .vina-md-storyboard img { position:static; inset:auto; width:auto; height:auto; background:transparent !important; }
+body.vina-direct-mode .vina-direct-viewer .vina-md-storyboard-head img,
+body.vina-direct-mode .vina-direct-viewer .vina-md-editor-toolbar img { width:18px; height:18px; flex:none; }
+.vina-md-storyboard-head img,
+.vina-direct-history-thumb.is-markdown img { filter:brightness(0) invert(.8); }
+body.vina-direct-mode .vina-direct-history-thumb.is-markdown { background:var(--md-header) !important; }
+/* 文本图标在历史卡内独立居中，覆盖通用媒体缩略图的满框尺寸。 */
+body.vina-direct-mode .vina-direct-history-thumb.is-markdown > img { position:static !important; width:24px !important; height:24px !important; margin:auto; background:transparent !important; }
+
+/* 2026-11-05 Product Design：只在“文本节点”项目开放未选中正文的内部滚动，固定节点高度，长脚本和三十集表格可在节点内上下阅读；选中编辑样式继续沿用原规则。 */
+body[data-text-nodes-project="true"] .vina-markdown-node .vina-md-preview:not(.is-editing) {
+  overflow:auto;
+  overscroll-behavior:contain;
+  touch-action:pan-x pan-y;
+}
+
+/* 2026-11-05 Product Design：文本项目的节点在选中前后均不使用通用 .node.selected 的透明 drop-shadow 滤镜。
+ * 透明滤镜仍会把文字栅格化到合成层，画布缩放后选中编辑时容易发虚；选中描边继续由现有 border 与 box-shadow 绘制。
+ * 仅限定此项目的 Markdown 节点，不改变其他项目、短剧、媒体节点和画布缩放坐标。 */
+body[data-text-nodes-project="true"] .workspace .node.vina-markdown-node,
+body[data-text-nodes-project="true"] .workspace .node.vina-markdown-node.selected {
+  filter:none !important;
+}
+
+/* 2026-11-05 Product Design：下载入口遵循 UI 规范的 36px 中性圆形图标按钮；默认、悬停、按下、焦点、禁用及加载均不改变布局。 */
+#vinaMarkdownActions .vina-md-download {
+  box-sizing:border-box; flex:none; display:grid; place-items:center; width:36px; height:36px; padding:0;
+  border:0; border-radius:999px; background:transparent; color:var(--md-secondary); cursor:pointer;
+  transition:background-color 140ms ease,color 140ms ease;
+}
+#vinaMarkdownActions .vina-md-download:hover:not(:disabled) { background:var(--md-raised); color:var(--md-title); }
+#vinaMarkdownActions .vina-md-download:active:not(:disabled) { background:var(--md-focus); }
+#vinaMarkdownActions :is(.vina-md-download,.vina-md-expand):focus-visible { outline:2px solid var(--md-secondary); outline-offset:2px; }
+#vinaMarkdownActions .vina-md-download:disabled { color:var(--md-disabled); cursor:default; }
+#vinaMarkdownActions .vina-md-download:disabled:not(.is-loading) > * { opacity:.4; }
+#vinaMarkdownActions .vina-md-download-icon { position:relative; display:block; width:20px; height:20px; }
+#vinaMarkdownActions .vina-md-download-arrow { position:absolute; top:0; left:calc(50% - 4.25px); width:8.5px; height:14.25px; }
+#vinaMarkdownActions .vina-md-download-tray { position:absolute; bottom:0; left:1px; width:18px; height:6px; }
+#vinaMarkdownActions .vina-md-download-spinner { display:none; width:20px; height:20px; filter:brightness(0) invert(.8); }
+#vinaMarkdownActions .vina-md-download.is-loading .vina-md-download-icon { display:none; }
+#vinaMarkdownActions .vina-md-download.is-loading .vina-md-download-spinner { display:block; animation:vina-md-download-spin 750ms linear infinite; }
+@keyframes vina-md-download-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) {
+  #vinaMarkdownActions .vina-md-download { transition:none; }
+  #vinaMarkdownActions .vina-md-download.is-loading .vina-md-download-spinner { animation:none; }
+}
+
+/* 与短剧一致：滚动区保留滚动能力，仅在悬停/键盘操作时显示细滚动条，不挤动正文。 */
+:is(.vina-md-editor-scroll,.vina-markdown-node .vina-md-preview,.vina-md-table-menu) {
+  scrollbar-width:thin;
+  scrollbar-color:transparent transparent;
+  overscroll-behavior:contain;
+}
+:is(.vina-md-editor-scroll,.vina-markdown-node .vina-md-preview,.vina-md-table-menu):is(:hover,:focus-within) {
+  scrollbar-color:var(--md-focus) transparent;
+}
+:is(.vina-md-editor-scroll,.vina-md-preview,.vina-md-table-menu)::-webkit-scrollbar { width:6px; height:6px; }
+:is(.vina-md-editor-scroll,.vina-md-preview,.vina-md-table-menu)::-webkit-scrollbar-track,
+:is(.vina-md-editor-scroll,.vina-md-preview,.vina-md-table-menu)::-webkit-scrollbar-corner { background:transparent; }
+:is(.vina-md-editor-scroll,.vina-md-preview,.vina-md-table-menu)::-webkit-scrollbar-thumb { border-radius:999px; background:transparent; }
+:is(.vina-md-editor-scroll,.vina-md-preview,.vina-md-table-menu):is(:hover,:focus-within)::-webkit-scrollbar-thumb { background:var(--md-focus); }
+.vina-md-editor-toolbar button,#vinaMarkdownActions .vina-md-expand,.vina-md-table-menu button { transition:background-color 140ms ease,color 140ms ease; }
+.vina-md-table-menu button:active:not(:disabled) { background:var(--md-selected); }
+@media(prefers-reduced-motion:reduce) {
+  .vina-md-editor-toolbar button,#vinaMarkdownActions .vina-md-expand,.vina-md-table-menu button { transition:none; }
+}
+
+/* 工具栏图标统一使用 currentColor，避免外部 SVG 的固有填色与滤镜产生不同亮度。 */
+.vina-md-editor-toolbar svg,#vinaMarkdownActions .vina-md-expand svg { display:block; flex:none; width:20px; height:20px; color:inherit; opacity:1; filter:none; }
+body.vina-direct-mode .vina-direct-viewer .vina-md-editor-toolbar svg { width:18px; height:18px; }
+
+/* 2026-11-09 Product Design 改动说明：输入框中的文本引用统一使用图三的 60px 灰蓝卡片和居中 24px 文档图标。
+ * 画布与故事板共用 Agent 托盘；文本节点提示词区沿用原引用列表、标题及事件，只调整尺寸、留白和颜色。
+ * 图片引用继续使用原有封面，文本卡片没有选中蓝底；引用关系、发送内容、移除及节点缩放计算保持原有实现。 */
+#vinaMarkdownPrompt.has-incoming-references { padding-top:88px; min-height:240px; }
+#vinaMarkdownPrompt .vina-md-references { top:16px; inset-inline-start:16px; gap:12px; }
+#vinaMarkdownPrompt .vina-md-reference { box-sizing:border-box; width:60px; height:60px; flex-basis:60px; border:1px solid var(--md-border); border-radius:12px; box-shadow:none; }
+#vinaMarkdownPrompt .vina-md-reference:not(.has-image) { background:#202833; }
+#vinaMarkdownPrompt .vina-md-reference:not(.has-image) > img { width:24px; height:24px; padding:0; filter:brightness(0) invert(.8); }
+#vinaMarkdownPrompt .vina-md-reference.has-image > img { width:100%; height:100%; padding:0; }
+
+/* 2026-11-09：图三的引用素材标题、清空入口、60px 卡片及输入区间距在两种模式一致；仅匹配含文本引用的输入框。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer-wrap:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) {
+  padding: 0 8px 8px !important;
+  border-top: 0 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) {
+  box-sizing: border-box !important;
+  position: relative !important;
+  padding: 12px !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  border-radius: 20px !important;
+  background: rgba(23,30,39,.96) !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+/* 原素材行仍由 active/data-canvas-no-media 控制显隐；取消独立蓝底与分隔线，融入同一输入面板。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #canvasChatReferenceRow {
+  box-sizing: border-box !important;
+  position: static !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  min-height: 104px !important;
+  padding: 32px 0 12px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeTray {
+  position: static !important;
+  flex: 0 0 auto !important;
+  align-items: flex-start !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  gap: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(#selectedNodeList, #canvasChatImageStrip) {
+  align-items: flex-start !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-chip, .selected-node-preview, .canvas-chat-image-card) {
+  box-sizing: border-box !important;
+  width: 60px !important;
+  height: 60px !important;
+  flex: 0 0 60px !important;
+  border-radius: 12px !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-preview, .canvas-chat-image-card) {
+  border: 1px solid #2b3642 !important;
+  background-color: #080d12 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow: none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-preview, .canvas-chat-image-card) > :is(img, video) {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: inherit !important;
+}
+/* 清空按钮原来位于托盘内，直接用绝对坐标对齐到面板右上角；点击仍执行原 selectedNodeClear 处理器。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear {
+  position: absolute !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  top: 12px !important;
+  right: 12px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 9 !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #9aa6b2 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear > svg { display: none !important; }
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 20px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;base64,PCEtLSAyMDI2LTExLTA3IFByb2R1Y3QgRGVzaWdu77ya5p2l6IeqIGVnbyDlj4LogIPpobXnmoTmuIXnqbrlvJXnlKjlm77moIfvvIzku4Xmm7/mjaLmjInpkq7lpJbop4LjgIIgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjOUFBNkIyIiB2aWV3Qm94PSIwIDAgMjQgMjAiIGZvY3VzYWJsZT0iZmFsc2UiIGFyaWEtaGlkZGVuPSJ0cnVlIj48cGF0aCBkPSJNMTkuMDAxIDBIOS45NTdhNSA1IDAgMCAwLTMuOTQ2IDEuOTMxTC4yMTEgOS4zODZhMSAxIDAgMCAwIDAgMS4yMjhsNS44IDcuNDU1QTUgNSAwIDAgMCA5Ljk1NyAyMGg5LjA0NEE1LjAwNiA1LjAwNiAwIDAgMCAyNCAxNVY1YTUuMDA2IDUuMDA2IDAgMCAwLTQuOTk5LTVabTMgMTVhMyAzIDAgMCAxLTMgM0g5Ljk1N2EzIDMgMCAwIDEtMi4zNjgtMS4xNThMMi4yNjggMTBsNS4zMjEtNi44NDJBMyAzIDAgMCAxIDkuOTU3IDJoOS4wNDRhMyAzIDAgMCAxIDMgM3YxMFptLTQuNzkzLTYuNzkzTDE1LjQxNSAxMGwxLjc5MyAxLjc5M2ExIDEgMCAwIDEtMS40MTQgMS40MTRsLTEuNzkzLTEuNzkzLTEuNzkzIDEuNzkzYTEgMSAwIDAgMS0xLjQxNC0xLjQxNEwxMi41ODcgMTBsLTEuNzkzLTEuNzkzYTEgMSAwIDAgMSAxLjQxNC0xLjQxNGwxLjc5MyAxLjc5MyAxLjc5My0xLjc5M2ExIDEgMCAwIDEgMS40MTQgMS40MTRaIj48L3BhdGg+PC9zdmc+") center / contain no-repeat;
+  mask: url("data:image/svg+xml;base64,PCEtLSAyMDI2LTExLTA3IFByb2R1Y3QgRGVzaWdu77ya5p2l6IeqIGVnbyDlj4LogIPpobXnmoTmuIXnqbrlvJXnlKjlm77moIfvvIzku4Xmm7/mjaLmjInpkq7lpJbop4LjgIIgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjOUFBNkIyIiB2aWV3Qm94PSIwIDAgMjQgMjAiIGZvY3VzYWJsZT0iZmFsc2UiIGFyaWEtaGlkZGVuPSJ0cnVlIj48cGF0aCBkPSJNMTkuMDAxIDBIOS45NTdhNSA1IDAgMCAwLTMuOTQ2IDEuOTMxTC4yMTEgOS4zODZhMSAxIDAgMCAwIDAgMS4yMjhsNS44IDcuNDU1QTUgNSAwIDAgMCA5Ljk1NyAyMGg5LjA0NEE1LjAwNiA1LjAwNiAwIDAgMCAyNCAxNVY1YTUuMDA2IDUuMDA2IDAgMCAwLTQuOTk5LTVabTMgMTVhMyAzIDAgMCAxLTMgM0g5Ljk1N2EzIDMgMCAwIDEtMi4zNjgtMS4xNThMMi4yNjggMTBsNS4zMjEtNi44NDJBMyAzIDAgMCAxIDkuOTU3IDJoOS4wNDRhMyAzIDAgMCAxIDMgM3YxMFptLTQuNzkzLTYuNzkzTDE1LjQxNSAxMGwxLjc5MyAxLjc5M2ExIDEgMCAwIDEtMS40MTQgMS40MTRsLTEuNzkzLTEuNzkzLTEuNzkzIDEuNzkzYTEgMSAwIDAgMS0xLjQxNC0xLjQxNEwxMi41ODcgMTBsLTEuNzkzLTEuNzkzYTEgMSAwIDAgMSAxLjQxNC0xLjQxNGwxLjc5MyAxLjc5MyAxLjc5My0xLjc5M2ExIDEgMCAwIDEgMS40MTQgMS40MTRaIj48L3BhdGg+PC9zdmc+") center / contain no-repeat;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear:is(:hover, :focus-visible) { color: #fff !important; }
+/* 单项移除依然由原 hover/focus 显隐，仅同步其尺寸、圆角、配色和偏移。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-remove, .canvas-chat-image-remove) {
+  box-sizing: border-box !important;
+  top: -8px !important;
+  right: -8px !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #171e27 !important;
+  border-radius: 9.6px !important;
+  background: #3a4654 !important;
+  color: #fff !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) .canvas-chat-reference-editor {
+  box-sizing: border-box !important;
+  min-height: 72px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 22px !important;
+}
+/* 2026-11-09 Product Design 改动说明：输入框底部按钮恢复“旧代码”的展示规则。
+ * 移除文本引用态对底部操作行间距、内边距及 Skill/风格/模式按钮固定 32px 宽度的覆盖。
+ * 添加按钮、Skill/风格文字胶囊、下拉箭头和模式按钮继续由原 canvas-composer-reference / canvas-workbench-reference 样式控制；
+ * 只有旧代码原有的宽度适配状态才收起文字，不改按钮事件、选项、发送逻辑或文本引用卡片样式。 */
+/* 2026-11-09：Agent 引用托盘沿用灰蓝层级；标题、60px 缩略图、24px 清空和20px单项移除均不改变引用数据及事件。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #canvasChatReferenceRow::before {
+  /* 2026-11-09 Product Design 改动逻辑：去掉用户红框标出的“引用素材”标题；
+   * 仅关闭标题伪元素，故事板与画布同时生效，保留素材缩略图、清除按钮及原引用布局和事件。 */
+  content: none !important;
+  display: none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) .selected-node-chip[data-canvas-text-reference] .selected-node-preview {
+  display:grid !important; place-items:center; background:#202833 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) .selected-node-chip[data-canvas-text-reference] .selected-node-preview > img.vina-md-reference-icon {
+  position:static !important; display:block !important; width:24px !important; height:24px !important;
+  min-width:0 !important; min-height:0 !important; margin:0 !important; padding:0 !important;
+  border-radius:0 !important; object-fit:contain !important; filter:brightness(0) invert(.8);
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-chip:hover,.selected-node-chip:focus-within) .selected-node-preview {
+  border-color:#566474 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear {
+  border-radius:999px !important; cursor:pointer;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear:is(:hover,:focus-visible) {
+  background:#2b3642 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) #selectedNodeClear:is(:hover,:focus-visible) > img {
+  filter:brightness(1.35);
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-remove,.canvas-chat-image-remove) {
+  border-radius:999px !important; background:#2b3642 !important; color:#d5dbe3 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(.selected-node-remove,.canvas-chat-image-remove):is(:hover,:focus-visible) {
+  background:#3a4654 !important; color:#fff !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) :is(#selectedNodeClear,.selected-node-remove,.canvas-chat-image-remove):focus-visible {
+  outline:2px solid #9aa6b2; outline-offset:2px;
+}
+
+
+/* 2026-11-09：清空按钮沿用已加载的原始图片，取消旧伪元素，避免同一位置重复绘制。
+ * 文本卡片标题保留在原 title/无障碍信息中，悬浮层沿用既有行为，不调整引用数据。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]) #selectedNodeClear::before { content:none !important; }
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]) #selectedNodeClear > img { display:block; width:24px; height:20px; flex:none; }
+
+/* 2026-11-09 Product Design 修复说明：文本引用态的 composer 已有四周 12px 内边距，
+ * 原 composer-actions 再加四周 12px 会令整排按钮上移并向内缩。
+ * 此状态仅保留按钮行顶部 12px 间隔，左右和底部由外层的 12px 统一提供，
+ * 与未选中时“外层 0 + 按钮行 12px”的最终边距一致。
+ * 画布与故事板共用，含文本的混合引用同样适用；按钮大小、标签、菜单及选择/发送逻辑不变。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#selectedNodeList .selected-node-chip[data-canvas-text-reference]:not([data-canvas-empty-reference])) .composer-actions.composer-actions {
+  padding:12px 0 0 !important;
+}

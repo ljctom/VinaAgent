@@ -1,0 +1,81 @@
+/* 2026-11-11：按「UI新」更新首页新建项目卡片的虚线边框和底色，沿用现有卡片尺寸与文字层级。 */
+.view[data-view="canvas"] .home-projects-row .home-project-create {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 240px;
+  width: 240px;
+  height: 250px;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px dashed #3A4654;
+  border-radius: 12px;
+  background: #0D141B;
+  color: #F5F7FA;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.view[data-view="canvas"] .home-projects-row .home-project-create:hover {
+  border-color: #536273;
+  background-color: #141D27;
+}
+.view[data-view="canvas"] .home-projects-row .home-project-create:active {
+  background-color: #222B35;
+}
+.view[data-view="canvas"] .home-projects-row .home-project-create:focus-visible {
+  outline: 2px solid #B8F84A;
+  outline-offset: -3px;
+}
+/* 封面使用蓝灰斜向渐变，原加号图标以 32px 居中显示，背景透明。 */
+.view[data-view="canvas"] .home-project-create .project-cover {
+  flex: 0 0 180px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #101923 0%, #16212D 55%, #202C38 100%);
+  transition: background-color 160ms ease;
+}
+.view[data-view="canvas"] .home-project-create .project-cover::before,
+.view[data-view="canvas"] .home-project-create .project-cover::after {
+  display: none;
+}
+.view[data-view="canvas"] .home-project-create .home-project-create-plus {
+  position: relative;
+  z-index: 1;
+  display: block;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  filter: brightness(0) invert(1);
+  opacity: .8;
+  transition: opacity 160ms ease;
+}
+/* 2026-11-09 Product Design 调整逻辑：底部文字直接复用右侧真实项目的 project-title / project-time，
+   移除独立字号、字重、颜色和行高；内边距与标题下间距同样沿用首页项目行规则。 */
+.view[data-view="canvas"] .home-project-create .project-info {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+.view[data-view="canvas"] .home-project-create .project-title {
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-projects-row .home-project-create { transition: none; }
+}
+
+/* 悬停时提亮封面渐变和加号，跟随系统的减少动态效果设置。 */
+.view[data-view="canvas"] .home-project-create:hover .project-cover { background: linear-gradient(160deg, #141F2A 0%, #1B2936 55%, #263544 100%); }
+.view[data-view="canvas"] .home-project-create:hover .home-project-create-plus { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-project-create :is(.project-cover, .home-project-create-plus) { transition: none; }
+}

@@ -1,0 +1,371 @@
+/* 2026-10-27 Product Design 改动逻辑：仅迁移第四步资产页指定模型菜单、生成记录与智能生成音色弹窗。
+   来源：设计稿 model-menu-unified.css、drama-asset-design-system.css、drama-voice-dialog-refined.css、
+   modal-unified.css 和 white-action-buttons.css。未加载源稿全局样式，不改变其他工作区或画布。
+   左右拖拽复用第二、第三步的指针捕获、键盘步长和双击恢复规则，仅写入资产页两项宽度变量。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] {
+ width:min(360px,calc(100vw - 32px))!important;box-sizing:border-box!important;
+ max-height:min(560px,var(--model-menu-available-height,calc(100dvh - 120px)))!important;padding:20px!important;
+ border:1px solid #2b3642!important;border-radius:16px!important;background:#171e27!important;
+ box-shadow:0 20px 48px #0008!important;backdrop-filter:none!important;
+ overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#4d5865 transparent;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-option {display:flex!important;align-items:center!important;gap:12px!important;box-sizing:border-box!important;min-height:64px!important;width:100%!important;padding:12px!important;margin:0!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#f5f7fa!important;text-align:left;box-shadow:none!important;cursor:pointer;transition:background-color .15s}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-option+.drama-character-model-option {margin-top:8px!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-icon {width:40px!important;height:40px!important;flex:0 0 40px!important;border:0!important;border-radius:12px!important;background:#080d12!important;display:grid!important;place-items:center!important;overflow:hidden}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-icon .unified-model-logo {display:block!important;width:40px!important;height:40px!important;object-fit:contain;filter:none!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-copy {display:grid!important;gap:4px!important;flex:1;min-width:0}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-copy strong {display:block!important;margin:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f5f7fa!important;font-size:14px!important;line-height:20px!important;font-weight:500!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-copy small {display:block!important;margin:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#6f7b88!important;font-size:12px!important;line-height:18px!important;font-weight:400!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-option:hover {background:#202936!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-option:is(.active,[aria-selected="true"]) {background:#2b3642!important;color:#f5f7fa!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-option:focus-visible {outline:2px solid #3a4654!important;outline-offset:2px;background:#202936!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][data-asset-model-design] .drama-character-model-check {display:none!important}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-character-model-menu][hidden] { display:none !important; }
+
+/* 2026-10-27：生成器的两栏、字段、历史卡片与响应式布局直接来自 UI 稿。 */
+/* Step 4 · character voice generation. Keep this scoped to the generator dialog. */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"].drama-voice-overlay {
+  padding: 16px;
+  background: rgba(3, 8, 13, .78);
+  backdrop-filter: blur(8px);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  border: 1px solid #2B3642;
+  border-radius: 16px;
+  background: #11181F;
+  color: #F5F7FA;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, .56);
+  font-family: var(--va-font, inherit);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-head {
+  min-height: 60px;
+  flex: 0 0 auto;
+  padding: 0 24px;
+  border-bottom: 1px solid #2B3642;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-head h3 {
+  color: #F5F7FA;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0 0 3px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #9AA6B2;
+  font: 400 25px/1 var(--va-font, inherit);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-close:hover {
+  border-color: #3A4654;
+  background: #222B35;
+  color: #F5F7FA;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-layout {
+  min-height: 346px;
+  overflow: auto;
+  grid-template-columns: minmax(0, 1.12fr) minmax(260px, .88fr);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 24px;
+  border-right: 1px solid #2B3642;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field {
+  gap: 8px;
+  margin: 0;
+  color: #D5DBE3;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field textarea {
+  min-height: 104px;
+  padding: 12px 14px;
+  border: 1px solid #2B3642;
+  border-radius: 10px;
+  background: #171E27;
+  color: #F5F7FA;
+  font: 400 14px/22px var(--va-font, inherit);
+  transition: border-color .16s ease, background-color .16s ease;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field.compact textarea {
+  min-height: 68px;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field textarea:hover {
+  border-color: #3A4654;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field textarea:focus {
+  border-color: #6F7B88;
+  box-shadow: 0 0 0 2px rgba(154, 166, 178, .14);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: auto;
+  border-radius: 10px;
+  background: #B8F84A;
+  color: #0D1308;
+  font: 600 14px/20px var(--va-font, inherit);
+  transition: background-color .16s ease;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-submit::before {
+  content: "✦";
+  font-size: 15px;
+  line-height: 1;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-submit:not(:disabled):hover {
+  background: #CFFF5A;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-submit:not(:disabled):active {
+  background: #9FDB3E;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-submit:disabled {
+  background: var(--va-brand-disabled,rgba(55,64,79,.9));
+  color: #9AA6B2;
+  cursor: wait;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-history {
+  min-width: 0;
+  padding: 24px 20px;
+  background: #141A21;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-history h4 {
+  margin: 0 0 14px;
+  color: #F5F7FA;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-list {
+  max-height: 290px;
+  gap: 8px;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card {
+  min-height: 62px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid #2B3642;
+  border-radius: 10px;
+  background: #171E27;
+  color: #D5DBE3;
+  box-shadow: none;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card:not(.selected):hover {
+  border-color: #3A4654;
+  background: #202936;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card.selected {
+  border-color: #8495A6;
+  background: #25313F;
+  box-shadow: inset 0 0 0 1px rgba(154, 166, 178, .16);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-play {
+  width: 34px;
+  height: 34px;
+  background: #344353;
+  color: #F5F7FA;
+  font-size: 11px;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card.selected .drama-voice-history-play {
+  background: #506276;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card strong {
+  overflow: hidden;
+  color: #F5F7FA;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-history-card small {
+  margin-top: 3px;
+  color: #9AA6B2;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot {
+  min-height: 64px;
+  flex: 0 0 auto;
+  gap: 10px;
+  padding: 0 24px;
+  border-top: 1px solid #2B3642;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-action {
+  min-width: 92px;
+  min-height: 36px;
+  border: 1px solid #2B3642;
+  border-radius: 18px;
+  background: #171E27;
+  color: #D5DBE3;
+  font: 500 14px/20px var(--va-font, inherit);
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-action:not(.primary):hover {
+  border-color: #3A4654;
+  background: #222B35;
+  color: #F5F7FA;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-action.primary {
+  border-color: transparent;
+  background: #B8F84A;
+  color: #0D1308;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-action.primary:not(:disabled):hover {
+  background: #CFFF5A;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-action.primary:not(:disabled):active {
+  background: #9FDB3E;
+}
+
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] :is(button, textarea):focus-visible {
+  outline: 2px solid #8495A6;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-layout {
+    display: block;
+    min-height: 0;
+  }
+
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-form {
+    padding: 20px;
+    border-right: 0;
+    border-bottom: 1px solid #2B3642;
+  }
+
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-generate-history {
+    padding: 20px;
+  }
+
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-head,
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+/* 2026-10-27：叠加 UI 稿最后加载的统一弹窗与白色按钮规则，只限定智能生成音色。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog { box-sizing:border-box !important; border:1px solid #2b3642 !important; border-radius:16px !important; background:#171e27 !important; color:#f5f7fa !important; box-shadow:0 24px 80px #0008 !important; font-family:var(--va-font); }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-head h3 { margin:0 !important; color:#f5f7fa !important; font-size:18px !important; line-height:28px !important; font-weight:600 !important; letter-spacing:0 !important; text-align:left !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot > button { box-sizing:border-box !important; min-width:0 !important; width:auto !important; flex:0 0 auto !important; min-height:36px !important; height:36px !important; padding:0 16px !important; border:1px solid #2b3642 !important; border-radius:999px !important; background:transparent !important; color:#d5dbe3 !important; font-family:inherit !important; font-size:14px !important; line-height:20px !important; font-weight:500 !important; letter-spacing:0 !important; box-shadow:none !important; text-shadow:none !important; filter:none !important; cursor:pointer; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] :is([data-drama-voice-generate],[data-drama-voice-generator-confirm]) { background:#fff !important; border-color:transparent !important; color:#0b121a !important; box-shadow:none !important; text-shadow:none !important; filter:none !important; opacity:1 !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] :is([data-drama-voice-generate],[data-drama-voice-generator-confirm]):not(:disabled):hover { background:#f5f7fa !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] :is([data-drama-voice-generate],[data-drama-voice-generator-confirm]):not(:disabled):active { background:#e5e9ef !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] :is([data-drama-voice-generate],[data-drama-voice-generator-confirm]):disabled { background:#2b3642 !important; color:#6f7b88 !important; opacity:1 !important; box-shadow:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot > button:not(.primary):not(:disabled):hover { filter:brightness(.92) !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] button:focus-visible { outline:2px solid #9aa6b2 !important; outline-offset:3px !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-close { box-sizing:border-box; display:grid; place-items:center; width:36px !important; height:36px !important; min-width:36px !important; padding:0 !important; border:1px solid transparent !important; border-radius:8px !important; background:transparent !important; color:#b4bec8 !important; box-shadow:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"].drama-voice-overlay { z-index:28000 !important; font-family:var(--va-font); }
+
+/* 2026-10-27：生成记录为 UI 稿 360px 顶层弹层，缩略图、状态和底部选用操作共享原始记录。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] { position:fixed !important; inset:auto !important; margin:0 !important; left:clamp(12px,var(--history-left,12px),max(12px,calc(100vw - 372px))) !important; top:var(--history-top,80px) !important; width:min(360px,calc(100vw - 24px)) !important; max-height:min(var(--history-max-height,calc(100dvh - 24px)),calc(100dvh - var(--history-top,80px) - 12px)) !important; box-sizing:border-box; display:flex; flex-direction:column; gap:0; padding:14px !important; overflow:hidden; background:#171e27 !important; color:#d5dbe3 !important; border:1px solid #2b3642 !important; border-radius:16px !important; box-shadow:0 12px 32px #0000003d !important; font:400 14px/20px var(--va-font); z-index:27000; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design][hidden] { display:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-hint { flex:none; color:#9aa6b2; font-size:12px; line-height:18px; margin:0 0 12px; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history { flex:1 1 auto; min-height:0; max-height:none; gap:10px; overflow-y:auto; padding:2px; scrollbar-width:thin; scrollbar-color:#35414e transparent; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version { display:grid; grid-template-columns:140px minmax(0,1fr); align-items:center; min-height:90px; padding:6px; gap:14px; border:1px solid transparent !important; border-radius:9px; box-shadow:none !important; background:rgba(255,255,255,.025); color:inherit; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version:hover:not(:disabled) { background:#26313d !important; border-color:transparent !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version.active { background:#222b35 !important; border-color:transparent !important; box-shadow:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version.is-previewing { background:#2b3642 !important; border-color:transparent !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-item { width:100%; aspect-ratio:16/9; border-color:transparent !important; border-radius:7px; box-shadow:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-version-copy { display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-width:0; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version small { font-size:13px; line-height:1; font-weight:400; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-version-status { font-size:12px; line-height:16px; color:#9aa6b2; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-version-status.is-selected { color:#c8e89c; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .is-previewing .asset-history-version-status { color:#f5f7fa; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-footer { flex:none; border-top:1px solid #2b3642; margin-top:12px; padding-top:12px; display:flex; flex-direction:column; gap:10px; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-footer p { margin:0; color:#9aa6b2; font-size:11px; line-height:17px; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-apply { box-sizing:border-box; width:100%; min-height:38px; padding:7px 12px; border:1px solid transparent; border-radius:8px; background:#fff !important; color:#0b121a !important; font:500 13px/18px var(--va-font); cursor:pointer; box-shadow:none !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-apply:not(:disabled):hover { background:#f5f7fa !important; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .asset-history-apply:disabled { background:#202a35 !important; color:#6f7b88 !important; border-color:#2b3642 !important; cursor:default; }
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] button:focus-visible { outline:2px solid #9aa6b2; outline-offset:2px; }
+@media(max-width:420px){html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [data-asset-history-design] .drama-character-history-version { grid-template-columns:112px minmax(0,1fr); min-height:76px; }}
+
+/* 2026-10-27：左右手柄位于既有列间隙，不新增可见列；与第二/三步相同的透明拖拽区和灰色焦点反馈。 */
+.asset-workspace[data-view="asset-library"] .asset-panel-width-resizer { display:none; }
+@media(min-width:901px) {
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-inner[data-asset-width-resize] {
+    position:relative; grid-template-columns:var(--asset-list-width,292px) minmax(0,1fr) !important;
+  }
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-editor-right.has-character-profile-layout[data-asset-voice-resizable] {
+    position:relative; grid-template-columns:minmax(0,1fr) var(--asset-voice-width,clamp(280px,25%,340px)) !important;
+  }
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-panel-width-resizer {
+    display:block; position:absolute; top:0; bottom:0; width:12px; min-width:8px; z-index:45; border:0; padding:0;
+    background:transparent !important; box-shadow:none !important; cursor:col-resize; touch-action:none; outline:none;
+  }
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-list-resizer.asset-panel-width-resizer { left:var(--asset-left-handle-position,calc(var(--asset-list-width,292px) + 3px)); right:auto; bottom:0; }
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-voice-width-resizer { right:var(--asset-right-handle-position,calc(var(--asset-voice-width,300px) + 2px)); left:auto; }
+  html body .asset-workspace[data-view="asset-library"] .asset-panel-width-resizer::before,
+  html body .asset-workspace[data-view="asset-library"] .asset-panel-width-resizer::after { content:none !important; box-shadow:none !important; }
+  html body .asset-workspace[data-view="asset-library"] .asset-panel-width-resizer:focus-visible { outline:1px solid #3a4654; outline-offset:-2px; }
+  html body .asset-workspace[data-view="asset-library"].is-resizing-asset-width,
+  html body .asset-workspace[data-view="asset-library"].is-resizing-asset-width * { cursor:col-resize !important; user-select:none !important; }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：音色提示词与试听文本聚焦时保持普通边框，
+   同时去除 focus 和 focus-visible 的外环，不改变输入内容及编辑行为。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-field textarea:is(:focus,:focus-visible) {
+  outline:none !important; box-shadow:none !important; border-color:#2b3642 !important;
+}
+/* 2026-10-27 Product Design 改动逻辑：确认按钮覆盖页脚通用文字色，
+   可用态为白底深色字，禁用态为灰底灰字，避免白底浅字无法辨认；禁用条件保持原逻辑。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot > button[data-drama-voice-generator-confirm]:not(:disabled) {
+  background:#fff !important; color:#0b121a !important; border-color:transparent !important; opacity:1 !important;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view)[data-asset-popover-reference] [id$="dramaCharacterVoiceGenerator"] .drama-voice-dialog-foot > button[data-drama-voice-generator-confirm]:disabled {
+  background:#2b3642 !important; color:#6f7b88 !important; border-color:transparent !important; opacity:1 !important; cursor:default;
+}
+/* 2026-10-27：移除左右拖拽入口，固定使用默认列宽，保留上下高度分隔条。 */
+html body .asset-workspace[data-view="asset-library"] .asset-panel-width-resizer { display:none !important; }

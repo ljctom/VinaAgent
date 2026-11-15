@@ -1,0 +1,436 @@
+/* 2026-09-13 改动逻辑：标题旁互斥切换，表格参考深色分镜表；仅正文滚动，底部工具栏保持原位置。 */
+.detail-view-switch { display:flex; gap:4px; padding:4px; border:1px solid #2b3540; border-radius:10px; background:#080e14; flex-shrink:0; }
+.detail-view-switch button { border:0; border-radius:7px; background:transparent; color:#909ba7; font:inherit; font-size:13px; font-weight:600; padding:7px 17px; cursor:pointer; }
+.detail-view-switch button[aria-pressed="true"] { background:#bbfa42; color:#162007; }
+.detail-view-switch button:focus-visible { outline:2px solid #bbfa42; outline-offset:3px; }
+.detail-prompt-card[data-detail-view="storyboard"] #detailPromptText,
+.detail-prompt-card[data-detail-view="prompt"] #detailStoryboard { display:none; }
+.detail-storyboard { flex:1 1 0; min-height:0; overflow:auto; border-radius:16px 16px 0 0; background:#14191f; scrollbar-width:thin; scrollbar-color:#48515a transparent; }
+/* 2026-09-17 改动逻辑：九列分镜表提高最小宽度，让末尾新增的光影氛围与音效保持可读；窄窗口继续由表格容器横向滚动承载。 */
+.detail-storyboard table { width:100%; min-width:1120px; table-layout:fixed; border-collapse:separate; border-spacing:0; color:#c9cfd5; font-size:13px; line-height:1.65; }
+.detail-storyboard caption { text-align:left; padding:13px 18px; color:#939da7; font-size:12px; border-bottom:1px solid #2d333a; }
+.detail-storyboard th { position:sticky; top:0; z-index:1; background:#20252b; color:#949ca5; font-weight:600; text-align:left; }
+.detail-storyboard th,.detail-storyboard td { padding:15px 11px; border-right:1px solid #2d333a; border-bottom:1px solid #2d333a; vertical-align:top; overflow-wrap:anywhere; }
+.detail-storyboard th:last-child,.detail-storyboard td:last-child { border-right:0; }
+/* 2026-09-13 改动逻辑：分镜正文单元格直接编辑；焦点仅用轻量内描边提示，避免改变表格尺寸和列宽。 */
+.detail-storyboard td[contenteditable="true"] { cursor:text; transition:background .16s ease,box-shadow .16s ease,color .16s ease; }
+.detail-storyboard td[contenteditable="true"]:hover { background:rgba(187,250,66,.035); }
+.detail-storyboard td[contenteditable="true"]:focus { outline:0; background:rgba(187,250,66,.075); box-shadow:inset 0 0 0 1px rgba(187,250,66,.58); color:#eef2f5; }
+/* 2026-09-14 Product Design 改动逻辑：用语义类维持镜号、时长与景别的居中样式，避免动态插入第二列后 nth-child 错位。 */
+.detail-storyboard .storyboard-index-cell,
+.detail-storyboard .storyboard-duration-cell,
+.detail-storyboard .storyboard-shot-size-cell,
+.detail-storyboard .storyboard-image-cell { text-align:center; }
+.detail-storyboard td.storyboard-index-cell,
+.detail-storyboard td.storyboard-duration-cell,
+.detail-storyboard td.storyboard-shot-size-cell { color:#a8b1bb; }
+/* 2026-09-22 Product Design 改动逻辑：时长使用窄版数字框加 s；默认弱化原生微调按钮，悬停或聚焦时恢复上下调节，并用青柠描边反馈可编辑状态。 */
+.detail-storyboard td.storyboard-duration-cell { vertical-align:middle; }
+/* 2026-09-22 修复逻辑：配合 88px 时长列保留完整输入空间，边框计入宽度；减少数字左右留白，给两位数字、原生微调按钮与 s 单位各自留足空间，悬停和聚焦时也不挤压数字。 */
+.detail-storyboard .storyboard-duration-field { box-sizing:border-box; width:100%; max-width:64px; min-width:64px; height:34px; display:inline-grid; grid-template-columns:minmax(0,1fr) 10px; align-items:center; overflow:hidden; border:1px solid #35404a; border-radius:9px; background:#171c22; color:#d9dee3; transition:border-color .16s ease,box-shadow .16s ease,background .16s ease; }
+.detail-storyboard .storyboard-duration-field:hover { border-color:#56616b; background:#1b2128; }
+.detail-storyboard .storyboard-duration-field:focus-within { border-color:var(--episode-accent,#b8f84a); box-shadow:0 0 0 1px rgba(184,248,74,.32); background:#1a2026; }
+.detail-storyboard .storyboard-duration-input { box-sizing:border-box; width:100%; min-width:0; height:32px; padding:0 2px; border:0; outline:0; background:transparent; color:#eef2f5; font:inherit; font-size:14px; font-weight:650; line-height:32px; text-align:center; font-variant-numeric:tabular-nums; appearance:auto; -moz-appearance:auto; }
+.detail-storyboard .storyboard-duration-input::-webkit-inner-spin-button { opacity:0; margin:0; transition:opacity .16s ease; }
+.detail-storyboard .storyboard-duration-field:hover .storyboard-duration-input::-webkit-inner-spin-button,
+.detail-storyboard .storyboard-duration-input:focus::-webkit-inner-spin-button { opacity:1; }
+.detail-storyboard .storyboard-duration-input:disabled { color:#7d8791; cursor:default; }
+.detail-storyboard .storyboard-duration-suffix { min-width:0; padding-right:2px; color:#9ba5ae; font-size:12px; font-weight:600; line-height:1; pointer-events:none; }
+.detail-storyboard .storyboard-duration-field:has(.storyboard-duration-input:disabled) { opacity:.72; }
+.detail-storyboard table.has-storyboard-images { min-width:1240px; }
+/* 2026-09-14 Product Design 改动逻辑：9:16 分镜缩略图改为可点击按钮，悬停与键盘焦点使用青柠描边提示可打开大图。 */
+.detail-storyboard .storyboard-image-cell { padding:8px; vertical-align:middle; }
+.detail-storyboard .storyboard-image-button { width:min(100%,64px); aspect-ratio:9 / 16; display:block; margin:0 auto; overflow:hidden; padding:0; border:1px solid #343d46; border-radius:7px; background:#090c10; cursor:zoom-in; transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease; }
+.detail-storyboard .storyboard-image-button:hover,
+.detail-storyboard .storyboard-image-button:focus-visible { border-color:var(--episode-accent,#b8f84a); box-shadow:0 0 0 1px rgba(184,248,74,.4); outline:none; transform:translateY(-1px); }
+.detail-storyboard .storyboard-image-button img { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
+.detail-storyboard tbody tr:hover { background:#1b2229; }
+/* 2026-09-13 改动逻辑：分镜表复用提示词的完整 @ 引用胶囊，紧凑尺寸适配表格行高；不再使用纯文字高亮。 */
+.detail-storyboard .storyboard-mention-token { height:28px; max-width:190px; margin:2px 3px; padding:3px 8px 3px 4px; font-size:.84em; user-select:text; }
+.detail-storyboard .storyboard-mention-token .detail-mention-thumb { width:20px; height:20px; }
+.detail-storyboard-empty { padding:24px; color:#909ba7; }
+/* 2026-09-13 改动逻辑：底部新增同步、分镜图预览和生成视频三项操作；预览保留积分但暂不可用，生成视频保持最右。 */
+.episode-detail-workspace .detail-prompt-action-group { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-left:auto; flex:0 0 auto; }
+.episode-detail-workspace .detail-storyboard-sync,
+.episode-detail-workspace .detail-video-action { height:40px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--episode-border); border-radius:999px; background:var(--episode-bg); color:var(--episode-text); font:inherit; font-size:12px; font-weight:760; white-space:nowrap; }
+.episode-detail-workspace .detail-storyboard-sync { min-width:142px; padding:0 14px; transition:background .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease; }
+.episode-detail-workspace .detail-storyboard-sync:not(:disabled) { border-color:var(--episode-accent); background:var(--episode-accent); color:#122006; cursor:pointer; }
+.episode-detail-workspace .detail-storyboard-sync:disabled { color:#68727d; background:#11171e; cursor:not-allowed; opacity:.72; }
+.episode-detail-workspace .detail-storyboard-sync.is-syncing { min-width:154px; color:#aeb7c0; border-color:#36414c; background:#11171e; opacity:1; }
+.detail-storyboard-sync-spinner { display:none; width:14px; height:14px; margin-right:7px; border:2px solid rgba(174,183,192,.28); border-top-color:var(--episode-accent); border-radius:50%; animation:detail-storyboard-sync-spin .7s linear infinite; }
+.detail-storyboard-sync.is-syncing .detail-storyboard-sync-spinner { display:inline-block; }
+@keyframes detail-storyboard-sync-spin { to { transform:rotate(360deg); } }
+/* 2026-09-28 Product Design 改动逻辑：复用现有 Lucide 图标源作遮罩，让同步图标继承禁用灰、可用深绿及同步中灰色，另外两枚图标继承对应按钮文字色。 */
+.episode-detail-workspace .detail-action-icon { display:none; flex:0 0 17px; width:17px; height:17px; background-color:currentColor; -webkit-mask-position:center; mask-position:center; -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
+.episode-detail-workspace .detail-action-icon-sync { -webkit-mask-image:url('https://api.iconify.design/lucide/refresh-cw.svg'); mask-image:url('https://api.iconify.design/lucide/refresh-cw.svg'); }
+.episode-detail-workspace .detail-action-icon-position { -webkit-mask-image:url('https://api.iconify.design/lucide/users-round.svg'); mask-image:url('https://api.iconify.design/lucide/users-round.svg'); }
+.episode-detail-workspace .detail-action-icon-storyboard { -webkit-mask-image:url('https://api.iconify.design/lucide/images.svg'); mask-image:url('https://api.iconify.design/lucide/images.svg'); }
+/* 2026-09-26 Product Design 改动逻辑：魔法棒复用 40px 深色圆角工具按钮，说明气泡向上展开，不挤压底部工具栏；键盘聚焦与悬停反馈一致。 */
+.episode-detail-workspace .detail-prompt-optimize-btn { position:relative; flex:0 0 40px; width:40px; height:40px; display:inline-grid; place-items:center; padding:0; border:1px solid var(--episode-border); border-radius:20px; background:var(--episode-bg); color:var(--episode-muted); cursor:pointer; }
+/* 2026-09-26 Product Design 改动逻辑：只将魔法棒图标从 19px 缩至 15px，外层圆形按钮仍保持 40px。 */
+.episode-detail-workspace .detail-prompt-optimize-btn img { width:15px; height:15px; display:block; }
+.episode-detail-workspace .detail-prompt-optimize-btn:hover,
+.episode-detail-workspace .detail-prompt-optimize-btn:focus-visible { border-color:rgba(184,248,74,.5); background:#111820; outline:none; }
+.episode-detail-workspace .detail-prompt-optimize-btn:disabled { opacity:.68; cursor:wait; }
+.episode-detail-workspace .detail-prompt-optimize-tooltip { position:absolute; bottom:calc(100% + 10px); left:50%; z-index:15; width:max-content; max-width:220px; padding:7px 10px; border:1px solid #3b4650; border-radius:8px; background:#202830; color:#edf1f4; box-shadow:0 8px 22px #0008; font-size:12px; line-height:1.4; font-weight:600; transform:translate(-50%,4px); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .15s ease,transform .15s ease,visibility .15s ease; }
+.episode-detail-workspace .detail-prompt-optimize-btn:hover .detail-prompt-optimize-tooltip,
+.episode-detail-workspace .detail-prompt-optimize-btn:focus-visible .detail-prompt-optimize-tooltip { opacity:1; visibility:visible; transform:translate(-50%,0); }
+/* 2026-09-28 Product Design 改动逻辑：三个右侧按钮沿用魔法棒的气泡尺寸、配色、上方位置和过渡；取消图片按钮的内容裁切，禁用的同步按钮悬停时仍能清晰显示说明。 */
+.episode-detail-workspace .detail-prompt-action-group .detail-storyboard-sync,
+.episode-detail-workspace .detail-prompt-action-group .detail-asset-refresh { position:relative; overflow:visible; }
+.episode-detail-workspace .detail-prompt-action-group .detail-storyboard-sync:hover,
+.episode-detail-workspace .detail-prompt-action-group .detail-asset-refresh:hover,
+.episode-detail-workspace .detail-prompt-action-group .detail-storyboard-sync:focus-visible,
+.episode-detail-workspace .detail-prompt-action-group .detail-asset-refresh:focus-visible { z-index:15; }
+.episode-detail-workspace .detail-storyboard-sync:disabled:hover { opacity:1; }
+.episode-detail-workspace .detail-prompt-action-tooltip { position:absolute; bottom:calc(100% + 10px); left:50%; z-index:15; width:max-content; max-width:220px; padding:7px 10px; border:1px solid #3b4650; border-radius:8px; background:#202830; color:#edf1f4; box-shadow:0 8px 22px #0008; font-size:12px; line-height:1.4; font-weight:600; transform:translate(-50%,4px); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .15s ease,transform .15s ease,visibility .15s ease; }
+.episode-detail-workspace .detail-storyboard-sync:hover .detail-prompt-action-tooltip,
+.episode-detail-workspace .detail-storyboard-sync:focus-visible .detail-prompt-action-tooltip,
+.episode-detail-workspace .detail-asset-refresh:hover .detail-prompt-action-tooltip,
+.episode-detail-workspace .detail-asset-refresh:focus-visible .detail-prompt-action-tooltip { opacity:1; visibility:visible; transform:translate(-50%,0); }
+/* 2026-09-26 Product Design 改动逻辑：优化时仅遮住可编辑正文，转圈置于正文正中，Toast 放在正文上方，避免两种状态重叠；固定 1.5 秒后由脚本恢复原内容显示。 */
+.episode-detail-workspace .detail-prompt-card { position:relative; }
+.episode-detail-workspace .detail-prompt-optimize-loading { position:absolute; inset:0 0 var(--detail-prompt-tools-height,64px); z-index:12; display:grid; place-items:center; border-radius:16px 16px 0 0; background:rgba(10,15,20,.66); pointer-events:auto; }
+.episode-detail-workspace .detail-prompt-optimize-loading[hidden] { display:none !important; }
+.episode-detail-workspace .detail-prompt-optimize-spinner { width:32px; height:32px; border:3px solid rgba(187,250,66,.2); border-top-color:var(--episode-accent,#b8f84a); border-radius:50%; animation:detail-storyboard-sync-spin .7s linear infinite; }
+.episode-detail-workspace .detail-prompt-optimize-toast { position:absolute; top:18px; left:50%; width:max-content; max-width:calc(100% - 24px); padding:10px 16px; border:1px solid #3b4650; border-radius:999px; background:#202830; color:#edf1f4; box-shadow:0 12px 30px #0008; font-size:13px; font-weight:700; line-height:1.4; transform:translateX(-50%); }
+.episode-detail-workspace .detail-video-action { overflow:hidden; padding:0; }
+.episode-detail-workspace .detail-video-action-label { padding:0 12px; }
+.episode-detail-workspace .detail-video-action-cost { align-self:stretch; display:inline-flex; align-items:center; gap:5px; padding:0 10px; border-left:1px solid rgba(255,255,255,.12); }
+.episode-detail-workspace .detail-storyboard-preview:disabled { color:#717b86; background:#11171e; cursor:not-allowed; opacity:.62; }
+.episode-detail-workspace .detail-storyboard-preview:disabled .detail-generate-sparkle { color:#717b86; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action { min-width:128px; height:40px; justify-content:center; gap:0; padding:0; border:0; background:var(--episode-accent); color:#102006; box-shadow:none; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action:hover { background:#c7ff5b; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action .detail-video-action-cost { border-left-color:rgba(16,32,6,.2); }
+.episode-detail-workspace .detail-generate-btn.detail-video-action .detail-generate-sparkle { color:#2d5a0c; }
+@media(max-width:1100px) { .detail-view-switch button { padding:6px 10px; } .detail-prompt-title-row { gap:10px; flex-wrap:wrap; } }
+
+/* 2026-09-13 Product Design 改动逻辑：笔记本优先分配空间给中间分镜表。
+ * 两侧由原 280–390px 收窄为约 200–280px，底部片段栏由 228px 降为 154px；
+ * 同步压缩页头、参考素材与工具栏留白。仅作用于分集视频页，不改变其他工作区。
+ * 表格保持正常字号与独立横向滚动，不通过整页缩放牺牲文字清晰度。 */
+@media (min-width: 0px) {
+  .episode-detail-workspace .script-status {
+    height:64px; padding:10px 14px;
+    grid-template-columns:clamp(200px,16vw,240px) minmax(0,1fr) clamp(230px,18vw,280px);
+    gap:10px;
+  }
+  .episode-detail-workspace .script-back { width:100%; min-width:0; min-height:38px; padding:0 10px; font-size:13px; }
+  .episode-detail-workspace .script-back span { margin-left:8px; padding-left:8px; }
+  .episode-detail-workspace .episode-detail-header-actions { grid-template-columns:auto auto; gap:12px; }
+  .episode-detail-workspace .detail-regenerate-script { min-height:36px; padding:0 18px; font-size:13px; white-space:nowrap; }
+  .episode-detail-workspace .detail-generate-all { width:190px; min-height:36px; }
+  .episode-detail-workspace .detail-generate-all-label { font-size:14px; }
+  /* 2026-09-26 Product Design 改动逻辑：短剧视频页将右上账户组的中心定位在 64px 顶栏的退出按钮中心（34px），保留团队头像与身份标识的整体垂直居中。 */
+  body:has(.episode-detail-workspace:not([hidden])) .global-account { top:34px; right:14px; transform:translateY(-50%); }
+  .episode-detail-workspace .episode-detail-main {
+    height:calc(100vh - 64px); height:calc(100dvh - 64px);
+    grid-template-columns:clamp(200px,16vw,240px) minmax(0,1fr) clamp(230px,18vw,280px);
+    grid-template-rows:minmax(0,1fr) 154px;
+    gap:10px; padding:8px 14px 0;
+  }
+  .episode-detail-workspace .detail-story-panel,
+  .episode-detail-workspace .detail-prompt-panel,
+  .episode-detail-workspace .detail-player-panel { min-width:0; min-height:0; }
+  .episode-detail-workspace .detail-story-panel { padding:14px 12px 18px; border-radius:16px; }
+  .episode-detail-workspace .episode-script-section { margin-bottom:18px; }
+  .episode-detail-workspace .episode-script-section-title { font-size:13px; }
+  .episode-detail-workspace .episode-script-readonly { padding:10px; font-size:12px; line-height:18px; }
+  .episode-detail-workspace .episode-script-media-grid { gap:8px; }
+  .episode-detail-workspace .episode-script-media-image { height:120px; }
+  .episode-detail-workspace .episode-script-media-name { padding:10px 7px; margin-top:-36px; font-size:11px; }
+  .episode-detail-workspace .detail-prompt-panel { padding:14px 14px 0; border-radius:16px; }
+  .episode-detail-workspace .detail-prompt-head { flex-shrink:0; min-height:34px; margin-bottom:12px; }
+  .episode-detail-workspace .detail-prompt-title-row { gap:12px; flex-wrap:nowrap; min-width:0; }
+  .episode-detail-workspace .detail-prompt-title { font-size:20px; white-space:nowrap; }
+  .episode-detail-workspace .detail-history-btn { min-height:32px; padding:0 5px; font-size:12px; white-space:nowrap; }
+  .episode-detail-workspace .detail-view-switch { padding:3px; gap:2px; }
+  .episode-detail-workspace .detail-view-switch button { padding:5px 12px; font-size:12px; }
+  .episode-detail-workspace .detail-reference-list { min-height:64px; flex-shrink:0; gap:10px; margin-bottom:12px; }
+  .episode-detail-workspace .detail-reference-card,
+  .episode-detail-workspace .detail-reference-add { width:64px; height:64px; flex-basis:64px; border-radius:9px; }
+  .episode-detail-workspace .detail-reference-add { font-size:26px; }
+  .episode-detail-workspace .detail-prompt-card { margin:0 -14px; border-radius:12px 12px 16px 16px; min-width:0; }
+  .episode-detail-workspace .detail-storyboard { border-radius:12px 12px 0 0; }
+  /* 2026-09-17 改动逻辑：紧凑布局仍为九列保留足够画面描述、光影氛围和音效宽度，通过容器横向滚动完整扫读。 */
+  .episode-detail-workspace .detail-storyboard table { min-width:1080px; font-size:12px; line-height:1.6; }
+  .episode-detail-workspace .detail-storyboard caption { padding:9px 14px; }
+  .episode-detail-workspace .detail-storyboard th,
+  .episode-detail-workspace .detail-storyboard td { padding:10px 7px; }
+  .episode-detail-workspace .detail-storyboard th { white-space:nowrap; }
+  .episode-detail-workspace .detail-prompt-tools { min-height:54px; flex-shrink:0; gap:6px; padding:7px 10px; }
+  .episode-detail-workspace .detail-prompt-tool-left { gap:5px; }
+  .episode-detail-workspace .episode-global-params { gap:5px; }
+  .episode-detail-workspace .episode-global-param-btn { padding:0 10px; font-size:12px; }
+  /* 2026-09-13 改动逻辑：紧凑布局下三项文字操作保持 38px 高度，允许整组在空间不足时换到下一行。 */
+  .episode-detail-workspace .detail-prompt-action-group { gap:6px; }
+  .episode-detail-workspace .detail-storyboard-sync,
+  .episode-detail-workspace .detail-video-action,
+  .episode-detail-workspace .detail-generate-btn.detail-video-action { height:38px; }
+  .episode-detail-workspace .detail-player-panel { grid-template-rows:minmax(0,1fr) 48px; gap:8px; }
+  .episode-detail-workspace .detail-preview { border-radius:16px; }
+  .episode-detail-workspace .detail-player-actions { min-height:48px; padding:6px 9px; gap:8px; border-radius:12px; }
+  /* 2026-09-28 Product Design 修复逻辑：播放方式外层沿用旧双选按钮边框且仍占 40px，和 32px 的实际按钮形成双圈；移除外层边框并让容器与左右操作按钮等宽等高。 */
+  .episode-detail-workspace .detail-player-actions .detail-play-mode { width:32px; height:32px; border:0; }
+  .episode-detail-workspace .detail-player-action,
+  .episode-detail-workspace .detail-player-actions .detail-play-mode-trigger { width:32px; height:32px; }
+  .episode-detail-workspace .detail-preview-controls { left:8px; right:8px; bottom:10px; grid-template-columns:28px minmax(24px,1fr) auto 28px; gap:4px; }
+  .episode-detail-workspace .detail-preview-controls .detail-play-btn,
+  .episode-detail-workspace .detail-preview-controls .detail-fullscreen { width:28px; height:28px; }
+  .episode-detail-workspace .detail-video-time { min-width:62px; font-size:10px; }
+  .episode-detail-workspace .episode-timeline-panel { min-height:154px; height:154px; gap:6px; padding:10px 14px 0; border-radius:16px; }
+  .episode-detail-workspace .shot-strip { gap:12px; }
+  .episode-detail-workspace .shot-card { flex-basis:176px; }
+  .episode-detail-workspace .shot-thumb { height:99px; border-radius:9px; }
+  .episode-detail-workspace .shot-title { margin-top:5px; font-size:12px; line-height:18px; }
+  .episode-detail-workspace .shot-add-btn { top:37px; width:28px; height:28px; font-size:18px; }
+  .episode-detail-workspace .shot-add-btn.left { left:-14px; }
+  .episode-detail-workspace .shot-add-btn.right { right:-14px; }
+  .episode-detail-workspace .shot-failure-summary { width:90%; gap:4px; padding-top:20px; }
+  .episode-detail-workspace .shot-failure-message { font-size:10px; line-height:13px; }
+  .episode-detail-workspace .shot-failure-confirm { min-width:52px; height:22px; font-size:11px; }
+}
+/* 2026-09-13 改动逻辑：低高度笔记本进一步缩小底部缩略图，将额外 16px 留给表格正文。 */
+@media (min-width:1000px) and (max-width:1600px) and (max-height:740px) {
+  .episode-detail-workspace .episode-detail-main { grid-template-rows:minmax(0,1fr) 138px; }
+  .episode-detail-workspace .episode-timeline-panel { min-height:138px; height:138px; }
+  .episode-detail-workspace .shot-card { flex-basis:152px; }
+  .episode-detail-workspace .shot-thumb { height:85.5px; }
+  .episode-detail-workspace .shot-add-btn { top:29px; }
+}
+
+/* 2026-09-13 改动逻辑：紧凑布局扩展到 1920px；1600px 以上适度放大侧栏、
+ * 缩略图和字号，仍以分镜表为主。1920px 时左栏 280px、预览 320px，
+ * 底部片段栏 174px，避免退回旧版 459px 侧栏与 254px 时间线。 */
+@media (width > 1600px) {
+  .episode-detail-workspace .script-status,
+  .episode-detail-workspace .episode-detail-main {
+    grid-template-columns:clamp(240px,14.6vw,280px) minmax(0,1fr) clamp(280px,16.7vw,320px);
+  }
+  .episode-detail-workspace .episode-detail-main { grid-template-rows:minmax(0,1fr) 174px; }
+  .episode-detail-workspace .episode-script-readonly { font-size:13px; line-height:20px; padding:12px; }
+  .episode-detail-workspace .episode-script-media-image { height:140px; }
+  .episode-detail-workspace .episode-script-media-name { font-size:12px; }
+  .episode-detail-workspace .detail-reference-list { min-height:76px; }
+  .episode-detail-workspace .detail-reference-card,
+  .episode-detail-workspace .detail-reference-add { width:76px; height:76px; flex-basis:76px; }
+  .episode-detail-workspace .detail-storyboard table { font-size:13px; }
+  .episode-detail-workspace .detail-storyboard th,
+  .episode-detail-workspace .detail-storyboard td { padding:12px 9px; }
+  .episode-detail-workspace .episode-timeline-panel { height:174px; min-height:174px; }
+  .episode-detail-workspace .shot-card { flex-basis:208px; }
+  .episode-detail-workspace .shot-thumb { height:117px; }
+  .episode-detail-workspace .shot-add-btn { top:45px; }
+  .episode-detail-workspace .shot-failure-message { font-size:11px; line-height:14px; }
+}
+
+/* 2026-09-13 改动逻辑：所有窗口宽度共用紧凑组件，大于 1920px 时两侧保持
+ * 280/320px 上限，中间表格吸收剩余空间；不再在断点外恢复旧版大侧栏。
+ * 小于 1000px 改为编辑区、片段条、资料与预览的纵向排列，保留全部功能。
+ * 超矮窗口允许主区纵向滚动，确保正文和参数控件始终可达。 */
+@media (min-width:1000px) and (max-height:600px) {
+  .episode-detail-workspace .episode-detail-main {
+    overflow-y:auto; grid-template-rows:minmax(380px,1fr) 138px;
+  }
+  .episode-detail-workspace .episode-timeline-panel { height:138px; min-height:138px; }
+  .episode-detail-workspace .shot-card { flex-basis:152px; }
+  .episode-detail-workspace .shot-thumb { height:85.5px; }
+  .episode-detail-workspace .shot-add-btn { top:29px; }
+}
+@media (max-width:999.98px) {
+  .episode-detail-workspace .script-status {
+    height:106px; grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:38px 38px; gap:8px; padding:8px 12px;
+  }
+  .episode-detail-workspace .script-back { grid-column:1; grid-row:1; width:min(320px,calc(100vw - 100px)); }
+  .episode-detail-workspace .episode-detail-header-actions { grid-column:1 / -1; grid-row:2; justify-self:center; gap:8px; }
+  .episode-detail-workspace .detail-regenerate-script { padding:0 12px; font-size:12px; }
+  .episode-detail-workspace .detail-generate-all { width:172px; }
+  .episode-detail-workspace .detail-generate-all-label { font-size:13px; }
+  /* 2026-09-26 Product Design 改动逻辑：窄屏顶栏首行从 8px 起、高 38px，账户组中心改为 27px，与该行退出按钮水平对齐。 */
+  body:has(.episode-detail-workspace:not([hidden])) .global-account { top:27px; right:12px; }
+  .episode-detail-workspace .episode-detail-main {
+    height:calc(100vh - 106px); height:calc(100dvh - 106px);
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:max(440px,65dvh) 138px 360px;
+    gap:10px; padding:8px 10px 16px; overflow-y:auto; overflow-x:hidden;
+  }
+  .episode-detail-workspace .detail-prompt-panel { grid-column:1 / -1; grid-row:1; }
+  .episode-detail-workspace .episode-timeline-panel { grid-column:1 / -1; grid-row:2; min-height:138px; height:138px; }
+  .episode-detail-workspace .detail-story-panel { grid-column:1; grid-row:3; }
+  .episode-detail-workspace .detail-player-panel { grid-column:2; grid-row:3; }
+  .episode-detail-workspace .shot-card { flex-basis:152px; }
+  .episode-detail-workspace .shot-thumb { height:85.5px; }
+  .episode-detail-workspace .shot-add-btn { top:29px; }
+  .episode-detail-workspace .detail-prompt-title-row { flex-wrap:wrap; gap:8px; }
+  .episode-detail-workspace .detail-prompt-tools { flex-wrap:wrap; }
+  .episode-detail-workspace .detail-prompt-tool-left { flex-wrap:wrap; }
+  .episode-detail-workspace .detail-prompt-action-group { width:100%; flex-wrap:wrap; }
+}
+/* 2026-09-13 改动逻辑：手机尺寸改为单栏，视频和故事资料各自保留可用高度；
+ * 分镜表仅在内部横向滚动，页头按钮和底部生成参数允许换行。 */
+@media (max-width:599.98px) {
+  .episode-detail-workspace .episode-detail-main {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:max(460px,68dvh) 138px 340px 280px;
+  }
+  .episode-detail-workspace .detail-player-panel { grid-column:1; grid-row:3; }
+  .episode-detail-workspace .detail-story-panel { grid-column:1; grid-row:4; }
+  .episode-detail-workspace .detail-prompt-panel { padding:12px 10px 0; }
+  .episode-detail-workspace .detail-prompt-card { margin:0 -10px; }
+  .episode-detail-workspace .detail-prompt-title { font-size:18px; }
+  .episode-detail-workspace .detail-history-btn { padding:0; font-size:11px; }
+  .episode-detail-workspace .detail-view-switch button { padding:5px 8px; }
+  .episode-detail-workspace .detail-reference-list { gap:8px; }
+  .episode-detail-workspace .detail-reference-card,
+  .episode-detail-workspace .detail-reference-add { width:56px; height:56px; flex-basis:56px; }
+  .episode-detail-workspace .detail-reference-list { min-height:56px; }
+  .episode-detail-workspace .episode-detail-header-actions { width:100%; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .episode-detail-workspace .detail-regenerate-script,
+  .episode-detail-workspace .detail-generate-all { width:100%; padding:0 6px; min-width:0; }
+  .episode-detail-workspace .detail-generate-all-label { font-size:12px; }
+  /* 2026-09-13 改动逻辑：手机端三个操作平均分配宽度，积分与文字仍保持同一按钮内的信息层级。 */
+  .episode-detail-workspace .detail-prompt-action-group { display:grid; grid-template-columns:1fr 1fr; }
+  .episode-detail-workspace .detail-storyboard-sync { grid-column:1 / -1; width:100%; }
+  .episode-detail-workspace .detail-asset-refresh,
+  .episode-detail-workspace .detail-generate-btn.detail-video-action { width:100%; min-width:0; }
+  .episode-detail-workspace #detailGenerateButton { grid-column:1 / -1; }
+}
+
+/* 2026-09-24 Product Design 改动逻辑：人物站位图与分镜预览图改用深色次级按钮，避免与绿色的生成视频主按钮争夺视觉焦点；积分区沿用同一深色层级，点击后仍在对应图片原位转圈一秒。 */
+.episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh { border:1px solid var(--episode-border); background:var(--episode-control); color:var(--episode-text); }
+.episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:hover { border-color:#51606e; background:#222c36; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:focus-visible { outline:2px solid var(--episode-accent); outline-offset:2px; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh .detail-video-action-cost { border-left-color:#35414d; }
+.episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh .detail-generate-sparkle { color:#aab7c2; }
+/* 2026-09-27 Product Design 改动逻辑：生成视频的实心底色比左侧描边按钮多显露上下各 1px；仅将其可见高度缩短 2px，让三项操作在工具栏内视觉等高。 */
+.episode-detail-workspace #detailGenerateButton { height:36px; }
+.episode-detail-workspace .detail-asset-refresh { cursor:pointer; }
+.episode-detail-workspace .detail-asset-refresh:disabled { opacity:.75; cursor:wait; }
+/* 2026-09-28 Product Design 改动逻辑：以提示词卡片实际宽度触发紧凑状态，兼容可拖拽的播放器宽度；先缩短三项文字，空间更窄时将操作组移到下一行，避免参数和按钮重叠。 */
+.episode-detail-workspace .detail-prompt-card { container-type:inline-size; }
+@container (max-width:1080px) {
+  .episode-detail-workspace .detail-storyboard-sync,
+  .episode-detail-workspace .detail-storyboard-sync.is-syncing { width:38px; min-width:38px; padding:0; }
+  .episode-detail-workspace .detail-storyboard-sync-label,
+  .episode-detail-workspace .detail-asset-refresh .detail-video-action-label { display:none; }
+  .episode-detail-workspace .detail-action-icon { display:block; }
+  .episode-detail-workspace .detail-storyboard-sync.is-syncing .detail-action-icon-sync { display:none; }
+  .episode-detail-workspace .detail-storyboard-sync-spinner { margin-right:0; }
+  .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh { min-width:0; }
+  .episode-detail-workspace .detail-asset-refresh .detail-action-icon { margin:0 10px; }
+}
+@container (max-width:850px) {
+  .episode-detail-workspace .detail-prompt-tools,
+  .episode-detail-workspace .detail-prompt-tool-left { flex-wrap:wrap; }
+  .episode-detail-workspace .detail-prompt-action-group { width:100%; flex-wrap:wrap; }
+}
+/* 2026-09-28 Product Design 修复逻辑：手机端同步操作仍横跨两列并居中显示图标，避免紧凑尺寸规则把它缩成左侧 38px 小块。 */
+@media (max-width:599.98px) {
+  .episode-detail-workspace .detail-storyboard-sync,
+  .episode-detail-workspace .detail-storyboard-sync.is-syncing { width:100%; }
+}
+.episode-detail-workspace .detail-reference-refresh-overlay { display:none; position:absolute; inset:0; z-index:7; border-radius:inherit; background:rgba(8,12,16,.72); pointer-events:none; }
+.episode-detail-workspace .detail-reference-card.is-refreshing .detail-reference-refresh-overlay { display:grid; place-items:center; }
+.episode-detail-workspace .detail-reference-refresh-overlay::after { content:""; width:25px; height:25px; border:3px solid rgba(187,250,66,.22); border-top-color:var(--episode-accent,#b8f84a); border-radius:50%; animation:detail-storyboard-sync-spin .72s linear infinite; }
+
+/* 2026-09-18 Product Design 改动逻辑：预览按钮增加定位容器，上方菜单在不挤压底部工具栏的前提下提供“当前视频 / 所有视频”二选一。 */
+.episode-detail-workspace .detail-storyboard-preview-wrap { position:relative; display:inline-flex; }
+/* 2026-09-18 Product Design 改动逻辑：人物站位素材严格由底部生成流程控制，hidden 状态不占用顶部参考素材栏空间。 */
+.episode-detail-workspace .detail-reference-card.character-positioning[hidden] { display:none !important; }
+.episode-detail-workspace .detail-storyboard-preview { cursor:pointer; transition:background .16s ease,border-color .16s ease,color .16s ease; }
+.episode-detail-workspace .detail-storyboard-preview:hover,
+.episode-detail-workspace .detail-storyboard-preview:focus-visible,
+.episode-detail-workspace .detail-storyboard-preview[aria-expanded="true"] { border-color:rgba(187,250,66,.64); background:#182219; color:#eaf8d8; outline:none; }
+.storyboard-preview-scope-menu { position:absolute; right:0; bottom:calc(100% + 11px); z-index:32200; width:210px; padding:7px; border:1px solid rgba(255,255,255,.13); border-radius:14px; background:#171d23; box-shadow:0 18px 46px rgba(0,0,0,.5); transform-origin:right bottom; animation:storyboard-preview-scope-in .16s ease-out; }
+.storyboard-preview-scope-menu[hidden] { display:none !important; }
+.storyboard-preview-scope-menu::after { content:""; position:absolute; right:24px; bottom:-6px; width:10px; height:10px; border-right:1px solid rgba(255,255,255,.13); border-bottom:1px solid rgba(255,255,255,.13); background:#171d23; transform:rotate(45deg); }
+.storyboard-preview-scope-menu button { position:relative; z-index:1; width:100%; min-height:54px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; padding:8px 11px; border:0; border-radius:9px; background:transparent; color:#edf1f4; font:inherit; text-align:left; cursor:pointer; }
+.storyboard-preview-scope-menu button + button { margin-top:3px; }
+.storyboard-preview-scope-menu button:hover,
+.storyboard-preview-scope-menu button:focus-visible { background:#26301f; color:var(--episode-accent,#b8f84a); outline:none; }
+.storyboard-preview-scope-menu button span { font-size:13px; font-weight:760; }
+.storyboard-preview-scope-menu button small { color:#89939d; font-size:11px; font-weight:500; }
+.storyboard-preview-scope-menu button:hover small,
+.storyboard-preview-scope-menu button:focus-visible small { color:#bdc8b4; }
+@keyframes storyboard-preview-scope-in { from { opacity:0; transform:translateY(7px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* 2026-09-18 Product Design 改动逻辑：选择范围后用居中加载卡覆盖工作区一秒；状态层高于范围菜单与普通弹窗，防止等待期间重复操作。 */
+.storyboard-preview-loading { position:fixed; inset:0; z-index:32300; display:grid; place-items:center; padding:20px; background:rgba(2,5,8,.62); backdrop-filter:blur(5px); }
+.storyboard-preview-loading[hidden] { display:none !important; }
+.storyboard-preview-loading-card { min-width:220px; display:flex; flex-direction:column; align-items:center; gap:8px; padding:26px 30px; border:1px solid rgba(255,255,255,.12); border-radius:17px; background:#171d23; color:#f1f4f6; box-shadow:0 24px 70px rgba(0,0,0,.55); }
+.storyboard-preview-loading-spinner { width:30px; height:30px; margin-bottom:4px; border:3px solid rgba(187,250,66,.18); border-top-color:var(--episode-accent,#b8f84a); border-radius:50%; animation:detail-storyboard-sync-spin .72s linear infinite; }
+.storyboard-preview-loading-card strong { font-size:14px; line-height:1.5; }
+.storyboard-preview-loading-card > span:last-child { color:#8f99a3; font-size:12px; }
+
+/* 2026-09-16 改动逻辑：未同步分镜的生成确认弹窗沿用深色工作台与青柠主操作，两个按钮直接对应“保持原提示词生成”和“同步后生成”。 */
+.storyboard-sync-confirm-modal { position:fixed; inset:0; z-index:32100; display:grid; place-items:center; padding:20px; background:rgba(2,5,8,.72); backdrop-filter:blur(6px); }
+.storyboard-sync-confirm-modal[hidden] { display:none !important; }
+.storyboard-sync-confirm-dialog { width:min(480px,calc(100vw - 40px)); padding:28px; border:1px solid rgba(255,255,255,.12); border-radius:18px; background:#171c22; color:#f2f5f7; box-shadow:0 28px 80px rgba(0,0,0,.58); }
+.storyboard-sync-confirm-dialog h2 { margin:0 0 12px; font-size:20px; line-height:1.4; }
+.storyboard-sync-confirm-dialog p { margin:0; color:#aab3bc; font-size:14px; line-height:1.75; }
+.storyboard-sync-confirm-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
+.storyboard-sync-confirm-actions button { min-height:40px; padding:0 16px; border:1px solid #3a434d; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; }
+.storyboard-sync-confirm-secondary { background:#222931; color:#e4e8eb; }
+.storyboard-sync-confirm-primary { border-color:var(--episode-accent,#b8f84a) !important; background:var(--episode-accent,#b8f84a); color:#132006; }
+.storyboard-sync-confirm-actions button:hover,.storyboard-sync-confirm-actions button:focus-visible { filter:brightness(1.08); outline:2px solid rgba(187,250,66,.3); outline-offset:2px; }
+@media (max-width:599.98px) { .storyboard-sync-confirm-actions { flex-direction:column-reverse; } .storyboard-sync-confirm-actions button { width:100%; } }
+
+/* 2026-09-26 Product Design 改动逻辑：分镜弹窗只展示完整 16:9 静态整图和关闭按钮，延续页面深色遮罩，缩放时保持图片比例与文字可读。 */
+body.storyboard-preview-open { overflow:hidden; }
+.storyboard-preview-modal { position:fixed; inset:0; z-index:32000; display:grid; place-items:center; padding:clamp(10px,2.4vw,40px); background:rgba(2,5,8,.9); backdrop-filter:blur(10px); }
+.storyboard-preview-modal[hidden] { display:none !important; }
+.storyboard-preview-dialog { position:relative; box-sizing:border-box; width:min(1580px,calc(100vw - 48px)); max-height:calc(100dvh - 48px); padding:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); border-radius:22px; background:#0a0d10; box-shadow:0 34px 110px rgba(0,0,0,.72); }
+.storyboard-preview-close { position:absolute; top:28px; right:28px; z-index:3; width:42px; height:42px; display:grid; place-items:center; padding:0; border:1px solid rgba(255,255,255,.22); border-radius:50%; background:rgba(8,12,16,.76); color:#f4f6f7; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.28); transition:background .16s ease,border-color .16s ease,color .16s ease; }
+.storyboard-preview-close svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+.storyboard-preview-close:hover,.storyboard-preview-close:focus-visible { border-color:var(--episode-accent,#b8f84a); background:#19231a; color:var(--episode-accent,#b8f84a); outline:none; }
+.storyboard-preview-stage { width:100%; max-height:calc(100dvh - 80px); display:grid; place-items:center; overflow:hidden; border:1px solid rgba(255,255,255,.1); border-radius:15px; background:#000; }
+.storyboard-preview-stage > img { width:100%; height:auto; max-height:calc(100dvh - 82px); display:block; object-fit:contain; }
+@media (max-width:760px) {
+  .storyboard-preview-dialog { width:calc(100vw - 20px); max-height:calc(100dvh - 20px); padding:10px; border-radius:16px; }
+  .storyboard-preview-close { top:18px; right:18px; width:38px; height:38px; }
+  .storyboard-preview-stage { max-height:calc(100dvh - 42px); }
+  .storyboard-preview-stage > img { max-height:calc(100dvh - 44px); }
+  .episode-detail-workspace .detail-storyboard-preview-wrap { width:100%; }
+  .episode-detail-workspace .detail-storyboard-preview-wrap .detail-storyboard-preview { width:100%; min-width:0; }
+  .storyboard-preview-scope-menu { right:auto; left:0; width:min(240px,calc(100vw - 28px)); transform-origin:left bottom; }
+}
+
+/* 2026-09-22 Product Design 改动逻辑：镜号在完整行高中垂直居中，整行 hover 时原位切换垃圾桶；分隔线加号浮在镜号列底边，不额外占用行高。 */
+.detail-storyboard td.storyboard-index-cell { position:relative; vertical-align:middle; height:100px; }
+.storyboard-row-number { display:inline-block; }
+.storyboard-row-delete { position:absolute; inset:50% auto auto 50%; transform:translate(-50%,-50%); width:30px; height:30px; display:grid; place-items:center; border:0; border-radius:7px; background:transparent; cursor:pointer; opacity:0; pointer-events:none; }
+.storyboard-row-delete .episode-outline-trash-icon { position:relative; width:18px; height:18px; opacity:1; }
+/* 2026-09-22 改动逻辑：删除图标及镜号切换只由当前行 hover 驱动；单元格保留编辑焦点时不显示该行删除按钮，避免与鼠标所在行同时出现两个垃圾桶。 */
+.detail-storyboard tr:hover .storyboard-row-delete { opacity:1; pointer-events:auto; }
+.detail-storyboard tr:hover:has(.storyboard-row-delete) .storyboard-row-number { visibility:hidden; }
+.storyboard-row-delete:hover { background:rgba(239,92,92,.15); }
+.storyboard-row-add { position:absolute; z-index:2; bottom:-13px; left:50%; transform:translateX(-50%); width:26px; height:26px; display:grid; place-items:center; padding:0; border:1px solid #56616b; border-radius:50%; background:#202a34; color:#bbfa42; font-size:23px; line-height:1; cursor:pointer; opacity:0; pointer-events:none; }
+.is-insert-boundary .storyboard-row-add,
+.storyboard-row-add:focus-visible,
+.storyboard-row-add:hover { opacity:1; pointer-events:auto; }
+.storyboard-row-add:hover { border-color:#bbfa42; background:#303d29; }
+.storyboard-row-delete:focus-visible,
+.storyboard-row-add:focus-visible { outline:2px solid #bbfa42; outline-offset:2px; }
+.detail-storyboard tbody tr:last-child .storyboard-row-add { bottom:0; }
+.storyboard-row-tooltip { position:fixed; z-index:10020; transform:translateY(-50%); padding:7px 10px; border:1px solid #3b4651; border-radius:7px; background:#252d36; color:#e6ebef; font-size:12px; white-space:nowrap; pointer-events:none; box-shadow:0 4px 16px #0005; }
+.storyboard-row-tooltip[hidden] { display:none; }
+.storyboard-row-delete-dialog { width:min(420px,calc(100vw - 48px)); box-sizing:border-box; margin:auto; color:#e6ebef; border:1px solid #35404a; border-radius:18px; padding:26px; background:#151c24; }
+.storyboard-row-delete-dialog::backdrop { background:rgba(0,0,0,.65); }
+.storyboard-row-delete-dialog h2 { margin:0 0 14px; font-size:20px; }
+.storyboard-row-delete-dialog p { color:#aeb7c1; font-size:14px; line-height:1.7; }
+.storyboard-row-delete-dialog [data-confirm] { background:#ef6262; color:#fff; }
+.storyboard-empty-add { display:block; margin:24px auto; padding:10px 18px; border:1px solid #56616b; border-radius:8px; background:#202a34; color:#bbfa42; cursor:pointer; }
+
+/* 2026-09-26 Product Design 改动逻辑：顶部预览卡使用同一张分镜整图作为封面，以 contain 保留四格画面而不裁成单镜头。 */
+.episode-detail-workspace .detail-reference-card.storyboard-preview-reference { background-image:url('./storyboard-preview/storyboard-sheet.png') !important; background-size:contain; background-repeat:no-repeat; background-position:center; background-color:#0a0d10; }
+.episode-detail-workspace .detail-reference-card.storyboard-preview-reference[hidden] { display:none !important; }
+.storyboard-reference-open { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; border-radius:inherit; background:transparent; cursor:pointer; }
+.storyboard-reference-open:focus-visible { outline:2px solid var(--episode-accent,#b8f84a); outline-offset:2px; }
+
+/* 2026-10-01 Product Design 改动逻辑：短剧视频参考素材栏的横向滚动会裁切卡片外侧的关闭按钮，
+   因此将按钮完整放入右上角内侧；悬停或键盘聚焦时提高当前卡片层级，避免相邻素材覆盖按钮和名称气泡。 */
+.episode-detail-workspace .detail-reference-card:hover,
+.episode-detail-workspace .detail-reference-card:focus-within { z-index:10; }
+.episode-detail-workspace .detail-reference-remove { top:4px; right:4px; }
+.episode-detail-workspace .detail-reference-card:focus-within .detail-reference-remove { opacity:1; }

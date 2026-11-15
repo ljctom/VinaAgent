@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="106.667" height="106.667" viewBox="0 0 106.667 106.667" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Points Icon">
+<g id="Ellipse 1" filter="url(#filter0_i_0_16)">
+<circle cx="53.3333" cy="53.3333" r="53.3333" fill="url(#paint0_linear_0_16)"/>
+</g>
+<path id="Vector" d="M88.8861 53.3319C88.8861 53.3319 70.7341 51.6679 62.9044 44.1799C55.0709 36.6955 53.3306 8.8875 53.3306 8.8875C53.3306 8.8875 51.5939 36.6919 43.7568 44.1799C35.927 51.6715 17.775 53.3319 17.775 53.3319C17.775 53.3319 35.927 54.9959 43.7568 62.4804C51.5902 69.9719 53.3306 97.7764 53.3306 97.7764C53.3306 97.7764 55.0709 69.9719 62.9044 62.4804C70.7341 54.9959 88.8861 53.3319 88.8861 53.3319Z" fill="#080D12"/>
+</g>
+<defs>
+<filter id="filter0_i_0_16" x="0" y="0" width="117.333" height="117.333" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="10.6667" dy="10.6667"/>
+<feGaussianBlur stdDeviation="10.6667"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_0_16"/>
+</filter>
+<linearGradient id="paint0_linear_0_16" x1="15.5556" y1="17.7778" x2="82.2222" y2="97.7778" gradientUnits="userSpaceOnUse">
+<stop stop-color="#00FF90"/>
+<stop offset="0.682692" stop-color="#B8EC64"/>
+<stop offset="0.980769" stop-color="#FAFF9F"/>
+</linearGradient>
+</defs>
+</svg>

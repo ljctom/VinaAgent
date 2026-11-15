@@ -1,0 +1,265 @@
+/* 2026-10-01 Product Design 改动逻辑：依据 Figma「Skill / 广场 / 精选、收藏、我的」及使用 Hover 设计，
+   仅覆盖独立技能市场的排版、颜色、图标和响应式展示。继续复用原 HTML、目录数据、视频、筛选状态及按钮事件；
+   不修改首页/画布 Skill 选择器、共享大弹窗或创建 Skill 的业务流程。 */
+body[data-primary-view="skill-library"] { background: #080d12; }
+body[data-primary-view="skill-library"] .app::before { background: #080d12; }
+.skill-library-page:not(.is-modal) {
+  --skill-page-bg: #080d12;
+  --skill-card-bg: #171e27;
+  --skill-border: #2b3642;
+  --skill-text: #f5f7fa;
+  --skill-secondary: #9aa6b2;
+  padding: 76px 32px 48px;
+  background: var(--skill-page-bg);
+}
+.skill-library-page:not(.is-modal) .skill-store-panel { position: relative; }
+/* 改动逻辑：移除旧标题行的占位与负边距，用一级 Tab 本身承载 42px 导航行；
+   标题保留为屏幕阅读器可读内容，创建按钮使用原节点定位到同一行右侧。 */
+.skill-library-page:not(.is-modal) .skill-popover-head {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 0;
+  height: 0;
+  padding: 0;
+  z-index: 2;
+}
+.skill-library-page:not(.is-modal) .skill-popover-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skill-library-page:not(.is-modal) .skill-popover-actions { padding: 0; }
+.skill-library-page:not(.is-modal) .skill-create {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 16px;
+  gap: 6px;
+  border: 1px solid var(--skill-border);
+  border-radius: 8px;
+  color: var(--skill-secondary);
+  background: var(--skill-page-bg);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: nowrap;
+}
+/* 改动逻辑：加号使用 Figma 原始本地图标；伪元素只负责图标展示，点击仍落在原创建按钮上。 */
+.skill-library-page:not(.is-modal) .skill-create::before {
+  content: "";
+  flex: 0 0 13.984px;
+  width: 13.984px;
+  height: 13.984px;
+  background: url("./icons/skill-market/create.svg") center / 13.984px 13.984px no-repeat;
+}
+.skill-library-page:not(.is-modal) .skill-create:hover {
+  color: var(--skill-text);
+  border-color: #526173;
+  background: #171e27;
+}
+.skill-library-page:not(.is-modal) .skill-library-tabs {
+  min-height: 42px;
+  margin: 0;
+  padding: 0 140px 1px 0;
+  gap: 34px;
+  align-items: stretch;
+  border-bottom: 1px solid var(--skill-border);
+}
+.skill-library-page:not(.is-modal) .skill-library-tab {
+  min-height: 40px;
+  padding: 2px 0 14px;
+  color: var(--skill-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.skill-library-page:not(.is-modal) .skill-library-tab.active { color: var(--skill-text); }
+.skill-library-page:not(.is-modal) .skill-library-tab.active::after {
+  bottom: -1px;
+  height: 2px;
+  background: var(--skill-text);
+}
+/* 改动逻辑：分类复用原有五个按钮，外层改为单个分段胶囊，选中项使用深灰填充；
+   hidden 仍由原脚本控制，因此收藏、我的不显示业务分类且创建按钮不随分类隐藏。 */
+.skill-library-page:not(.is-modal) .skill-tabs {
+  width: max-content;
+  max-width: 100%;
+  min-height: 48px;
+  margin: 18px 0 0;
+  padding: 4px;
+  gap: 2px;
+  border: 1px solid var(--skill-border);
+  border-radius: 999px;
+  background: var(--skill-card-bg);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.skill-library-page:not(.is-modal) .skill-tabs::-webkit-scrollbar { display: none; }
+.skill-library-page:not(.is-modal) .skill-tab {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--skill-secondary);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.skill-library-page:not(.is-modal) .skill-tab.active {
+  color: var(--skill-text);
+  background: var(--skill-border);
+  font-weight: 500;
+}
+.skill-library-page:not(.is-modal) .skill-tab:not(.active):hover { color: var(--skill-text); background: #202936; }
+/* 改动逻辑：五列卡片采用设计稿的 14px 间距；缩小窗口时只改变列数，不改变数据顺序或筛选逻辑。 */
+.skill-library-page:not(.is-modal) .skill-list {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  padding: 24px 0 0;
+  align-items: start;
+}
+.skill-library-page:not(.is-modal) .skill-item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--skill-border);
+  border-radius: 8px;
+  background: var(--skill-card-bg);
+  color: var(--skill-text);
+}
+/* 改动逻辑：封面改为设计稿的 2:1 卡片媒体区，沿用原动态图片和视频来源；裁切由 object-fit 完成。 */
+.skill-library-page:not(.is-modal) .skill-media {
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  border: 0;
+  border-radius: 0;
+  background: #0f151c;
+  box-shadow: none;
+}
+.skill-library-page:not(.is-modal) .skill-item-copy { padding: 16px; }
+.skill-library-page:not(.is-modal) .skill-name {
+  height: 22px;
+  overflow: hidden;
+  color: var(--skill-text);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.skill-library-page:not(.is-modal) .skill-desc {
+  height: 36px;
+  margin-top: 8px;
+  color: var(--skill-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  -webkit-line-clamp: 2;
+}
+.skill-library-page:not(.is-modal) .skill-item-actions {
+  height: 34px;
+  margin-top: 8px;
+  padding-top: 4px;
+  gap: 8px;
+}
+.skill-library-page:not(.is-modal) .skill-use {
+  min-width: 56px;
+  height: 30px;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--skill-text);
+  background: #202936;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+.skill-library-page:not(.is-modal) .skill-use:hover,
+.skill-library-page:not(.is-modal) .skill-use:focus-visible { color: #0d1308; background: #b8f84a; }
+/* 改动逻辑：收藏/删除沿用原按钮、aria 状态和事件，按设计稿常驻操作行右侧；
+   收藏仅将星标视觉换为 Figma 心形，是否已收藏仍由既有 is-favorite 类驱动。 */
+.skill-library-page:not(.is-modal) .skill-item-actions .skill-favorite,
+.skill-library-page:not(.is-modal) .skill-item-actions .skill-delete {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--skill-border);
+  color: var(--skill-secondary);
+  background: rgba(8, 13, 18, .7);
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  backdrop-filter: blur(8px);
+}
+.skill-library-page:not(.is-modal) .skill-favorite svg { display: none; }
+.skill-library-page:not(.is-modal) .skill-favorite::before {
+  content: "";
+  width: 15.998px;
+  height: 15.998px;
+  background: url("./icons/skill-market/favorite.svg") center / 15.998px 15.998px no-repeat;
+  pointer-events: none;
+}
+.skill-library-page:not(.is-modal) .skill-favorite.is-favorite::before {
+  background-image: url("./icons/skill-market/favorite-active.svg");
+}
+.skill-library-page:not(.is-modal) .skill-item-actions .skill-favorite:hover { border-color: #ff5c7a; }
+.skill-library-page:not(.is-modal) .skill-item-actions .skill-delete:hover { color: #ff5c7a; border-color: #ff5c7a; }
+.skill-library-page:not(.is-modal) .skill-delete svg { width: 16px; height: 16px; }
+.skill-library-page:not(.is-modal) button:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+.skill-library-page:not(.is-modal) .skill-empty-state { color: var(--skill-secondary); }
+/* 改动逻辑：市场内既有删除确认框同步采用设计稿配色、24px 圆角和胶囊按钮；
+   保留确认文字及取消/删除处理，不新增个人卡片收藏等当前未提供的能力。 */
+body[data-primary-view="skill-library"] .skill-delete-confirm { background: rgba(0, 0, 0, .55); backdrop-filter: none; }
+body[data-primary-view="skill-library"] .skill-delete-confirm-dialog {
+  width: min(400px, calc(100vw - 48px));
+  padding: 24px;
+  border-color: #2b3642;
+  border-radius: 24px;
+  background: #171e27;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .55);
+}
+body[data-primary-view="skill-library"] .skill-delete-confirm-title { font-size: 16px; font-weight: 500; line-height: 24px; }
+body[data-primary-view="skill-library"] .skill-delete-confirm-copy { margin-top: 16px; color: #9aa6b2; font-size: 14px; font-weight: 400; line-height: 20px; }
+body[data-primary-view="skill-library"] .skill-delete-confirm-actions { margin-top: 48px; gap: 12px; }
+body[data-primary-view="skill-library"] .skill-delete-confirm-actions button {
+  min-width: 108px;
+  height: 32px;
+  padding: 6px 20px;
+  border: 0;
+  border-radius: 24px;
+  color: #fff;
+  background: #2b3642;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+body[data-primary-view="skill-library"] .skill-delete-confirm-actions .is-danger { color: #0d1308; background: #ff5c7a; font-weight: 500; }
+body[data-primary-view="skill-library"] .skill-delete-confirm-actions .is-danger:hover { background: #ff8098; }
+@media (max-width: 1440px) {
+  .skill-library-page:not(.is-modal) .skill-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 1120px) {
+  .skill-library-page:not(.is-modal) .skill-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  .skill-library-page:not(.is-modal) { padding-inline: 20px; }
+  .skill-library-page:not(.is-modal) .skill-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .skill-library-page:not(.is-modal) { padding: 76px 16px 32px; }
+  .skill-library-page:not(.is-modal) .skill-library-tabs { gap: 20px; padding-right: 120px; }
+  .skill-library-page:not(.is-modal) .skill-create { padding-inline: 10px; }
+  .skill-library-page:not(.is-modal) .skill-tab { padding-inline: 14px; }
+  .skill-library-page:not(.is-modal) .skill-list { grid-template-columns: minmax(0, 1fr); }
+}

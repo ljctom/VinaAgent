@@ -1,0 +1,170 @@
+/* 2026-10-10 Product Design 改动逻辑：从「设计参考」home-v15-glass.css 与
+   merged-design-system.css 提取首页输入区域配色。仅覆盖背景、文字、边线和光标颜色，
+   不移植参考的尺寸、字体、圆角、间距、曲线遮罩、波点背景或业务脚本。 */
+.view[data-view="canvas"] .home-composer-card {
+  --home-input-surface: #111820;
+  --home-toolbar-fill: #202832;
+  --home-toolbar-hover: #29323d;
+  --home-toolbar-text: #d5dbe3;
+}
+.view[data-view="canvas"] .home-composer-card .composer,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] {
+  background: linear-gradient(135deg, rgba(185,202,216,.012), transparent 63%, rgba(255,255,255,.006)), #111820 !important;
+  color: #f5f7fa;
+}
+/* 短剧三种内容面共享整卡底色，避免原 #1c1c1c 覆盖参考配色；不改面板形状。 */
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.home-drama-reference-panel, .ai-script-box) {
+  background: transparent !important;
+  color: #f5f7fa;
+}
+/* 三个短剧 Tab 只换底色和文字色。保留原曲线伪元素、mask、圆角、尺寸与位置，
+   选中 Tab 两侧曲线填充跟随选中底色，维持原有完整轮廓。 */
+.view[data-view="canvas"] .home-drama-tabs {
+  background: rgba(8,13,18,.35);
+}
+.view[data-view="canvas"] .home-drama-tab,
+.view[data-view="canvas"] .home-drama-tab:nth-child(2) {
+  background: transparent;
+  color: #9aa6b2;
+}
+.view[data-view="canvas"] .home-drama-tab:not(.active):hover {
+  background: #1a222c;
+  color: #d5dbe3;
+}
+.view[data-view="canvas"] .home-drama-tab.active,
+.view[data-view="canvas"] .home-drama-tab.active::before,
+.view[data-view="canvas"] .home-drama-tab.active::after {
+  background: #2b3642;
+  color: #fff;
+}
+/* 标题及主切换胶囊采用参考白字、品牌绿与白色选中项，仅增加 AI 的颜色挂钩。 */
+.view[data-view="canvas"] #main-title.home-agent-title {
+  color: #f5f7fa;
+}
+.view[data-view="canvas"] .home-title-brand > span {
+  color: #b8f84a;
+}
+.view[data-view="canvas"] .home-agent-tabs {
+  background: #171e27;
+  border-color: transparent;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+  background: transparent;
+  color: #9aa6b2;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  background: #fff;
+  color: #080d12;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:not(.active):hover {
+  background: #222b35;
+  color: #f5f7fa;
+}
+/* 正文、提示文字和输入光标仅同步颜色，不调整字号、字重或行距。 */
+.view[data-view="canvas"] .home-composer-card :is(#canvasPrompt, .home-canvas-mention-editor, [data-home-drama-script-text]) {
+  color: #f5f7fa;
+  caret-color: #b8f84a;
+}
+.view[data-view="canvas"] .home-composer-card textarea::placeholder,
+.view[data-view="canvas"] .home-canvas-mention-editor:empty::before {
+  color: #9aa6b2 !important;
+}
+/* 输入区胶囊与加号按钮仅更换常态及悬停颜色，保留当前边框尺寸和业务状态。 */
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools, .drama-generate-tools) :is(.tool-btn, .select-chip, .home-generation-mode-trigger, .home-inspiration-trigger, .drama-option) {
+  background: #202832 !important;
+  color: #d5dbe3 !important;
+}
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools, .drama-generate-tools) :is(.tool-btn, .select-chip, .home-generation-mode-trigger, .home-inspiration-trigger, .drama-option):is(:hover, [aria-expanded="true"]) {
+  background: #29323d !important;
+  color: #d5dbe3 !important;
+}
+/* 上传框与上传入口沿用参考配色，不改虚线样式、框大小或上传行为。 */
+.view[data-view="canvas"] .home-composer-card .home-drama-dropzone {
+  background: rgba(15,21,28,.6);
+  border-color: #2b3642;
+  color: #9aa6b2;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-dropzone p {
+  color: #9aa6b2;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-dropzone:is(:hover, .is-dragover) {
+  background: #171e27;
+  border-color: #3a4654;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-upload-primary {
+  background: #b8f84a;
+  color: #0d1308;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-upload-primary:hover {
+  background: #cfff5a;
+}
+.view[data-view="canvas"] .home-composer-card .home-drama-upload-primary:active {
+  background: #9fdb3e;
+}
+/* 发送按钮只替换现有启用、禁用及悬停状态配色，不改变 disabled 或 is-ready 逻辑。 */
+.view[data-view="canvas"] .home-composer-card :is(#canvasSend, .generate-now):disabled {
+  background: #3d4f2a !important;
+  color: #0d1308 !important;
+}
+.view[data-view="canvas"] .home-composer-card :is(#canvasSend, .generate-now):not(:disabled) {
+  background: #b8f84a !important;
+  color: #0d1308 !important;
+}
+.view[data-view="canvas"] .home-composer-card :is(#canvasSend, .generate-now):not(:disabled):hover {
+  background: #cfff5a !important;
+}
+.view[data-view="canvas"] .home-composer-card :is(#canvasSend, .generate-now):not(:disabled):active {
+  background: #9fdb3e !important;
+}
+
+/* 2026-10-14 Product Design 改动逻辑：按照用户红框把首页生成模式弹窗改为
+   按钮左侧对齐、向下展开，保留既有尺寸、选项说明与模式切换逻辑。
+   展开时释放输入卡的裁切，确保弹窗可以覆盖下方精选 Skills 区域。 */
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-menu {
+  top: calc(100% + 8px);
+  bottom: auto;
+  left: 0;
+  right: auto;
+}
+.view[data-view="canvas"] .home-composer-card .composer:has(.home-generation-mode.open) {
+  overflow: visible;
+}
+/* 2026-10-14 改动逻辑：仅参考 Ego 打开的 agent-test.vinaai.tv 首页菜单颜色。
+   截图采样：底色 #181e27、边框 #2d3641、常态文字 #d6dbe3、
+   选中项 #090d11 / #ffffff、勾选 #c6f661；不移植参考菜单的布局或内容。 */
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-menu {
+  background: #181e27;
+  border-color: #2d3641;
+  color: #d6dbe3;
+}
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-desc {
+  color: #9aa6b2;
+}
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-option:is(:hover, :focus-visible, .is-active) {
+  background: #090d11;
+  color: #fff;
+}
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-option:focus-visible {
+  outline: 1px solid #c6f661;
+  outline-offset: -1px;
+}
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-check {
+  color: #c6f661;
+}
+
+/* 2026-10-14 Product Design 修复逻辑：参考站原始 SVG 直接嵌入首页，
+   不再依赖外部 mask 请求，避免本地文件预览中自动图标空白。
+   原图是填充路径，明确取消通用图标描边并使用 currentColor 填充；
+   沿用现有 enabled 模式状态切换按钮图标，不修改生成业务逻辑。 */
+.view[data-view="canvas"] .home-composer-card .home-generation-mode-auto-icon {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  fill: currentColor;
+  stroke: none;
+}
+.view[data-view="canvas"] .home-composer-card .home-generation-mode:not(.enabled) .home-generation-mode-trigger .home-generation-mode-auto-icon,
+.view[data-view="canvas"] .home-composer-card .home-generation-mode.enabled .home-generation-mode-trigger .home-generation-mode-manual-icon {
+  display: none;
+}

@@ -1,0 +1,119 @@
+/* 2026-09-30 Product Design 改动逻辑：沿用 Figma 设计规范 91:2 的颜色。
+ * 设定/剧本复用大纲颜色变量；所有短剧步骤的顶栏统一品牌绿选中态与完成态。
+ * 本文件放在现有样式之后，覆盖颜色而不改变结构、布局、字号、圆角、事件或状态。
+ * 图片资源、缩略图背景、图片滤镜、预设遮罩与图标文件保持原样；预设只调整描边与文字颜色。
+ * 阴影仅在原几何参数上替换强调颜色，所有交互继续由原脚本处理。
+ */
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status { background: rgba(15,21,28,.6); border-bottom-color: rgba(255,255,255,.06); color: #f5f7fa; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .script-back { background: #171e27; color: #9aa6b2; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .script-back:hover { background: #3a4654; color: #f5f7fa; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .script-back-title { color: #f5f7fa; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .steps { color: #4d5865; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step { background: #141a21; border-color: #222b35; color: #4d5865; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step-num { background: #222b35; color: #6f7b88; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step.complete { color: #d5dbe3; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step.complete .step-num { background: rgba(184,248,74,.1216); color: #b8f84a; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step.active { background: rgba(184,248,74,.1216); border-color: #b8f84a; color: #f5f7fa; box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(184,248,74,.08); }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step.active .step-num { background: #b8f84a; color: #0d1308; box-shadow: 0 8px 22px rgba(184,248,74,.24); }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .step-line { background: #2b3642; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status :focus-visible { outline-color: #b8f84a; }
+/* 单集编辑/审片顶部现有视图切换继续使用原布局，只调整选中底与文字。 */
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status :is(.episode-video-mode-tabs, .episode-switcher-menu) { background: #171e27; border-color: #2b3642; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status :is(.episode-video-mode-tabs button, .episode-switcher-toggle) { color: #9aa6b2; }
+body.drama-workflow-active :is(.script-workspace[data-view="script-studio"], .asset-workspace[data-view="asset-library"], .episode-workspace, .episode-detail-workspace, .episode-review-workspace) .script-status .episode-video-mode-tabs button[aria-selected="true"] { background: rgba(184,248,74,.1216); color: #b8f84a; }
+
+/* 设定页：大底、选项、浮层和文字层级。仅覆盖纯色容器，不覆盖图片背景。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage][data-setup-page="true"],
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage][data-setup-page="true"] > .script-setup-overlay { background: var(--outline-page); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage][data-setup-page="true"] .script-setup-panel-wrap,
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage][data-setup-page="true"] .script-setup-panel { background: transparent; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-title, .script-setup-choice-title, .script-setup-genres-title, .setup-tile-value, .script-setup-selection-name) { color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-presets-heading .script-setup-label { color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.setup-tile-label, .script-setup-field > span, .script-setup-selection-meta) { color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-choice-title small, .script-setup-presets-hint) { color: var(--outline-caption); }
+/* 2026-09-30 Product Design 修正逻辑：设定框恢复历史版本 2026-09-30_17-44-06 的两档灰色。
+ * 未选中为 #161616 上的 0~6% 白色渐变，已选中/展开为 #212121 上的 6% 白色；
+ * 两种状态均恢复 16% 白色描边，悬停叠加 4% 白色，图标容器恢复 #333 与 #454545 边框。
+ * 仅恢复设定框颜色，弹窗内选中选项继续使用品牌绿色；图片、布局及选择逻辑保持原样。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-panel.has-setup-tiles .setup-tile-button {
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.06) 100%), linear-gradient(#161616, #161616);
+  border-color: rgba(255,255,255,.16);
+  color: #f4f4f4;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-panel.has-setup-tiles .setup-tile-button:hover {
+  background: linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04)), linear-gradient(180deg, transparent 0%, rgba(255,255,255,.06) 100%), linear-gradient(#161616, #161616);
+  border-color: rgba(255,255,255,.16);
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-panel.has-setup-tiles .setup-tile-button:is(.has-selection, .is-open) {
+  background: linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)), linear-gradient(#212121, #212121);
+  border-color: rgba(255,255,255,.16);
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-panel.has-setup-tiles .setup-tile-button:is(.has-selection, .is-open):hover {
+  background: linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04)), linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)), linear-gradient(#212121, #212121);
+  border-color: rgba(255,255,255,.16);
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .setup-tile-icon { background: #333; border-color: #454545; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .setup-tile-label { color: #a0a0a0; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-panel.has-setup-tiles .setup-tile-value { color: #f4f4f4; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.setup-tile-popup, .episode-count-popover, .style-popover, .drama-model-popover, .script-version-popover) { background: var(--outline-container); border-color: var(--outline-border); color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.setup-tile-popup .episode-count-option, .setup-tile-popup .script-setup-genre, .script-setup-genre, .episode-count-option) { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-copy); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.setup-tile-popup .episode-count-option, .setup-tile-popup .script-setup-genre, .script-setup-genre, .episode-count-option):hover { border-color: var(--outline-border-focus); color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.episode-count-option.active, .episode-count-option[aria-selected="true"], .script-setup-genre[aria-pressed="true"]) { background: var(--outline-brand-subtle); border-color: var(--outline-brand); color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-tabs, .script-setup-segmented) { background: var(--outline-card); border-color: var(--outline-border); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-tab, .script-setup-segmented button) { color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-tab.active, .script-setup-segmented button.active) { background: var(--outline-brand-subtle); color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-field select, .script-setup-select-trigger, .script-setup-count-control > .episode-count-trigger, .script-setup-custom textarea, .script-setup-genre-input, .episode-count-input) { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-field select, .script-setup-select-trigger, .script-setup-count-control > .episode-count-trigger, .script-setup-custom textarea, .script-setup-genre-input, .episode-count-input):focus { border-color: var(--outline-border-focus); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-confirm, .script-setup-genre-save) { background: var(--outline-brand); border-color: var(--outline-brand); color: var(--outline-inverse); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-confirm, .script-setup-genre-save):hover:not(:disabled) { background: var(--outline-brand-hover); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-confirm, .script-setup-genre-save):active:not(:disabled) { background: var(--outline-brand-active); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-setup-confirm, .script-setup-genre-save):disabled { background: var(--outline-brand-disabled); border-color: var(--outline-border-disabled); color: var(--outline-disabled-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-selection { background: var(--outline-brand-subtle); border-color: var(--outline-border); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-selection-badge { background: var(--outline-brand-subtle); color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-style-card.active { border-color: var(--outline-brand); box-shadow: 0 0 0 1px rgba(184,248,74,.3), 0 12px 26px rgba(0,0,0,.34); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-preset { color: var(--outline-text); border-color: var(--outline-border); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-preset:hover { border-color: var(--outline-border-focus); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-setup-preset[aria-pressed="true"] { border-color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :focus-visible { outline-color: var(--outline-brand); }
+
+/* 剧本页：分场、正文、集数入口及操作反馈沿用规范；保留动作/对白/人物的颜色区分。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .detail-head { background: var(--outline-container); border-bottom-color: var(--outline-border-light); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.episode-title h2, .script-scene-card-title, .script-version-name) { color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-scene-card, .script-version-btn, .detail-history-btn) { background: var(--outline-card); border-color: var(--outline-border); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-card-head { border-bottom-color: var(--outline-border-light); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-card-title.is-episode-summary-title { color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-scene-card-body, .script-scene-line-content, .script-scene-line-triangle, .script-scene-empty-input, .script-selection-preview, .script-message-selection-text) { color: var(--outline-copy); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-scene-card-meta, .script-episode-summary-characters, .episode-title p) { color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-version-date, .script-selection-caption) { color: var(--outline-caption); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-line-label.is-description { color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-line-label.is-dialogue { color: #4da3ff; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-line-label.is-character { color: #ffcb4d; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-empty-input::placeholder { color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-rail { background: var(--outline-container); border-color: var(--outline-border); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-rail-heading { border-bottom-color: var(--outline-border-light); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-label { color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-pill { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-secondary); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-pill:hover { background: var(--outline-card); border-color: var(--outline-border-focus); color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .episode-pill.active { background: var(--outline-brand); border-color: var(--outline-brand); color: var(--outline-inverse); box-shadow: 0 10px 26px rgba(184,248,74,.22); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-insert { background: var(--outline-brand-subtle); border-color: var(--outline-brand-disabled); color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-insert:hover,
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-insert:focus-visible { background: var(--outline-brand-subtle); border-color: var(--outline-brand-hover); color: var(--outline-brand-hover); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-add-button { color: var(--outline-caption); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-add-button::before { border-color: var(--outline-border-focus); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-add-button:is(.is-active, :hover, :focus-visible) { color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-add-button:is(.is-active, :hover, :focus-visible)::before { border-color: var(--outline-brand); background: var(--outline-brand-subtle); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-add-button::after { background: var(--outline-card); border-color: var(--outline-border); color: var(--outline-text); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-scene-delete:is(:hover, :focus-visible) { background: rgba(255,92,122,.14); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] :is(.script-selection-chip, .script-message-selection) { background: var(--outline-card); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-selection-ai-button { background: var(--outline-card); border-color: var(--outline-brand); color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-selection-ai-button:is(:hover, :active) { background: var(--outline-brand-subtle); border-color: var(--outline-brand); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-selection-close:hover { background: var(--outline-border-focus); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-version-item.active { background: var(--outline-brand-subtle); border-color: var(--outline-brand); }
+
+/* 剧本新增/删除场的原有确认弹窗仅在剧本工作区显示时同步颜色，不改确认逻辑。 */
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptSceneDeleteConfirmModal { background: rgba(0,0,0,.55); }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptSceneDeleteConfirmModal .script-count-confirm-dialog { background: rgba(15,21,28,.6); border-color: #2b3642; color: #f5f7fa; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptSceneDeleteConfirmMessage { color: #d5dbe3; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptSceneDeleteCancel { background: #171e27; border-color: #2b3642; color: #f5f7fa; }
+body:has(.script-workspace[data-view="script-studio"]:not([hidden])) #scriptSceneDeleteConfirm { background: #ff5c7a !important; border-color: #ff5c7a !important; color: #fff !important; }

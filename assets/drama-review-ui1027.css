@@ -1,0 +1,197 @@
+/* 2026-10-27 Product Design 改动逻辑：直接移植设计稿 review-workspace-design-system.css，
+   以审片工作台为作用域同步播放器、意见区、审核按钮、剧本五类内容及版本记录的颜色、字号、间距、圆角和交互状态。
+   剧本仍默认收起；版本号、审核状态、提交时间和时间点意见继续由 app.js 的现有数据渲染。
+   本次按用户要求不执行修改后的校验，也不生成 QA 记录或截图。 */
+/* Review workspace: the same surfaces, typography and neutral interaction states as editing. */
+.episode-review-workspace{--review-accent:#b8f84a;--review-border:#2b3642;--review-control:#171e27;--review-card:#171e27;--review-text:#f5f7fa;--review-muted:#9aa6b2;background:#080d12!important;color:#d5dbe3;font-family:var(--va-font)}
+.episode-review-workspace :is(.review-viewer-panel,.review-comments-panel,.review-script-panel){border:1px solid #2b3642;border-radius:16px;background:#0d141b!important;box-shadow:none}
+.episode-review-workspace .review-viewer-panel{padding:16px;gap:12px}
+.episode-review-workspace :is(.review-script-toggle,.review-version-select,.episode-switcher-toggle){height:38px;box-sizing:border-box;padding:0 14px;border:1px solid #2b3642;border-radius:19px;background:#111820!important;color:#9aa6b2!important;font-size:13px;line-height:20px;font-weight:500;box-shadow:none!important}
+.episode-review-workspace :is(.review-script-toggle,.review-version-select,.episode-switcher-toggle):hover{border-color:#566474;background:#202936!important;color:#f5f7fa!important}
+.episode-review-workspace .review-script-toggle[aria-expanded="true"],.episode-review-workspace .review-version-field[open]>.review-version-select{border-color:#718093;background:#2b3642!important;color:#f5f7fa!important}
+.episode-review-workspace .review-script-toggle img{filter:grayscale(1) brightness(1.15)!important;opacity:.85}
+.episode-review-workspace .review-script-toggle[aria-expanded="true"] img{filter:brightness(0) invert(1)!important;opacity:1}
+.episode-review-workspace .review-badge{font-size:11px;font-weight:400}
+.episode-review-workspace .review-badge[data-status="pending"]{color:#9aa6b2}
+.episode-review-workspace .review-version-menu,.episode-review-workspace .episode-switcher-menu{padding:8px;border:1px solid #2b3642;border-radius:14px;background:#171e27;box-shadow:0 20px 48px #0008;scrollbar-width:thin;scrollbar-color:#4d5865 transparent}
+.episode-review-workspace .review-version-option{padding:12px;border-radius:8px;color:#d5dbe3;font-size:13px;font-weight:500}
+.episode-review-workspace .review-version-option:hover,.episode-review-workspace .episode-switcher-menu button:hover{background:#202936;color:#f5f7fa}
+.episode-review-workspace .review-version-option[aria-current="true"]{background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .review-submitted-at{color:#6f7b88!important;font-size:12px}
+.episode-review-workspace .review-video-stage{border-color:#202a35;border-radius:12px;background:#05080b}
+.episode-review-workspace .review-player-controls{min-height:48px;padding:6px 10px;gap:10px;border:1px solid #2b3642;border-radius:10px;background:#111820}
+.episode-review-workspace .review-player-button{width:32px;height:32px;border-radius:8px;color:#aab5c2;background:transparent;box-shadow:none}
+.episode-review-workspace .review-player-button:hover{background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .review-time-label{color:#9aa6b2;font-size:11px}
+.episode-review-workspace .review-timeline-range{height:4px;appearance:none;-webkit-appearance:none;border:0;border-radius:2px;background:#35414e;accent-color:#aab5c2}
+.episode-review-workspace .review-timeline-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:12px;height:12px;border:2px solid #d5dbe3;border-radius:50%;background:#d5dbe3;box-shadow:none}
+.episode-review-workspace .review-timeline-range::-moz-range-thumb{width:8px;height:8px;border:2px solid #d5dbe3;border-radius:50%;background:#d5dbe3;box-shadow:none}
+.episode-review-workspace .review-comment-marker{width:7px;height:7px;background:#9aa6b2;border:1px solid #111820;box-shadow:0 0 0 2px #9aa6b226;transition:background .15s,box-shadow .15s}
+.episode-review-workspace .review-comment-marker:hover{background:#f5f7fa;box-shadow:0 0 0 3px #9aa6b24d}
+.episode-review-workspace .review-time-comments{background:transparent}
+.episode-review-workspace .review-comment-composer{padding:20px 16px 16px;background:#0d141b;border-color:#2b3642}
+.episode-review-workspace .review-comment-composer-title{margin:0 0 16px;padding:0;border:0;font-size:16px;line-height:24px;font-weight:500;color:#f5f7fa}
+.episode-review-workspace .review-comment-current-time{display:inline-block;margin:0 0 12px;padding:3px 8px;border-radius:6px;background:#171e27;color:#9aa6b2;font-size:11px;line-height:18px}
+.episode-review-workspace .review-annotation-input-shell{min-height:196px;padding:12px;border:1px solid transparent;border-radius:10px;background:#222b35;box-shadow:none;transition:background .15s,border-color .15s}
+.episode-review-workspace .review-annotation-input-shell:hover{background:#26313d}
+.episode-review-workspace .review-annotation-input-shell:focus-within{background:#26313d;border-color:#566474}
+.episode-review-workspace .review-comment-composer .review-annotation-input-shell .review-comment-input{min-height:112px;padding:2px 2px 12px;resize:none;border:0;background:transparent;color:#f5f7fa;font-size:13px;line-height:22px;outline:0;box-shadow:none}
+.episode-review-workspace .review-comment-input::placeholder{color:#9aa6b2}
+.episode-review-workspace .review-annotation-composer-actions{gap:8px;padding-top:10px;border-color:#35414e}
+.episode-review-workspace .review-annotation-entry{border:0;border-radius:7px;background:transparent;color:#9aa6b2}
+.episode-review-workspace .review-annotation-entry:hover{background:#354252;color:#f5f7fa}
+.episode-review-workspace .review-comment-submit{height:34px;min-height:34px;padding:0 14px;border:0!important;border-radius:8px;background:#b8f84a!important;color:#0d1308!important;font-size:13px;font-weight:500;box-shadow:none}
+.episode-review-workspace .review-comment-submit:hover:not(:disabled){background:#cfff5a!important}
+.episode-review-workspace .review-comment-submit:disabled{background:#35414e!important;color:#6f7b88!important;opacity:1;cursor:default}
+.episode-review-workspace .review-comments-head{min-height:48px;padding:0 16px}
+.episode-review-workspace .review-comments-head h2{margin:0;color:#9aa6b2;font-size:12px;font-weight:500;line-height:18px}
+.episode-review-workspace .review-comment-count{padding:2px 6px;border-radius:5px;background:#171e27;color:#9aa6b2;font-size:11px;line-height:16px}
+.episode-review-workspace .review-comment-list{gap:12px;padding:0 16px 16px;scrollbar-width:thin;scrollbar-color:#35414e transparent}
+.episode-review-workspace .review-comment-card{flex-shrink:0;padding:14px;border:1px solid transparent;border-radius:10px;background:#171e27;box-shadow:none;transition:background .15s,border-color .15s}
+.episode-review-workspace .review-comment-card:hover{background:#202936;border-color:#35414e}
+.episode-review-workspace .review-comment-card.is-highlighted{background:#26313d;border-color:#718093}
+.episode-review-workspace .review-comment-author{color:#d5dbe3;font-size:12px;line-height:18px;font-weight:500}
+.episode-review-workspace .review-comment-time{padding:3px 6px;border:0;border-radius:5px;background:#2b3642;color:#d5dbe3;font-size:11px;line-height:16px}
+.episode-review-workspace .review-comment-time:hover{background:#354252;color:#f5f7fa}
+.episode-review-workspace .review-comment-card p{margin-top:10px;color:#c5ced8;font-size:13px;line-height:22px}
+.episode-review-workspace .review-decision-panel{padding:16px;border-color:#2b3642;background:#0d141b}
+.episode-review-workspace .review-decision-button{height:42px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:none}
+.episode-review-workspace .review-approve{background:#b8f84a;color:#0d1308;border:1px solid transparent}
+.episode-review-workspace .review-approve:hover:not(.is-approved):not(:disabled){background:#cfff5a;color:#0d1308}
+.episode-review-workspace .review-reject{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.35);color:#ff8da2}
+.episode-review-workspace .review-reject:hover:not(.is-rejected):not(:disabled){background:rgba(255,92,122,.16);border-color:#ff5c7a;color:#ffadbc}
+.episode-review-workspace .review-script-panel{padding:20px 16px 24px;scrollbar-width:thin;scrollbar-color:#35414e transparent}
+.episode-review-workspace .review-script-close{width:28px;height:28px;border:0;border-radius:7px;background:transparent;color:#9aa6b2}
+.episode-review-workspace .review-script-close:hover{background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .episode-script-section-title{color:#f5f7fa;font-size:14px;font-weight:500;line-height:24px}
+.episode-review-workspace .episode-script-section-title svg{color:#9aa6b2;stroke-width:1.5}
+.episode-review-workspace .episode-script-readonly{padding:14px;border:0;border-radius:10px;background:#171e27;color:#c5ced8;font-size:13px;line-height:22px}
+.episode-review-workspace :is(button,summary,input):focus-visible{outline:2px solid #9aa6b2;outline-offset:3px}
+@media(max-height:800px){.episode-review-workspace .review-comment-composer{padding-top:16px}.episode-review-workspace .review-annotation-input-shell{min-height:164px}.episode-review-workspace .review-comment-composer .review-annotation-input-shell .review-comment-input{min-height:86px}}
+
+/* Comment action follows its label width with 16px padding on each side. */
+.episode-review-workspace .review-annotation-input-shell #reviewCommentSubmit{width:auto;min-width:0;flex:0 0 auto;padding-inline:16px;white-space:nowrap}
+
+/* Reject is a secondary decision, using the system's neutral button palette. */
+.episode-review-workspace #reviewReject{background:#222b35;border:1px solid #35414e;color:#d5dbe3;box-shadow:none}
+.episode-review-workspace #reviewReject:hover:not(:disabled){background:#2b3642;border-color:#566474;color:#f5f7fa}
+.episode-review-workspace #reviewReject:active:not(:disabled){background:#354252;color:#f5f7fa}
+/* Center comment points on the track, including a generous invisible hit target. */
+.episode-review-workspace .review-comment-markers{inset:50% 6px auto;height:0;pointer-events:none}
+.episode-review-workspace .review-comment-marker{top:0;bottom:auto;width:8px;height:8px;box-sizing:border-box;transform:translate(-50%,-50%);border:1px solid #111820;background:#aab5c2;box-shadow:none}
+.episode-review-workspace .review-comment-marker::before{content:"";position:absolute;inset:-6px;border-radius:50%}
+.episode-review-workspace .review-comment-marker:hover{background:#f5f7fa;box-shadow:0 0 0 2px #9aa6b233}
+.episode-review-workspace .review-comment-marker:focus-visible{outline:2px solid #9aa6b2;outline-offset:3px}
+
+/* Use the documented error token for rejected version status text. */
+.episode-review-workspace .review-badge[data-status="changes_requested"]{color:#FF5C7A!important}
+
+/* 2026-10-27 改动逻辑：只移植设计稿的审片分集菜单样式，完整集名省略显示、当前集标记和悬停反馈均限定在审片区。 */
+.episode-review-workspace .episode-switcher-menu {
+  box-sizing:border-box;
+  width:min(320px,calc(100vw - 32px));
+  min-width:100%;
+  max-height:min(480px,calc(100vh - 80px));
+  overflow-y:auto;
+  padding:7px;
+  border:1px solid #35414e;
+  border-radius:12px;
+  background:#1b232c;
+  box-shadow:0 18px 42px rgba(0,0,0,.42);
+}
+.episode-review-workspace .episode-switcher-menu button {
+  position:relative;
+  box-sizing:border-box;
+  min-width:0;
+  height:40px;
+  padding:0 14px;
+  border-radius:8px;
+  background:transparent;
+  color:#c7d0d9;
+  font-size:13px;
+  font-weight:500;
+  transition:background .15s ease,color .15s ease;
+}
+.episode-review-workspace .episode-switcher-option-label {
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.episode-review-workspace .episode-switcher-menu button:hover,
+.episode-review-workspace .episode-switcher-menu button:focus-visible {
+  background:#29323b;
+  color:#f5f7fa;
+  outline:none;
+}
+.episode-review-workspace .episode-switcher-menu button[aria-current="true"] {
+  background:#252e38;
+  color:#f5f7fa;
+  font-weight:600;
+}
+.episode-review-workspace .episode-switcher-menu button[aria-current="true"]::before {
+  content:"";
+  position:absolute;
+  top:11px;
+  bottom:11px;
+  left:4px;
+  width:3px;
+  border-radius:3px;
+  background:#b8f84a;
+}
+.episode-review-workspace .episode-switcher-menu button[aria-current="true"]:hover,
+.episode-review-workspace .episode-switcher-menu button[aria-current="true"]:focus-visible {
+  background:#303b46;
+}
+
+
+/* 2026-10-27 改动逻辑：设计稿的品牌禁用按钮状态仅限定到审片的添加意见及审核通过；保留历史版本只读和既有撤销交互。 */
+html:root body .episode-review-workspace :is(.review-comment-submit,.review-approve):is(:disabled,[aria-disabled="true"],.is-disabled,.is-locked,.is-blocked) {
+  background:rgba(55,64,79,.9)!important;border-color:transparent!important;color:#0d1308!important;
+  opacity:1!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;transform:none!important;cursor:not-allowed!important;
+}
+
+
+/* 2026-10-28 Product Design 改动逻辑：直接移植「设计稿 1028」标注编辑器的完整样式。
+   画布使用中性灰边框和深色外沿；工具栏采用 6px 间距、8px/10px 内边距与 36px 工具按钮，最终使用设计稿胶囊圆角。
+   默认、悬停、按下、选中、禁用、键盘聚焦及上方提示气泡全部取自设计稿；「完成」使用荧绿色，文字编辑框使用灰色虚线边框。
+   同步标注入口、附件缩略图、移除按钮和状态提示的编辑态；窄屏沿用设计稿紧凑布局及自动换行。
+   仅补充左侧播放器和标注相关圆角，不改动右侧审核决定按钮及意见提交按钮的现有业务与样式。 */
+.episode-review-workspace .review-viewer-panel.is-annotating .review-video-stage{border-color:#202a35;background:#05080b;overflow:visible}
+.episode-review-workspace .review-annotation-surface{border-radius:10px;outline:1px solid #566474;box-shadow:0 0 0 4px #080d12}
+.episode-review-workspace .review-annotation-surface canvas{border-radius:10px}
+.episode-review-workspace .review-annotation-surface canvas:focus-visible{outline:2px solid #9aa6b2;outline-offset:3px}
+.episode-review-workspace .review-annotation-toolbar{gap:6px;margin:0;padding:8px 10px;border:1px solid #2b3642;border-radius:14px;background:#171e27;box-shadow:0 8px 24px #0003}
+.episode-review-workspace .review-annotation-tool{width:36px;height:36px;border:1px solid transparent;border-radius:8px;background:transparent;color:#9aa6b2;transition:background .15s,color .15s,border-color .15s}
+.episode-review-workspace .review-annotation-tool .review-annotation-icon{width:20px;height:20px;stroke-width:1.75}
+.episode-review-workspace .review-annotation-tool:hover:not(:disabled){background:#202936;color:#f5f7fa}
+.episode-review-workspace .review-annotation-tool[aria-pressed="true"]{border-color:#566474;background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .review-annotation-tool:active:not(:disabled){background:#354252}
+.episode-review-workspace .review-annotation-tool:disabled{background:transparent;color:#6f7b88;opacity:.45;cursor:not-allowed}
+.episode-review-workspace .review-annotation-tool::after{top:auto;bottom:calc(100% + 12px);padding:6px 10px;border:1px solid #35414e;border-radius:6px;background:#202936;color:#d5dbe3;font-weight:400;line-height:18px;box-shadow:0 4px 12px #0003}
+.episode-review-workspace .review-annotation-tool:disabled::after{display:none}
+.episode-review-workspace .review-annotation-divider{height:24px;margin:0 6px;background:#35414e}
+.episode-review-workspace :is(.review-annotation-cancel,.review-annotation-done){height:36px;padding:0 16px;border:1px solid transparent;border-radius:8px;font-size:14px;line-height:20px;font-weight:500;box-shadow:none;white-space:nowrap}
+.episode-review-workspace .review-annotation-cancel{background:transparent;color:#d5dbe3}
+.episode-review-workspace .review-annotation-cancel:hover{background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .review-annotation-done{background:#b8f84a;color:#0d1308}
+.episode-review-workspace .review-annotation-done:hover{background:#cfff5a}
+.episode-review-workspace .review-annotation-done:active{background:#a6e53c}
+.episode-review-workspace .review-annotation-toolbar button:focus-visible,.episode-review-workspace .review-annotation-entry:focus-visible{outline:2px solid #9aa6b2;outline-offset:3px}
+.episode-review-workspace .review-annotation-entry[aria-pressed="true"]{background:#2b3642;color:#f5f7fa}
+.episode-review-workspace .review-annotation-text{border-color:#9aa6b2;border-radius:4px;background:#080d12cc}
+.episode-review-workspace :is(.review-annotation-draft>button:first-child,.review-reference-thumbnail){border-color:#35414e;background:#111820}
+.episode-review-workspace .review-annotation-draft>button:first-child:hover{border-color:#718093}
+.episode-review-workspace .review-annotation-remove{border-color:#35414e;background:#222b35;color:#d5dbe3}
+.episode-review-workspace .review-annotation-remove:hover{border-color:#566474;background:#354252;color:#f5f7fa}
+.episode-review-workspace .review-annotation-status{color:#9aa6b2;font-size:12px;line-height:18px}
+@media(max-width:620px){.episode-review-workspace .review-annotation-toolbar{gap:2px;padding:6px;flex-wrap:wrap}.episode-review-workspace .review-annotation-tool{width:32px;height:32px}.episode-review-workspace :is(.review-annotation-cancel,.review-annotation-done){height:32px;padding:0 10px;font-size:13px}.episode-review-workspace .review-annotation-divider{margin:0 3px}}
+
+/* 2026-10-28 改动逻辑：设计稿末尾的全圆角规则限定为左侧播放器、工具栏、工具按钮、取消/完成及标注入口。 */
+.episode-review-workspace :is(.review-annotation-toolbar,.review-annotation-tool,.review-annotation-cancel,.review-annotation-done,.review-annotation-entry,.review-player-button,.review-script-close){border-radius:999px}
+
+
+/* 2026-10-28 Product Design 改动逻辑：按「设计稿 1028」补齐右侧三个操作按钮的胶囊圆角。
+   添加意见、审核不通过和审核通过统一使用 999px 圆角，默认、悬停、禁用和审核结果状态均保持相同外形。 */
+.episode-review-workspace :is(.review-comment-submit,.review-decision-button){border-radius:999px}

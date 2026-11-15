@@ -1,0 +1,93 @@
+/* 2026-09-14：全部规则限定分集工作区；顶部切换沿用全能创作的等宽深灰 Tab。 */
+.episode-detail-workspace .episode-video-mode-tabs { grid-column:2; justify-self:center; display:grid; grid-template-columns:repeat(2,minmax(0,126px)); width:260px; height:44px; box-sizing:border-box; padding:4px; border:1px solid #ffffff1f; border-radius:8px; background:#121316f0; box-shadow:0 12px 34px #0006,inset 0 1px #ffffff0a; }
+.episode-video-mode-tabs button { display:flex; align-items:center; justify-content:center; min-width:0; border:0; border-radius:5px; background:transparent; color:#ffffff85; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+.episode-video-mode-tabs button[aria-selected="true"] { background:#323337; color:#f4f5f7; box-shadow:inset 0 0 0 1px #ffffff12; }
+.episode-video-mode-tabs button:focus-visible { outline:2px solid #b8f84a; outline-offset:2px; }
+/* 2026-09-18 改动逻辑：短剧分集视频暂时隐藏顶部 Agent 入口和“故事板模式 / 画布模式”切换器；仅通过样式移出显示，原 DOM、事件与模式切换逻辑全部保留，后续可直接恢复。 */
+.episode-detail-workspace [data-episode-side-panel="agent"],
+.episode-detail-workspace .episode-video-mode-tabs { display:none !important; }
+/* 2026-09-17 改动逻辑：仅在短剧分集的画布模式隐藏“剧本”入口；Agent 自动占用其左侧位置，故事板模式与全能创作保持原样。 */
+.episode-detail-workspace[data-episode-video-mode="canvas"] [data-episode-side-panel="script"] { display:none !important; }
+/* 2026-09-18 改动逻辑：批量生成按钮已移入片段标题行并占据原历史记录入口所在的右侧区域；用自动左边距保持与“片段 01”垂直居中，同时不影响分镜表/提示词切换。 */
+.episode-detail-workspace .detail-prompt-panel { position:relative; }
+.episode-detail-workspace .detail-prompt-title-row > .episode-detail-header-actions { position:relative; display:flex; flex:0 0 auto; width:max-content; margin:0 0 0 auto; padding:0; z-index:2; }
+.episode-detail-workspace .detail-prompt-title-row > .episode-detail-header-actions button { min-height:36px; height:36px; padding:0 18px; font-size:13px; width:auto; }
+.episode-detail-workspace .episode-video-canvas-panel { flex:1; min-height:0; height:calc(100vh - 64px); height:calc(100dvh - 64px); overflow:hidden; background:#080d12; }
+.episode-video-canvas-panel iframe { display:block; border:0; width:100%; height:100%; background:#080d12; }
+.episode-detail-workspace #episodeVideoStoryboardPanel[hidden], .episode-detail-workspace #episodeVideoCanvasPanel[hidden], .episode-video-canvas-panel iframe[hidden] { display:none !important; }
+/* 2026-09-18 改动逻辑：窄屏允许标题工具行自然换行，批量按钮仍靠右显示，避免压缩片段标题和视图切换。 */
+@media(max-width:1500px) {
+ .episode-detail-workspace .detail-prompt-title-row { flex-wrap:wrap; }
+ .episode-detail-workspace .detail-prompt-title-row > .episode-detail-header-actions { margin-left:auto; }
+}
+@media(max-width:760px) {
+ .episode-detail-workspace .script-status { grid-template-columns:minmax(0,1fr) auto; }
+ .episode-detail-workspace .episode-video-mode-tabs { width:220px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* 2026-09-14：沿用现有分集页 64px / 106px 两档顶栏高度，窄屏 Tab 移至第二行。 */
+@media(max-width:999.98px) {
+ .episode-detail-workspace .episode-video-mode-tabs { grid-column:1 / -1; grid-row:2; height:38px; }
+ .episode-detail-workspace .episode-video-canvas-panel { height:calc(100vh - 106px); height:calc(100dvh - 106px); }
+}
+
+/* 2026-09-26 Product Design 改动逻辑：短剧剪辑把第二行标题和操作并入第一行，保留返回键；顶栏与剪辑器共用 #111 底色，原切集和侧栏入口仅在剪辑期间隐藏。 */
+.episode-detail-workspace.is-episode-composer-open .script-status { box-sizing:border-box; height:64px; min-height:64px; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px; padding:0 10px 0 14px; border-bottom:1px solid rgba(255,255,255,.08); background:#111; box-shadow:none; backdrop-filter:none; }
+.episode-detail-workspace.is-episode-composer-open .episode-detail-header-left { grid-column:1; grid-row:1; gap:12px; padding:0; }
+.episode-detail-workspace.is-episode-composer-open .episode-switcher,
+.episode-detail-workspace.is-episode-composer-open .episode-side-panel-controls { display:none !important; }
+.episode-detail-workspace .episode-composer-title[hidden],
+.episode-detail-workspace .episode-composer-actions[hidden],
+.episode-composer-export-menu[hidden] { display:none !important; }
+.episode-detail-workspace .episode-composer-title { color:rgba(255,255,255,.9); font-size:13px; font-weight:720; white-space:nowrap; }
+/* 2026-09-26 Product Design 改动逻辑：右侧关闭按钮移除后，导出按钮所在容器继续贴齐顶栏最右侧。 */
+.episode-detail-workspace .episode-composer-actions { grid-column:2; grid-row:1; display:flex; align-items:center; justify-self:end; }
+.episode-composer-export-wrap { position:relative; }
+/* 2026-10-24 Product Design 改动逻辑：导出按钮移除固定最小宽度，按文案、箭头和内边距自适应；箭头与文案间隔 12px、右侧留白 10px，使按钮更窄且箭头靠右，长文案保持单行。 */
+.episode-composer-export-trigger { display:inline-flex; align-items:center; justify-content:center; gap:12px; width:max-content; min-width:0; flex:none; white-space:nowrap; height:38px; padding:0 10px 0 14px; border:0; border-radius:7px; background:#f4f4f4; color:#171717; font:inherit; font-size:14px; font-weight:720; cursor:pointer; }
+.episode-composer-export-trigger:hover { background:#fff; }
+.episode-composer-export-trigger :is(svg,i) { flex:0 0 15px; width:15px; height:15px; }
+.episode-composer-export-trigger:focus-visible,
+.episode-composer-export-menu button:focus-visible { outline:2px solid #35e5e2; outline-offset:2px; }
+.episode-composer-export-menu { position:absolute; top:calc(100% + 12px); right:0; z-index:80; box-sizing:border-box; width:224px; padding:16px 12px 12px; border-radius:18px; background:#252525; box-shadow:0 18px 48px rgba(0,0,0,.42); }
+.episode-composer-export-label { padding:0 10px 12px; color:rgba(255,255,255,.42); font-size:13px; font-weight:650; }
+.episode-composer-export-menu button { display:flex; align-items:center; justify-content:flex-start; gap:13px; width:100%; height:54px; padding:0 10px; border:0; border-radius:10px; background:transparent; color:#fff; font:inherit; font-size:15px; font-weight:680; text-align:left; cursor:pointer; }
+.episode-composer-export-menu button:hover { background:rgba(255,255,255,.07); }
+.episode-composer-export-menu button :is(svg,i) { flex:0 0 22px; width:22px; height:22px; }
+
+/* 2026-09-26 改动逻辑：窄屏剪辑同样只占一行 64px，内嵌画布从顶栏下方立即开始，不保留旧版 106px 的第二行空间。 */
+@media(max-width:999.98px) {
+ .episode-detail-workspace.is-episode-composer-open .episode-video-canvas-panel { height:calc(100vh - 64px); height:calc(100dvh - 64px); }
+}
+
+/* 2026-09-30 Product Design 改动逻辑：新增操作仅位于短剧剪辑专属顶栏；导入为次要按钮，审核沿用生成页青色提交、绿色已提交及红色撤回状态。 */
+.episode-detail-workspace .episode-composer-actions { gap:10px; }
+.episode-composer-import-trigger { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:38px; padding:0 14px; border:1px solid #454545; border-radius:7px; background:#252525; color:#eee; font:inherit; font-size:14px; font-weight:650; white-space:nowrap; cursor:pointer; }
+.episode-composer-import-trigger:hover { background:#333; }
+.episode-composer-import-trigger:disabled { opacity:.65; cursor:wait; }
+.episode-composer-import-trigger:focus-visible { outline:2px solid #5ee6d6; outline-offset:2px; }
+.episode-composer-review.review-decision-button { width:auto; min-width:112px; height:38px; padding:0 14px; border-radius:7px; font-size:14px; white-space:nowrap; }
+#episodeComposerImportTitle { margin:0 0 14px; font-size:20px; }
+.episode-composer-import-spinner { width:16px; height:16px; }
+.episode-composer-import-refresh { animation:episode-composer-import-refresh .3s ease; }
+@keyframes episode-composer-import-refresh { from { opacity:.45; } to { opacity:1; } }
+@media(max-width:600px) { .episode-detail-workspace.is-episode-composer-open .script-status { gap:6px; padding:0 6px; } .episode-detail-workspace .episode-composer-actions { gap:5px; } .episode-composer-import-trigger,.episode-composer-review.review-decision-button,.episode-composer-export-trigger { min-width:0; padding:0 8px; font-size:12px; } }
+
+/* 2026-09-30 Product Design 改动逻辑：短剧导入按钮与导出按钮统一白底深色文字、无边框及 38px 外部高度；使用 border-box 消除原边框导致的高度差，悬停同为纯白。 */
+.episode-composer-import-trigger,.episode-composer-export-trigger { box-sizing:border-box; height:38px; }
+.episode-composer-import-trigger { border:0; background:#f4f4f4; color:#171717; font-weight:720; }
+.episode-composer-import-trigger:hover { background:#fff; }
+
+/* 2026-10-26 Product Design 修复逻辑：短剧剪辑等待页复用深色背景与现有加载图标，保持 iframe 尺寸但隐藏中间画布；失败可重试或返回。 */
+.episode-detail-workspace .episode-video-canvas-panel { position:relative; }
+.episode-detail-workspace.is-episode-editor-loading .episode-video-canvas-panel > iframe { visibility:hidden; pointer-events:none; }
+.episode-editor-loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:#080d12; color:#a6adb8; font:14px/1.5 inherit; }
+/* 2026-11-04 Product Design 改动逻辑：仅将短剧打开剪辑器的现有 Lucide 转圈图标变为纯白并持续旋转；显示总时长由打开请求固定为 1.5 秒，文字颜色保持原样。 */
+.episode-editor-loading > img { filter:brightness(0) invert(1); animation:episode-editor-loading-spin .75s linear infinite; }
+@keyframes episode-editor-loading-spin { to { transform:rotate(360deg); } }
+.episode-editor-loading[hidden], .episode-editor-loading [hidden] { display:none !important; }
+.episode-editor-loading > div { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
+.episode-editor-loading button { padding:8px 16px; border:1px solid #ffffff24; border-radius:8px; background:#252525; color:#eee; font:inherit; cursor:pointer; }
+.episode-editor-loading button:hover { background:#333; }
+.episode-editor-loading button:focus-visible { outline:2px solid #b8f84a; outline-offset:3px; }
+.episode-detail-workspace.is-episode-editor-loading :is(.episode-switcher,.episode-side-panel-controls) { visibility:hidden; pointer-events:none; }

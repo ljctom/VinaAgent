@@ -1,0 +1,134 @@
+/* 2026-11-08 Product Design：使用原节点面板的深色、灰色图标和圆角；上传入口固定在红框所在的左上角。
+ * 2026-11-15 Product Design：对齐「UI新」，上传入口与 60px 参考缩略图保持同一行，始终排在素材前面。
+ */
+#nodeGeneratePanel .vina-video-reference-upload { position: absolute; top: 16px; left: 16px; z-index: 12; }
+#nodeGeneratePanel .vina-video-reference-upload[hidden],
+#nodeGeneratePanel .vina-video-reference-upload-menu[hidden] { display: none !important; }
+#nodeGeneratePanel .vina-video-reference-upload-trigger {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 32px; padding: 0 10px; border: 1px solid #2b3642; border-radius: 8px;
+  background: #080d12; color: #9aa6b2; font: inherit; font-size: 14px; font-weight: 400;
+  cursor: pointer;
+}
+#nodeGeneratePanel .vina-video-reference-upload img { width: 16px; height: 16px; flex: 0 0 16px; object-fit: contain; }
+#nodeGeneratePanel .vina-video-reference-upload-menu {
+  position: absolute; top: calc(100% + 8px); left: 0; width: 184px; padding: 6px;
+  border: 1px solid #2b3642; border-radius: 12px; background: #141a21;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .4);
+}
+#nodeGeneratePanel .vina-video-reference-upload-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 8px 10px;
+  border: 0; border-radius: 8px; background: transparent; color: #d5dbe3;
+  text-align: left; white-space: nowrap; font: inherit; font-size: 14px; font-weight: 400; cursor: pointer;
+}
+#nodeGeneratePanel .vina-video-reference-upload-trigger:is(:hover, [aria-expanded="true"]),
+#nodeGeneratePanel .vina-video-reference-upload-menu button:hover { background: #202933; color: #fff; }
+#nodeGeneratePanel .vina-video-reference-upload button:focus-visible { outline: 2px solid #b8ff52; outline-offset: 2px; }
+#nodeGeneratePanel .vina-video-reference-upload button:disabled { opacity: .45; cursor: not-allowed; }
+/* 2026-11-09 Product Design 改动逻辑：图片和视频的资产库选择图标统一使用本地上传图标的 #9AA6B2；颜色直接写入原 SVG 图片，移除白色滤镜和透明度，悬停与聚焦时也与本地上传保持同色。保留原菜单、尺寸及事件。 */
+#nodeGeneratePanel .vina-video-reference-upload-menu [data-video-reference-library] > img {
+  display: block;
+  filter: none;
+  opacity: 1;
+}
+#nodeGeneratePanel .vina-video-reference-upload-menu [data-video-reference-library]:is(:hover, :focus-visible) > img { opacity: 1; }
+/* 2026-11-15 Product Design 布局逻辑：图片和视频共用 60px 方形上传入口；保留原有两项选材菜单、弹窗和事件，仅将参考缩略图排列在上传入口右侧。 */
+
+/* 2026-11-15 Product Design：同一行的参考缩略图继续支持原有悬停、键盘聚焦和右上角关闭按钮，保持原有缩略图尺寸。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .panel-incoming-reference-badges {
+  pointer-events: auto !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge {
+  position: relative !important;
+  pointer-events: auto !important;
+  cursor: default;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge:focus-visible {
+  outline: 2px solid #b8ff52;
+  outline-offset: 2px;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-node-reference-remove {
+  position: absolute; top: 2px; right: 2px; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  box-sizing: border-box; width: 18px; height: 18px; padding: 0;
+  border: 1px solid #d5dbe3; border-radius: 50%;
+  background: rgba(8, 13, 18, .85); color: #fff;
+  opacity: 0; cursor: pointer; pointer-events: auto;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge:is(:hover, :focus-within) .vina-node-reference-remove {
+  opacity: 1;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-node-reference-remove > img {
+  display: block; width: 14px; height: 14px; object-fit: contain;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-node-reference-remove:focus-visible {
+  outline: 2px solid #b8ff52; outline-offset: 2px;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-node-reference-remove:disabled {
+  cursor: not-allowed; opacity: 0;
+}
+/* 2026-11-09：大图置于 body 固定浮层，保持图片完整可见；由缩略图视口坐标定位在上方居中，不阻挡关闭按钮。 */
+.vina-node-reference-hover-preview {
+  position: fixed; z-index: 20000; box-sizing: border-box;
+  /* 2026-11-09 Product Design：实际宽高由原图尺寸等比计算，取消固定比例，浮层边框随图片自适应。 */
+  width: auto; height: auto; overflow: hidden;
+  border: 5px solid #202933; border-radius: 12px;
+  background-color: #141a21;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35); pointer-events: none;
+}
+/* 2026-11-09：真实图片填充按同一原始比例计算的内容区，完整展示且不拉伸、不额外留黑边。 */
+/* 2026-11-09 Product Design：图片和视频同用原始比例的浮层；视频不显示原生控件，循环播放只存在于悬停预览。 */
+.vina-node-reference-hover-preview > :is(img, video) { display: block; width: 100%; height: 100%; object-fit: contain; }
+.vina-node-reference-hover-preview > video::-webkit-media-controls { display: none !important; }
+.vina-node-reference-hover-preview[hidden] { display: none !important; }
+@media (hover: none) {
+  html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge .vina-node-reference-remove:not(:disabled) { opacity: 1; }
+}
+
+/* 2026-11-09 Product Design：视频缺少可导出的封面时，以暂停首帧填满缩略图；不显示播放控件、不拦截 hover 和关闭按钮。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge > .vina-node-reference-video-cover {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover;
+  border-radius: inherit; pointer-events: none;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge:has(> .vina-node-reference-video-cover) > :is(svg, i[data-lucide]),
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .incoming-reference-badge[data-vina-video-cover] > :is(svg, i[data-lucide]) { display: none !important; }
+
+/* 2026-11-15 Product Design：按「UI新」还原图片、视频节点上传前后的 UI。
+ * 上传入口始终占首个 60px 方格，采用深色底、虚线边框、12px 圆角和上下排列的加号/文字。
+ * 参考缩略图从 left:88px 开始，与 left:16px 的上传方格相隔 12px，右侧仍为原展开按钮留空。
+ * 有无参考及展开态共用 88px 顶部留白、240px 最小高度，提示词与素材行保留 12px 间距，上传后不再另起一行。
+ * 仅覆盖普通图片/视频面板的展示；上传、资产库、引用连线、移除、预览、参数和生成逻辑均沿用原实现。
+ */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled {
+  padding-top: 88px !important;
+  min-height: 240px !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-video-reference-upload {
+  width: 60px;
+  height: 60px;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-video-reference-upload-trigger {
+  display: flex;
+  flex-direction: column;
+  width: 60px !important;
+  height: 60px !important;
+  box-sizing: border-box;
+  padding: 8px !important;
+  gap: 4px;
+  border: 1px dashed #3A4654;
+  border-radius: 12px;
+  background: #080d12;
+  font-size: 12px;
+  line-height: 18px;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .panel-incoming-reference-badges {
+  top: 16px !important;
+  left: 88px !important;
+  height: 60px;
+}
+
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) #nodeGeneratePanel.vina-node-media-ui.vina-video-reference-enabled .vina-video-reference-upload-trigger:not(:disabled):is(:hover, [aria-expanded="true"]) {
+  background: #171e27;
+  border-color: #2b3642;
+  color: #fff;
+}

@@ -1,0 +1,63 @@
+/* 2026-09-26 Product Design：延续现有深色、青灰边框和荧光绿主操作；只限定创建弹窗与上传头像样式。 */
+.profile-account-create:not([hidden]) { cursor: pointer; transition: color .16s, background .16s; }
+.profile-account-create:hover { color: #b8f84a; background: #29312b; }
+.profile-account-create:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+.team-create-dialog { box-sizing: border-box; width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); margin: auto; padding: 0; overflow: auto; border: 1px solid #354149; border-radius: 24px; background: #161e24; color: #f2f5f6; box-shadow: 0 32px 100px #0009; font: inherit; }
+.team-create-dialog::backdrop { background: #03090dc7; backdrop-filter: blur(6px); }
+.team-create-dialog [hidden] { display: none !important; }
+.team-create-dialog * { box-sizing: border-box; }
+.team-create-content { padding: 32px 32px 28px; }
+.team-create-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.team-create-heading h2 { margin: 0; font-size: 25px; font-weight: 650; letter-spacing: -.6px; line-height: 1.4; }
+.team-create-description { margin: 9px 0 0; color: #95a2ac; font-size: 13px; line-height: 1.8; }
+.team-create-close { display: grid; place-items: center; flex: 0 0 32px; height: 32px; padding: 7px; border: 0; border-radius: 50%; background: #222d35; cursor: pointer; }
+.team-create-close img { width: 18px; height: 18px; }
+.team-create-close:hover { background: #32404a; }
+.team-create-avatar-section { margin-top: 28px; padding: 20px; border: 1px solid #303c44; border-radius: 16px; background: #11191f; }
+.team-create-label { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 550; }
+.team-create-label small { margin-left: 6px; color: #85939e; font-size: 12px; font-weight: 400; }
+.team-create-avatar-row { display: flex; align-items: center; gap: 18px; }
+.team-create-avatar-preview { display: grid; place-items: center; overflow: hidden; flex: 0 0 72px; width: 72px; height: 72px; border: 1px solid #446447; border-radius: 20px; background: #263a2d; color: #b8f84a; font-size: 30px; font-weight: 600; }
+.team-create-avatar-preview > img { width: 100%; height: 100%; object-fit: cover; }
+.team-create-avatar-preview > img.team-create-placeholder { width: 30px; height: 30px; }
+.team-create-upload-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.team-create-upload { padding: 8px 13px; border: 1px solid #45525c; border-radius: 9px; background: #202c34; color: #edf2f5; font: inherit; font-size: 12px; cursor: pointer; }
+.team-create-upload:hover { border-color: #94b777; background: #28362e; }
+.team-create-remove { padding: 6px 0; border: 0; background: none; color: #94a1ac; font: inherit; font-size: 12px; cursor: pointer; }
+.team-create-remove:hover { color: #fff; }
+.team-create-hint { margin: 9px 0 0; color: #82929d; font-size: 12px; line-height: 1.7; }
+.team-create-name-section { margin-top: 25px; }
+.team-create-required { color: #b8f84a; margin-left: 3px; }
+.team-create-input-wrap { display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #3b4852; border-radius: 12px; background: #0e161c; transition: border-color .16s, box-shadow .16s; }
+.team-create-input-wrap:focus-within { border-color: #b8f84a; box-shadow: 0 0 0 3px #b8f84a12; }
+.team-create-input-wrap:has([aria-invalid="true"]) { border-color: #f28c8c; }
+.team-create-input-wrap input { width: 100%; min-width: 0; height: 50px; padding: 0; border: 0; outline: none; background: transparent; color: #f2f5f6; font: inherit; font-size: 14px; }
+.team-create-input-wrap input::placeholder { color: #647580; }
+.team-create-count { flex-shrink: 0; color: #7e909d; font-size: 12px; font-variant-numeric: tabular-nums; }
+.team-create-note { display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; padding: 15px 16px; border-radius: 12px; background: #203028; }
+.team-create-note img { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 2px; }
+.team-create-note strong { display: block; color: #c5ddaf; font-size: 13px; font-weight: 550; line-height: 1.6; }
+.team-create-note p { margin: 5px 0 0; color: #92a293; font-size: 12px; line-height: 1.8; }
+.team-create-error { margin: 9px 0 0; color: #ffaaaa; font-size: 12px; line-height: 1.7; }
+.team-create-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 20px 32px; border-top: 1px solid #2d3942; background: #131b21; }
+.team-create-footer button { min-width: 96px; min-height: 42px; padding: 10px 20px; border: 1px solid #3c4852; border-radius: 11px; background: #202a33; color: #d9e0e5; font: inherit; font-size: 14px; cursor: pointer; transition: background .16s, border-color .16s; }
+.team-create-footer .team-create-submit { min-width: 128px; border-color: #b8f84a; background: #b8f84a; color: #142003; font-weight: 600; }
+.team-create-footer .team-create-submit:hover:not(:disabled) { background: #caff70; border-color: #caff70; }
+.team-create-footer button:hover:not(:disabled) { border-color: #849583; }
+.team-create-dialog button:focus-visible { outline: 2px solid #b8f84a; outline-offset: 4px; }
+.team-create-dialog button:disabled { opacity: .45; cursor: not-allowed; }
+/* 上传图片使用统一裁切，保留每个现有头像容器的尺寸和显隐；切个人账号时清除顶部团队图片。 */
+.team-uploaded-avatar { overflow: hidden; }
+.team-uploaded-avatar > img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+#teamConsoleAvatar[data-avatar-editable="true"] { cursor: pointer; }
+#teamConsoleAvatar[data-avatar-editable="true"]:focus-visible { outline: 2px solid #b8f84a; outline-offset: 4px; }
+@media (max-width: 540px) {
+  .team-create-dialog { border-radius: 20px; }
+  .team-create-content { padding: 25px 20px; }
+  .team-create-heading h2 { font-size: 23px; }
+  .team-create-avatar-section { padding: 16px; }
+  .team-create-avatar-row { gap: 14px; }
+  .team-create-avatar-preview { flex-basis: 64px; width: 64px; height: 64px; border-radius: 17px; }
+  .team-create-footer { padding: 18px 20px; }
+  .team-create-footer button { flex: 1; }
+}

@@ -1,0 +1,206 @@
+/* 2026-11-06 Product Design 改动逻辑：仅移植「UI 新」的重制转绘第一、第二步 UI。
+ * 第一阶段同步上传卡片、标题、文件信息、参数菜单和底部操作条的尺寸及配色；
+ * 第二阶段原图区域使用纯色背景，转绘区域保留现有点阵背景，并延伸中间分隔线；
+ * 右下操作按钮去除额外底板和光晕，布局及事件绑定沿用当前项目。
+ * 所有规则限定 html.redraw-embedded，且只命中上传原片或资产页的专属节点。
+ * 不移植参考版本的 transform 排序及落位动画规则，保留现有拖拽排序交互和反馈。
+ */
+html.redraw-embedded .redraw-original-workspace {
+  --redraw-page:#080d12; --redraw-card:rgba(23,29,36,.7);
+  --redraw-control:#171e27; --redraw-border:#2b3642; --redraw-border-focus:#3a4654;
+  font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+/* 上传列表复用视频总览的内容宽度、上间距、封面、行卡片和按钮规格。 */
+html.redraw-embedded .redraw-original-main { padding-top:28px; }
+html.redraw-embedded .redraw-original-heading { margin-bottom:32px; padding-bottom:24px; }
+html.redraw-embedded .redraw-original-heading h1 { margin:0 0 12px; font-size:24px; line-height:32px; font-weight:400; color:#f5f7fa; }
+html.redraw-embedded .redraw-original-heading p { color:#9aa6b2; font-size:14px; line-height:24px; }
+html.redraw-embedded .redraw-original-card { grid-template-columns:24px 72px minmax(0,1fr) 224px; min-height:160px; padding:16px; gap:20px; border:1px solid #2b3642; border-radius:16px; background:rgba(23,29,36,.7); }
+html.redraw-embedded .redraw-source-cover { width:72px; height:128px; border-radius:10px; }
+html.redraw-embedded .redraw-source-title input { font-size:16px; line-height:24px; font-weight:500; color:#f5f7fa; }
+html.redraw-embedded .redraw-source-info p { color:#9aa6b2; line-height:24px; }
+html.redraw-embedded .redraw-source-actions button,
+html.redraw-embedded .redraw-original-heading button,
+html.redraw-embedded .redraw-setting > button {
+  display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box;
+  height:36px; min-height:36px; padding:0 12px; gap:6px; border:1px solid #2b3642;
+  border-radius:18px; background:transparent; color:#9aa6b2; box-shadow:none;
+  font:500 14px/20px "Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+html.redraw-embedded .redraw-source-actions button:hover:not(:disabled),
+html.redraw-embedded .redraw-original-heading button:hover,
+html.redraw-embedded .redraw-setting > button:is(:hover,[aria-expanded="true"]) { background:#2b3642; border-color:#3a4654; color:#fff; }
+html.redraw-embedded .redraw-source-actions button:disabled { background:#141a21; color:#4d5865; opacity:1; cursor:not-allowed; }
+html.redraw-embedded .redraw-source-actions .redraw-source-delete { color:#9aa6b2; }
+html.redraw-embedded .redraw-source-actions .redraw-source-delete:hover:not(:disabled) { color:#ffb1b6; }
+html.redraw-embedded .redraw-source-cover:hover .redraw-source-play { color:#fff; }
+html.redraw-embedded .redraw-original-workspace button:focus-visible { outline:2px solid #9aa6b2; outline-offset:3px; }
+/* 设置浮层使用共享参数菜单的面板色、边框和圆角。 */
+html.redraw-embedded .redraw-setting-panel { border:1px solid #2b3642; border-radius:16px; background:#171e27; color:#d5dbe3; box-shadow:0 12px 32px #0004; }
+html.redraw-embedded .redraw-style-panel .redraw-style-tabs { background:#171e27; }
+html.redraw-embedded .redraw-style-panel .style-category.is-active { background:#2b3642; color:#f5f7fa; }
+html.redraw-embedded [data-redraw-regions] button[aria-pressed="true"] { background:#2b3642; border-color:#9aa6b2; color:#f5f7fa; }
+html.redraw-embedded .redraw-confirm { height:36px; padding:0 16px; border-radius:18px; font-size:14px; line-height:20px; font-weight:500; }
+html.redraw-embedded .redraw-confirm:disabled { background:rgba(55,64,79,.9); color:#4d5865; opacity:1; }
+@media(max-width:900px) {
+ html.redraw-embedded .redraw-original-card { grid-template-columns:24px 64px minmax(0,1fr) 196px; gap:12px; }
+ html.redraw-embedded .redraw-source-cover { width:64px; height:auto; }
+ html.redraw-embedded .redraw-source-actions button { padding-inline:8px; font-size:12px; }
+}
+@media(max-width:760px) {
+ html.redraw-embedded .redraw-original-main { padding-top:24px; padding-bottom:200px; }
+ html.redraw-embedded .redraw-setting-panel { left:12px !important; right:12px !important; width:auto; max-width:none; }
+}
+@media(max-width:600px) {
+ html.redraw-embedded .redraw-original-card { grid-template-columns:20px 54px minmax(0,1fr); padding:12px; gap:10px; }
+ html.redraw-embedded .redraw-source-cover { width:54px; }
+ html.redraw-embedded .redraw-source-actions button { height:32px; min-height:32px; font-size:11px; padding-inline:5px; }
+}
+
+/* 上传原片：标题独立成组，文件名与时长紧凑成组，形成两级信息层次。 */
+html.redraw-embedded .redraw-original-card .redraw-source-info {
+  align-self:stretch; display:flex; flex-direction:column; justify-content:center; gap:16px;
+  box-sizing:border-box; min-height:0; padding:0;
+}
+html.redraw-embedded .redraw-original-card .redraw-source-title { min-height:28px; }
+html.redraw-embedded .redraw-original-card .redraw-source-title input { padding:0; height:28px; box-sizing:border-box; }
+html.redraw-embedded .redraw-original-card .redraw-source-info p { margin:0; font-size:13px; line-height:20px; }
+@media(max-width:600px) {
+  html.redraw-embedded .redraw-original-card .redraw-source-info { align-self:end; padding:0; gap:6px; }
+  html.redraw-embedded .redraw-original-card .redraw-source-info p { font-size:11px; line-height:18px; }
+}
+
+html.redraw-embedded .redraw-original-card .redraw-source-info .redraw-source-meta { color:#6f7b88; font-size:12px; line-height:18px; }
+
+html.redraw-embedded .redraw-original-card .redraw-source-details { display:flex; flex-direction:column; gap:4px; min-width:0; }
+
+/* 底部操作条与展开菜单：沿用短剧参数浮层（episode-control-popovers-ui1027.css）
+ * 的 #171e27 面板、#2b3642 边框、16px 圆角与投影；分类复用分镜视图切换的胶囊规格。
+ * 保留原按钮、data 属性和定位逻辑，所有适配只作用于转绘首步。
+ */
+html.redraw-embedded .redraw-original-footer {
+  padding:12px; gap:8px; border:1px solid #2b3642; border-radius:999px;
+  background:#171e27; box-shadow:0 20px 48px #0008;
+  color:#d5dbe3; font-family:inherit;
+}
+html.redraw-embedded .redraw-original-footer .redraw-footer-copy {
+  margin-right:4px; padding:0 16px 0 4px; border-right:1px solid #2b3642;
+  color:#9aa6b2; font-size:13px; line-height:20px; font-weight:400;
+}
+html.redraw-embedded .redraw-original-footer .redraw-setting > button {
+  gap:8px; background:#222b35; border-color:transparent; color:#d5dbe3; font-weight:400;
+}
+html.redraw-embedded .redraw-original-footer .redraw-setting > button:is(:hover,[aria-expanded="true"]) { background:#2b3642; border-color:transparent; color:#f5f7fa; }
+html.redraw-embedded .redraw-original-footer .redraw-confirm { margin-left:4px; height:36px; padding:0 16px; border:0; border-radius:999px; box-shadow:none; }
+html.redraw-embedded .redraw-setting > button .redraw-strength-caret { display:block; width:13px; height:13px; flex:0 0 13px; transform:rotate(180deg); opacity:.8; pointer-events:none; }
+html.redraw-embedded .redraw-setting > button[aria-expanded="true"] .redraw-strength-caret { transform:none; }
+html.redraw-embedded .redraw-setting-panel {
+  padding:20px; border:1px solid #2b3642; border-radius:16px; background:#171e27;
+  color:#d5dbe3; box-shadow:0 20px 48px #0008; font-family:inherit;
+  overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#4d5865 transparent;
+}
+html.redraw-embedded .redraw-setting-panel h3 { margin:0 0 12px; color:#9aa6b2; font-size:14px; line-height:20px; font-weight:500; }
+html.redraw-embedded .redraw-strength-panel { width:328px; }
+html.redraw-embedded .redraw-strength-options { gap:8px; }
+html.redraw-embedded .redraw-strength-option { padding:12px; border:0; border-radius:10px; background:#111820; }
+html.redraw-embedded .redraw-strength-option:hover { background:#202936; }
+html.redraw-embedded .redraw-strength-option:has(input:checked) { background:#2b3642; border:0; }
+html.redraw-embedded .redraw-strength-option:has(input:focus-visible) { outline:2px solid #9aa6b2; outline-offset:2px; }
+/* 原生 radio 保留键盘与选择语义，仅替换浏览器默认的暖灰色外观。 */
+html.redraw-embedded .redraw-strength-option input {
+  appearance:none; -webkit-appearance:none; box-sizing:border-box;
+  width:16px; height:16px; padding:0; border:1.5px solid #566474; border-radius:50%;
+  background:#111820; box-shadow:none; cursor:pointer;
+}
+html.redraw-embedded .redraw-strength-option:hover input:not(:checked) { border-color:#9aa6b2; }
+html.redraw-embedded .redraw-strength-option input:checked {
+  border-color:#9aa6b2;
+  background:radial-gradient(circle,#d5dbe3 0 3px,transparent 3.5px),#111820;
+}
+html.redraw-embedded .redraw-strength-option > span { gap:4px; }
+html.redraw-embedded .redraw-strength-option strong { color:#f5f7fa; font-size:14px; line-height:20px; font-weight:500; }
+html.redraw-embedded .redraw-strength-option small { color:#9aa6b2; font-size:12px; line-height:18px; }
+html.redraw-embedded .redraw-region-panel { width:280px; }
+html.redraw-embedded [data-redraw-regions] { gap:8px; }
+html.redraw-embedded [data-redraw-regions] button { min-height:40px; padding:10px 28px 10px 12px; border:0; border-radius:10px; background:#111820; color:#aab5c2; font-family:inherit; font-size:14px; line-height:20px; font-weight:400; }
+html.redraw-embedded [data-redraw-regions] button:hover { background:#202936; color:#f5f7fa; }
+html.redraw-embedded [data-redraw-regions] button[aria-pressed="true"] { border:0; background:#2b3642; color:#f5f7fa; font-weight:500; }
+html.redraw-embedded .redraw-style-panel { width:760px; padding:0; overflow:hidden; }
+html.redraw-embedded .redraw-style-panel .style-popover-title { padding:20px 20px 12px; color:#9aa6b2; font-size:14px; line-height:20px; font-weight:500; }
+html.redraw-embedded .redraw-style-panel .redraw-style-tabs { padding:4px; margin:0 20px 16px; gap:2px; border:1px solid #2b3642; border-radius:999px; background:#171e27; }
+html.redraw-embedded .redraw-style-panel .style-category { height:32px; border-radius:999px; color:#9aa6b2; font-size:14px; line-height:20px; font-weight:400; }
+html.redraw-embedded .redraw-style-panel .style-category:is(:hover,.is-active) { background:#2b3642; color:#f5f7fa; }
+html.redraw-embedded .redraw-style-panel .style-category.is-active { font-weight:500; }
+html.redraw-embedded .redraw-style-panel .redraw-style-grid { padding:2px 20px 20px; gap:12px; }
+html.redraw-embedded .redraw-style-panel .home-drama-style-card { border-color:transparent; box-shadow:none; }
+html.redraw-embedded .redraw-style-panel .home-drama-style-card:hover { border-color:#566474; }
+html.redraw-embedded .redraw-style-panel .home-drama-style-card.is-selected { border-color:#9aa6b2; box-shadow:0 0 0 1px #9aa6b2; }
+html.redraw-embedded .redraw-style-panel .home-drama-style-card:focus-visible { outline:2px solid #9aa6b2; outline-offset:2px; }
+html.redraw-embedded .redraw-style-panel .home-drama-custom-style textarea { box-sizing:border-box; border:1px solid #2b3642; border-radius:12px; background:#111820; color:#d5dbe3; font-family:inherit; font-size:14px; line-height:24px; }
+html.redraw-embedded .redraw-style-panel .home-drama-custom-style textarea:focus { outline:none; border-color:#718093; box-shadow:none; }
+@media(max-width:760px) {
+ html.redraw-embedded .redraw-original-footer { padding:12px; border-radius:999px; gap:8px; }
+ html.redraw-embedded .redraw-original-footer .redraw-confirm { margin-left:0; }
+ html.redraw-embedded .redraw-setting-panel { width:auto; }
+}
+
+/* 原片卡片外观对齐短剧第五步 .episode-video-card 的实际最终样式。
+ * 标题/文件信息继续使用已确认的分组排版；拖拽落位线仍允许超出边缘显示。
+ */
+html.redraw-embedded .redraw-original-card {
+  color:#d5dbe3; overflow:hidden; transition:border-color .16s ease;
+}
+html.redraw-embedded .redraw-original-card:is(.is-drop-before,.is-drop-after) { overflow:visible; }
+html.redraw-embedded .redraw-original-card.redraw-drag-preview { transition:none; }
+html.redraw-embedded .redraw-original-card:hover { border-color:#3a4654; }
+/* 排序反馈优先于普通悬停，与原有稳定素材 ID 的高亮逻辑保持一致。 */
+html.redraw-embedded .redraw-original-card.is-source-moved { border-color:#b7c8da; }
+html.redraw-embedded .redraw-original-card.is-source-dragging { border-color:#a6b7c9; }
+html.redraw-embedded .redraw-original-card.redraw-drag-preview { border-color:#adbdce; }
+
+/* 图片封面底部轻遮罩，保证时长在明亮画面上也清晰；封面尺寸和播放入口不变。 */
+html.redraw-embedded .redraw-source-cover::before {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.6));
+}
+html.redraw-embedded .redraw-source-delete .redraw-source-icon { color:inherit; stroke:#9aa6b2; filter:none; }
+html.redraw-embedded .redraw-source-delete:hover:not(:disabled) .redraw-source-icon { stroke:#ffb1b6; }
+
+/* 转绘资产对照：原图区铺实色，转绘区保留共享点阵；负外边距延伸底色和分隔线，
+ * 等量内边距保持现有标题、图片的位置与尺寸，兼容角色、场景、物品及生成态。
+ */
+html.redraw-embedded .asset-workspace[data-view="asset-library"] .redraw-character-comparison { --redraw-compare-inset:20px; }
+html.redraw-embedded .asset-workspace[data-view="asset-library"] .redraw-character-comparison > .redraw-character-original {
+  box-sizing:border-box; margin:calc(0px - var(--redraw-compare-inset)); padding:var(--redraw-compare-inset);
+  background:var(--va-bg,#080d12); background-image:none;
+}
+html.redraw-embedded .asset-workspace[data-view="asset-library"] .redraw-character-comparison > .redraw-character-image-divider {
+  align-self:stretch; margin-block:calc(0px - var(--redraw-compare-inset)); background:#2b3642;
+}
+@media(max-width:1000px) {
+ html.redraw-embedded .asset-workspace[data-view="asset-library"] .redraw-character-comparison { --redraw-compare-inset:12px; }
+}
+
+/* 转绘资产页右下操作组：移除额外底板及外溢光晕，保留原定位和按钮间距。 */
+html.redraw-embedded body .asset-workspace.has-asset-browser[data-view="asset-library"]:not(.is-canvas-view):not(.is-parsing-assets) .asset-profile-inspector > .asset-stage-actions {
+  background:transparent !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
+}
+html.redraw-embedded body .asset-workspace.has-asset-browser[data-view="asset-library"]:not(.is-canvas-view) .asset-profile-inspector > .asset-stage-actions :is(.asset-batch-open,.asset-next):not(:disabled):not(.is-blocked) {
+  box-shadow:none !important;
+}
+
+/* 参考强度去除单选圆圈的视觉占位；保留原生单选语义、键盘焦点及整行 label 点击。 */
+html.redraw-embedded .redraw-strength-option { position:relative; gap:0; }
+html.redraw-embedded .redraw-strength-option input {
+  position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
+  overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+}
+html.redraw-embedded .redraw-strength-option > span { flex:1; }
+
+/* 自定义风格文字对齐现有设定面板：选中标题为主文字，字段标签和占位为灰蓝辅助色。 */
+html.redraw-embedded .redraw-style-panel .style-category[aria-selected="true"] { color:#f5f7fa; }
+html.redraw-embedded .redraw-style-panel .home-drama-custom-style > label { color:#9aa6b2; font-size:13px; line-height:20px; font-weight:400; }
+html.redraw-embedded .redraw-style-panel .home-drama-custom-style textarea::placeholder { color:#9aa6b2; opacity:1; }
+
+/* 2026-11-06 Product Design 改动逻辑：移除转绘自定义入口后，两类预设风格平分原分类栏宽度；仅限定转绘首步的风格浮层。 */
+html.redraw-embedded .redraw-style-panel .redraw-style-tabs { grid-template-columns:repeat(2,minmax(0,1fr)); }

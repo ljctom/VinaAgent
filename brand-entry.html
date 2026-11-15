@@ -1,0 +1,2219 @@
+<!doctype html>
+<!-- 2026-10-26 Product Design 改动逻辑：从“登录页”参考中独立提取截图所示品牌入口；仅使用 VinaAgent 现有媒体和案例地址，不修改 marketing，不加载参考项目的产品代码。 -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VinaAI 创作入口</title>
+  <link rel="preload" as="image" href="./assets/images/drama-broom-flight-poster.webp" type="image/webp" fetchpriority="high" />
+  <style>
+    .showcase-category-nav {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin: 8px 0 18px;
+      min-width: 0;
+    }
+
+    .showcase-brand {
+      flex: 0 0 auto;
+      color: rgba(255, 255, 255, .96);
+      font-size: 22px;
+      font-weight: 840;
+      line-height: 38px;
+      letter-spacing: 0;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .showcase-category-tabs {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      min-width: 0;
+      margin: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .showcase-category-tabs::-webkit-scrollbar { display: none; }
+
+    .showcase-category-tab {
+      position: relative;
+      min-height: 38px;
+      flex: 0 0 auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: rgba(255, 255, 255, .54);
+      font-size: 16px;
+      font-weight: 720;
+      cursor: pointer;
+    }
+
+    .showcase-category-tab::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: #c9ff45;
+      opacity: 0;
+      transform: scaleX(.45);
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .showcase-category-tab:hover,
+    .showcase-category-tab:focus-visible,
+    .showcase-category-tab.active {
+      color: rgba(255, 255, 255, .96);
+      outline: none;
+    }
+
+    .showcase-category-tab.active::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .showcase-video-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .showcase-video-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .showcase-video-card:hover,
+    .showcase-video-card:focus-visible {
+      outline: none;
+    }
+
+    /* 2026-08-04 改动逻辑：视频封面保持原 16:9 方框、圆角和悬停反馈，卡片标题则脱离封面遮罩并排列在方框下方。 */
+    .showcase-video-media {
+      position: relative;
+      min-width: 0;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 8px;
+      background: #090a0c;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .24);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .showcase-video-card:hover .showcase-video-media,
+    .showcase-video-card:focus-visible .showcase-video-media {
+      border-color: rgba(201, 255, 69, .5);
+      box-shadow: 0 22px 54px rgba(0, 0, 0, .34);
+      transform: translateY(-2px);
+    }
+
+    .showcase-video-cover {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* 2026-08-03 改动逻辑：案例卡 hover 时在封面上播放完整比例的静音视频；媒体无法横向铺满时保留卡片纯黑底色作为两侧黑边。 */
+    .showcase-video-preview {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .16s ease;
+    }
+
+    .showcase-video-card.is-previewing .showcase-video-preview {
+      opacity: 1;
+    }
+
+    .showcase-video-card-meta {
+      /* 2026-08-04 改动逻辑：项目标题与编号改为媒体方框下方的独立信息行，不再叠加渐变遮罩覆盖封面。 */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 4px;
+    }
+
+    .showcase-video-card-title {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: rgba(255, 255, 255, .94);
+      font-size: 14px;
+      font-weight: 760;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    body.marketing-entry-active {
+      overflow: hidden;
+      background: #050505;
+    }
+
+    body.marketing-entry-active > .app,
+    body.marketing-entry-active > .title-toast {
+      display: none !important;
+    }
+
+    .marketing-entry {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: none;
+      /* 2026-07-22 下滑品牌页：入口层本身成为纵向滚动容器，首屏后可逐屏浏览六类创作能力。 */
+      overflow-x: hidden;
+      overflow-y: auto;
+      /* 2026-07-22 轻滚切屏：强制吸附到最近的完整内容屏，并限制滚动链传递到页面底层。 */
+      scroll-snap-type: y mandatory;
+      overscroll-behavior-y: contain;
+      scroll-behavior: smooth;
+      background: #050505;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      isolation: isolate;
+    }
+
+    body.marketing-entry-active .marketing-entry {
+      display: block;
+    }
+
+    .marketing-entry-video,
+    .marketing-entry-video-backdrop,
+    .marketing-entry-poster,
+    .marketing-entry-shade,
+    .marketing-entry-grain {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      /* 2026-07-22 首屏媒体只覆盖首个视口，避免下方内容屏继续被首屏视频遮挡。 */
+      height: 100svh;
+    }
+
+    .marketing-entry-video {
+      z-index: -4;
+      object-fit: cover;
+      object-position: center;
+      background: #0a0a0a;
+      transform: scale(1.015);
+      transition: opacity .32s ease;
+    }
+
+    /* 2026-07-24 改动逻辑：数字人竖版视频背后复播同一画面，放大、虚化并轻微压暗，使用视频自身的动态颜色填充两侧黑边。 */
+    .marketing-entry-video-backdrop {
+      z-index: -5;
+      display: none;
+      object-fit: cover;
+      object-position: center;
+      background: #0a0a0a;
+      filter: blur(38px) saturate(1.16) brightness(.68);
+      transform: scale(1.14);
+      opacity: 0;
+      transition: opacity .32s ease;
+    }
+
+    .marketing-entry-video-backdrop.is-active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* 2026-07-24 改动逻辑：数字人使用 9:16 竖版素材时按原始比例全高居中展示，取消横向铺满和裁切，其他营销分类仍保持全屏 cover。 */
+    .marketing-entry-video.is-digital-human-portrait {
+      inset: 0 auto 0 50%;
+      width: auto;
+      max-width: 100vw;
+      height: 100svh;
+      aspect-ratio: 9 / 16;
+      object-fit: contain;
+      transform: translateX(-50%);
+      background: transparent;
+    }
+
+    /* 2026-07-22 独立首屏封面层：不依赖 video 的 poster 绘制时机，HTML 解析后即可展示；首视频真正绘制首帧后再淡出。 */
+    .marketing-entry-poster {
+      z-index: -3;
+      object-fit: cover;
+      object-position: center;
+      background: #0a0a0a;
+      transform: scale(1.015);
+      opacity: 1;
+      transition: opacity .22s ease;
+    }
+
+    .marketing-entry-poster.is-hidden {
+      opacity: 0;
+    }
+
+    .marketing-entry-video.is-switching {
+      opacity: .28;
+    }
+
+    .marketing-entry-shade {
+      z-index: -2;
+      background:
+        linear-gradient(180deg, rgba(2, 3, 5, .55) 0%, rgba(2, 3, 5, .05) 24%, rgba(2, 3, 5, .14) 55%, rgba(2, 3, 5, .78) 100%),
+        linear-gradient(90deg, rgba(0, 0, 0, .24), transparent 35%, transparent 65%, rgba(0, 0, 0, .18));
+    }
+
+    .marketing-entry-grain {
+      z-index: -1;
+      opacity: .16;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    /* 2026-11-11 Product Design：按官网收紧页头间距，等比放大现有字标；页头继续固定在首屏及后续内容上方。 */
+    .marketing-entry-header {
+      /* 2026-07-22 品牌页滚动后仍保留顶部入口，与参考页一致提供持续可见的行动按钮。 */
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 2;
+      height: 88px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 24px 24px 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, .34), transparent);
+    }
+
+    .marketing-entry-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -.03em;
+    }
+
+    /* 仅覆盖入口页字标尺寸；继续使用原有语言对应的品牌资源。 */
+    .marketing-entry-header .marketing-entry-brand #marketingEntryLogo {
+      height: 30px !important;
+      max-width: 135px;
+    }
+
+    .marketing-entry-brand strong {
+      display: none;
+    }
+
+    /* 2026-10-26 Product Design 改动逻辑：语言菜单支持真实阿拉伯语翻译和 RTL 镜像，操作区跟随文档方向排列。 */
+    .marketing-entry-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* H5 登录文案默认隐藏，仅在手机断点内切换。 */
+    .marketing-entry-cta-mobile-label,
+    .mobile-account-login-label,
+    .marketing-mobile-web-guide,
+    .marketing-entry-account-avatar,
+    .marketing-login-modal {
+      display: none;
+    }
+
+    /* 2026-08-25 Product Design 改动逻辑：登录层默认彻底退出布局，只有 H5 点击营销页注册登录入口后才解除 hidden。 */
+    .marketing-login-modal[hidden] {
+      display: none !important;
+    }
+
+    /* 2026-11-11 Product Design：语言入口用等高的白色圆钮；菜单仍由原事件和 aria-checked 控制。 */
+    .marketing-language-switcher {
+      position: relative;
+      height: 40px;
+    }
+
+    .marketing-language-trigger {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #fff;
+      color: #0d1308;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+
+    .marketing-language-trigger:hover,
+    .marketing-language-switcher.is-open .marketing-language-trigger {
+      background: #f1f3ef;
+    }
+
+    /* 2026-11-11 Product Design：直接渲染官网的 24px 地球图标和同尺寸主按钮箭头，避免本地打开时外部 SVG 遮罩失效。 */
+    .marketing-language-icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+    }
+
+    .marketing-language-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: grid;
+      gap: 8px;
+      width: 192px;
+      margin: 0;
+      padding: 12px;
+      border: 1px solid rgba(13, 19, 8, .06);
+      border-radius: 16px;
+      background: #fff;
+      color-scheme: light;
+      list-style: none;
+    }
+
+    .marketing-language-menu[hidden] {
+      display: none;
+    }
+
+    .marketing-language-option {
+      width: 100%;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #6f7b88;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: start;
+      cursor: pointer;
+    }
+
+    .marketing-language-option:hover {
+      background: #f1f3ef;
+      color: #0d1308;
+    }
+
+    .marketing-language-option[aria-checked="true"] {
+      color: #0d1308;
+    }
+
+    /* 选中标记沿用 aria-checked，内嵌图标以保证本地和线上显示一致。 */
+    .marketing-language-option[aria-checked="true"]::after {
+      content: "";
+      width: 12px;
+      height: 12px;
+      flex: 0 0 auto;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m.75 6.75 3 3L11.25 2.5' fill='none' stroke='%230d1308' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+
+    /* 2026-11-11 Product Design：主入口用白色胶囊和深色箭头，沿用原按钮的事件绑定。 */
+    .marketing-entry-cta {
+      min-width: 151px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 20px 8px 24px;
+      border: 0;
+      border-radius: 30px;
+      background: #fff;
+      color: #0d1308;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .marketing-entry-cta-arrow {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+    }
+
+    .marketing-entry-cta:hover {
+      transform: translateY(-1px);
+      background: #f1f3ef;
+    }
+
+    .marketing-entry-cta:focus-visible,
+    .marketing-language-trigger:focus-visible,
+    .marketing-entry-option:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    .marketing-entry-hero {
+      width: min(760px, calc(100% - 44px));
+      position: absolute;
+      left: 50%;
+      bottom: 66px;
+      transform: translateX(-50%);
+      display: grid;
+      justify-items: center;
+      text-align: left;
+    }
+
+    .marketing-entry-prompt {
+      width: min(690px, 100%);
+      min-height: 76px;
+      margin: 0 0 24px;
+      color: rgba(255, 255, 255, .66);
+      font-size: 15px;
+      font-weight: 430;
+      line-height: 1.72;
+      letter-spacing: .015em;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, .72);
+    }
+
+    .marketing-entry-prompt strong {
+      margin-right: 7px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 780;
+    }
+
+    .marketing-entry-options {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      border: 1px solid rgba(255, 255, 255, .24);
+      border-radius: 999px;
+      background: rgba(36, 35, 35, .44);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 16px 42px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(18px);
+    }
+
+    .marketing-entry-option {
+      /* 2026-07-22 六分类入口：保持紧凑单项宽度，让新增“3D创作”与原有五个方向继续呈现为同一行胶囊布局。 */
+      min-width: 116px;
+      height: 46px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255, 255, 255, .62);
+      font-size: 15px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .marketing-entry-option.active {
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+    }
+
+    .marketing-entry-scroll {
+      /* 2026-07-22 首屏滑动提示：固定在首个视口底部中央，文字右侧箭头以两秒为周期轻微上下浮动。 */
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, .46);
+      font-size: 9px;
+      font-weight: 650;
+      letter-spacing: .42em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .marketing-entry-scroll-arrow {
+      width: 7px;
+      height: 7px;
+      margin-top: -3px;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      animation: marketingScrollFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes marketingScrollFloat {
+      0%, 100% { transform: translateY(0) rotate(45deg); }
+      50% { transform: translateY(5px) rotate(45deg); }
+    }
+
+    /* 2026-07-22 下滑内容屏：首屏使用等高占位；后续内容在桌面端收进约 1680px 的居中区域，并逐屏交替文案与视频方向。 */
+    .marketing-entry-spacer {
+      height: 100svh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      pointer-events: none;
+    }
+
+    /* 2026-08-25 改动逻辑：品牌营销页的精选案例层默认不参与桌面端布局，只在 H5 断点内插入首屏与业务介绍屏之间。 */
+    .marketing-showcase-section {
+      display: none;
+    }
+
+    .marketing-feature {
+      position: relative;
+      /* 2026-07-22 文字区氛围色：所有内容屏统一使用青色光晕，默认跟随左侧文案。 */
+      --feature-glow: rgba(41, 196, 201, .13);
+      --feature-glow-x: 22%;
+      min-height: 100svh;
+      display: grid;
+      /* 2026-07-22 红框范围调整：以 1680px 为桌面端内容上限，宽屏两侧自动留白，视频随网格同步缩窄。 */
+      grid-template-columns: minmax(360px, .62fr) minmax(560px, 1.38fr);
+      align-items: center;
+      gap: clamp(32px, 4vw, 72px);
+      padding: 104px max(clamp(32px, 4vw, 86px), calc((100vw - 1680px) / 2)) 52px;
+      overflow: hidden;
+      scroll-snap-align: start;
+      background:
+        radial-gradient(circle at var(--feature-glow-x) 50%, var(--feature-glow), transparent 38%),
+        linear-gradient(135deg, #09090b 0%, #050506 58%, #0b0a0e 100%);
+      border-top: 1px solid rgba(255,255,255,.055);
+      scroll-snap-stop: always;
+    }
+
+    .marketing-feature:nth-of-type(even) {
+      /* 2026-07-22 文字位于右侧时，青色背景光同步移动到右侧。 */
+      --feature-glow-x: 78%;
+      /* 2026-07-22 反向屏同步交换宽窄列，保证左侧视频与右向屏的视频尺寸一致。 */
+      grid-template-columns: minmax(560px, 1.38fr) minmax(360px, .62fr);
+    }
+
+    /* 2026-07-22 左右交替：第二屏（首个内容屏）左文右视频，第三屏起偶数内容项改为左视频右文案。 */
+    .marketing-feature:nth-of-type(even) .marketing-feature-copy {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .marketing-feature:nth-of-type(even) .marketing-feature-media {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    .marketing-feature-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 610px;
+    }
+
+    .marketing-feature-index {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 30px;
+      color: rgba(255,255,255,.42);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .marketing-feature-index::after {
+      content: "";
+      width: 72px;
+      height: 1px;
+      background: rgba(255,255,255,.2);
+    }
+
+    .marketing-feature h2 {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(48px, 5.2vw, 88px);
+      font-weight: 820;
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .marketing-feature-lead {
+      max-width: 540px;
+      margin: 28px 0 0;
+      color: rgba(255,255,255,.61);
+      font-size: clamp(15px, 1.12vw, 18px);
+      line-height: 1.78;
+    }
+
+    .marketing-feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 30px 0 36px;
+    }
+
+    .marketing-feature-tags span {
+      padding: 9px 15px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      color: rgba(255,255,255,.72);
+      font-size: 13px;
+      backdrop-filter: blur(12px);
+    }
+
+    .marketing-feature-action {
+      min-width: 148px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 20px;
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 4px;
+      background: #fff;
+      color: #101012;
+      font-size: 14px;
+      font-weight: 760;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .marketing-feature-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 38px rgba(0,0,0,.28);
+    }
+
+    .marketing-feature-media {
+      position: relative;
+      width: 100%;
+      /* 2026-07-22 右侧视频放大：允许在宽屏上扩展为更强的主视觉，但仍保持视频自身宽高比。 */
+      max-width: 1320px;
+      justify-self: end;
+    }
+
+    .marketing-feature-media::before {
+      content: "";
+      position: absolute;
+      inset: -22px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .marketing-feature-video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 82svh;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #000;
+      box-shadow: 0 34px 100px rgba(0,0,0,.5);
+    }
+
+    /* 2026-07-24 改动逻辑：数字人详情区使用同源视频作为绝对定位的模糊背景层，填充竖版主视频两侧并随画面动态变色。 */
+    .marketing-feature-video-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 10px;
+      filter: blur(34px) saturate(1.16) brightness(.68);
+      transform: scale(1.12);
+      clip-path: inset(0 round 10px);
+      pointer-events: none;
+    }
+
+    /* 2026-07-24 改动逻辑：数字人详情媒体框固定为与其他横版分类一致的 16:9，框的尺寸不再由内部 9:16 视频撑高。 */
+    .marketing-feature-media--digital-human {
+      aspect-ratio: 16 / 9;
+      max-height: 82svh;
+    }
+
+    .marketing-feature-media--digital-human .marketing-feature-video {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      object-fit: contain;
+      background: transparent;
+      box-shadow: 0 34px 100px rgba(0,0,0,.5);
+    }
+
+    .marketing-feature-media--digital-human::before {
+      z-index: 2;
+    }
+
+    .marketing-feature-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 14px;
+      color: rgba(255,255,255,.34);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    /* 2026-07-22 营销页底部备案栏：直接定位在“3D 创作”最后一屏底部，完整进入该屏时即可看到，无需越过最后一屏继续滚动。 */
+    .marketing-entry-footer {
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 2;
+      padding: 0 max(28px, calc((100vw - 1288px) / 2)) 18px;
+      color: rgba(255, 255, 255, .32);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .marketing-entry-footer-inner {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0 8px;
+      min-height: 48px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .marketing-entry-footer a {
+      color: inherit;
+      text-decoration: none;
+      transition: color .18s ease;
+    }
+
+    .marketing-entry-footer a:hover,
+    .marketing-entry-footer a:focus-visible {
+      color: rgba(255, 255, 255, .62);
+    }
+
+    @media (max-width: 980px) {
+      .marketing-feature {
+        grid-template-columns: 1fr;
+        align-content: center;
+        gap: 36px;
+        padding: 104px 28px 44px;
+      }
+
+      .marketing-feature-copy { max-width: 720px; }
+      .marketing-feature h2 { font-size: clamp(44px, 11vw, 72px); }
+      .marketing-feature-lead { margin-top: 20px; }
+      .marketing-feature-tags { margin: 22px 0 26px; }
+      .marketing-feature-media { max-width: 820px; justify-self: start; }
+      .marketing-feature-video { max-height: 45svh; }
+
+      /* 2026-07-22 小屏仍采用文案在上、视频在下，清除桌面端交替列定位。 */
+      .marketing-feature:nth-of-type(even) .marketing-feature-copy,
+      .marketing-feature:nth-of-type(even) .marketing-feature-media {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .marketing-feature:nth-of-type(even) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .marketing-entry-header {
+        height: 76px;
+        align-items: flex-start;
+        padding: 18px 18px 0;
+      }
+
+      .marketing-entry-brand {
+        gap: 7px;
+      }
+
+      /* 2026-11-11：手机端保留紧凑的页头间距，字标等比缩放。 */
+      .marketing-entry-header .marketing-entry-brand #marketingEntryLogo {
+        height: 24px !important;
+        max-width: 120px;
+      }
+
+      .marketing-entry-brand strong {
+        font-size: 19px;
+      }
+
+      .marketing-entry-cta {
+        min-width: 0;
+        padding-inline: 10px;
+        font-size: 13px;
+      }
+
+      /* H5 继续显示“注册/登录”并沿用原登录流程，保留语言入口。 */
+      .marketing-entry-cta-desktop-label,
+      .marketing-entry-cta-arrow {
+        display: none;
+      }
+
+      .marketing-entry-cta-mobile-label {
+        display: inline;
+      }
+
+      /* 2026-08-25 Product Design 改动逻辑：Google 登录完成后右上入口收成不可点击头像，沿用真实 VinaAI 图标资产，桌面端不应用此状态。 */
+      .marketing-entry-cta.is-google-signed-in {
+        width: 40px;
+        min-width: 40px;
+        padding: 0;
+        border-radius: 50%;
+        border-color: rgba(255, 255, 255, .22);
+        background: #111a22;
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .marketing-entry-cta.is-google-signed-in .marketing-entry-cta-mobile-label {
+        display: none;
+      }
+
+      .marketing-entry-cta.is-google-signed-in .marketing-entry-account-avatar {
+        width: 30px;
+        height: 30px;
+        display: block;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* 2026-08-25 Product Design 改动逻辑：按参考图复刻 H5 全屏邮箱登录层；视觉控件均为不可交互展示，唯一可点击动作是 Google 登录。 */
+      .marketing-login-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 10020;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 20px;
+        background: rgba(5, 8, 11, .54);
+      }
+
+      .marketing-login-sheet {
+        position: relative;
+        /* 2026-08-25 Product Design 改动逻辑：H5 登录弹窗由全屏页面收缩为参考红框约 376×580px 的居中卡片，并为更矮设备保留视口内安全高度。 */
+        width: min(100%, 376px);
+        height: min(580px, calc(100dvh - 40px));
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 28px 20px 18px;
+        border: 1px solid #26313c;
+        border-radius: 24px;
+        background: #121920;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, .52);
+        color: #eef2f5;
+        pointer-events: none;
+      }
+
+      .marketing-login-brand {
+        width: 148px;
+        height: 34px;
+        display: block;
+        margin: 0 auto;
+        object-fit: contain;
+      }
+
+      .marketing-login-close-visual {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, .66);
+        font-size: 28px;
+        font-weight: 300;
+        line-height: 1;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .marketing-login-title {
+        margin: 24px 0 20px;
+        font-size: 20px;
+        font-weight: 760;
+        line-height: 1.3;
+      }
+
+      .marketing-login-field {
+        width: 100%;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding: 0 22px;
+        border: 1px solid #33404d;
+        border-radius: 999px;
+        background: #070d12;
+        color: rgba(255, 255, 255, .88);
+        font-size: 17px;
+      }
+
+      .marketing-login-code {
+        color: #596675;
+      }
+
+      .marketing-login-primary {
+        width: 100%;
+        height: 57px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        border: 0;
+        border-radius: 999px;
+        background: #3c562c;
+        color: #0c1510;
+        font-size: 18px;
+        font-weight: 650;
+      }
+
+      .marketing-login-divider {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin: 26px auto 24px;
+        color: #526070;
+        font-size: 18px;
+      }
+
+      .marketing-login-divider::before,
+      .marketing-login-divider::after {
+        content: "";
+        width: 65px;
+        height: 1px;
+        background: #33404b;
+      }
+
+      .marketing-google-login {
+        width: 100%;
+        height: 66px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        border: 1px solid #33404d;
+        border-radius: 999px;
+        background: #070d12;
+        color: #7d8998;
+        font-size: 17px;
+        font-weight: 650;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .marketing-google-login img {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
+      }
+
+      .marketing-google-login:active {
+        transform: scale(.985);
+      }
+
+      .marketing-login-legal {
+        margin: auto -6px 0;
+        color: #536171;
+        font-size: 11px;
+        line-height: 1.55;
+        text-align: center;
+      }
+
+      /* 2026-08-25 改动逻辑：仅在 H5 品牌营销首屏中央展示产品页同款标题、电脑端提示和网址复制框；桌面端由默认隐藏规则保持原样。 */
+      .marketing-mobile-web-guide {
+        position: absolute;
+        top: 44%;
+        left: 50%;
+        z-index: 1;
+        width: min(calc(100% - 36px), 420px);
+        display: block;
+        color: #fff;
+        text-align: center;
+        transform: translate(-50%, -50%);
+      }
+
+      .marketing-mobile-web-guide h1 {
+        margin: 0 auto 18px;
+        font-size: clamp(32px, 9.4vw, 42px);
+        line-height: 1.18;
+        letter-spacing: -.04em;
+      }
+
+      .marketing-mobile-web-guide .mobile-web-subtitle {
+        margin: 0 auto 22px;
+        color: rgba(255, 255, 255, .58);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .marketing-mobile-web-guide .mobile-web-link {
+        width: 100%;
+        min-height: 54px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 6px 6px 17px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 16px;
+        background: rgba(13, 20, 27, .9);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 18px 42px rgba(0, 0, 0, .28);
+      }
+
+      .marketing-mobile-web-guide .mobile-web-url {
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+        color: rgba(255, 255, 255, .78);
+        font-size: 14px;
+        font-weight: 650;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        user-select: all;
+      }
+
+      .marketing-mobile-web-guide .mobile-web-copy {
+        min-width: 72px;
+        height: 42px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 12px;
+        background: #b8f84a;
+        color: #0a1207;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .marketing-mobile-web-guide .mobile-web-copy:active {
+        transform: scale(.97);
+      }
+
+      /* 2026-08-25 改动逻辑：进入产品页后，把 H5 右上账户区收敛为“注册/登录”按钮并占用原头像位置；会员、积分及头像圆标只在手机端隐藏。 */
+      body:not(.marketing-entry-active) .global-account {
+        top: 12px;
+        right: 12px;
+      }
+
+      body:not(.marketing-entry-active) .global-account .top-account-chip {
+        display: none;
+      }
+
+      body:not(.marketing-entry-active) .global-account .account-avatar {
+        width: auto;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      body:not(.marketing-entry-active) .global-account .account-avatar > span:not(.mobile-account-login-label) {
+        display: none;
+      }
+
+      body:not(.marketing-entry-active) .global-account .mobile-account-login-label {
+        display: inline;
+        width: auto;
+        height: auto;
+        border-radius: 0;
+        background: transparent;
+        color: #fff;
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      /* 窄屏缩小两个操作之间的间距，维持相同的按钮高度。 */
+      .marketing-entry-actions {
+        gap: 8px;
+      }
+
+      .marketing-entry-hero {
+        width: calc(100% - 36px);
+        bottom: 30px;
+      }
+
+      .marketing-entry-prompt {
+        min-height: 0;
+        margin-bottom: 20px;
+        padding: 0 8px;
+        font-size: 13px;
+        line-height: 1.64;
+      }
+
+      .marketing-entry-prompt strong {
+        display: block;
+        margin: 0 0 3px;
+        font-size: 14px;
+      }
+
+      .marketing-entry-options {
+        /* 2026-08-25 Product Design 改动逻辑：H5 首屏分类导航放宽到接近整屏，仅保留左右 18px 安全边距；原 54px 高度、按钮状态和桌面端宽度均保持不变。 */
+        width: calc(100vw - 36px);
+        max-width: none;
+      }
+
+      .marketing-entry-option {
+        flex: 1;
+        min-width: 0;
+        height: 54px;
+        padding: 0 4px;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .marketing-entry-scroll {
+        bottom: 12px;
+      }
+
+      /* 2026-08-25 改动逻辑：H5 第二屏改为可持续下滑的精选案例长页；首屏结束后先浏览案例，案例末尾再进入原短剧、广告等整屏介绍。 */
+      .marketing-showcase-section {
+        position: relative;
+        z-index: 1;
+        min-height: 100svh;
+        display: block;
+        padding: 82px 14px 42px;
+        background: #050c10;
+        scroll-snap-align: start;
+        scroll-snap-stop: normal;
+      }
+
+      /* 2026-08-25 改动逻辑：精选案例浏览时在固定品牌头部下方铺设纯黑遮挡层，案例封面滚过顶部时不再透过 Logo 与头像区域。 */
+      .marketing-showcase-section::before {
+        content: "";
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        height: 76px;
+        display: block;
+        margin: -82px -14px 6px;
+        background: #050c10;
+      }
+
+      .marketing-showcase-title {
+        margin: 0 0 18px;
+        color: #fff;
+        font-size: 24px;
+        font-weight: 820;
+        line-height: 1.2;
+      }
+
+      .marketing-showcase-section .showcase-category-nav {
+        position: sticky;
+        top: 76px;
+        z-index: 100;
+        width: auto;
+        min-width: 0;
+        margin: 0 -14px 20px;
+        padding: 8px 14px 7px;
+        gap: 18px;
+        background: rgba(5, 12, 16, .96);
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, .24);
+        backdrop-filter: blur(12px);
+      }
+
+      .marketing-showcase-section .showcase-brand {
+        font-size: 18px;
+        line-height: 36px;
+      }
+
+      .marketing-showcase-section .showcase-category-tabs {
+        gap: 20px;
+        overscroll-behavior-x: contain;
+      }
+
+      .marketing-showcase-section .showcase-category-tab {
+        min-height: 36px;
+        font-size: 15px;
+      }
+
+      .marketing-showcase-section .showcase-video-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 22px;
+      }
+
+      .marketing-showcase-section .showcase-video-card,
+      .marketing-showcase-section .showcase-video-media {
+        width: 100%;
+      }
+
+      .marketing-showcase-section .showcase-video-media {
+        border-radius: 10px;
+      }
+
+      .marketing-showcase-section .showcase-video-card-meta {
+        padding: 0 2px;
+      }
+
+      .marketing-showcase-section .showcase-video-card-title {
+        font-size: 16px;
+      }
+
+      /* 2026-07-22 手机端内容屏：文案与视频改为上下排列，并压缩标签与标题保证单屏可读。 */
+      .marketing-feature {
+        min-height: 100svh;
+        gap: 24px;
+        padding: 94px 18px 28px;
+      }
+
+      .marketing-feature-index { margin-bottom: 18px; }
+      .marketing-feature h2 { font-size: clamp(40px, 13vw, 58px); }
+      .marketing-feature-lead { margin-top: 16px; font-size: 14px; line-height: 1.65; }
+      .marketing-feature-tags { gap: 7px; margin: 16px 0 20px; }
+      .marketing-feature-tags span { padding: 7px 11px; font-size: 11px; }
+      .marketing-feature-action { height: 44px; }
+
+      /* 2026-08-25：仅在 H5 品牌营销页将功能入口改为电脑端创作引导，按钮高度保持不变。 */
+      body.marketing-entry-active .marketing-feature-action > span:first-child { display: none; }
+      body.marketing-entry-active .marketing-feature-action::before { content: "前往电脑端创作"; }
+
+      /* 2026-08-25：精选案例播放器在 H5 中展示完整的电脑端制作过程引导文案。 */
+      body.marketing-entry-active .showcase-player-process span { display: none; }
+      body.marketing-entry-active .showcase-player-process::after { content: "前往电脑端查看制作过程"; }
+      .marketing-feature-media::before { inset: -9px; border-radius: 12px; }
+      .marketing-feature-video { max-height: 35svh; border-radius: 7px; }
+      .marketing-feature-caption { margin-top: 10px; font-size: 8px; }
+
+      /* 2026-07-22 手机端备案栏：仍固定在最后一屏内部，保留顶部细线并允许三段信息自然换行。 */
+      .marketing-entry-footer {
+        padding: 0 18px 10px;
+        font-size: 10px;
+      }
+
+      .marketing-entry-footer-inner {
+        min-height: 46px;
+        padding-top: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marketing-entry-video,
+      .marketing-entry-cta,
+      .marketing-language-trigger,
+      .marketing-entry-option {
+        transition: none;
+      }
+
+      .marketing-feature-action {
+        transition: none;
+      }
+
+      /* 2026-07-22 尊重系统减少动态效果设置，关闭首屏箭头浮动。 */
+      .marketing-entry-scroll-arrow {
+        animation: none;
+        transform: rotate(45deg);
+      }
+    }
+
+    /* 2026-10-26 Product Design：入口页独立运行并使用当前项目资源，基础排版不依赖产品页；首屏布局沿用所选参考。 */
+    * { box-sizing: border-box; }
+    body { margin: 0; color-scheme: dark; }
+    button, textarea { font: inherit; }
+    .marketing-entry-header { z-index: 110; }
+    .mobile-copy-toast { display: none; }
+    @media (max-width: 700px) {
+      .marketing-mobile-web-guide { position: absolute; top: 40%; left: 50%; width: min(100% - 36px, 420px); display: block; transform: translate(-50%, -50%); text-align: center; }
+      .marketing-mobile-web-guide h1 { margin: 0 auto 14px; max-width: 330px; color: #fff; font-size: clamp(30px, 8.6vw, 38px); line-height: 1.24; letter-spacing: -.04em; }
+      .mobile-web-subtitle { margin: 0 auto 22px; color: rgba(255,255,255,.56); font-size: 14px; line-height: 1.7; }
+      .mobile-web-link { width: 100%; min-height: 54px; display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 17px; border: 1px solid rgba(255,255,255,.12); border-radius: 16px; background: rgba(13,20,27,.9); }
+      .mobile-web-url { flex: 1; min-width: 0; color: rgba(255,255,255,.72); font-size: 14px; text-align: left; user-select: all; }
+      .mobile-web-copy { min-width: 72px; height: 42px; padding: 0 16px; border: 0; border-radius: 12px; background: #b8f84a; color: #0a1207; font-size: 14px; font-weight: 800; cursor: pointer; }
+      .mobile-copy-toast.is-visible { position: fixed; top: 32%; left: 50%; z-index: 100220; display: block; max-width: calc(100vw - 36px); padding: 12px 18px; border: 1px solid rgba(255,255,255,.12); border-radius: 24px; background: rgba(24,31,38,.96); color: #fff; font-size: 14px; transform: translateX(-50%); }
+    }
+
+    /* 2026-10-26 Product Design 改动逻辑：使用文档 RTL 镜像 Flex/Grid 的排列，保持 Logo、视频及图片自身方向；阿语字形取消拉丁字距并增加行高。 */
+    html[dir="rtl"] .marketing-entry { font-family: Tahoma, Arial, sans-serif; }
+    html[dir="rtl"] .marketing-entry-hero,
+    html[dir="rtl"] .marketing-feature-copy,
+    html[dir="rtl"] .showcase-video-card { text-align: start; }
+    html[dir="rtl"] .marketing-entry-prompt,
+    html[dir="rtl"] .marketing-feature h2,
+    html[dir="rtl"] .marketing-mobile-web-guide h1,
+    html[dir="rtl"] .marketing-entry-scroll { letter-spacing: normal; }
+    html[dir="rtl"] .marketing-feature h2 { line-height: 1.3; font-size: clamp(40px, 4.4vw, 72px); overflow-wrap: anywhere; }
+    html[dir="rtl"] .marketing-entry-prompt { line-height: 1.9; }
+    html[dir="rtl"] .marketing-entry-prompt strong { margin-right: 0; margin-inline-end: 7px; }
+    html[dir="rtl"] .marketing-entry-cta-arrow { transform: scaleX(-1); }
+    html[dir="rtl"] .marketing-feature-action > span[aria-hidden="true"] { transform: scaleX(-1); }
+    html[dir="rtl"] .marketing-feature { --feature-glow-x: 78%; }
+    html[dir="rtl"] .marketing-feature:nth-of-type(even) { --feature-glow-x: 22%; }
+    /* 2026-10-26 Product Design 改动逻辑：阿语分类栏使用六列网格分配可用宽度，取消固定最小宽度和横向滚动；短译完整呈现并保持单行 RTL 排列。 */
+    html[dir="rtl"] .marketing-entry-options {
+      width: min(760px, 100%);
+      max-width: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 2px;
+      overflow: visible;
+      justify-content: normal;
+    }
+    html[dir="rtl"] .marketing-entry-option {
+      width: 100%;
+      min-width: 0;
+      padding-inline: clamp(4px, 1vw, 12px);
+      font-size: clamp(12px, 1.2vw, 15px);
+      white-space: nowrap;
+    }
+    html[dir="rtl"] .mobile-web-url { direction: ltr; unicode-bidi: isolate; text-align: end; }
+    html[dir="rtl"] .marketing-login-close-visual { right: auto; left: 18px; }
+    html[dir="rtl"] .marketing-login-code { margin-left: 0; margin-inline-start: auto; }
+    html[dir="rtl"] .marketing-entry-footer-inner > * { unicode-bidi: isolate; }
+    @media (max-width: 980px) {
+      html[dir="rtl"] .marketing-feature-media { justify-self: start; }
+    }
+    @media (max-width: 700px) {
+      /* 2026-10-26：阿语分类按词长分配六列宽度，三维分类获得较宽一列，随屏宽压缩字号和内边距。 */
+      .marketing-entry-header { gap: 8px; }
+      .marketing-language-menu { width: 150px; max-height: calc(100svh - 90px); overflow-y: auto; }
+      html[dir="rtl"] .marketing-entry-options {
+        grid-template-columns: minmax(0, .75fr) minmax(0, .9fr) minmax(0, .85fr) minmax(0, .75fr) minmax(0, .8fr) minmax(0, 1.35fr);
+        gap: 0;
+      }
+      html[dir="rtl"] .marketing-entry-option {
+        min-width: 0;
+        padding-inline: 2px;
+        font-size: clamp(10px, 2.6vw, 12px);
+      }
+      html[dir="rtl"] .marketing-entry-prompt strong { margin-inline-end: 0; }
+      html[dir="rtl"] .marketing-feature h2 { font-size: clamp(32px, 9vw, 48px); }
+      html[dir="rtl"] .marketing-mobile-web-guide h1 { font-size: clamp(28px, 7.6vw, 36px); line-height: 1.4; }
+      html[dir="rtl"] .mobile-web-link { padding: 6px 17px 6px 6px; }
+      html[dir="rtl"] body.marketing-entry-active .marketing-feature-action::before { content: "ابدأ الإبداع على الكمبيوتر"; }
+      html[dir="rtl"] body.marketing-entry-active .showcase-player-process::after { content: "شاهد خطوات الإنشاء على الكمبيوتر"; }
+    }
+    @media (max-width: 380px) {
+      .marketing-entry-header { padding-inline: 12px; }
+    }
+  </style>
+  <!-- 2026-11-11 Product Design：品牌营销页采用 UI 1111 的等比字标尺寸。 -->
+  <link rel="stylesheet" href="./assets/brand-language.css?v=20261111-brand-size-refined" />
+</head>
+<body class="marketing-entry-active">
+  <section class="marketing-entry" id="marketingEntry" aria-label="VinaAI 创作入口">
+    <!-- 2026-07-24 改动逻辑：仅在数字人竖版场景播放同源虚化背景，让两侧延续视频颜色而非显示纯黑。 -->
+    <video class="marketing-entry-video-backdrop" id="marketingEntryVideoBackdrop" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <!-- 2026-07-28 改动逻辑：首屏主视频关闭原生循环，每段播放结束后由统一 ended 逻辑自动切换到右侧下一个分类。 -->
+    <video class="marketing-entry-video" id="marketingEntryVideo" autoplay muted playsinline preload="auto">
+      <!-- 2026-07-23 首屏地址由 head 中已启动的高优先级请求绑定，其他分类仍保持按点击或滑入加载。 -->
+    </video>
+    <!-- 2026-07-28 改动逻辑：独立封面替换为扫帚飞行首帧；原有的即时显示、首帧绘制后淡出和分类切换移除逻辑保持不变。 -->
+    <img class="marketing-entry-poster" id="marketingEntryPoster" src="./assets/images/drama-broom-flight-poster.webp" alt="" aria-hidden="true" loading="eager" fetchpriority="high" />
+    <script>
+      // 2026-07-23 封面交接提前到营销媒体节点之后立即安装，不等待首页脚本或 DOMContentLoaded；只有视频首帧已提交绘制后才淡出封面。
+      (() => {
+        const firstVideo = document.getElementById("marketingEntryVideo");
+        const firstPoster = document.getElementById("marketingEntryPoster");
+        if (!firstVideo || !firstPoster) return;
+        let firstFrameHandled = false;
+        const removePosterAfterPaint = () => {
+          if (firstFrameHandled || !firstPoster.isConnected) return;
+          firstFrameHandled = true;
+          const finish = () => {
+            firstPoster.classList.add("is-hidden");
+            firstPoster.addEventListener("transitionend", () => firstPoster.remove(), { once: true });
+          };
+          if (typeof firstVideo.requestVideoFrameCallback === "function") {
+            firstVideo.requestVideoFrameCallback(finish);
+          } else {
+            requestAnimationFrame(() => requestAnimationFrame(finish));
+          }
+        };
+        firstVideo.addEventListener("playing", removePosterAfterPaint, { once: true });
+        // 2026-07-28 改动逻辑：Blob 请求不可用时回退到带版本参数的同一份源文件，继续沿用原首帧交接流程。
+        Promise.resolve(window.__VINA_HERO_VIDEO_PROMISE || "./assets/videos/drama-broom-flight.mp4?v=20260728-original").then((videoUrl) => {
+          firstVideo.src = videoUrl;
+          firstVideo.load();
+          const firstPlayPromise = firstVideo.play();
+          if (firstPlayPromise?.catch) firstPlayPromise.catch(() => {});
+        });
+      })();
+    </script>
+    <div class="marketing-entry-shade" aria-hidden="true"></div>
+    <div class="marketing-entry-grain" aria-hidden="true"></div>
+
+    <header class="marketing-entry-header">
+      <div class="marketing-entry-brand" aria-label="来画">
+        <!-- 2026-11-11：营销页按自身语言直接渲染 UI 1111 的来画或 Vina 字标。 -->
+        <img id="marketingEntryLogo" data-vina-brand-logo translate="no" src="./assets/images/brand/laihua-white.svg" alt="来画" />
+        <script src="./assets/brand-language.js?v=20261111-brand-size-refined"></script>
+        <strong>VinaAI</strong>
+        <!-- 2026-07-21 品牌头部调整：移除品牌副文案，仅保留 Logo 与 VinaAI 名称。 -->
+      </div>
+      <div class="marketing-entry-actions">
+        <!-- 2026-10-26 改动逻辑：语言名称保留母语标识，新增阿拉伯语并通过统一语言入口更新译文、方向和父页语言。 -->
+        <div class="marketing-language-switcher" id="marketingLanguageSwitcher">
+          <!-- 2026-11-11：视觉仅显示地球图标，保留现有语言标签更新和无障碍名称。 -->
+          <button class="marketing-language-trigger" id="marketingLanguageTrigger" type="button" aria-label="选择语言" aria-haspopup="menu" aria-expanded="false">
+            <svg class="marketing-language-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C9.62663 0 7.30655 0.703788 5.33316 2.02236C3.35977 3.34094 1.8217 5.21509 0.913451 7.4078C0.00519943 9.60051 -0.232441 12.0133 0.230582 14.3411C0.693605 16.6689 1.83649 18.8071 3.51472 20.4853C5.19295 22.1635 7.33115 23.3064 9.65892 23.7694C11.9867 24.2324 14.3995 23.9948 16.5922 23.0866C18.7849 22.1783 20.6591 20.6402 21.9776 18.6668C23.2962 16.6935 24 14.3734 24 12C23.9966 8.81846 22.7312 5.76821 20.4815 3.51852C18.2318 1.26883 15.1815 0.00344108 12 0Z
+                M20.647 7H17.426C16.705 5.32899 15.7556 3.76609 14.605 2.356C17.1515 3.04893 19.3223 4.71747 20.647 7Z
+                M16.5 12C16.4918 13.0181 16.3314 14.0293 16.024 15H7.97601C7.66866 14.0293 7.50821 13.0181 7.50001 12C7.50821 10.9819 7.66866 9.97068 7.97601 9H16.024C16.3314 9.97068 16.4918 10.9819 16.5 12Z
+                M8.77801 17H15.222C14.3732 18.6757 13.2882 20.2208 12 21.588C10.7114 20.2212 9.62625 18.676 8.77801 17Z
+                M8.77801 7C9.62677 5.32427 10.7119 3.77916 12 2.412C13.2886 3.77877 14.3738 5.32396 15.222 7H8.77801Z
+                M9.40001 2.356C8.24766 3.76578 7.29659 5.3287 6.57401 7H3.35301C4.67886 4.71643 6.85166 3.04775 9.40001 2.356Z
+                M2.46101 9H5.90001C5.64076 9.97915 5.50636 10.9871 5.50001 12C5.50636 13.0129 5.64076 14.0209 5.90001 15H2.46101C1.84635 13.0472 1.84635 10.9528 2.46101 9Z
+                M3.35301 17H6.57401C7.29659 18.6713 8.24766 20.2342 9.40001 21.644C6.85166 20.9522 4.67886 19.2836 3.35301 17Z
+                M14.605 21.644C15.7556 20.2339 16.705 18.671 17.426 17H20.647C19.3223 19.2826 17.1515 20.9511 14.605 21.644Z
+                M21.539 15H18.1C18.3592 14.0209 18.4936 13.0129 18.5 12C18.4936 10.9871 18.3592 9.97915 18.1 9H21.537C22.1517 10.9528 22.1517 13.0472 21.537 15Z" />
+            </svg>
+            <span id="marketingLanguageLabel" hidden>中文</span>
+          </button>
+          <ul class="marketing-language-menu" id="marketingLanguageMenu" role="menu" hidden>
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language="en" data-language-label="English">English</button></li>
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="true" data-language="zh-CN" data-language-label="中文">中文</button></li>
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language="ja" data-language-label="日本語">日本語</button></li>
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language="ms" data-language-label="Bahasa Melayu">Bahasa Melayu</button></li>
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language="fr" data-language-label="Français">Français</button></li>
+            <!-- 2026-10-26：阿拉伯语选项使用母语名称，切换后整页从右向左排列。 -->
+            <li><button class="marketing-language-option" type="button" role="menuitemradio" aria-checked="false" data-language="ar" data-language-label="العربية" lang="ar">العربية</button></li>
+          </ul>
+        </div>
+        <button class="marketing-entry-cta" id="marketingEntryCta" type="button">
+          <!-- 2026-11-11：桌面入口沿用首页跳转，外观与文案对齐官网；H5 保留原登录文案及流程。 -->
+          <span class="marketing-entry-cta-desktop-label">开始创作</span><span class="marketing-entry-cta-mobile-label">注册/登录</span>
+          <svg class="marketing-entry-cta-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.75 12h13.5m-4.5-4.5 4.5 4.5-4.5 4.5" />
+          </svg>
+          <!-- 2026-08-25 Product Design 改动逻辑：Google 登录完成后显示真实品牌头像资产并禁用整个入口。 -->
+          <img class="marketing-entry-account-avatar" src="./assets/images/vinaai-logo.png" alt="" aria-hidden="true" />
+        </button>
+      </div>
+    </header>
+
+    <!-- 2026-08-25 Product Design 改动逻辑：H5 注册登录弹层按参考图构建；邮箱、验证码、主按钮和协议仅作视觉呈现，Google 登录是唯一业务动作。 -->
+    <section class="marketing-login-modal" id="marketingLoginModal" role="dialog" aria-modal="true" aria-labelledby="marketingLoginTitle" hidden>
+      <div class="marketing-login-sheet">
+        <img class="marketing-login-brand" src="./assets/images/vinaai-brand-lockup.png" alt="VinaAI" />
+        <!-- 2026-08-25 Product Design 改动逻辑：关闭符号由纯视觉节点改为真实按钮，点击即可退出登录卡片并回到营销页。 -->
+        <button class="marketing-login-close-visual" id="marketingLoginClose" type="button" aria-label="关闭登录弹窗">×</button>
+        <h2 class="marketing-login-title" id="marketingLoginTitle">邮箱登录</h2>
+        <div class="marketing-login-field" aria-hidden="true"><span>请输入邮箱地址</span></div>
+        <div class="marketing-login-field" aria-hidden="true"><span>请输入验证码</span><span class="marketing-login-code">获取验证码</span></div>
+        <div class="marketing-login-primary" aria-hidden="true">登录 / 注册</div>
+        <div class="marketing-login-divider" aria-hidden="true">或</div>
+        <button class="marketing-google-login" id="marketingGoogleLogin" type="button">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" aria-hidden="true" />
+          <span>使用 Google 登录</span>
+        </button>
+        <p class="marketing-login-legal">登录即代表您已阅读并同意VinaAI 《用户协议》 和 《隐私政策》</p>
+      </div>
+    </section>
+
+    <!-- 2026-08-25 改动逻辑：图一的 H5 引导内容同步到品牌营销首屏中央；该节点默认隐藏，只由手机断点展示并复用网址复制反馈。 -->
+    <section class="marketing-mobile-web-guide" aria-label="前往电脑端制作">
+      <!-- 2026-08-25：中央大标题随六个营销分类同步切换，初始显示短剧漫剧文案。 -->
+      <h1 id="marketingEntryTitle">一站式完成短剧漫剧创作</h1>
+      <p class="mobile-web-subtitle">复制下方官网链接，前往电脑端开启创作</p>
+      <div class="mobile-web-link">
+        <span class="mobile-web-url">www.laihua.com</span>
+        <button class="mobile-web-copy" id="marketingMobileWebCopy" type="button" aria-label="复制网页端网址">复制</button>
+      </div>
+    </section>
+
+    <div class="marketing-entry-hero">
+      <p class="marketing-entry-prompt" id="marketingEntryPrompt" aria-live="polite">
+        <!-- 2026-08-25：首屏静态文案与短剧漫剧分类的新定位保持一致，避免脚本初始化前闪现旧文案。 -->
+        <strong>从故事设定到连续成片</strong>从剧情拆解、角色统一到连续镜头与批量成片，覆盖短剧漫剧创作全流程，让一个故事持续推进成完整系列。
+      </p>
+      <div class="marketing-entry-options" role="group" aria-label="选择视频创作方向">
+        <button class="marketing-entry-option active" type="button" data-marketing-scene="drama" aria-pressed="true">短剧漫剧</button>
+        <button class="marketing-entry-option" type="button" data-marketing-scene="advertising" aria-pressed="false">广告营销</button>
+        <button class="marketing-entry-option" type="button" data-marketing-scene="social" aria-pressed="false">创意社媒</button>
+        <button class="marketing-entry-option" type="button" data-marketing-scene="mg" aria-pressed="false">MG动画</button>
+        <button class="marketing-entry-option" type="button" data-marketing-scene="digitalHuman" aria-pressed="false">数字人</button>
+        <!-- 2026-07-22 3D创作入口：按钮放在分类栏最后，点击后切换到用户提供的内嵌演示视频及精简为两行的专属提示词。 -->
+        <button class="marketing-entry-option" type="button" data-marketing-scene="model3d" aria-pressed="false">3D创作</button>
+      </div>
+    </div>
+
+    <!-- 2026-07-22 首屏底部滑动提示：SCROLL 与右侧向下箭头提示页面支持纵向浏览。 -->
+    <div class="marketing-entry-scroll" aria-hidden="true">
+      <span>SCROLL</span>
+      <span class="marketing-entry-scroll-arrow"></span>
+    </div>
+
+    <!-- 2026-07-22 下滑品牌页结构：用一个首屏占位衔接原有绝对定位 Hero，后面六屏逐类呈现文案与对应示例视频。 -->
+    <div class="marketing-entry-spacer" aria-hidden="true"></div>
+
+    <!-- 2026-08-25 改动逻辑：H5 品牌营销页第二屏插入产品首页同源精选案例；桌面端保持隐藏，原六类业务介绍自然顺延到案例之后。 -->
+    <section class="marketing-showcase-section" aria-labelledby="marketingShowcaseTitle">
+      <h2 class="marketing-showcase-title" id="marketingShowcaseTitle">精选案例</h2>
+      <div class="showcase-category-nav">
+        <span class="showcase-brand" aria-label="VinaTV">VinaTV</span>
+        <div class="showcase-category-tabs" role="tablist" aria-label="品牌页精选内容分类">
+          <button class="showcase-category-tab active" type="button" role="tab" aria-selected="true" data-showcase-category="advertising">广告营销</button>
+          <button class="showcase-category-tab" type="button" role="tab" aria-selected="false" data-showcase-category="social">创意社媒</button>
+          <button class="showcase-category-tab" type="button" role="tab" aria-selected="false" data-showcase-category="mg">MG动画</button>
+          <button class="showcase-category-tab" type="button" role="tab" aria-selected="false" data-showcase-category="digitalHuman">数字人</button>
+          <button class="showcase-category-tab" type="button" role="tab" aria-selected="false" data-showcase-category="drama">短剧</button>
+        </div>
+      </div>
+      <div class="template-grid showcase-video-grid" data-showcase-video-grid aria-label="广告营销视频案例" aria-live="polite"></div>
+    </section>
+
+    <!-- 2026-07-22 内容屏文案精简：六屏统一移除标题上方编号英文和视频底部双侧英文说明，仅保留核心中文内容。 -->
+    <article class="marketing-feature" aria-labelledby="marketingFeatureDrama">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeatureDrama">短剧漫剧</h2>
+        <p class="marketing-feature-lead">从一句故事设定出发，自动完成剧本拆解、角色与场景统一，再把连续情节推进为可直接发布的系列内容。</p>
+        <div class="marketing-feature-tags" aria-label="短剧漫剧能力"><span>多集剧本</span><span>角色一致</span><span>连续镜头</span><span>批量成片</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media">
+        <video class="marketing-feature-video" data-marketing-feature-video="drama" muted loop playsinline preload="none"></video>
+      </div>
+    </article>
+
+    <article class="marketing-feature" aria-labelledby="marketingFeatureAdvertising">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeatureAdvertising">广告营销</h2>
+        <p class="marketing-feature-lead">让产品成为镜头主角。快速生成兼顾品牌质感、核心卖点和转化节奏的广告片，适配多渠道投放。</p>
+        <div class="marketing-feature-tags" aria-label="广告营销能力"><span>产品特写</span><span>卖点脚本</span><span>品牌风格</span><span>多尺寸交付</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media">
+        <video class="marketing-feature-video" data-marketing-feature-video="advertising" muted loop playsinline preload="none"></video>
+      </div>
+    </article>
+
+    <article class="marketing-feature" aria-labelledby="marketingFeatureSocial">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeatureSocial">创意社媒</h2>
+        <p class="marketing-feature-lead">捕捉平台热点与视觉情绪，把灵感快速变成更有停留感、传播感和辨识度的社交内容。</p>
+        <div class="marketing-feature-tags" aria-label="创意社媒能力"><span>热点创意</span><span>氛围短片</span><span>多平台适配</span><span>快速变体</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media">
+        <video class="marketing-feature-video" data-marketing-feature-video="social" muted loop playsinline preload="none"></video>
+      </div>
+    </article>
+
+    <article class="marketing-feature" aria-labelledby="marketingFeatureMg">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeatureMg">MG 动画</h2>
+        <p class="marketing-feature-lead">将复杂信息转成清楚、有节奏的动态图形表达，用统一的视觉语言讲透产品、数据与流程。</p>
+        <div class="marketing-feature-tags" aria-label="MG动画能力"><span>信息可视化</span><span>节奏编排</span><span>图形转场</span><span>品牌模板</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media">
+        <video class="marketing-feature-video" data-marketing-feature-video="mg" muted loop playsinline preload="none"></video>
+      </div>
+    </article>
+
+    <article class="marketing-feature" aria-labelledby="marketingFeatureHuman">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeatureHuman">数字人</h2>
+        <p class="marketing-feature-lead">自然口播、稳定表达、持续生产。让品牌拥有随时在线的内容主理人，轻松覆盖讲解、直播与知识传播。</p>
+        <div class="marketing-feature-tags" aria-label="数字人能力"><span>自然口播</span><span>多语种</span><span>品牌形象</span><span>规模生产</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media marketing-feature-media--digital-human">
+        <!-- 2026-07-24 改动逻辑：详情区复播数字人同源素材作为动态虚化背景，替代竖版视频两侧黑边。 -->
+        <video class="marketing-feature-video-backdrop" muted loop playsinline preload="none" aria-hidden="true"></video>
+        <video class="marketing-feature-video" data-marketing-feature-video="digitalHuman" muted loop playsinline preload="none"></video>
+      </div>
+    </article>
+
+    <article class="marketing-feature" aria-labelledby="marketingFeature3d">
+      <div class="marketing-feature-copy">
+        <h2 id="marketingFeature3d">3D 创作</h2>
+        <p class="marketing-feature-lead">从平面概念到立体资产，快速还原轮廓、材质与结构，为产品展示、动画制作和虚拟空间提供可用起点。</p>
+        <div class="marketing-feature-tags" aria-label="3D创作能力"><span>图生模型</span><span>材质还原</span><span>环绕展示</span><span>场景资产</span></div>
+        <button class="marketing-feature-action" type="button" data-marketing-enter><span>开始创作</span><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="marketing-feature-media">
+        <video class="marketing-feature-video" data-marketing-feature-video="model3d" muted loop playsinline preload="none"></video>
+      </div>
+
+      <!-- 2026-07-22 营销页合规信息：嵌入最后一个内容屏底部，备案号链接至工信部备案系统，中英文公司名保持同一行展示。 -->
+      <footer class="marketing-entry-footer">
+        <div class="marketing-entry-footer-inner">
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备15083104号</a>
+          <span>Shenzhen Qianhai Hand-painted Technology and Culture Co. Ltd.</span>
+          <span>深圳市前海手绘科技文化股份有限公司</span>
+        </div>
+      </footer>
+    </article>
+  </section>
+  <div class="mobile-copy-toast" id="mobileCopyToast" role="status" aria-live="polite"></div>
+  <!-- 2026-10-26：品牌页专用阿语词典与可逆翻译独立于产品页，首屏、动态分类和 H5 共用同一语言状态。 -->
+  <script src="./assets/brand-entry-i18n.js?v=20261026-ar-compact-tabs"></script>
+  <script>
+    (() => {
+      const MARKETING_VIDEO_DATA = {
+        // 2026-07-28 改动逻辑：MG 动画改用 AI 大模型科普视频，版本参数用于绕过旧书页动画的浏览器与 Vercel 缓存。
+        mgMotion: "./assets/videos/mg-motion.mp4?v=20260728-ai-model",
+        // 2026-07-28 改动逻辑：直接使用用户提供的 1253×720 原始 MP4；版本参数确保切回短剧时也不命中此前的压缩转码缓存。
+        dramaBroomFlight: "./assets/videos/drama-broom-flight.mp4?v=20260728-original",
+        // 2026-07-28 改动逻辑：广告营销直接使用用户提供的 1253×720 汽车 TVC 源文件，版本参数用于绕过旧精华液视频缓存。
+        advertisingCarTvc: "./assets/videos/advertising-car-tvc.mp4?v=20260728-original",
+        // 2026-07-28 改动逻辑：数字人替换为本次提供的新视频，更新版本参数以绕过浏览器与 Vercel 对旧文件的缓存。
+        digitalHumanEducation: "./assets/videos/digital-human-education.mp4?v=20260728-replaced",
+        // 2026-07-28 改动逻辑：3D创作替换为本次提供的新视频，保留原提示词与单视频循环逻辑并刷新缓存版本。
+        model3dCreation: "./assets/videos/model-3d-creation.mp4?v=20260728-replaced",
+        // 2026-07-28 改动逻辑：创意社媒直接使用用户提供的 1253×720 微观世界源文件，版本参数用于绕过旧电车视频缓存。
+        creativeSocialMicroWorld: "./assets/videos/creative-social-micro-world.mp4?v=20260728-original"
+      };
+      const marketingEntry = document.getElementById("marketingEntry");
+      const marketingVideo = document.getElementById("marketingEntryVideo");
+      const marketingVideoBackdrop = document.getElementById("marketingEntryVideoBackdrop");
+      const marketingPoster = document.getElementById("marketingEntryPoster");
+      const marketingTitle = document.getElementById("marketingEntryTitle");
+      const marketingPrompt = document.getElementById("marketingEntryPrompt");
+      const marketingCta = document.getElementById("marketingEntryCta");
+      const marketingLoginModal = document.getElementById("marketingLoginModal");
+      const marketingLoginClose = document.getElementById("marketingLoginClose");
+      const marketingGoogleLogin = document.getElementById("marketingGoogleLogin");
+      const marketingLanguageSwitcher = document.getElementById("marketingLanguageSwitcher");
+      const marketingLanguageTrigger = document.getElementById("marketingLanguageTrigger");
+      const marketingLanguageMenu = document.getElementById("marketingLanguageMenu");
+      const marketingLanguageLabel = document.getElementById("marketingLanguageLabel");
+      const marketingLanguageOptions = document.querySelectorAll(".marketing-language-option");
+      const marketingOptions = document.querySelectorAll("[data-marketing-scene]");
+      // 2026-07-22 下滑内容屏节点：每屏视频按 data 场景键复用首屏媒体映射，行动按钮统一进入既有产品首页。
+      const marketingFeatureVideos = document.querySelectorAll("[data-marketing-feature-video]");
+      const marketingEnterButtons = document.querySelectorAll("[data-marketing-enter]");
+      // 2026-08-25 改动逻辑：H5 整屏顺序明确加入精选案例作为第二屏；桌面端会过滤 display:none 的案例节点，继续保持原首屏加六个能力屏顺序。
+      const getMarketingScrollScreens = () => Array.from(document.querySelectorAll(".marketing-entry-spacer, .marketing-showcase-section, .marketing-feature"))
+        .filter((screen) => screen.getClientRects().length > 0);
+      // 2026-07-28 改动逻辑：短剧漫剧取消双视频队列，只绑定扫帚飞行视频；文案与其他分类配置保持原样。
+      const marketingScenes = {
+        drama: {
+          src: MARKETING_VIDEO_DATA.dramaBroomFlight,
+          // 2026-08-25：每个分类统一维护中央大标题、下方主标题与副标题，切换视频时三处文案同步更新。
+          title: "一站式完成短剧漫剧创作",
+          prompt: "<strong>从故事设定到连续成片</strong>从剧情拆解、角色统一到连续镜头与批量成片，覆盖短剧漫剧创作全流程，让一个故事持续推进成完整系列。"
+        },
+        advertising: {
+          // 2026-07-28 改动逻辑：广告按钮改为唯一绑定汽车 TVC 源文件，首屏切换与下滑详情屏共用同一地址。
+          src: MARKETING_VIDEO_DATA.advertisingCarTvc,
+          title: "把产品卖点，拍成让人想看的广告",
+          prompt: "<strong>围绕产品卖点完成广告表达</strong>围绕产品、品牌和传播目标组织脚本与镜头，快速产出更有质感、更适合投放的广告内容。"
+        },
+        social: {
+          // 2026-07-28 改动逻辑：创意社媒按钮改为唯一绑定微观世界源文件，首屏切换与下滑详情屏共用同一地址。
+          src: MARKETING_VIDEO_DATA.creativeSocialMicroWorld,
+          title: "把脑洞，变成让人停下来的内容",
+          prompt: "<strong>为不同平台持续创作新内容</strong>从一个创意快速延展不同画面、节奏与版本，让内容适配不同平台，也更有自己的辨识度。"
+        },
+        mg: {
+          // 2026-07-28 改动逻辑：MG 首屏与下滑内容屏统一读取新的 AI 大模型科普视频，并同步展示与画面主题一致的提示词。
+          src: MARKETING_VIDEO_DATA.mgMotion,
+          title: "复杂信息，动起来就好懂",
+          prompt: "<strong>复杂内容，用动画讲清楚</strong>把产品逻辑、数据和流程转成有节奏的动态图形，让难讲的内容变得直观、清楚、好理解。"
+        },
+        digitalHuman: {
+          // 2026-07-28 改动逻辑：仅替换数字人视频来源，下面提示词文案保持不变。
+          src: MARKETING_VIDEO_DATA.digitalHumanEducation,
+          title: "让品牌主讲人，随时在线",
+          prompt: "<strong>自然口播，稳定输出</strong>自然口播、稳定形象、多语表达，持续生产产品讲解、知识分享与品牌内容。"
+        },
+        // 2026-07-22 3D创作场景：复用统一媒体切换逻辑，播放内嵌 MP4；提示词压缩为两行信息量，避免遮挡视频主体。
+        model3d: {
+          // 2026-07-28 改动逻辑：仅替换3D创作视频来源，下面提示词文案保持不变。
+          src: MARKETING_VIDEO_DATA.model3dCreation,
+          title: "让创意从平面走向立体",
+          prompt: "<strong>快速构建可用的 3D 模型</strong>从概念设计到模型、材质与结构还原，为产品展示、动画制作和虚拟场景快速生成可继续使用的 3D 资产。"
+        }
+      };
+
+      let activeMarketingScene = "drama";
+
+      // 2026-07-22 独立一次性封面状态：封面不再依赖 video poster；首帧出现时淡出，分类切换时立即移除，之后切回短剧也不会恢复。
+      let initialDramaPosterActive = Boolean(marketingPoster);
+      const removeInitialDramaPoster = (immediate = false) => {
+        if (!initialDramaPosterActive) return;
+        initialDramaPosterActive = false;
+        if (immediate) {
+          marketingPoster.remove();
+          return;
+        }
+        marketingPoster.classList.add("is-hidden");
+        marketingPoster.addEventListener("transitionend", () => marketingPoster.remove(), { once: true });
+      };
+
+      // 2026-07-28 改动逻辑：首屏各分类均使用单视频播放；shouldLoop 由自动切换流程统一传 false，播放结束后推进到下一个按钮。
+      const playMarketingMedia = ({ src, title, prompt }, shouldLoop) => {
+        // 2026-07-22 分类换源前立即移除独立短剧封面，广告营销等分类等待自己的视频时不会显示或复用首屏封面。
+        removeInitialDramaPoster(true);
+        // 2026-08-25：分类切换时先同步中央价值主张，再更新下方主副标题。
+        if (marketingTitle) marketingTitle.textContent = title;
+        marketingPrompt.innerHTML = prompt;
+        // 2026-10-26：手动切换或视频自动轮播写回中文源文案后，按当前语言同步标题和提示词。
+        window.vinaBrandLanguage.refresh();
+        marketingVideo.classList.add("is-switching");
+        marketingVideo.loop = shouldLoop;
+        marketingVideo.src = src;
+        marketingVideo.load();
+        // 2026-07-24 改动逻辑：数字人主视频换源时同步启动同源虚化背景；离开数字人分类立即暂停并卸载背景媒体。
+        if (marketingVideo.classList.contains("is-digital-human-portrait")) {
+          marketingVideoBackdrop.classList.add("is-active");
+          marketingVideoBackdrop.src = src;
+          marketingVideoBackdrop.load();
+          const backdropPlayPromise = marketingVideoBackdrop.play();
+          if (backdropPlayPromise?.catch) backdropPlayPromise.catch(() => {});
+        } else {
+          marketingVideoBackdrop.classList.remove("is-active");
+          marketingVideoBackdrop.pause();
+          marketingVideoBackdrop.removeAttribute("src");
+          marketingVideoBackdrop.load();
+        }
+        const playPromise = marketingVideo.play();
+        if (playPromise?.catch) playPromise.catch(() => {});
+      };
+
+      // 2026-07-28 改动逻辑：首屏继续复用 HTML 已提前发起的请求，只同步单视频文案、关闭原生循环并自动播放，避免中断和重复下载。
+      const initialDramaMedia = marketingScenes.drama;
+      if (marketingTitle) marketingTitle.textContent = initialDramaMedia.title;
+      marketingPrompt.innerHTML = initialDramaMedia.prompt;
+      marketingVideo.loop = false;
+      // 2026-07-22 首帧交接：requestVideoFrameCallback 能确认视频帧已提交渲染，再淡出封面；旧浏览器在 playing 后等待两帧作为兼容处理。
+      const hidePosterAfterFirstVideoFrame = () => {
+        if (!initialDramaPosterActive) return;
+        if (typeof marketingVideo.requestVideoFrameCallback === "function") {
+          marketingVideo.requestVideoFrameCallback(() => removeInitialDramaPoster());
+          return;
+        }
+        const hideAfterPaint = () => requestAnimationFrame(() => requestAnimationFrame(() => removeInitialDramaPoster()));
+        if (!marketingVideo.paused && marketingVideo.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          hideAfterPaint();
+          return;
+        }
+        marketingVideo.addEventListener("playing", hideAfterPaint, { once: true });
+      };
+
+      // 2026-07-22 首次播放：canplay 只负责启动视频，不再移除封面；封面必须等上面的首帧回调确认画面已经绘制后才消失。
+      const startInitialDramaVideo = () => {
+        const initialMarketingPlayPromise = marketingVideo.play();
+        if (initialMarketingPlayPromise?.catch) initialMarketingPlayPromise.catch(() => {});
+        hidePosterAfterFirstVideoFrame();
+      };
+      if (marketingVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+        startInitialDramaVideo();
+      } else {
+        marketingVideo.addEventListener("canplay", startInitialDramaVideo, { once: true });
+      }
+
+      // 2026-07-22 内容屏真实懒加载：独立 MP4 首次进入可视区域时才绑定 src 并执行 load，首开不下载离屏分类视频。
+      const loadMarketingFeatureVideo = (featureVideo) => {
+        if (featureVideo.dataset.mediaLoaded === "true") return true;
+        const scene = marketingScenes[featureVideo.dataset.marketingFeatureVideo];
+        const media = scene?.playlist ? scene.playlist[0] : scene;
+        if (!media?.src) return false;
+        featureVideo.src = media.src;
+        featureVideo.dataset.mediaLoaded = "true";
+        featureVideo.load();
+        // 2026-07-24 改动逻辑：数字人详情主视频首次懒加载时，为同容器内的虚化背景绑定完全相同的视频地址。
+        const featureBackdrop = featureVideo.parentElement?.querySelector(".marketing-feature-video-backdrop");
+        if (featureBackdrop) {
+          featureBackdrop.src = media.src;
+          featureBackdrop.load();
+        }
+        return true;
+      };
+
+      // 2026-07-24 改动逻辑：详情区主视频与可选虚化背景共用播放、暂停和时间校准，确保两侧色彩与中间画面同步变化。
+      const setMarketingFeaturePlayback = (featureVideo, shouldPlay) => {
+        const featureBackdrop = featureVideo.parentElement?.querySelector(".marketing-feature-video-backdrop");
+        if (!shouldPlay) {
+          featureVideo.pause();
+          featureBackdrop?.pause();
+          return;
+        }
+        const featurePlayPromise = featureVideo.play();
+        if (featurePlayPromise?.catch) featurePlayPromise.catch(() => {});
+        if (!featureBackdrop) return;
+        if (Math.abs(featureBackdrop.currentTime - featureVideo.currentTime) > .2) {
+          featureBackdrop.currentTime = featureVideo.currentTime;
+        }
+        const backdropPlayPromise = featureBackdrop.play();
+        if (backdropPlayPromise?.catch) backdropPlayPromise.catch(() => {});
+      };
+
+      // 2026-07-22 内容屏播放节流：进入视口后才加载并播放，离屏后暂停，降低初次打开时的媒体解析与解码压力。
+      if ("IntersectionObserver" in window) {
+        const marketingFeatureObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            const featureVideo = entry.target;
+            if (entry.isIntersecting) {
+              if (!loadMarketingFeatureVideo(featureVideo)) return;
+              setMarketingFeaturePlayback(featureVideo, true);
+              return;
+            }
+            setMarketingFeaturePlayback(featureVideo, false);
+          });
+        }, { threshold: .38 });
+        marketingFeatureVideos.forEach((featureVideo) => marketingFeatureObserver.observe(featureVideo));
+      } else {
+        // 2026-07-22 旧浏览器兼容：没有 IntersectionObserver 时按滚动位置检测，仅加载当前可见的内容屏视频。
+        const updateVisibleMarketingFeatureVideos = () => {
+          marketingFeatureVideos.forEach((featureVideo) => {
+            const rect = featureVideo.getBoundingClientRect();
+            const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+            if (isVisible && loadMarketingFeatureVideo(featureVideo)) {
+              setMarketingFeaturePlayback(featureVideo, true);
+              return;
+            }
+            setMarketingFeaturePlayback(featureVideo, false);
+          });
+        };
+        marketingEntry?.addEventListener("scroll", updateVisibleMarketingFeatureVideos, { passive: true });
+        window.addEventListener("resize", updateVisibleMarketingFeatureVideos, { passive: true });
+        requestAnimationFrame(updateVisibleMarketingFeatureVideos);
+      }
+
+      // 2026-07-22 轻滚整屏切换：累积少量滚轮位移即跳到相邻屏，并用短锁避免触控板一次惯性手势连续跨越多屏。
+      let marketingWheelDelta = 0;
+      let marketingWheelLocked = false;
+      marketingEntry?.addEventListener("wheel", (event) => {
+        if (!document.body.classList.contains("marketing-entry-active")) return;
+        const marketingShowcaseSection = document.querySelector(".marketing-showcase-section");
+        const currentMarketingScrollTop = marketingEntry.scrollTop;
+        const isInsideMarketingShowcase = marketingShowcaseSection
+          && currentMarketingScrollTop >= marketingShowcaseSection.offsetTop
+          && currentMarketingScrollTop < marketingShowcaseSection.offsetTop + marketingShowcaseSection.offsetHeight;
+        // 2026-08-25 改动逻辑：只要视口正处于第二屏精选案例范围就不接管滚轮，即使鼠标停在固定品牌头部也保持案例页内自然滚动。
+        if (event.target.closest(".marketing-showcase-section") || isInsideMarketingShowcase) {
+          marketingWheelDelta = 0;
+          return;
+        }
+        event.preventDefault();
+        const marketingScrollScreens = getMarketingScrollScreens();
+        if (marketingWheelLocked || !marketingScrollScreens.length) return;
+        marketingWheelDelta += event.deltaY;
+        if (Math.abs(marketingWheelDelta) < 10) return;
+
+        const currentScrollTop = marketingEntry.scrollTop;
+        let currentScreenIndex = 0;
+        let nearestDistance = Infinity;
+        marketingScrollScreens.forEach((screen, index) => {
+          const distance = Math.abs(screen.offsetTop - currentScrollTop);
+          if (distance >= nearestDistance) return;
+          nearestDistance = distance;
+          currentScreenIndex = index;
+        });
+
+        const direction = marketingWheelDelta > 0 ? 1 : -1;
+        const targetScreenIndex = Math.max(0, Math.min(marketingScrollScreens.length - 1, currentScreenIndex + direction));
+        marketingWheelDelta = 0;
+        if (targetScreenIndex === currentScreenIndex) return;
+
+        marketingWheelLocked = true;
+        marketingEntry.scrollTo({ top: marketingScrollScreens[targetScreenIndex].offsetTop, behavior: "smooth" });
+        window.setTimeout(() => {
+          marketingWheelLocked = false;
+        }, 760);
+      }, { passive: false });
+
+      // 2026-08-24 修复逻辑：营销视频自动轮播与真实按钮点击共用直接切换函数；不再通过 option.click() 合成全局点击，避免隐藏首页视频结束时误触 Skill 弹窗的“点击外部关闭”逻辑。
+      const activateMarketingScene = (option) => {
+        const scene = marketingScenes[option?.dataset.marketingScene];
+        if (!scene || option.classList.contains("active")) return;
+        marketingOptions.forEach((item) => {
+          const active = item === option;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        activeMarketingScene = option.dataset.marketingScene;
+        // 2026-07-28 改动逻辑：新数字人教育培训视频为 16:9 横版，所有分类统一恢复全屏铺满，不再启用旧 9:16 专用样式与虚化背景。
+        marketingVideo.classList.remove("is-digital-human-portrait");
+        // 2026-07-28 改动逻辑：手动点击从所选分类开始单次播放，结束后继续按按钮顺序自动切换。
+        playMarketingMedia(scene, false);
+      };
+      marketingOptions.forEach((option) => {
+        option.addEventListener("click", () => activateMarketingScene(option));
+      });
+
+      marketingVideo?.addEventListener("playing", () => {
+        marketingVideo.classList.remove("is-switching");
+        // 2026-07-24 改动逻辑：主视频开始播放时校准虚化背景时间，避免两层动态颜色出现明显不同步。
+        if (marketingVideoBackdrop?.classList.contains("is-active") && Math.abs(marketingVideoBackdrop.currentTime - marketingVideo.currentTime) > .2) {
+          marketingVideoBackdrop.currentTime = marketingVideo.currentTime;
+        }
+      });
+      // 2026-07-28 改动逻辑：当前视频结束后自动激活右侧下一个按钮；最后一个3D创作结束后取模回到第一个短剧漫剧。
+      marketingVideo?.addEventListener("ended", () => {
+        const activeOptionIndex = Array.from(marketingOptions).findIndex((option) => option.dataset.marketingScene === activeMarketingScene);
+        const nextOptionIndex = (Math.max(activeOptionIndex, 0) + 1) % marketingOptions.length;
+        activateMarketingScene(marketingOptions[nextOptionIndex]);
+      });
+      // 2026-10-26 改动逻辑：参考页的桌面端“进入 VinaAI”通过父页桥接返回当前产品首页，不等待或加载参考项目的应用脚本。
+      const enterVinaAi = () => {
+        document.querySelectorAll("video").forEach((video) => video.pause());
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: "vina-brand-entry-enter", language: window.vinaBrandLanguage.get() }, "*");
+        } else {
+          // 2026-11-11：独立品牌页进入首页时携带英语或阿语，首页按同一语言展示字标。
+          const language = window.vinaBrandLanguage.get();
+          window.location.href = language === "en" || language === "ar" ? "./index.html?lang=" + language : "./index.html";
+        }
+      };
+      // 2026-10-26 改动逻辑：语言切换经品牌页统一入口执行可逆翻译和 RTL，同步父页已有语言设置，菜单继续保留原键盘焦点行为。
+      const setMarketingLanguageMenuOpen = (isOpen) => {
+        marketingLanguageSwitcher?.classList.toggle("is-open", isOpen);
+        marketingLanguageTrigger?.setAttribute("aria-expanded", String(isOpen));
+        if (marketingLanguageMenu) marketingLanguageMenu.hidden = !isOpen;
+        if (isOpen) marketingLanguageOptions[0]?.focus();
+      };
+      marketingLanguageTrigger?.addEventListener("click", () => {
+        setMarketingLanguageMenuOpen(!marketingLanguageSwitcher?.classList.contains("is-open"));
+      });
+      marketingLanguageOptions.forEach((option) => {
+        option.addEventListener("click", () => {
+          window.vinaBrandLanguage.set(option.dataset.language);
+          if (window.parent !== window) window.parent.postMessage({ type: "vina-brand-entry-language-change", language: window.vinaBrandLanguage.get() }, "*");
+          setMarketingLanguageMenuOpen(false);
+          marketingLanguageTrigger?.focus();
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (!marketingLanguageSwitcher?.contains(event.target)) setMarketingLanguageMenuOpen(false);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !marketingLanguageSwitcher?.classList.contains("is-open")) return;
+        setMarketingLanguageMenuOpen(false);
+        marketingLanguageTrigger?.focus();
+      });
+      // 2026-08-25 Product Design 改动逻辑：桌面端继续直接进入 VinaAI；H5 改为打开登录层，不触碰原桌面流程。
+      marketingCta?.addEventListener("click", () => {
+        if (!window.matchMedia("(max-width: 700px)").matches) {
+          enterVinaAi();
+          return;
+        }
+        if (marketingCta.classList.contains("is-google-signed-in")) return;
+        marketingLoginModal.hidden = false;
+        marketingLoginModal.setAttribute("aria-hidden", "false");
+        marketingGoogleLogin?.focus({ preventScroll: true });
+      });
+
+      // 2026-08-25 Product Design 改动逻辑：Google 是弹层唯一可点击登录方式；点击后关闭弹层并将右上入口永久收成当前页面内不可点击头像。
+      marketingGoogleLogin?.addEventListener("click", () => {
+        marketingLoginModal.hidden = true;
+        marketingLoginModal.setAttribute("aria-hidden", "true");
+        marketingCta.classList.add("is-google-signed-in");
+        marketingCta.disabled = true;
+        marketingCta.setAttribute("aria-label", window.vinaBrandLanguage.text("已使用 Google 登录"));
+      });
+
+      // 2026-08-25 Product Design 改动逻辑：关闭按钮只收起当前登录卡片，不改变登录状态、营销视频或页面滚动位置。
+      marketingLoginClose?.addEventListener("click", () => {
+        marketingLoginModal.hidden = true;
+        marketingLoginModal.setAttribute("aria-hidden", "true");
+        marketingCta?.focus({ preventScroll: true });
+      });
+      // 2026-08-25：H5 营销页的功能入口仅复制电脑端地址并提示，桌面端继续进入原有创作流程。
+      marketingEnterButtons.forEach((button) => button.addEventListener("click", () => {
+        if (window.matchMedia("(max-width: 700px)").matches) {
+          window.vinaCopyDesktopUrlAndToast?.("已复制网址，请在电脑端打开访问");
+          return;
+        }
+        enterVinaAi();
+      }));
+
+      // 2026-10-26 改动逻辑：H5 复制入口在 iframe 内完成真实复制，并保留失败时可手动选择的网址；不依赖参考项目 app.js。
+      let copyToastTimer;
+      const showCopyToast = (message) => {
+        const toast = document.getElementById("mobileCopyToast");
+        // 2026-10-26：复制成功/失败提示也按当前品牌页语言展示。
+        toast.textContent = window.vinaBrandLanguage.text(message);
+        toast.classList.add("is-visible");
+        window.clearTimeout(copyToastTimer);
+        copyToastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2200);
+      };
+      window.vinaCopyDesktopUrlAndToast = async (message = "复制成功") => {
+        const url = document.querySelector(".mobile-web-url")?.textContent.trim() || "www.laihua.com";
+        try {
+          if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+          await navigator.clipboard.writeText(url);
+        } catch (error) {
+          const field = document.createElement("textarea");
+          field.value = url;
+          field.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+          document.body.append(field);
+          field.select();
+          const copied = document.execCommand("copy");
+          field.remove();
+          if (!copied) { showCopyToast("请长按网址复制，并在电脑端打开"); return; }
+        }
+        showCopyToast(message);
+      };
+      document.getElementById("marketingMobileWebCopy")?.addEventListener("click", () => window.vinaCopyDesktopUrlAndToast());
+
+      // 2026-10-26 改动逻辑：父页隐藏入口时暂停所有视频；再次点击首页 Logo 时回到首屏并恢复当前分类，保留首页工作状态。
+      let entryVisible = true;
+      const pauseEntryVideos = () => document.querySelectorAll("video").forEach((video) => video.pause());
+      window.addEventListener("message", (event) => {
+        if (event.source !== window.parent) return;
+        if (event.data?.type === "vina-marketing-authenticated") {
+          marketingCta.classList.add("is-google-signed-in");
+          marketingCta.disabled = true;
+          marketingCta.setAttribute("aria-label", window.vinaBrandLanguage.text("已使用 Google 登录"));
+          return;
+        }
+        // 2026-10-26：只接受父窗口传来的语言，重开品牌页时与主应用当前语言保持一致。
+        if (event.data?.type === "vina-brand-entry-language") {
+          window.vinaBrandLanguage.set(event.data.language);
+          return;
+        }
+        if (event.data?.type !== "vina-brand-entry-visibility") return;
+        entryVisible = Boolean(event.data.visible);
+        if (!entryVisible) { pauseEntryVideos(); return; }
+        marketingEntry.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        marketingVideo.play()?.catch(() => {});
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) pauseEntryVideos();
+        else if (entryVisible && marketingEntry.scrollTop < window.innerHeight / 2) marketingVideo.play()?.catch(() => {});
+      });
+
+      // 2026-10-26 改动逻辑：H5 案例分类复用当前 VinaAgent 的既有数据，点击交给父页现有沉浸播放器，预览仅在悬停后加载。
+    const showcaseVideoCatalog = {
+      advertising: { label: "广告营销", items: [
+        ["温控高速吹风机", "https://res-public.vinabot.ai/system/20260814/video/019fffe2-072a-74af-ab0e-a843a7af97f3.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe2-fb2d-70f1-b97a-c0f4f27a667f.png"],
+        ["一口穿越三个世界", "https://res-public.vinabot.ai/system/20260814/video/019fffe3-4496-73a9-bca6-3d108eb00918.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffd5-1a66-764a-bcdc-25c1fc3f7194.png"],
+        ["护发精油广告", "https://res-public.vinabot.ai/system/20260814/video/019fffea-e96b-76c2-86ff-58e389950f04.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffea-0011-77ef-b5d1-71fea59a6ad1.png"],
+        ["智能眼镜", "https://res-public.vinabot.ai/system/20260815/video/01a00326-ca7b-73e3-adf3-b2529210ae5b.mp4", "https://res-public.vinabot.ai/system/20260815/img/01a00331-9a18-72ef-8c16-92e1ea5dccb4.png"],
+        ["香水项目", "https://res-public.vinabot.ai/system/20260814/video/019fffe1-168e-752e-9896-d22047daeef9.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe1-9299-73ab-9507-5f039e06d970.png"],
+        ["健康戒指项目", "https://res-public.vinabot.ai/system/20260814/video/019fffe6-f741-734f-a22d-7e4e7773de86.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffe9-977a-754d-a8e9-537422d87260.png"],
+        ["VYRA防晒霜", "https://res-public.vinabot.ai/system/20260814/video/019fffde-07c1-7699-a9ea-ddefb8180d2b.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffde-72de-72db-9662-277a33ab043b.png"],
+        ["AI实时翻译耳机广告", "https://res-public.vinabot.ai/system/20260814/video/019fffc8-526a-73df-931d-cee85202812d.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffc8-6e38-749c-86fa-03f5e2c7c363.png"]
+      ] },
+      social: { label: "创意社媒", items: [
+        ["果然心动", "https://res-public.vinabot.ai/system/20260814/video/019ffff2-b519-7414-8ee4-f65aae3bd671.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffff2-80e1-75da-8ef8-b42922a84ca1.png"],
+        ["鱼丸救援行动", "https://res-public.vinabot.ai/system/20260814/video/019ffff3-6d7b-777c-a2b2-46d51ad31565.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffff3-891c-72b7-84d8-4b9a8069d84f.png"],
+        ["极限穿越", "https://res-public.vinabot.ai/system/20260814/video/019ffff4-d6b2-7228-86a9-712cf1492608.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffec-b77a-703e-93b5-28d8854cb7a2.png"],
+        ["办公用品下班后", "https://res-public.vinabot.ai/system/20260814/video/019ffff5-5a6e-7356-ae1f-5bbd7201b7a8.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffff6-61db-754e-888c-28fdbf784e45.png"],
+        ["冰箱午夜共和国", "https://res-public.vinabot.ai/system/20260814/video/019ffff8-a9f0-70f8-9537-23c043e1b192.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffff9-4cbf-772f-8b81-19b7dc42847f.jpg"],
+        ["玻璃水果", "https://res-public.vinabot.ai/system/20260814/video/019ffffa-3dfe-770c-9cfb-01443df7e830.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffffa-9dc5-72fa-87da-eb9a322bd27a.png"],
+        ["名画人物下班后", "https://res-public.vinabot.ai/system/20260814/video/019ffffa-f844-7588-b441-07e0677770c6.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffffb-d39d-723a-9a2b-048664cfb58a.jpg"],
+        ["The Lost Rituals of Modern Life", "https://res-public.vinabot.ai/system/20260814/video/019ffffc-5ba8-7079-aa00-0173b18cd2b3.mp4", "https://res-public.vinabot.ai/system/20260814/img/019ffffd-72d5-71b9-b411-97567f720901.png"]
+      ] },
+      mg: { label: "MG动画", items: [
+        ["大模型如何学习与生成", "https://res-public.vinabot.ai/system/20260814/video/01a00004-6128-75d0-939e-903b41e64dfa.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00004-b3bf-74fd-9c18-2b1f6716ce21.png"],
+        ["品牌如何从零建立用户认知", "https://res-public.vinabot.ai/system/20260814/video/01a00005-f4ce-7019-ade5-82ecce0bf95b.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00006-2b04-70d7-bc15-8d56b677ff74.png"],
+        ["从咖啡果到一杯咖啡", "https://res-public.vinabot.ai/system/20260814/video/01a0000b-a7cc-77da-9a20-a78f7e3e44cf.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a0000b-1149-7609-9873-879f46621334.png"],
+        ["记忆如何留下", "https://res-public.vinabot.ai/system/20260814/video/01a0000c-9174-7701-af6d-28341c6d1d83.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00008-b627-701e-8cfa-63af28ace49b.png"],
+        ["一个订单是怎样被顺利交付", "https://res-public.vinabot.ai/system/20260814/video/01a00011-3997-7434-8cf6-682bd568b5b7.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00011-626b-7459-836a-d75f6df2c347.png"],
+        ["马拉松运动员如何分配体力", "https://res-public.vinabot.ai/system/20260814/video/01a00012-32cf-7687-8c44-e0c36a99b4d2.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00012-5792-7394-a707-b5a47863eb2c.png"],
+        ["泉州海上丝路的一天", "https://res-public.vinabot.ai/system/20260814/video/01a00016-a6a6-76d8-876b-93e7fc5718ea.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00012-97c5-7072-9845-fb58a1f5f1e0.png"],
+        ["为什么我们总是在最后一刻", "https://res-public.vinabot.ai/system/20260814/video/01a00015-c638-72b1-b2e8-4b912baaa6ae.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00017-09d3-759e-9840-b6538fcb2499.png"]
+      ] },
+      digitalHuman: { label: "数字人", items: [
+        ["城市生活推荐攻略", "https://res-public.vinabot.ai/system/20260814/video/019fff98-ad6d-7162-954c-9108df16723f.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fff98-1a6b-776c-9b91-cfca5bddf50f.png"],
+        ["虚拟法务提醒", "https://res-public.vinabot.ai/system/20260814/video/019fffa2-72b2-73ac-8bf9-7efd449fbbb2.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffa2-3036-72a5-85e0-593643c1ed7b.jpg"],
+        ["健康习惯教练", "https://res-public.vinabot.ai/system/20260814/video/019fffa3-c8ca-74af-90a7-dc5ec9561e84.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffa3-8155-724d-8b59-2496790ca3a6.png"],
+        ["入职教练", "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffa9-d703-7564-9330-0df669f09f21.png"],
+        ["保温杯带货", "https://res-public.vinabot.ai/system/20260814/video/019fffac-1630-7341-afb2-22aeb3e05002.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffab-ceb4-73df-ae3f-d43b1af9b94c.jpg"],
+        ["博物馆虚拟导览", "https://res-public.vinabot.ai/system/20260814/video/019fffbd-1f4a-74ce-81bf-bc23c1c9f2c3.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffbd-84a6-71bd-874a-6e5c89b09bb1.png"],
+        ["AI产品体验官", "https://res-public.vinabot.ai/system/20260814/video/019fffc2-5900-72fd-acfd-f99051f78cc9.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffc4-7071-7539-a548-f894bd578c55.png"],
+        ["每日行业早报", "https://res-public.vinabot.ai/system/20260814/video/019fffff-8ef4-74f1-a93a-dce6034f99d6.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffff-c035-758d-8507-20ab3cd9558f.png"]
+      ] },
+      drama: { label: "短剧", items: [
+        ["记忆交易所", "https://res-public.vinabot.ai/system/20260814/video/019fff75-925b-7753-b0bd-f9931a9f304f.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fff65-40fc-768a-a7e6-180853e6241c.png"],
+        ["The Other Maya", "https://res-public.vinabot.ai/system/20260814/video/019fff78-ba87-778f-b1e5-8b36db72f04e.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fff79-1558-718e-9f8a-effb5419e2a8.png"],
+        ["真假千金联手夺局", "https://res-public.vinabot.ai/system/20260814/video/019fffc7-0a4d-72c9-ba1a-39128f560e34.mp4", "https://res-public.vinabot.ai/system/20260814/img/019fffc0-5221-712e-bbc8-097901cccfce.png"],
+        ["最后的首席", "https://res-public.vinabot.ai/system/20260814/video/01a0002a-0b00-772b-ba46-317b12871f18.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a0002a-271d-70ce-8f40-d82b675fda5b.png"],
+        ["霓虹下的求救声", "https://res-public.vinabot.ai/system/20260814/video/01a0001d-7289-7562-b34f-1366c63cbaab.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a0001d-ad3f-778e-b18a-c5bc6ef15901.png"],
+        ["碑中来客", "https://res-public.vinabot.ai/system/20260814/video/01a0001e-5b68-7489-8512-2c2ab7f0465d.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a0001e-c089-71c3-9ced-b2ec681facfe.png"],
+        ["DON’T BREAK THE RULES", "https://res-public.vinabot.ai/system/20260814/video/01a00020-9e9e-77b8-af4e-b628ca50d58b.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a00021-05eb-70ae-b16e-d2864ac27bd4.png"],
+        ["补位", "https://res-public.vinabot.ai/system/20260814/video/01a0001f-8637-77a8-80c6-43858cb373c0.mp4", "https://res-public.vinabot.ai/system/20260814/img/01a0001f-a6a3-7038-ac5f-1352fe58ac7f.png"]
+      ] }
+    };
+      const showcaseGrid = document.querySelector("[data-showcase-video-grid]");
+      const showcaseTabs = document.querySelectorAll("[data-showcase-category]");
+      const renderShowcase = (key) => {
+        const category = showcaseVideoCatalog[key] || showcaseVideoCatalog.advertising;
+        showcaseGrid.querySelectorAll("video").forEach((video) => video.pause());
+        showcaseGrid.replaceChildren();
+        showcaseGrid.setAttribute("aria-label", window.vinaBrandLanguage.text(`${category.label}视频案例`));
+        showcaseTabs.forEach((tab) => {
+          const selected = tab.dataset.showcaseCategory === key;
+          tab.classList.toggle("active", selected);
+          tab.setAttribute("aria-selected", String(selected));
+        });
+        category.items.forEach(([title, source, poster]) => {
+          const card = document.createElement("article");
+          card.className = "showcase-video-card";
+          card.tabIndex = 0;
+          card.setAttribute("role", "button");
+          card.setAttribute("aria-label", window.vinaBrandLanguage.get() === "ar" ? `شاهد نموذج ${window.vinaBrandLanguage.text(title)}` : `播放${title}案例`);
+          const media = document.createElement("div");
+          media.className = "showcase-video-media";
+          const cover = document.createElement("img");
+          cover.className = "showcase-video-cover";
+          cover.src = poster;
+          cover.alt = "";
+          cover.loading = "lazy";
+          const preview = document.createElement("video");
+          preview.className = "showcase-video-preview";
+          preview.muted = true;
+          preview.loop = true;
+          preview.playsInline = true;
+          preview.preload = "none";
+          media.append(cover, preview);
+          const meta = document.createElement("div");
+          meta.className = "showcase-video-card-meta";
+          const heading = document.createElement("h3");
+          heading.className = "showcase-video-card-title";
+          heading.textContent = title;
+          meta.append(heading);
+          card.append(media, meta);
+          const open = () => {
+            if (window.parent !== window) window.parent.postMessage({ type: "vina-marketing-showcase", title: window.vinaBrandLanguage.text(title), source, kind: key }, "*");
+            else { preview.controls = true; preview.src = source; preview.play()?.then(() => card.classList.add("is-previewing")).catch(() => {}); }
+          };
+          card.addEventListener("click", open);
+          card.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            open();
+          });
+          card.addEventListener("mouseenter", () => {
+            if (!preview.getAttribute("src")) preview.src = source;
+            preview.play()?.then(() => { if (card.matches(":hover")) card.classList.add("is-previewing"); else preview.pause(); }).catch(() => {});
+          });
+          card.addEventListener("mouseleave", () => { preview.pause(); card.classList.remove("is-previewing"); });
+          showcaseGrid.append(card);
+        });
+        // 2026-10-26：切换精选分类后翻译新生成的卡片标题，无需观察整页 DOM。
+        window.vinaBrandLanguage.refresh();
+      };
+      showcaseTabs.forEach((tab) => tab.addEventListener("click", () => renderShowcase(tab.dataset.showcaseCategory)));
+      renderShowcase("advertising");
+      // 2026-10-26：独立 ?lang=ar 可直接打开阿语；iframe 首次加载和后续重开由父页发送语言。
+      window.vinaBrandLanguage.set(new URLSearchParams(window.location.search).get("lang") || "zh-CN");
+    })();
+  </script>
+</body>
+</html>

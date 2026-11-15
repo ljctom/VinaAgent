@@ -1,0 +1,31 @@
+/* 未悬停显示常驻对角描边；悬停时淡出，切换为原鼠标跟随高亮。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer:is(:hover,:focus-within)::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within)::before {
+  box-sizing: border-box !important;
+  padding: 1px !important;
+  border: 0 !important;
+  background:
+    radial-gradient(260px circle at 100% 0%, rgba(0,255,144,.56) 0%, rgba(184,236,100,.27) 40%, rgba(250,255,159,.09) 70%, rgba(250,255,159,0) 100%),
+    radial-gradient(260px circle at 0% 100%, rgba(0,255,144,.56) 0%, rgba(184,236,100,.27) 40%, rgba(250,255,159,.09) 70%, rgba(250,255,159,0) 100%),
+    linear-gradient(var(--va-border-light), var(--va-border-light)) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  -webkit-mask-clip: content-box, border-box !important;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  mask-composite: exclude !important;
+  mask-clip: content-box, border-box !important;
+  opacity: 1 !important;
+  transition: opacity .2s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer:hover::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:hover::before {
+  opacity: 0 !important;
+}
+/* 鼠标离开后恢复常驻层，即使输入框仍保留键盘焦点。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .composer:not(:hover)::after,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:not(:hover)::after {
+  opacity: 0 !important;
+}

@@ -1,0 +1,167 @@
+/* 2026-10-10 Product Design 改动逻辑：按「设计参考」drama-video-design-system.css
+   同步短剧最后一步红框内的内容宽度、卡片尺寸和四个操作按钮样式。
+   仅作用于 episode-video 总览页，不影响单集详情、剪辑器、审片列表或其他步骤；
+   沿用现有 DOM、按钮显示条件、data 属性、禁用/可用状态与点击事件，不新增业务逻辑。 */
+
+/* 2026-10-10 Product Design 改动逻辑：按截图取消短剧第 5 步视频总览中
+   项目标题及顶部“视频”导航（含步骤数字）的加粗，统一使用 400 常规字重；
+   限定于视频总览页，保留原有字号、颜色、布局与导航交互。 */
+.episode-workspace[data-view="episode-video"] .episode-project-heading h1,
+.episode-workspace[data-view="episode-video"] .script-status .step[data-workflow-view="episode-video"],
+.episode-workspace[data-view="episode-video"] .script-status .step[data-workflow-view="episode-video"] .step-num {
+  font-weight: 400 !important;
+}
+
+/* 项目概览和全部分集共用 1360px 居中容器；内边距与参考一致，窄屏随可用宽度收缩。 */
+.episode-workspace[data-view="episode-video"] .episode-main {
+  padding: 28px 32px 48px !important;
+  box-sizing: border-box;
+}
+.episode-workspace[data-view="episode-video"] .episode-inner {
+  width: min(100%, 1360px) !important;
+  margin: 0 auto;
+}
+.episode-workspace[data-view="episode-video"] .episode-project-panel {
+  grid-template-columns: minmax(0,1fr) 228px;
+  padding: 24px !important;
+  gap: 32px;
+  margin-bottom: 32px !important;
+  min-height: 160px;
+  box-sizing: border-box;
+}
+/* 分集卡片采用参考的 72×128px 封面、16px 内衬和 20px 列间距，
+   原封面图片、集数、摘要与进度数据继续由现有脚本更新。 */
+.episode-workspace[data-view="episode-video"] .episode-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) !important;
+  gap: 16px !important;
+}
+.episode-workspace[data-view="episode-video"] .episode-video-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0,1fr) !important;
+  gap: 20px !important;
+  padding: 16px !important;
+  min-height: 160px !important;
+  box-sizing: border-box;
+}
+.episode-workspace[data-view="episode-video"] button.episode-cover {
+  width: 72px !important;
+  height: 128px !important;
+  min-height: 128px !important;
+  align-self: center;
+}
+.episode-workspace[data-view="episode-video"] .episode-info {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 224px !important;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  column-gap: 24px;
+  row-gap: 8px;
+  padding: 0 !important;
+  min-width: 0;
+}
+.episode-workspace[data-view="episode-video"] .episode-heading {
+  grid-column: 1;
+  margin: 0;
+}
+.episode-workspace[data-view="episode-video"] .episode-meta {
+  grid-column: 1;
+  margin: 0 !important;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+/* 桌面四个按钮占用右侧 224px 列，两行两列；不改变团队审片/个人播放的显示条件。 */
+.episode-workspace[data-view="episode-video"] .episode-buttons {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px !important;
+  margin: 0 !important;
+}
+.episode-workspace[data-view="episode-video"] .episode-button {
+  min-width: 0;
+  height: 36px !important;
+  min-height: 36px;
+  padding: 0 12px !important;
+  gap: 6px;
+  justify-content: center;
+  border: 1px solid #2b3642 !important;
+  border-radius: 18px !important;
+  background: transparent !important;
+  color: #9aa6b2 !important;
+  box-shadow: none !important;
+  opacity: 1;
+  font: 500 14px/20px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif !important;
+}
+/* 参考图高亮按钮使用 #2b3642 底色和白字；悬停、按下及键盘聚焦复用同一反馈，
+   不为操作按钮增加持久选中状态或改变其路由行为。 */
+.episode-workspace[data-view="episode-video"] .episode-button:is(:hover, :active, :focus-visible):not(:disabled):not(.is-unavailable) {
+  background: #2b3642 !important;
+  border-color: #3a4654 !important;
+  color: #fff !important;
+  transform: none !important;
+}
+.episode-workspace[data-view="episode-video"] .episode-button svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px;
+}
+/* 不可用按钮仅同步参考的暗色外观，仍由原逻辑判断是否可执行。 */
+.episode-workspace[data-view="episode-video"] .episode-button:is(:disabled, .is-unavailable, .is-unavailable:hover) {
+  color: #4d5865 !important;
+  background: #141a21 !important;
+  cursor: not-allowed;
+}
+.episode-workspace[data-view="episode-video"] .episode-button:focus-visible {
+  outline: 2px solid #9aa6b2;
+  outline-offset: 3px;
+}
+/* 沿用参考的响应式断点：900px 内按钮移到摘要下方，600px 内恢复两列。 */
+@media (max-width: 900px) {
+  .episode-workspace[data-view="episode-video"] .episode-main {
+    padding: 24px 20px 40px !important;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-info {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-buttons {
+    grid-column: 1;
+    grid-row: auto;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    margin-top: 4px !important;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-project-panel {
+    grid-template-columns: minmax(0,1fr) 204px;
+    gap: 24px;
+  }
+}
+@media (max-width: 600px) {
+  .episode-workspace[data-view="episode-video"] .episode-main {
+    padding: 20px 16px 32px !important;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-project-panel {
+    grid-template-columns: minmax(0,1fr);
+    padding: 20px !important;
+    gap: 20px;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-project-progress {
+    padding: 16px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(255,255,255,.06);
+    flex-direction: row;
+    gap: 20px;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-project-stat {
+    flex: 1;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-video-card {
+    gap: 12px !important;
+  }
+  .episode-workspace[data-view="episode-video"] .episode-buttons {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}

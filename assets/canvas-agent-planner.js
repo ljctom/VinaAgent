@@ -1,5 +1,10 @@
+// 2026-10-25 阿语完整适配：规划/澄清/总结的用户可见文字按 ar 输出；同源父页提供语言状态，保留 JSON 字段、模型与内部任务标识。
 /* 2026-08-03 改动逻辑：画布 Agent 先生成结构化规划，再按依赖顺序执行节点；规划在每次画布会话重置的 JSON 会话文件中维护。 */
 (function () {
+  function arabicLanguageHint() {
+    try { return (window.VinaArabic || window.parent.VinaArabic)?.languageHint() || ''; }
+    catch (_) { return ''; }
+  }
   const PLAN_FILE_NAME = 'canvas-agent-plan.json';
   const PLAN_STORAGE_KEY = 'vina-canvas-agent-plan.json';
   const PLAN_VERSION = 1;
@@ -31,6 +36,8 @@
     '需要确认时格式固定为：{"kind":"confirmation_batch","intro":"一句简短说明","questions":[{"id":"稳定英文或拼音标识","title":"问题标题","type":"single或multiple或text","required":true,"minSelections":1,"maxSelections":1,"placeholder":"输入提示","options":[{"label":"选项标题","description":"简短说明"}]}]}。',
     '所有必须确认的问题必须在同一个 questions 数组中一次性返回；每个选择题提供 2 到 6 个可执行选项，优先把推荐项放在第一个。',
     '每个问题必须有具体、可直接回答的标题；禁止创建标题为“请确认以下信息”、“补充说明”、“其他信息”或同类泛化文案的空白文本题。',
+    // 2026-09-02 修复逻辑：产品名、品牌名、人物身份等客观信息无法由预设方向代替，必须让用户输入真实内容；选择题只用于用途、渠道、时长和风格等可枚举偏好。
+    '询问产品或品牌名称、广告主体、人物身份、活动名称等客观事实时，type 必须为 text 且 options 必须为空数组；禁止提供“收集资料”“稍后补充”“待确定”等流程性伪答案。',
     '当需求涉及广告、视频、短片、动画、影片或 TVC，且用户没有说明时长时，必须增加一道时长单选题，选项固定为“15秒以内”、“15到30秒”、“30秒到1分钟”、“1分钟以上”。',
     // 2026-08-28 改动逻辑：用户已用数字或“半分钟”等自然语言说明时长时，确认 Agent 必须自行理解并禁止重复追问。
     '用户已经说明具体时长、时长范围或“半分钟”等等价表达时，必须直接使用该时长，禁止再返回任何时长问题。',
@@ -382,7 +389,7 @@
     ].join('\n\n');
     try {
       const response = await callMiniMax([
-        { role: 'system', content: REFERENCE_INTENT_SYSTEM_PROMPT },
+        { role: 'system', content: REFERENCE_INTENT_SYSTEM_PROMPT + arabicLanguageHint() },
         { role: 'user', content: userContent }
       ], 0.1);
       const parsed = JSON.parse(cleanJsonText(response));
@@ -770,48 +777,59 @@
   function ensureAdvertisementReferenceSteps(sourceSteps, request) {
     if (!isAdvertisementRequest(request)) return sourceSteps;
     const requestText = String(request || '').trim();
-    const referenceSteps = [
+    const sourceImageSteps = sourceSteps.filter(step => step?.type === 'image');
+    const usedImageSteps = new Set();
+    const takeImageStep = pattern => {
+      const semanticMatch = sourceImageSteps.find(step => !usedImageSteps.has(step) && pattern.test(`${step.title || ''} ${step.prompt || ''}`));
+      const sourceStep = semanticMatch || sourceImageSteps.find(step => !usedImageSteps.has(step));
+      if (sourceStep) usedImageSteps.add(sourceStep);
+      return sourceStep || {};
+    };
+    const referenceDefinitions = [
       {
         id: 'advertisement-product-reference',
-        type: 'image',
         title: '商品图',
-        prompt: `根据广告需求“${requestText}”生成商品参考图，核心商品完整清晰，造型、材质、色彩和品牌特征明确，干净背景，高级商业摄影，供后续所有广告视频统一引用。`,
-        dependsOn: []
+        pattern: /商品|产品|品牌|包装|logo|标志/i,
+        fallbackPrompt: `围绕已确认的广告创作要求生成核心商品或品牌参考图：${requestText}。主体完整清晰，造型、材质、色彩和品牌特征明确，干净背景，高级商业摄影，供后续广告视频统一引用。`
       },
       {
         id: 'advertisement-character-reference',
-        type: 'image',
         title: '角色图',
-        prompt: `根据广告需求“${requestText}”生成角色参考图，角色形象、五官、发型、服装和气质完整清晰，干净背景，写实广告摄影，供后续所有广告视频统一引用。`,
-        dependsOn: []
+        pattern: /角色|人物|模特|演员|消费者|受众/i,
+        fallbackPrompt: `围绕已确认的广告创作要求生成核心角色参考图：${requestText}。人物形象、五官、发型、服装、动作气质与目标受众匹配，写实广告摄影，供后续广告视频统一引用。`
       },
       {
         id: 'advertisement-scene-reference',
-        type: 'image',
         title: '场景图',
-        prompt: `根据广告需求“${requestText}”生成场景参考图，完整展示广告发生的核心环境、空间布局、光线、色调和品牌氛围，电影级商业画面，供后续所有广告视频统一引用。`,
-        dependsOn: []
+        pattern: /场景|环境|空间|地点|背景|氛围/i,
+        fallbackPrompt: `围绕已确认的广告创作要求生成核心场景参考图：${requestText}。完整呈现空间布局、光线、色调、渠道画幅和品牌氛围，电影级商业画面，供后续广告视频统一引用。`
       }
     ];
+    // 2026-09-02 修复逻辑：广告仍保证商品、角色、场景三张参考图，但优先保留规划模型依据确认答案写出的具体标题与提示词；只对缺失步骤使用兜底提示词，不再用统一模板覆盖用户上下文。
+    const referenceSteps = referenceDefinitions.map(definition => {
+      const sourceStep = takeImageStep(definition.pattern);
+      return {
+        ...sourceStep,
+        id: definition.id,
+        type: 'image',
+        title: String(sourceStep.title || definition.title).trim(),
+        prompt: String(sourceStep.prompt || definition.fallbackPrompt).trim(),
+        dependsOn: []
+      };
+    });
     const referenceIds = referenceSteps.map(step => step.id);
     const sourceVideoSteps = sourceSteps.filter(step => step?.type === 'video');
-    const videoConcepts = [
-      {
-        title: '汽车品牌广告视频',
-        prompt: `根据广告需求“${requestText}”制作第一段 15 秒汽车品牌 TVC：银黑色概念汽车在雪原岩洞公路与电影级道路环境中高速行驶，突出流线车身、红色尾灯、速度感和高级品牌气质；同时参考商品图、角色图和场景图，镜头完整、节奏利落、商业成片质感。`
-      },
-      {
-        title: '微型工人创意广告视频',
-        prompt: `根据广告需求“${requestText}”制作第二段 15 秒微观世界创意广告：迷你工人把食物变成热闹施工现场，组装汉堡、维护玉米工厂，在爆米花爆破后搭建披萨城市；微距镜头、浅景深、精细模型质感，同时参考商品图、角色图和场景图，与第一段共同组成完整广告。`
-      }
-    ];
-    /* 2026-08-07 改动逻辑：只要用户需求属于广告，视频部分固定为两个互不重复的 15 秒创意：第一段汽车 TVC、第二段微型工人食物施工；两段都继续连接商品图、角色图和场景图并进入最终合片。 */
-    const advertisementVideos = videoConcepts.map((concept,index) => ({
-      ...(sourceVideoSteps[index] || sourceVideoSteps[sourceVideoSteps.length - 1] || {}),
+    const plannedVideos = sourceVideoSteps.length ? sourceVideoSteps : [{
+      title: '广告视频',
+      prompt: `根据已确认的广告创作要求制作完整广告视频：${requestText}。同时参考商品图、角色图和场景图，准确体现用途、受众、投放渠道、时长与整体风格，镜头完整，节奏清晰，商业成片质感。`
+    }];
+    // 2026-09-02 修复逻辑：视频步骤完整沿用规划模型结合确认信息生成的创意，不再把所有广告强制替换成汽车与微型工人两个无关方案；这里只补齐三张参考图依赖。
+    const advertisementVideos = plannedVideos.map((step,index) => ({
+      ...step,
       id: `advertisement-video-${index + 1}`,
       type: 'video',
-      title: concept.title,
-      prompt: concept.prompt,
+      title: String(step.title || `广告视频 ${index + 1}`).trim(),
+      prompt: String(step.prompt || '').trim(),
       dependsOn: referenceIds
     }));
     const remainingSteps = [
@@ -1027,7 +1045,7 @@
     ].filter(Boolean).join('\n\n');
     try {
       const response = await callMiniMax([
-        { role: 'system', content: PLANNER_SYSTEM_PROMPT },
+        { role: 'system', content: PLANNER_SYSTEM_PROMPT + arabicLanguageHint() },
         { role: 'user', content: userContent }
       ], 0.2, {
         stream: true,
@@ -1054,6 +1072,20 @@
 
   function isConfirmationBatchAnswer(request) {
     return /^我已一次性确认全部信息：/i.test(String(request || '').trim());
+  }
+
+  function extractConfirmedCreativeBrief(request) {
+    const source = String(request || '').trim();
+    if (!isConfirmationBatchAnswer(source)) return source;
+    const lines = source.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    const originalLine = lines.find(line => /^原始需求[：:]/.test(line));
+    const originalRequest = originalLine ? originalLine.replace(/^原始需求[：:]\s*/, '').trim() : '';
+    const confirmedRequirements = lines
+      .filter(line => /^\d+\.\s*/.test(line))
+      .map(line => line.replace(/^\d+\.\s*/, '').replace(/[？?]\s*[：:]/, '：').trim())
+      .filter(line => line && !/[：:]\s*未补充$/.test(line));
+    // 2026-09-02 修复逻辑：整批确认只提炼“原始需求 + 已填写答案”为创作简报；跳过项、卡片说明、AI 对话和规划话术都不能进入图片或视频模型的最终提示词。
+    return [originalRequest, ...confirmedRequirements].filter(Boolean).join('；') || '按默认创意方案生成内容';
   }
 
   function fallbackClarificationBatch(request) {
@@ -1148,7 +1180,7 @@
     ].filter(Boolean).join('\n\n');
     try {
       const response = await callMiniMax([
-        { role: 'system', content: CLARIFICATION_GATE_SYSTEM_PROMPT },
+        { role: 'system', content: CLARIFICATION_GATE_SYSTEM_PROMPT + arabicLanguageHint() },
         { role: 'user', content: userContent }
       ], 0.1);
       const parsed = JSON.parse(cleanJsonText(response));
@@ -1164,8 +1196,8 @@
 
   function buildConfirmedPlanningRequest(request, recentContext) {
     if (!isConfirmationBatchAnswer(request)) return String(request || '').trim();
-    // 2026-08-26 改动逻辑：决策卡整批提交后，把原始需求与所有答案合并成同一份规划约束，避免只根据选项文字生成。
-    return `请根据以下原始需求和整批确认结果开始规划：\n${String(recentContext || '').slice(-2200)}\n${String(request || '').trim()}`;
+    // 2026-09-02 修复逻辑：不再拼接 recentContext；确认卡自身已经携带原始需求，直接输出干净创作简报，避免历史 AI 回复被广告参考图提示词逐字引用。
+    return extractConfirmedCreativeBrief(request);
   }
 
   function shouldCreatePlan(text) {
@@ -1175,6 +1207,42 @@
     if (typeof isCancelText === 'function' && isCancelText(value)) return false;
     // 2026-08-14 改动逻辑：没有重复“生成”二字的短修改追问也进入规划 Agent，由上下文意图判断决定引用上一条记录还是独立新建。
     return isConfirmationBatchAnswer(value) || /(生成|制作|创建|做一|做个|画一|绘制|参考图|图片|图像|海报|视频|短片|动画|影片|音乐|歌曲|配乐|音频|TVC|修改|改成|改为|换成|换为|调整|微调|优化|润色|替换|去掉|移除|保持|保留|沿用|放大|缩小|调亮|调暗|generate|create|make|image|video|music)/i.test(value);
+  }
+
+  function getPendingConfirmationContinuation(value) {
+    if (typeof messages === 'undefined' || !messages) return null;
+    const cards = Array.from(messages.querySelectorAll('[data-confirmation-batch-card]'));
+    const card = cards.reverse().find(candidate => !candidate.classList.contains('disabled'));
+    const state = card?.__confirmationBatchState;
+    if (!card || !state) return null;
+    const messageItems = Array.from(messages.querySelectorAll('.msg'));
+    const cardMessage = card.closest('.msg');
+    const cardMessageIndex = messageItems.indexOf(cardMessage);
+    const followups = cardMessageIndex >= 0
+      ? messageItems.slice(cardMessageIndex + 1)
+        .filter(item => item.classList.contains('user'))
+        .map(item => typeof getMessagePlainText === 'function' ? getMessagePlainText(item) : item.textContent.trim())
+        .filter(Boolean)
+      : [];
+    const currentValue = String(value || '').trim();
+    if (currentValue) followups.push(currentValue);
+    const originalRequest = String(state.originalRequest || '').trim();
+    if (!originalRequest || !followups.length) return null;
+    // 2026-09-02 修复逻辑：确认卡出现后的自由输入不是一条独立新任务；按显示顺序与卡片保存的原始需求合并，保证“直接生成”和补充条件都进入下一次确认或规划上下文。
+    return {
+      card,
+      request: `原始需求：${originalRequest}\n确认卡后用户补充：\n${followups.join('\n')}`
+    };
+  }
+
+  function supersedePendingConfirmationCard(card) {
+    if (!card) return;
+    // 2026-09-02 修复逻辑：用户改用输入框补充确认信息后停用旧卡，避免已合并进上下文的问题仍可再次提交并产生重复任务。
+    card.classList.add('disabled');
+    card.querySelectorAll('button, input, textarea').forEach(control => {
+      control.disabled = true;
+      control.setAttribute('aria-disabled', 'true');
+    });
   }
 
   function streamPlannerMessage(message, text) {
@@ -1377,6 +1445,9 @@
     step.status = 'awaiting_confirmation';
     writePlanFile(activePlan);
     addGenerationConfirmCard(request);
+    // 2026-11-09 Product Design / ego：确认卡出现即进入等待用户操作，释放输入框停止入口；不取消计划或生成请求。
+    // 后续新消息仍由原 setSending(true) 进入思考停止态，卡片确认、取消继续走既有处理器。
+    setPlannerStopAvailable(false);
   }
 
   function nextReadyStep() {
@@ -1424,7 +1495,7 @@
     }));
     try {
       const response = await callMiniMax([
-        { role: 'system', content: VIDEO_COMPOSITION_SYSTEM_PROMPT },
+        { role: 'system', content: VIDEO_COMPOSITION_SYSTEM_PROMPT + arabicLanguageHint() },
         { role: 'user', content: `用户最终目标：${plan.finalGoal}\n\n视频步骤：${JSON.stringify(stepContext)}` }
       ], 0.1);
       const parsed = JSON.parse(cleanJsonText(response));
@@ -1518,7 +1589,7 @@
     let finalReplyStreamed = false;
     try {
       finalReply = await callMiniMax([
-        { role: 'system', content: FINAL_SYSTEM_PROMPT },
+        { role: 'system', content: FINAL_SYSTEM_PROMPT + arabicLanguageHint() },
         { role: 'user', content: `用户最终目标：${activePlan.finalGoal}\n\n已完成步骤：\n${completedText}` }
       ], 0.2, {
         stream: true,
@@ -1674,19 +1745,22 @@
     const originalSubmitPrompt = submitPrompt;
     submitPrompt = async function submitPromptWithPlanning(text) {
       const value = String(text || promptInput?.value || '').trim();
-      if (!shouldCreatePlan(value)) return originalSubmitPrompt(text);
+      const pendingConfirmation = getPendingConfirmationContinuation(value);
+      if (!shouldCreatePlan(value) && !pendingConfirmation) return originalSubmitPrompt(text);
+      const contextualRequest = pendingConfirmation?.request || value;
       // 2026-08-16 改动逻辑：每次新请求建立独立停止状态，并从规划开始到结束持续持有停止按钮，手动和自动模式行为一致。
       plannerStopRequested = false;
       const recentContext = typeof getRecentConversationText === 'function' ? getRecentConversationText() : '';
       if (promptInput) promptInput.value = '';
       addMessage('user', value);
+      if (pendingConfirmation) supersedePendingConfirmationCard(pendingConfirmation.card);
       const thinking = addMessage('ai', hasDirectGenerationIntent(value) || isConfirmationBatchAnswer(value) ? '正在规划执行步骤...' : '正在确认需求...', 'thinking');
       setSending(true);
       setPlannerStopAvailable(true);
       try {
         // 2026-08-26 改动逻辑：未明确说“直接生成”的新请求先经过清晰度判断；需要用户决策时立即收束本轮，不创建规划或生成节点。
         if (!hasDirectGenerationIntent(value) && !isConfirmationBatchAnswer(value)) {
-          const decision = await getClarificationDecision(value, recentContext);
+          const decision = await getClarificationDecision(contextualRequest, recentContext);
           if (decision.kind === 'confirmation_batch') {
             const serializedDecision = JSON.stringify(decision);
             thinking.classList.remove('thinking');
@@ -1699,7 +1773,8 @@
           }
           thinking.textContent = '正在规划执行步骤...';
         }
-        const planningRequest = buildConfirmedPlanningRequest(value, recentContext);
+        // 2026-09-02 修复逻辑：自由输入回复确认卡时使用合并后的完整需求规划；普通新消息和卡片按钮整批答案继续沿用原入口。
+        const planningRequest = buildConfirmedPlanningRequest(contextualRequest, recentContext);
         const plan = await createPlanWithModel(planningRequest, recentContext, partialPlan => {
           if (plannerStopRequested || !thinking?.isConnected) return;
           // 2026-08-16 改动逻辑：持续展示从 JSON 增量解码出的摘要和步骤清单，不把协议字段、引号或转义符暴露给用户。

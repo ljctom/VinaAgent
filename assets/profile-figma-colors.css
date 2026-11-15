@@ -1,0 +1,46 @@
+/* 2026-09-30 Product Design 改动逻辑：个人中心、账号切换与语言选单采用 Figma 深色卡片、冷灰边框及分级文字。
+ * 团队角色、套餐、额度及选中标记采用品牌绿与浅绿底；个人充值/升级保持品牌主按钮颜色。
+ * 仅覆盖颜色与原阴影颜色，保留头像图片、尺寸布局、账号身份、额度数据、语言切换及所有事件逻辑。
+ */
+.global-account .profile-popover,
+.global-account .profile-account-popover,
+.global-account .profile-language-popover { background:#171e27; border-color:#2b3642; color:#f5f7fa; box-shadow:0 18px 40px rgba(0,0,0,.55); }
+.global-account .profile-popover-card { background:#0f151c; }
+.global-account .profile-popover-name,
+.global-account .profile-popover-heading,
+.global-account .profile-account-details strong { color:#f5f7fa; }
+.global-account .profile-popover-row,
+.global-account .profile-account-option,
+.global-account .profile-popover-team { color:#d5dbe3; }
+.global-account .profile-popover-team { background:#0f151c; }
+.global-account .profile-popover-team:hover,
+.global-account .profile-popover-team:focus-visible { background:rgba(184,248,74,.1216); border-color:#b8f84a; color:#f5f7fa; }
+.global-account .profile-popover-role { background:rgba(184,248,74,.1216); color:#b8f84a; }
+.global-account .profile-team-plan { background:rgba(184,248,74,.1216); color:#b8f84a; }
+.global-account .profile-team-credits { background:#0f151c; border-color:#2b3642; color:#d5dbe3; }
+.global-account .profile-team-credits:hover,
+.global-account .profile-team-credits:focus-visible { border-color:#b8f84a; }
+.global-account .profile-team-credits-top,
+.global-account .profile-popover-balance { color:#b8f84a; }
+.global-account .profile-team-credits-bottom,
+.global-account .profile-popover-team-name,
+.global-account .profile-account-heading { color:#9aa6b2; }
+.global-account .profile-account-details small,
+.global-account .profile-popover-id,
+.global-account .profile-popover-tier { color:#6f7b88; }
+.global-account .profile-account-heading.is-team,
+.global-account .profile-account-create { border-color:#2b3642; }
+.global-account .profile-account-create { color:#9aa6b2; }
+.global-account .profile-switch-trigger { background:#171e27; border-color:#2b3642; color:#d5dbe3; }
+.global-account .profile-switch-trigger:hover,
+.global-account .profile-switch-trigger:focus-visible { border-color:#b8f84a; color:#b8f84a; }
+.global-account .profile-account-option:hover,
+.global-account .profile-account-option:focus-visible { background:#0f151c; }
+.global-account .profile-account-option.is-active { background:rgba(184,248,74,.1216); }
+.global-account .profile-account-check,
+.global-account .profile-language-check { color:#b8f84a; }
+.global-account .profile-language-option { color:#d5dbe3; }
+.global-account .profile-language-option:hover,
+.global-account .profile-language-option:focus-visible { background:#0f151c; color:#f5f7fa; }
+.global-account .profile-language-option.is-active { background:rgba(184,248,74,.1216); color:#b8f84a; }
+.global-account .profile-popover-pill { background:#b8f84a; color:#0d1308; }

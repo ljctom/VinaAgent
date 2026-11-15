@@ -1,0 +1,50 @@
+/* 2026-10-25 Product Design：短剧第一步的 Shadow DOM 专用阿语样式。
+ * 限定 :host([data-vina-ar])；中文和其他语言的布局、目录、data 值和保存流程完全沿用。
+ * 仅卡片/参数/弹窗内部 RTL，宿主与后续工作区位置保持原样，图片与模型名不镜像。
+ */
+:host([data-vina-ar]) { font-family:Tahoma,"Geeza Pro",Arial,sans-serif;letter-spacing:normal; }
+:host([data-vina-ar]) :is(.heading,.preset,.spec,.card-top,.card-content,.tags,.tag,.dialog-head,.dialog-footer,.picker-tabs,.filter-tabs,.filter-tab,.country-choice,.choice,.custom-row,.input-wrap,.model-copy,.model-name-row,.model-description,.picker-label,.spec-copy,.card-title,.auto-note,.dialog-body,.parameters-block) { direction:rtl;text-align:right; }
+:host([data-vina-ar]) :is(.presets,.grid,.specs,.choice-grid,.style-grid) { direction:rtl; }
+:host([data-vina-ar]) :is(.preset,.card-title,.spec-copy small,.tag) { letter-spacing:normal; }
+:host([data-vina-ar]) .preset { padding-inline:20px; }
+:host([data-vina-ar]) .spec:not(:last-child) { border-right:0;border-left:1px solid #252e38; }
+:host([data-vina-ar]) .spec-copy { min-width:0; }
+:host([data-vina-ar]) :is(.spec-media-values,.spec-media-meta,.model-name-row strong,.model-duration-tag,.model-choice strong,.ratio-choice strong,[data-param="resolution"] strong) { direction:ltr;unicode-bidi:isolate; }
+:host([data-vina-ar]) .spec-media-values { justify-content:flex-end; }
+:host([data-vina-ar]) :is(.model-description,.auto-note,#editorHint,#count,.error,.empty-search,.creation-option-tooltip) { direction:rtl;text-align:right;white-space:normal;overflow-wrap:anywhere;line-height:1.55; }
+:host([data-vina-ar]) :is(.dialog-head,.dialog-footer) { direction:rtl; }
+:host([data-vina-ar]) :is(input,textarea)[data-vina-ar-input] { text-align:start;unicode-bidi:plaintext;letter-spacing:normal; }
+:host([data-vina-ar]) :is(input,textarea)[dir="ltr"] { direction:ltr;text-align:left;unicode-bidi:isolate; }
+:host([data-vina-ar]) :is(.search-icon,.search svg) { transform:none; }
+:host([data-vina-ar]) :is(.card-heading-copy,.tag strong,.choice strong) { min-width:0; }
+:host([data-vina-ar]) :is(.tag,.card-title,.spec-copy small) { max-width:100%;overflow:hidden;text-overflow:ellipsis; }
+:host([data-vina-ar]) .choice { white-space:normal;overflow-wrap:anywhere; }
+:host([data-vina-ar]) [data-vina-ar-copy] { unicode-bidi:isolate;letter-spacing:normal; }
+
+/* 2026-10-25：独立设定页的空输入提示按 RTL 对齐，数值与已输入内容仍沿用自身方向。 */
+:host([data-vina-ar]) :is(input,textarea)[data-vina-ar-input][dir="auto"]:placeholder-shown { text-align:right; }
+
+/* 2026-10-25：设定弹层直接使用阿语连写字体及正常断词，避免局部中文字体/逐字换行破坏阅读。 */
+:host([data-vina-ar]) :is([data-vina-ar-copy],[data-vina-ar-input]) { font-family:Tahoma,"Geeza Pro",Arial,sans-serif;word-break:normal;font-variant-ligatures:normal; }
+
+/* 2026-10-26 Product Design / 独立设定组件遗漏补齐：参数箭头、卡片状态和编辑操作的自动间距
+ * 改到 RTL 的结束侧；选择标记放左侧，搜索图标与文字按右向布局排列。
+ * 用 #editor/#grid 匹配原组件优先级，仅 :host([data-vina-ar]) 激活时生效。 */
+:host([data-vina-ar]) :is(.actions,.legend,.legend span,.card-bottom,.picker-tools,.search-box,.options,.footer) { direction:rtl; }
+:host([data-vina-ar]) .chevron { margin-left:0;margin-right:auto; }
+:host([data-vina-ar]) #grid .state { margin-left:0;margin-right:auto; }
+:host([data-vina-ar]) .preset .mark { right:auto;left:12px; }
+:host([data-vina-ar]) #editor .choice .check { right:auto;left:12px; }
+:host([data-vina-ar]) #editor.episodes-editor .choice .check { left:7px; }
+:host([data-vina-ar]) #editor .choice strong { padding-right:0;padding-left:20px; }
+:host([data-vina-ar]) #editor :is(.ratio-choice,.style-choice,.model-choice,.country-choice) strong { padding-left:0; }
+:host([data-vina-ar]) #editor.model-editor .model-choice { direction:rtl;text-align:right; }
+:host([data-vina-ar]) #editor .model-logo { margin-right:0;margin-left:8px; }
+:host([data-vina-ar]) #editor #auto { margin-right:0;margin-left:auto;padding-left:0;padding-right:0; }
+:host([data-vina-ar]) #editor :is(.choice-grid,.style-grid) { direction:rtl; }
+/* 集数、比例仍居中，纯数字/型号独立 LTR；不把按钮整体镜像，避免连带翻转文字和图像。 */
+:host([data-vina-ar]) #editor :is(.episodes .choice,.ratio-choice) { text-align:center; }
+:host([data-vina-ar]) #editor :is(.model-copy strong,.country-code,.ratio-choice strong) { direction:ltr;unicode-bidi:isolate; }
+@media(max-width:640px) {
+  :host([data-vina-ar]) .preset .mark { left:8px; }
+}

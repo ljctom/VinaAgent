@@ -1,0 +1,597 @@
+/* 2026-09-01 Product Design 改动逻辑：需求对照层沿用 VinaAI 深色和荧光绿设计语言，并以独立命名空间避免污染原型原有样式。 */
+:root {
+  --requirements-panel-width: clamp(390px, 24vw, 520px);
+  --requirements-accent: #b8f84a;
+  --requirements-panel: #0b1115;
+  --requirements-card: #11191f;
+}
+
+/* 2026-09-01 恢复逻辑：需求对照入口不再占用或隐藏右上账户区，保留原头像及点击后向下展开的个人中心菜单。 */
+
+body.requirements-companion-ready .app,
+body.requirements-companion-ready .home-promo-banner,
+body.requirements-companion-ready #teamConsoleOverlay {
+  transition: width .28s ease, margin-right .28s ease;
+}
+
+/* 2026-09-29 Product Design 改动逻辑：PRD 侧栏展开和拖拽时，个人中心跟随左侧可视区域的右边缘移动，始终留在侧栏外且保持原有顶部位置。 */
+body.requirements-companion-ready .global-account {
+  transition: right .28s ease;
+}
+
+body.requirements-panel-open {
+  overflow-x: hidden;
+}
+
+body.requirements-panel-open .app,
+body.requirements-panel-open .home-promo-banner {
+  width: calc(100vw - var(--requirements-panel-width));
+  margin-right: var(--requirements-panel-width);
+}
+
+/* 2026-09-29 Product Design 改动逻辑：团队管理是独立挂在 body 下的整页容器；PRD 展开时也要按侧栏宽度收窄，使团队概况和表格留在左侧可视区域，表格超宽部分由原横向滚动容器承接。 */
+body.team-console-open.requirements-panel-open #teamConsoleOverlay {
+  width: calc(100vw - var(--requirements-panel-width));
+  margin-right: var(--requirements-panel-width);
+}
+
+body.team-console-open.requirements-panel-open #teamConsole .team-toolbar {
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
+body.requirements-panel-open .global-account {
+  right: calc(var(--requirements-panel-width) + 24px);
+}
+
+/* 2026-11-02 Product Design 改动逻辑：按图二将 PRD 入口固定到视口最右下角，right/bottom 均为 0，取消原有 8px 边距；拖拽边界同步允许贴边。 */
+/* 2026-11-01 Product Design 改动逻辑：PRD 入口的按钮、内球阴影、外圈、徽标及文字尺寸统一乘以 0.7，整体缩小 30%；沿用右下角定位及原拖拽、按压交互，直接调整布局尺寸以使拖拽边界同步缩小。 */
+.requirements-float-button {
+  position: fixed;
+  z-index: 50030;
+  right: 0;
+  bottom: 0;
+  width: 33.6px;
+  height: 33.6px;
+  display: grid;
+  place-items: center;
+  padding: 2.8px;
+  border: .7px solid rgba(255, 255, 255, .28);
+  border-radius: 50%;
+  color: #eef8df;
+  background: #111a20;
+  box-shadow: 0 8.4px 23.8px rgba(0, 0, 0, .48), 0 0 0 2.8px rgba(184, 248, 74, .08);
+  /* 2026-10-01 拖拽交互：抓取光标提示可移动，禁用按钮上的触屏滚动手势以支持拖动。 */
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.requirements-float-button:hover,
+.requirements-float-button:focus-visible,
+.requirements-float-button[aria-expanded="true"] {
+  border-color: rgba(184, 248, 74, .86);
+  box-shadow: 0 9.8px 26.6px rgba(0, 0, 0, .55), 0 0 0 3.5px rgba(184, 248, 74, .14);
+  outline: none;
+}
+
+.requirements-float-button:active {
+  transform: scale(.96);
+}
+
+/* 2026-10-01 拖动状态：禁用按压缩放，避免按钮跟随指针时发生尺寸跳动。 */
+.requirements-float-button.is-dragging {
+  cursor: grabbing;
+  transform: none;
+}
+
+@media (max-width: 700px) {
+  /* 2026-11-02 Product Design 改动逻辑：窄屏同样使用 0 边距，保持 PRD 入口贴住视口最右下角。 */
+  .requirements-float-button {
+    right: 0;
+    bottom: 0;
+  }
+}
+
+/* 2026-09-01 Product Design 改动逻辑：入口圆球使用深青、蓝绿与荧光绿的纯色渐变，不承载 Logo、头像或其他图案；尺寸和 PRD 徽标位置保持不变。 */
+.requirements-float-orb {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(219, 255, 180, .95) 0, rgba(184, 248, 74, .8) 16%, transparent 42%),
+    linear-gradient(145deg, #b8f84a 0%, #36cfa5 42%, #176783 72%, #101b2a 100%);
+  box-shadow:
+    inset 0 .7px .7px rgba(255, 255, 255, .5),
+    inset -3.5px -4.9px 8.4px rgba(4, 15, 24, .42),
+    0 0 8.4px rgba(184, 248, 74, .18);
+  pointer-events: none;
+}
+
+.requirements-float-badge {
+  position: absolute;
+  right: -2.1px;
+  bottom: -1.4px;
+  min-width: 13.3px;
+  height: 13.3px;
+  display: grid;
+  place-items: center;
+  padding: 0 3.5px;
+  border: 1.4px solid #0b1115;
+  border-radius: 999px;
+  color: #0a110d;
+  background: var(--requirements-accent);
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.requirements-companion-panel {
+  position: fixed;
+  z-index: 50010;
+  inset: 0 0 0 auto;
+  width: var(--requirements-panel-width);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid rgba(184, 248, 74, .22);
+  background: var(--requirements-panel);
+  box-shadow: -24px 0 62px rgba(0, 0, 0, .5);
+  transform: translateX(102%);
+  visibility: hidden;
+  transition: transform .28s ease, visibility 0s linear .28s;
+}
+
+/* 2026-09-03 宽度拉伸逻辑：在侧边栏左边缘提供透明拖拽热区，左右拖动时实时调整面板宽度，不改变原有默认宽度。 */
+.requirements-panel-resizer {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 10px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+body.requirements-panel-resizing,
+body.requirements-panel-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+body.requirements-panel-resizing .app,
+body.requirements-panel-resizing .home-promo-banner,
+body.requirements-panel-resizing .requirements-companion-panel {
+  transition: none !important;
+}
+
+body.requirements-panel-open .requirements-companion-panel {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform .28s ease;
+}
+
+.requirements-panel-header {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  /* 2026-09-30 Product Design 改动逻辑：导航下方的页头留白由 15px 压至 2px，使横向滚动条与正文之间更紧凑。 */
+  padding: 22px 22px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(11, 17, 21, .97);
+}
+
+/* 2026-09-01 界面精简逻辑：顶部只保留“需求对照”标题，去除眉题、说明文案和收起按钮后不再为这些元素预留样式与空间。 */
+.requirements-panel-heading-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+/* 2026-11-07 Product Design 改动逻辑：关闭入口固定在不滚动的页头右上角；标题行预留按钮空间，避免版本选择或分类文字与按钮重叠。复用现有关闭图标及深色/荧光绿交互样式。 */
+.requirements-panel-heading-row { padding-right: 42px; }
+.requirements-panel-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--requirements-accent);
+  cursor: pointer;
+}
+.requirements-panel-close img { display: block; width: 24px; height: 24px; opacity: .7; pointer-events: none; }
+.requirements-panel-close:hover { background: rgba(255, 255, 255, .08); }
+.requirements-panel-close:hover img { opacity: 1; }
+.requirements-panel-close:focus-visible { outline: 2px solid var(--requirements-accent); outline-offset: 2px; }
+
+/* 2026-09-29 Product Design 版本切换样式：选择器紧贴标题并沿用面板深色、圆角与荧光绿聚焦态。 */
+.requirements-version-select {
+  flex: 0 0 auto;
+  margin-left: 12px;
+  padding: 5px 7px;
+  border: 1px solid rgba(184, 248, 74, .4);
+  border-radius: 7px;
+  color: #e8f5d5;
+  background: #172128;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.requirements-version-select:focus-visible { outline: 2px solid var(--requirements-accent); outline-offset: 2px; }
+.requirements-version-select:disabled { opacity: .55; cursor: not-allowed; }
+
+/* 2026-09-30 Product Design 改动逻辑：版本菜单在入口下方以深色浮层展开，荧光绿标识当前版本；定位不占导航布局空间，替代系统原生下拉样式。 */
+.requirements-version-picker { position: relative; flex: 0 0 auto; margin-left: 12px; }
+.requirements-version-picker .requirements-version-select { display: flex; align-items: center; gap: 10px; margin-left: 0; }
+.requirements-version-chevron { width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+.requirements-version-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; min-width: 96px; padding: 4px;
+  border: 1px solid rgba(184,248,74,.3); border-radius: 9px; background: #172128;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+}
+.requirements-version-menu[hidden] { display: none; }
+.requirements-version-menu button {
+  display: block; width: 100%; padding: 7px 10px; border: 0; border-radius: 6px;
+  background: transparent; color: #e8f5d5; text-align: left; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.requirements-version-menu button[aria-checked="true"] { background: rgba(184,248,74,.14); color: var(--requirements-accent); }
+.requirements-version-menu button:hover, .requirements-version-menu button:focus-visible { background: rgba(184,248,74,.22); outline: none; }
+
+.requirements-panel-title {
+  margin: 0;
+  color: rgba(255, 255, 255, .96);
+  font-size: 24px;
+  font-weight: 820;
+  line-height: 1.2;
+}
+
+/* 2026-09-03 标题提示恢复样式：导航说明以小号灰色文字跟随主标题显示，维持清晰的主次层级。 */
+.requirements-panel-nav-hint {
+  margin-left: 12px;
+  color: rgba(255, 255, 255, .38);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* 2026-09-30 Product Design 改动逻辑：短剧/团队版在标题与版本右侧紧凑展示，窄侧栏自然换行；提示在 1.5 隐藏。 */
+.requirements-category-nav { display: flex; flex: 0 0 auto; gap: 5px; margin-left: 12px; }
+.requirements-category-nav[hidden], .requirements-panel-nav-hint[hidden] { display: none; }
+.requirements-category-nav button {
+  padding: 5px 8px; border: 1px solid rgba(255,255,255,.14); border-radius: 7px;
+  color: rgba(255,255,255,.6); background: #11191f; font: inherit; font-size: 12px; font-weight: 760;
+  white-space: nowrap; cursor: pointer;
+}
+.requirements-category-nav button.is-active { color: #0b110e; background: var(--requirements-accent); border-color: var(--requirements-accent); }
+.requirements-category-nav button:focus-visible { outline: 2px solid var(--requirements-accent); outline-offset: 2px; }
+.requirements-category-nav button:disabled { opacity: .55; cursor: not-allowed; }
+
+/* 2026-09-30 Product Design 改动逻辑：导航保持单行横向滚动，移除首尾半行占位，让第一项紧贴导航左侧；标题字号缩至 12px，减少这一行的视觉占用。 */
+.requirements-quick-nav {
+  /* 2026-09-30 Product Design 改动逻辑：第二行导航按钮间距缩至 4px，配合小字号与紧凑内边距，让同一行展示更多完整标题。 */
+  position: relative; display: flex; align-items: center; gap: 4px; margin-top: 15px;
+  /* 2026-09-30 Product Design 改动逻辑：按钮与横向滚动条之间仅留 1px，缩小导航行底部间隙。 */
+  overflow-x: auto; overflow-y: hidden; padding-bottom: 1px; overscroll-behavior-x: contain;
+  scrollbar-width: thin; scrollbar-color: rgba(184,248,74,.38) transparent;
+}
+.requirements-quick-nav::before, .requirements-quick-nav::after { content: none; }
+.requirements-quick-nav button {
+  /* 2026-09-30 Product Design 改动逻辑：子标题字号从 12px 收至 11px，按钮高度从 36px 收至 28px，左右内边距从 12px 收至 6px，缩小包裹并增加可见标题数量。 */
+  flex: 0 0 auto; height: 28px; padding: 0 6px; border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px; color: rgba(255,255,255,.6); background: #11191f;
+  font-size: 11px; font-weight: 760; white-space: nowrap; cursor: pointer;
+}
+.requirements-quick-nav button:hover,
+.requirements-quick-nav button:focus-visible,
+.requirements-quick-nav button.is-active {
+  color: #0b110e; border-color: var(--requirements-accent); background: var(--requirements-accent); outline: none;
+}
+
+.requirements-panel-scroll {
+  /* 2026-09-30 Product Design 改动逻辑：PRD 需求卡片左右只留 3px，尽量贴近侧栏边缘，同时给卡片边框和滚动条保留极小间隔。 */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  /* 2026-09-30 Product Design 改动逻辑：正文顶部间距由 18px 收至 2px，让需求卡片紧接导航区域。 */
+  padding: 2px 3px 56px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 248, 74, .38) transparent;
+}
+
+.requirements-panel-scroll::-webkit-scrollbar { width: 6px; }
+.requirements-panel-scroll::-webkit-scrollbar-track { background: transparent; }
+.requirements-panel-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(184, 248, 74, .38);
+}
+
+.requirements-document-title {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, .44);
+  font-size: 13px;
+  font-weight: 740;
+}
+
+.requirements-document-section {
+  /* 2026-09-30 Product Design 改动逻辑：正文卡片的左右内边距收至 5px，让标题和文字贴近卡片两侧并增加可用行宽。 */
+  position: relative;
+  margin: 0 0 16px;
+  padding: 18px 5px 20px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 14px;
+  background: var(--requirements-card);
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.requirements-document-section.is-active,
+.requirements-document-section:target {
+  border-color: rgba(184, 248, 74, .54);
+  background: #131d22;
+}
+
+.requirements-section-number {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  flex: 0 0 28px;
+  place-items: center;
+  border-radius: 50%;
+  color: #0a110d;
+  background: var(--requirements-accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* 2026-09-01 改动逻辑：一级标题行横向承载大项序号和标题，避免标题再掉到序号下方。 */
+/* 2026-09-30 分类筛选逻辑：显式隐藏未选分类，避免页面其他 section 布局规则覆盖 hidden 属性。 */
+.requirements-document-section[hidden] { display: none; }
+
+.requirements-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.requirements-document-section h2 {
+  min-width: 0;
+  margin: 0;
+  color: rgba(255, 255, 255, .96);
+  font-size: 20px;
+  font-weight: 820;
+  line-height: 1.35;
+}
+
+.requirements-document-section h3 {
+  margin: 18px 0 9px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, .9);
+  font-size: 15px;
+  font-weight: 780;
+  line-height: 1.45;
+}
+
+/* 2026-09-01 改动逻辑：次级标题左侧的 1.1、1.2 等小标签由 JS 按顺序自动生成，使用紧凑荧光绿胶囊与页面定位小点保持同一层级语义。 */
+.requirements-group-number {
+  min-width: 28px;
+  height: 20px;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0 6px;
+  border-radius: 999px;
+  color: #0a110d;
+  background: var(--requirements-accent);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.requirements-document-section ul {
+  /* 2026-09-30 Product Design 改动逻辑：同步压缩列表缩进，避免卡片收窄后项目符号仍让正文远离左边框。 */
+  margin: 0;
+  padding-left: 12px;
+  color: rgba(255, 255, 255, .68);
+}
+
+.requirements-document-section li {
+  margin: 0 0 8px;
+  padding-left: 2px;
+  font-size: 13px;
+  line-height: 1.72;
+}
+
+.requirements-document-section li::marker {
+  color: rgba(184, 248, 74, .76);
+}
+
+/* 2026-09-06 Markdown 缩进逻辑：需求文档中以四个空格缩进的二级项目向右错开，保留原始列表层级并避免与一级说明混排。 */
+.requirements-document-section .requirements-list-item-indent-1 {
+  /* 2026-09-30 Product Design 改动逻辑：二级项目保留可辨识的层级，同时减少向右占用的空间。 */
+  margin-left: 16px;
+}
+
+.requirements-document-section strong {
+  color: rgba(255, 255, 255, .9);
+  font-weight: 760;
+}
+
+/* 2026-09-03 表格导入逻辑：第 10 点的飞书 Markdown 表格在窄侧栏内横向滚动，保留清晰表头、单元格边界和多行参数文本。 */
+.requirements-table-viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 248, 74, .38) transparent;
+}
+
+.requirements-markdown-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  color: rgba(255, 255, 255, .72);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.requirements-markdown-table th,
+.requirements-markdown-table td {
+  padding: 9px 11px;
+  border-right: 1px solid rgba(255, 255, 255, .08);
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  text-align: left;
+  vertical-align: top;
+  white-space: pre-line;
+}
+
+.requirements-markdown-table th {
+  color: #0a110d;
+  background: var(--requirements-accent);
+  font-weight: 820;
+}
+
+.requirements-markdown-table td:first-child {
+  width: 112px;
+  color: rgba(255, 255, 255, .92);
+  font-weight: 720;
+  white-space: nowrap;
+}
+
+.requirements-markdown-table tr:last-child td { border-bottom: 0; }
+.requirements-markdown-table th:last-child,
+.requirements-markdown-table td:last-child { border-right: 0; }
+
+/* 2026-09-03 单向联动逻辑：展开 PRD 后不再显示左侧编号小点；除第 10 点外，右侧 PRD 导航到左侧页面的交互由脚本继续保留。 */
+
+@media (min-width: 981px) {
+  /* 2026-09-03 弹窗定位逻辑：右侧 PRD 展开时，大型编辑与角色详情弹窗只占用左侧原型区域，并在该区域内重新居中，避免弹窗主体被 PRD 遮挡。 */
+  body.requirements-panel-open .detail-remake-modal,
+  body.requirements-panel-open .asset-character-detail-overlay,
+  body.requirements-panel-open .canvas-character-detail-overlay {
+    right: var(--requirements-panel-width);
+  }
+
+  /* 2026-09-03 弹窗宽度逻辑：弹窗最大宽度同步扣除实时可拖拽的 PRD 宽度，保留原有安全边距且不改变 PRD 收起时的尺寸。 */
+  body.requirements-panel-open .detail-remake-dialog {
+    width: min(1420px, calc(100vw - var(--requirements-panel-width) - 56px));
+  }
+
+  body.requirements-panel-open .asset-character-detail-dialog,
+  body.requirements-panel-open .canvas-character-detail-dialog {
+    width: min(1540px, calc(100vw - var(--requirements-panel-width) - 48px));
+  }
+}
+
+@media (max-width: 980px) {
+  :root { --requirements-panel-width: min(88vw, 440px); }
+  body.requirements-panel-open .app,
+  body.requirements-panel-open .home-promo-banner,
+  body.team-console-open.requirements-panel-open #teamConsoleOverlay {
+    width: 100vw;
+    margin-right: 0;
+  }
+  .requirements-companion-panel { box-shadow: -40px 0 90px rgba(0, 0, 0, .72); }
+}
+
+@media (max-width: 700px) {
+  /* 2026-09-29 Product Design 改动逻辑：窄屏剩余区域较小时，头像紧贴 PRD 左边缘，避免固定 24px 间距将入口推到屏幕之外。 */
+  body.requirements-panel-open .global-account { right: var(--requirements-panel-width); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.requirements-companion-ready .app,
+  body.requirements-companion-ready .home-promo-banner,
+  body.requirements-companion-ready #teamConsoleOverlay,
+  .requirements-companion-panel,
+  .requirements-float-button { transition: none; }
+  .requirements-panel-scroll { scroll-behavior: auto; }
+}
+
+/* 2026-11-07 Product Design 改动逻辑：移除手动编辑专用工具条、铅笔、编辑态和全文输入框样式；保留阅读正文、导航及侧栏布局。 */
+/* 2026-09-08 正文排版修复：Markdown 普通段落（包括①②③分类说明）显式沿用列表正文的字号、颜色与行高，使用常规字重和紧凑段距，避免继承页面样式后呈现为大标题。 */
+.requirements-document-section p {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, .68);
+  font-size: 13px;
+  font-weight: 400;
+  white-space: pre-wrap;
+  line-height: 1.72;
+}
+.requirements-document-section pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #0b1216; padding: 12px; border-radius: 8px; }
+
+/* 2026-09-30 Product Design 改动逻辑：PRD 桌面侧栏会收窄 .app，但 position: fixed 的流程按钮仍以整个窗口为参照。
+   设定页的下一步/确认修改按“侧栏宽度 + 左侧内容右边距”定位；大屏居中边距也改用扣除侧栏后的可用宽度，
+   使按钮落在截图红框的左侧工作区右下角。侧栏收起后恢复原样式，拖拽时使用同一实时宽度变量。
+   大纲/分集 .next-step 本来是 absolute，会随工作区收窄自动左移，因此不重复叠加侧栏偏移。
+   资产页仅修复旧版固定操作组；新版 .has-asset-browser 操作组已经在正常布局中，无需再次偏移。 */
+@media (min-width: 981px) {
+  body.requirements-companion-ready .script-workspace[data-drama-flow="split"] .script-setup-overlay .script-setup-confirm,
+  body.requirements-companion-ready .asset-workspace:not(.has-asset-browser) .asset-stage-actions {
+    transition: right .28s ease;
+  }
+
+  body.requirements-panel-open .script-workspace[data-drama-flow="split"] .script-setup-overlay .script-setup-confirm {
+    right: calc(var(--requirements-panel-width) + max(32px, (100vw - var(--requirements-panel-width) - 1600px) / 2 + 32px));
+  }
+
+  body.requirements-panel-open .asset-workspace:not(.has-asset-browser) .asset-stage-actions {
+    right: calc(var(--requirements-panel-width) + 32px);
+  }
+
+  /* 2026-09-30 改动逻辑：拖动 PRD 分隔条时取消按钮位置过渡，避免按钮追赶侧栏导致短暂遮挡。 */
+  body.requirements-panel-resizing .script-workspace[data-drama-flow="split"] .script-setup-overlay .script-setup-confirm,
+  body.requirements-panel-resizing .asset-workspace:not(.has-asset-browser) .asset-stage-actions {
+    transition: none !important;
+  }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：PRD 右键菜单在入口上方显示单行关闭操作，沿用深色底、细边框和荧光绿悬停态；hidden 强制隐藏，避免团队页显示规则覆盖。 */
+.requirements-float-menu {
+  position: fixed;
+  z-index: 50040;
+  min-width: 112px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  background: var(--requirements-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+}
+.requirements-float-menu[hidden] { display: none !important; }
+.requirements-float-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #eef8df;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.requirements-float-menu button:hover,
+.requirements-float-menu button:focus-visible {
+  background: rgba(184, 248, 74, .1);
+  color: var(--requirements-accent);
+  outline: none;
+}

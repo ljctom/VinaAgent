@@ -1,0 +1,42 @@
+/* 2026-10-24 Product Design 改动逻辑：仅迁移 UI稿1024 的第二步悬念链分组样式。
+   本集尾钩与下集承接共用深灰卡片和顶部集数栏，金色/青色仅区分标题，
+   未解悬念改为纵向问题条；移除旧的大色块、胶囊及跨卡虚线。
+   设计稿色值/字体变量只定义在当前悬念链容器内，不加载全局设计系统，
+   不改变顶部步骤条、左侧对话、角色、大纲/节拍及剧本/视频页。 */
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] {
+ --va-surface:#171e27;--va-border:#2b3642;--va-border-light:rgba(255,255,255,.06);
+ --va-text:#f5f7fa;--va-secondary:#d5dbe3;--va-tertiary:#9aa6b2;--va-muted:#6f7b88;
+ --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+ font-family:var(--va-font);
+}
+/* Group the ending hook and next opening into one cross-episode reading unit. */
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] { container-type:inline-size; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-guide { display:flex; align-items:center; flex-wrap:wrap; gap:8px; font:400 12px/20px var(--va-font); margin:0 0 16px; color:var(--va-tertiary); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-legend-hook { color:#F6BD6A; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-legend-carry { color:#72D7D0; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-legend-description { margin-left:8px; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-track { gap:20px; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-link { border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); overflow:hidden; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--va-border-light); color:var(--va-text); font:500 14px/20px var(--va-font); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-arrow { margin:0 8px; color:var(--va-tertiary); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-caption { color:var(--va-muted); font:400 12px/20px var(--va-font); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-body { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-body.is-final { grid-template-columns:minmax(0,1fr); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card { padding:20px; margin:0 !important; border:0 !important; border-radius:0; background:transparent !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card::after { display:none !important; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card.is-carry { border-left:1px solid var(--va-border-light) !important; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card-head { align-items:center; flex-wrap:wrap; gap:8px; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card-kind { font:500 14px/20px var(--va-font); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .is-hook .suspense-chain-card-kind { color:#F6BD6A !important; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .is-carry .suspense-chain-card-kind { color:#72D7D0 !important; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-direction { color:var(--va-tertiary) !important; font:400 12px/18px var(--va-font); white-space:normal; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card-copy { margin:12px 0 0; color:var(--va-secondary) !important; font:400 14px/24px var(--va-font); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-unresolved { margin-top:16px; padding-top:12px; border-top:1px solid var(--va-border-light); display:block; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-unresolved-label { display:block; margin-bottom:8px; color:var(--va-tertiary); font:400 12px/18px var(--va-font); }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-question-row { display:flex; flex-direction:column; align-items:stretch; gap:6px; overflow:visible; padding:0; }
+.script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-question-chip[data-suspense-field] { width:100%; min-width:0 !important; flex:none; box-sizing:border-box; padding:8px 10px; border:0; border-radius:8px; background:rgba(246,189,106,.07) !important; color:#E8C899 !important; font:400 12px/20px var(--va-font); white-space:normal; overflow-wrap:anywhere; }
+@container (max-width:760px) {
+  .script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-link-body { grid-template-columns:minmax(0,1fr); }
+  .script-workspace[data-view="script-studio"][data-script-stage="overall"]:not([data-setup-page="true"]) [data-script-outline-suspense] .suspense-chain-card.is-carry { border-left:0 !important; border-top:1px solid var(--va-border-light) !important; }
+}
+

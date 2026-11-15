@@ -1,0 +1,1293 @@
+/* 2026-10-27 Product Design 改动逻辑：以 /Users/a0000/Downloads/设计稿 的实际 CSS 为来源，
+   迁移首页短剧工作室三个页签、上传/创作/转绘面板、工具栏和各自弹层的完整视觉规则。
+   源规则限定在首页短剧节点、首页短剧风格弹层和设定弹层；提高局部优先级以覆盖旧首页配色。
+   字体、尺寸、间距、边框、圆角、悬停、选中、禁用和滚动状态均沿用设计稿。
+   保留原 data-*、aria-*、文件选择、模型目录、设定值、翻译和生成事件；不接入设计稿的全局页面桥接。
+   模型菜单去掉设计稿已隐藏的时长和勾选标识，使用设计稿各模型的原始品牌 SVG。
+   参考来源：home-v15-glass.css、home-banner-layout.css、home-drama-icon-system.css、
+   home-reference-layout.css、home-make-flyouts.css、model-menu-unified.css、
+   home-toolbar-live-style.css、white-action-buttons.css、brand-button-states.css。 */
+html body :is(.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"],#homeSettingPopover,#stylePopover.is-home-drama-style) {
+  --va-bg:#080d12; --va-header:#0d141b; --va-container:rgba(15,21,28,.6);
+  --va-surface:#171e27; --va-raised:#222b35; --va-border:#2b3642;
+  --va-border-light:rgba(255,255,255,.06); --va-border-focus:#3a4654;
+  --va-text:#f5f7fa; --va-secondary:#d5dbe3; --va-tertiary:#9aa6b2; --va-muted:#6f7b88;
+  --va-brand:#b8f84a; --va-brand-hover:#cfff5a; --va-brand-active:#9fdb3e;
+  --va-brand-disabled:rgba(55,64,79,.9); --va-brand-ink:#0d1308;
+  --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --va-action-white:#fff; --va-action-white-hover:#f5f7fa; --va-action-white-active:#e5e9ef;
+  --va-action-white-ink:#0b121a; --va-action-white-disabled:#2b3642; --va-action-white-disabled-ink:#6f7b88;
+  font-family:var(--va-font); font-size:14px; line-height:20px; font-weight:400;
+}
+
+/* 2026-10-27：以下局部规则来自设计稿 home-v15-glass.css。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+  border: 1px solid var(--va-border-light) !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  transition: border-color .25s ease !important;
+}
+
+/* 2026-10-30 Product Design 修复逻辑：hover 高亮使用 1px 内阴影描边，避免原生 border
+   在非整数缩放下取整为设备像素后，圆弧与直边呈现明显的亮度台阶。
+   仅对独立的描边伪元素施加 0.4px 轻微柔化及 80% 绿色强度，让四角连续过渡；
+   文字、图标、页签和输入内容不参与滤镜。径向遮罩只控制亮度，no-clip 防止
+   遮罩再次按圆角裁切、截断柔化边缘；保留鼠标跟随、300px 衰减及显隐过渡。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 4 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(0,255,144,.8) !important;
+  filter: blur(.4px) !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  background: none !important;
+  -webkit-mask: radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%), #000 0%, rgba(0,0,0,.48) 40%, rgba(0,0,0,.16) 70%, transparent 100%) border-box !important;
+  -webkit-mask-composite: source-over !important;
+  -webkit-mask-clip: no-clip !important;
+  mask: radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%), #000 0%, rgba(0,0,0,.48) 40%, rgba(0,0,0,.16) 70%, transparent 100%) border-box !important;
+  mask-composite: add !important;
+  mask-clip: no-clip !important;
+  opacity: 0 !important;
+  transition: opacity .25s ease-out !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within)::before {
+  border-color: transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover,:focus-within)::after {
+  opacity: 1 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:disabled {
+  background: var(--va-brand-disabled) !important;
+  color: var(--va-brand-ink) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled) {
+  background: var(--va-brand) !important;
+  color: var(--va-brand-ink) !important;
+  cursor: pointer !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled):hover {
+  background: var(--va-brand-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 16px rgba(184,248,74,.12) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled):active {
+  background: var(--va-brand-active) !important;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] {
+  background: #0D141B !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  border-radius: 16px 16px 0 0 !important;
+  background: rgba(8,13,18,.35) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab:nth-child(2) {
+  display: flex !important;
+  isolation: isolate !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--va-tertiary) !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+  transition: color .18s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab.active::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 -18px !important;
+  width: auto !important;
+  height: auto !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  background: transparent !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44C12 44 17 35 22 23L27 12Q32 0 47 0H253Q268 0 273 12L278 23C283 35 288 44 300 44Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat !important;
+  transition: background .18s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab:first-child::before {
+  left: 0 !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44V20Q0 0 20 0H253Q268 0 273 12L278 23C283 35 288 44 300 44Z'/%3E%3C/svg%3E") !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab:last-child::before {
+  right: 0 !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 44C12 44 17 35 22 23L27 12Q32 0 47 0H280Q300 0 300 20V44Z'/%3E%3C/svg%3E") !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab:not(.active):hover {
+  color: var(--va-secondary) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab:not(.active):hover::before {
+  background: #151E28 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab.active {
+  z-index: 2 !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab.active::before {
+  background: #18212B !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab.active::after {
+  content: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.home-drama-reference-panel,.ai-script-box) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-dropzone {
+  border: 1px dashed var(--va-border) !important;
+  border-radius: 14px !important;
+  background: var(--va-container) !important;
+  color: var(--va-tertiary) !important;
+  transition: border-color .2s ease, background .2s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-dropzone:hover,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-dropzone.is-dragover {
+  border-color: var(--va-border-focus) !important;
+  background: var(--va-surface) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary {
+  background: #ffffff !important;
+  color: #0B121A !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary:hover {
+  background: #ffffff !important;
+  color: #0B121A !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary:active {
+  background: #D5DBE3 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .drama-generate-tools {
+  padding: 0 22px 22px !important;
+  gap: 8px !important;
+  align-items: flex-end !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-reference-panel {
+  padding: 12px 22px 22px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .home-drama-reference-panel .drama-generate-tools {
+  padding: 0 !important;
+  min-height: 40px !important;
+  flex-shrink: 0 !important;
+  align-items: flex-end !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .drama-generate-tools :is(.drama-option,.drama-attachment-button) {
+  border: 0 !important;
+  background: #151E28 !important;
+  color: var(--va-secondary) !important;
+  box-shadow: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .drama-generate-tools :is(.drama-option,.drama-attachment-button):hover {
+  background: #202B36 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .ai-script-box textarea {
+  padding: 24px 24px 8px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now {
+  transition: none !important;
+}
+}
+
+/* 2026-10-27：以下局部规则来自设计稿 home-banner-layout.css。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces {
+  position:relative !important;
+  isolation:isolate !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces .home-drama-tab::before,
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces .home-drama-tab::after {
+  display:none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces .home-drama-tab {
+  z-index:1 !important;
+  isolation:auto !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab-surfaces {
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab-hover-surface {
+  fill:var(--va-border,#2b3642) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tab-selected-surface {
+  fill:#18212b !important;
+}
+
+/* 2026-10-30 Product Design 修复逻辑：重制转绘的外侧 24px 改由实际按钮背景补齐，
+   与 SVG hover/选中层使用相同颜色；右边缘直接跟随按钮，不再只依赖 SVG 的缩放绘制。
+   补色区域局限于最右端，避开左侧曲线及相邻页签；圆角仍由导航容器统一裁切。
+   鼠标移出且未选中时恢复透明，键盘焦点使用相同 hover 反馈。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces .home-drama-tab:last-child:not(.active):is(:hover,:focus-visible) {
+  background: linear-gradient(to left, var(--va-border,#2b3642) 24px, transparent 24px) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs.has-shaped-tab-surfaces .home-drama-tab:last-child.active {
+  background: linear-gradient(to left, #18212b 24px, transparent 24px) !important;
+}
+
+/* 2026-10-27：以下局部规则来自设计稿 home-reference-layout.css。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] {
+  position: static !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  gap: 10px !important;
+  padding: 2px 0 4px !important;
+  margin: 0 0 12px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  pointer-events: auto !important;
+  box-sizing: border-box !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #566474 transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip]:empty {
+  display: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-card {
+  width: 72px !important;
+  height: 72px !important;
+  flex: 0 0 72px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 10px !important;
+  background: #0d141b !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-card :is(img, video) {
+  border-radius: 9px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-card img {
+  object-fit: contain !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-remove {
+  top: 4px !important;
+  right: 4px !important;
+  background: rgba(13, 20, 27, .9) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-remove:hover {
+  background: #e5484d !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments {
+  height: 276px !important;
+  min-height: 276px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card [data-home-drama-attachment-strip]:not(:empty) {
+  width: calc(100% - 48px) !important;
+  max-width: calc(100% - 48px) !important;
+  margin: 24px 24px 12px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments textarea {
+  min-height: 60px !important;
+  padding: 0 24px 8px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .ai-script-box.has-drama-attachments .home-setting-tags:not([hidden]) {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card .ai-script-box.has-drama-attachments:has(.home-setting-tags:not([hidden])) {
+  height: 316px !important;
+  min-height: 316px !important;
+}
+
+@media (hover: none) {
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-attachment-strip] .canvas-attachment-remove {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+}
+
+/* 2026-10-27：以下局部规则来自设计稿 home-drama-icon-system.css。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs>.home-drama-tab>.home-system-icon {
+  width:18px !important;
+  height:18px !important;
+  flex:0 0 18px !important;
+  stroke-width:1.8 !important;
+  fill:none !important;
+  color:inherit !important;
+  opacity:1 !important;
+  filter:none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-tabs>.home-drama-tab {
+  gap:8px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-drama-style-toggle]>.home-style-system-icon {
+  width:18px !important;
+  height:18px !important;
+  flex:0 0 18px !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.8 !important;
+  opacity:1 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-upload-file-icon {
+  display:grid !important;
+  place-items:center !important;
+  width:44px !important;
+  height:48px !important;
+  color:#9aa6b2 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-upload-file-icon>img {
+  display:block !important;
+  width:44px !important;
+  height:44px !important;
+  object-fit:contain !important;
+  filter:none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-upload-file-icon button {
+  width:22px !important;
+  height:22px !important;
+  right:-10px !important;
+  top:-4px !important;
+  background:#222b35 !important;
+  color:#9aa6b2 !important;
+  transition:background .15s !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-upload-file-icon button:hover {
+  background:#354252 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-setting-toggle]>.home-system-icon,
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-episode-count-toggle]>.home-system-icon {
+  display:block !important;
+  width:18px !important;
+  height:18px !important;
+  flex:0 0 18px !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.8 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  color:inherit !important;
+  opacity:1 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-setting-toggle],
+html body:has(#home-drama-panel) .view[data-view="canvas"] [data-home-episode-count-toggle] {
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:8px !important;
+}
+
+/* 2026-10-27：以下局部规则来自设计稿 home-make-flyouts.css。 */
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style {
+  border: 1px solid #2b3642 !important;
+  border-radius: 14px !important;
+  background: #171e27 !important;
+  color: #f5f7fa !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.55) !important;
+  backdrop-filter: none !important;
+  font-family: var(--va-font) !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style[hidden] {
+  display: none !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(680px,calc(100vw - 32px)) !important;
+  max-height: min(540px,70vh) !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-popover-title {
+  flex: 0 0 auto !important;
+  padding: 16px 20px 0 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-categories {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  gap: 24px !important;
+  margin: 0 !important;
+  padding: 12px 20px 0 !important;
+  border-bottom: 1px solid rgba(245,247,250,.06) !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow-x: auto !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-category {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  min-height: 30px !important;
+  height: auto !important;
+  padding: 0 0 10px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #9aa6b2 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-category:hover {
+  color: #d5dbe3 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-category.is-active {
+  color: #f5f7fa !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-category.is-active::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  background: #f5f7fa !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-grid {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  gap: 14px !important;
+  align-content: start !important;
+  grid-auto-rows: max-content !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow-y: auto !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  text-align: left !important;
+  transition: transform .2s ease !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card img {
+  aspect-ratio: 16 / 9 !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 10px !important;
+  background: #141a21 !important;
+  transition: border-color .2s ease !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card > span:not(.home-make-style-check) {
+  padding: 0 !important;
+  background: transparent !important;
+  color: #d5dbe3 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card:hover img {
+  border-color: #3a4654 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card.is-selected img {
+  border-color: #8a97a4 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card.is-selected > span {
+  color: #f5f7fa !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-make-style-check {
+  position: absolute !important;
+  top: 6px !important;
+  right: 6px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: #b8f84a !important;
+  z-index: 1 !important;
+}
+
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-custom-style textarea {
+  background: #080d12 !important;
+  border-color: #2b3642 !important;
+  color: #d5dbe3 !important;
+}
+
+@media(max-width:600px) {
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .style-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  padding: 14px !important;
+}
+}
+
+@media(prefers-reduced-motion:reduce) {
+html body:has(#home-drama-panel) #stylePopover.is-home-drama-style .home-drama-style-card {
+  transition: none !important;
+}
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-popover,.drama-model-popover) {
+  padding: 8px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 14px !important;
+  background: #171e27 !important;
+  box-shadow: 0 20px 48px rgba(0,0,0,.5) !important;
+  backdrop-filter: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-option,.drama-model-option) {
+  color: #d5dbe3 !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-option,.drama-model-option):hover {
+  background: #202936 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-option,.drama-model-option).active {
+  background: #2b3642 !important;
+  color: #f5f7fa !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .drama-model-name {
+  color: #f5f7fa !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .drama-model-desc {
+  color: #9aa6b2 !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  font-weight: 400 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover {
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 14px !important;
+  background: #171e27 !important;
+  color: #d5dbe3 !important;
+  font-family: var(--va-font) !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.55) !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover[hidden] {
+  display: none !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-body {
+  grid-template-columns: 140px minmax(0,1fr) !important;
+  min-height: 0 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-categories {
+  gap: 6px !important;
+  padding-right: 14px !important;
+  border-right: 1px solid #2b3642 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover :is(.home-setting-category,.home-setting-option) {
+  position: relative !important;
+  min-height: 40px !important;
+  padding: 10px 12px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #9aa6b2 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+  transition: background .18s ease, color .18s ease !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover :is(.home-setting-category,.home-setting-option)::before {
+  content: none !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover :is(.home-setting-category,.home-setting-option):not([aria-pressed="true"]):hover {
+  background: var(--va-border) !important;
+  color: #d5dbe3 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover :is(.home-setting-category,.home-setting-option)[aria-pressed="true"] {
+  background: #2b3642 !important;
+  color: #f5f7fa !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-options {
+  gap: 8px !important;
+  padding-left: 16px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-option {
+  background: #202936 !important;
+  color: #d5dbe3 !important;
+  padding-inline: 10px 24px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-option:not([aria-pressed="true"]):hover {
+  background: var(--va-border) !important;
+  color: #f5f7fa !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-option[aria-pressed="true"]::after {
+  content: '✓' !important;
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #b8f84a !important;
+  font-size: 12px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover button:focus-visible {
+  outline: 2px solid #3a4654 !important;
+  outline-offset: 2px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom input {
+  background: #080d12 !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 8px !important;
+  color: #d5dbe3 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom input::placeholder {
+  color: #9aa6b2 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom input:focus {
+  outline: none !important;
+  border-color: #3a4654 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom button {
+  background: #b8f84a !important;
+  color: #0d1308 !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 500 !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom button:hover {
+  background: #cfff5a !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom button:active {
+  background: #9fdb3e !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-empty {
+  color: #6f7b88 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+@media (max-width: 600px) {
+html body:has(#home-drama-panel) #homeSettingPopover {
+  padding: 12px !important;
+  border-radius: 14px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-body {
+  grid-template-columns: 108px minmax(0,1fr) !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-categories {
+  padding-right: 8px !important;
+}
+
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-options {
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  padding-left: 10px !important;
+}
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--va-border) transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar {
+  height: 4px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb {
+  background: var(--va-border) !important;
+  border-radius: 999px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb:hover {
+  background: var(--va-border-focus) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tag {
+  background: var(--va-border) !important;
+  color: var(--va-secondary) !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tag::before {
+  color: var(--va-tertiary) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tag button {
+  color: var(--va-tertiary) !important;
+  border-radius: 50% !important;
+  transition: color .18s ease, background .18s ease !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tag button:hover {
+  color: var(--va-text) !important;
+  background: var(--va-border-focus) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tag button:focus-visible {
+  outline: 2px solid var(--va-border-focus) !important;
+  outline-offset: 2px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-popover,.drama-model-popover) {
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  margin: 0 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags {
+  scrollbar-color: transparent transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover {
+  scrollbar-color: var(--va-border) transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover::-webkit-scrollbar-thumb {
+  background: var(--va-border) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--va-border-focus) !important;
+}
+
+@media (hover: none) {
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags {
+  scrollbar-color: var(--va-border) transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb {
+  background: var(--va-border) !important;
+}
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.episode-count-popover,.drama-model-popover) {
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel:has(.episode-count-control.open,.drama-model-control.open) {
+  position: relative !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-control.open {
+  z-index: 20 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-popover {
+  z-index: 21 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-popover {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* 2026-11-12 Product Design：短剧首页模型按钮从起始侧对齐，宽度由图标、当前模型名和箭头撑开。 */
+#home-drama-panel [data-drama-model-scope="home"] > .drama-model-trigger {
+  min-width: 0;
+  inline-size: max-content;
+  justify-content: flex-start;
+}
+
+/* 2026-10-27：模型菜单沿用设计稿 360px 面板、40px 图标、64px 选项和各级文字；仅首页生效。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-popover,#detailModelPopover,.drama-character-param-menu:has(.drama-character-model-option)) {
+  width:min(360px,calc(100vw - 32px))!important;
+  box-sizing:border-box!important;
+  max-height:min(560px,var(--model-menu-available-height,calc(100dvh - 120px)))!important;
+  padding:20px!important;
+  border:1px solid #2b3642!important;
+  border-radius:16px!important;
+  background:#171e27!important;
+  box-shadow:0 20px 48px #0008!important;
+  backdrop-filter:none!important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+  scrollbar-width:thin !important;
+  scrollbar-color:#4d5865 transparent !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-option,.drama-character-model-option) {
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  box-sizing:border-box!important;
+  min-height:64px!important;
+  width:100%!important;
+  padding:12px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#f5f7fa!important;
+  text-align:left !important;
+  box-shadow:none!important;
+  cursor:pointer !important;
+  transition:background-color .15s !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-option,.drama-character-model-option)+:is(.drama-model-option,.drama-character-model-option),
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .drama-model-group+.drama-model-group {
+  margin-top:8px!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-icon,.drama-character-model-icon) {
+  width:40px!important;
+  height:40px!important;
+  flex:0 0 40px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:#080d12!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-icon,.drama-character-model-icon) .unified-model-logo {
+  display:block!important;
+  width:40px!important;
+  height:40px!important;
+  object-fit:contain !important;
+  filter:none!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-copy,.drama-character-model-copy) {
+  display:grid!important;
+  gap:4px!important;
+  flex:1 !important;
+  min-width:0 !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-name,.drama-character-model-copy strong) {
+  display:block!important;
+  margin:0!important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#f5f7fa!important;
+  font-size:14px!important;
+  line-height:20px!important;
+  font-weight:500!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-description,.drama-character-model-copy small) {
+  display:block!important;
+  margin:0!important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#6f7b88!important;
+  font-size:12px!important;
+  line-height:18px!important;
+  font-weight:400!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .drama-model-duration {
+  display:none!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-option,.drama-character-model-option):hover {
+  background:#202936!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-option,.drama-character-model-option):is(.active,[aria-selected="true"]) {
+  background:#2b3642!important;
+  color:#f5f7fa!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-option,.drama-character-model-option):focus-visible {
+  outline:2px solid #3a4654!important;
+  outline-offset:2px !important;
+  background:#202936!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel :is(.drama-model-check,.drama-character-model-check) {
+  display:none!important;
+}
+
+/* 2026-10-27：工具栏沿用设计稿 32px 参数胶囊、36px 加号和40px发送按钮，保留原启用条件。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.composer-tools,.drama-generate-tools) :is(.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger,.drama-option,.tool-btn,.drama-attachment-button) {
+  height:32px !important;
+  min-height:32px !important;
+  padding:0 12px !important;
+  gap:6px !important;
+  border:0 !important;
+  border-radius:999px !important;
+  background:var(--va-bg) !important;
+  color:var(--va-tertiary) !important;
+  font-size:14px !important;
+  font-weight:400 !important;
+  line-height:20px !important;
+  box-shadow:none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.composer-tools,.drama-generate-tools) :is(.select-chip,.home-generation-mode-trigger,.home-inspiration-trigger,.drama-option,.tool-btn,.drama-attachment-button):is(:hover,[aria-expanded="true"]) {
+  background:var(--va-surface) !important;
+  color:#ffffff !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] :is(.composer-tools > .tool-btn,.drama-generate-tools > .drama-attachment-button) {
+  width:36px !important;
+  min-width:36px !important;
+  height:36px !important;
+  min-height:36px !important;
+  flex:0 0 36px !important;
+  padding:0 !important;
+  border:1px solid var(--va-border) !important;
+  border-radius:50% !important;
+  color:var(--va-brand) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now {
+  width:40px !important;
+  min-width:40px !important;
+  height:40px !important;
+  min-height:40px !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:disabled {
+  background:var(--va-brand-disabled,rgba(55,64,79,.9)) !important;
+  color:var(--va-brand-ink) !important;
+  opacity:1 !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now:not(:disabled) {
+  background:var(--va-brand) !important;
+  color:var(--va-brand-ink) !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now {
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 !important;
+  line-height:1 !important;
+  flex-shrink:0 !important;
+  box-sizing:border-box !important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .generate-now > svg {
+  display:block !important;
+  width:24px !important;
+  height:24px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:none !important;
+}
+
+/* 2026-10-27：上传剧本和上传视频共同使用设计稿的白色按钮及 hover/active/disabled。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary {
+  background:var(--va-action-white)!important;
+  border-color:transparent!important;
+  color:var(--va-action-white-ink)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary:not(:disabled):not([aria-disabled="true"]):hover {
+  background:var(--va-action-white-hover)!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary:not(:disabled):not([aria-disabled="true"]):active {
+  background:var(--va-action-white-active)!important;
+}
+
+html body:has(#home-drama-panel) .view[data-view="canvas"] .home-drama-upload-primary:is(:disabled,[aria-disabled="true"]) {
+  background:var(--va-action-white-disabled)!important;
+  color:var(--va-action-white-disabled-ink)!important;
+  cursor:not-allowed !important;
+  opacity:1!important;
+}
+
+/* 2026-10-27：附件菜单复用设计稿基础规则和长文案自适应宽度，仍由原加号菜单定位。 */
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-menu {
+  position: fixed !important;
+  z-index: 151 !important;
+  width: 184px !important;
+  padding: 8px !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 14px !important;
+  background: #20262f !important;
+  box-shadow: 0 18px 50px rgba(0,0,0,.5) !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-menu[hidden] {
+  display: none !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-option {
+  width: 100% !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: rgba(255,255,255,.86) !important;
+  font: inherit !important;
+  font-size: 14px !important;
+  font-weight: 760 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-option:hover,
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-option:focus-visible {
+  outline: 0 !important;
+  background: rgba(255,255,255,.08) !important;
+  color: #fff !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) .home-asset-add-option svg {
+  width: 19px !important;
+  height: 19px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.9 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) #homeAssetAddMenu {
+  width:max-content !important;
+  min-width:184px !important;
+  max-width:calc(100vw - 20px) !important;
+  box-sizing:border-box !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) #homeAssetAddMenu .home-asset-add-option {
+  box-sizing:border-box !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) #homeAssetAddMenu .home-asset-add-option svg {
+  flex:0 0 19px !important;
+}
+
+html body:has(#home-drama-panel [data-home-drama-attachment-upload][aria-expanded="true"]) #homeAssetAddMenu .home-asset-add-option span {
+  min-width:0 !important;
+  overflow-wrap:anywhere !important;
+}
+
+/* 2026-10-27：与设计稿 body 字体及表单基础一致；恢复旧版局部规则中残留的粗字和灰色边框。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .home-drama-dropzone p {
+  color:var(--va-tertiary); font-size:14px; line-height:1.65; font-weight:400;
+}
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .drama-generate-tools > .drama-divider { display:none !important; }
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel [data-home-setting-toggle] > .home-system-icon { transform:none; }
+/* 2026-10-27 Product Design 改动逻辑：自定义集数输入框恢复「设计稿/index.html」的
+   72×30px 浅灰底、9px 圆角和居中文字，去除上一轮透明背景覆盖；聚焦时沿用源稿的
+   12% 白色底及 1px 灰白描边，自定义行保留源稿分隔线和底部对齐。
+   仅调整首页集数菜单样式，保留数字输入、最小值、键盘和集数选择事件。 */
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-custom {
+  height:42px; margin-top:5px; border-top:1px solid rgba(255,255,255,.1);
+  display:flex; align-items:flex-end; justify-content:center; gap:6px;
+  color:rgba(255,255,255,.58); font-family:var(--va-font); font-size:14px; font-weight:400;
+}
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-input {
+  width:72px; height:30px; border:0; border-radius:9px; outline:none;
+  background:rgba(255,255,255,.08); color:#fff; text-align:center;
+  font:inherit; appearance:textfield;
+}
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-input:focus {
+  box-shadow:0 0 0 1px rgba(255,255,255,.24); background:rgba(255,255,255,.12);
+}
+html body:has(#home-drama-panel) .view[data-view="canvas"] #home-drama-panel .episode-count-input::placeholder { color:var(--va-tertiary); }
+/* 设计稿品牌按钮的禁用合约：灰底、深字、不透明，不改 disabled 和 aria-disabled。 */
+html body:has(#home-drama-panel) #home-drama-panel .generate-now:is(:disabled,[aria-disabled="true"],.is-disabled,.is-locked,.is-blocked),
+html body:has(#home-drama-panel) #homeSettingPopover .home-setting-custom button:is(:disabled,[aria-disabled="true"],.is-disabled) {
+  background:rgba(55,64,79,.9) !important; border-color:transparent !important; color:#0d1308 !important;
+  opacity:1 !important; box-shadow:none !important; text-shadow:none !important; filter:none !important;
+  transform:none !important; cursor:not-allowed !important;
+}

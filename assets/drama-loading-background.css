@@ -1,0 +1,115 @@
+/* 2026-11-10 Product Design 改动逻辑：仅替换短剧生成态背景，复用用户提供的
+ * vina-loading-background-delivery/vina-loading-background.css 的暗底、两层径向柔光、
+ * 3 秒关键帧与中心暗角。独立展示层铺满原容器，不设置宽高比例，不触碰文字或任务计时。
+ * 模糊半径由 ResizeObserver 按容器缩放，让资产小缩略图、竖屏封面和大预览共用同一节奏。
+ * 使用命名层中的 important 声明覆盖已有未分层的旧动效，不提高业务选择器耦合。
+ * 资产大图的 ::after 承载原有点阵及旧文字，必须原样保留；画布底层点阵也不参与覆盖。
+ */
+@layer vina-drama-reference-motion {
+  /* 2026-11-10 Product Design 改动逻辑：资产缩略图生成中取消绿色描边，
+   * 使用透明边框保留原占位尺寸；只覆盖生成态，柔光、文字、列表选中态及大图点阵沿用原样。 */
+  html.vina-drama-motion-enabled .drama-character-variant-thumb.is-generating,
+  html.vina-drama-motion-enabled .drama-character-variant-thumb.vina-drama-motion-host {
+    border-color: transparent !important;
+  }
+
+  html.vina-drama-motion-enabled .vina-drama-motion-host {
+    isolation: isolate !important;
+    overflow: hidden !important;
+    background: #080d12 !important;
+    animation: none !important;
+  }
+
+  /* 原背景伪元素只停用旧柔光/扫光；资产大图的 ::after 仍由原样式绘制点阵。 */
+  html.vina-drama-motion-enabled .vina-drama-motion-host::before,
+  html.vina-drama-motion-enabled .vina-drama-motion-host:not(.drama-character-current)::after {
+    content: none !important;
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* 旧缩略图规则会隐藏所有直接子项，仅让新增的无文字装饰层可见。 */
+  html.vina-drama-motion-enabled .vina-drama-motion-host > .vina-drama-motion-layer {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+    border-radius: inherit;
+    pointer-events: none !important;
+    overflow: hidden;
+  }
+}
+
+.vina-drama-motion-layer__flow {
+  position: absolute;
+  z-index: 0;
+  inset: -32%;
+  pointer-events: none;
+  filter: blur(var(--vina-drama-loading-blur, 36px));
+  transform: translateZ(0);
+}
+.vina-drama-motion-layer__flow::before,
+.vina-drama-motion-layer__flow::after {
+  content: '';
+  position: absolute;
+  border-radius: 48% 52% 57% 43%;
+  will-change: transform, border-radius, opacity;
+}
+.vina-drama-motion-layer__flow::before {
+  width: 86%;
+  height: 58%;
+  left: 13%;
+  top: 17%;
+  opacity: .72;
+  background: radial-gradient(ellipse at center,
+    rgba(13,117,100,.72) 0%, rgba(13,117,100,.42) 34%,
+    rgba(13,117,100,.15) 61%, rgba(13,117,100,0) 82%);
+  animation: vina-drama-reference-flow-main 3s ease-in-out infinite;
+}
+.vina-drama-motion-layer__flow::after {
+  width: 64%;
+  height: 44%;
+  right: 2%;
+  bottom: 9%;
+  opacity: .46;
+  background: radial-gradient(ellipse at center,
+    rgba(20,134,116,.58) 0%, rgba(15,101,88,.3) 42%, rgba(10,77,67,0) 82%);
+  animation: vina-drama-reference-flow-secondary 3s ease-in-out -1.1s infinite;
+}
+.vina-drama-motion-layer::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 58% 42% at 50% 50%,
+    rgba(8,13,18,0) 28%, rgba(8,13,18,.2) 74%, rgba(8,13,18,.56) 100%);
+}
+@keyframes vina-drama-reference-flow-main {
+  0%, 100% {
+    transform: translate3d(-7%,-4%,0) rotate(-8deg) scale(.96);
+    border-radius: 48% 52% 57% 43%;
+  }
+  35% {
+    transform: translate3d(10%,7%,0) rotate(4deg) scale(1.08);
+    border-radius: 57% 43% 46% 54%;
+  }
+  68% {
+    transform: translate3d(3%,15%,0) rotate(11deg) scale(1.02);
+    border-radius: 42% 58% 54% 46%;
+  }
+}
+@keyframes vina-drama-reference-flow-secondary {
+  0%, 100% { transform: translate3d(9%,8%,0) rotate(7deg) scale(1.02); opacity: .38; }
+  42% { transform: translate3d(-14%,-10%,0) rotate(-8deg) scale(1.12); opacity: .52; }
+  76% { transform: translate3d(-4%,5%,0) rotate(2deg) scale(.98); opacity: .44; }
+}
+/* 2026-11-10：尊重减少动态效果偏好，保留柔光配色和原生成状态。 */
+@media (prefers-reduced-motion: reduce) {
+  .vina-drama-motion-layer__flow::before,
+  .vina-drama-motion-layer__flow::after {
+    animation: none;
+    will-change: auto;
+  }
+}

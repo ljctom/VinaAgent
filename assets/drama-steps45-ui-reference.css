@@ -1,0 +1,1114 @@
+/* 2026-10-26 Product Design 样式调整：迁移“UI 稿子”的短剧第四步设计样式。
+   设计变量仅在资产页内生效；不加载原稿的全局主题，不更换项目数据、图片素材或业务脚本。
+   角色信息/图片提示词按 1:2 排列，右栏独立显示音色绑定；原描述确认、上传、参数与生成事件保持不变。 */
+.asset-workspace[data-view="asset-library"] {
+ --va-bg:#080d12;--va-header:#0d141b;--va-container:rgba(15,21,28,.6);--va-surface:#171e27;--va-raised:#222b35;
+ --va-disabled-bg:#141a21;--va-border:#2b3642;--va-border-light:rgba(255,255,255,.06);--va-border-focus:#3a4654;
+ --va-text:#f5f7fa;--va-secondary:#d5dbe3;--va-tertiary:#9aa6b2;--va-muted:#6f7b88;--va-disabled-text:#4d5865;
+ --va-brand:#b8f84a;--va-brand-hover:#cfff5a;--va-brand-active:#9fdb3e;--va-brand-disabled:rgba(55,64,79,.9);--va-brand-ink:#0d1308;
+ --va-font:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+/* 2026-10-26 样式兼容：第五步弹窗临时借用原卡片时，新增容器恢复透明布局，标题不重复显示。 */
+.asset-preview-surface,.asset-character-edit-row,.asset-settings-panel { display:contents; }
+.asset-profile-heading { display:none; }
+/* Asset step: shared neutral surfaces, typography, controls and editable-only pointer borders. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main { font-family:var(--va-font); color:var(--va-secondary); }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.asset-browser-sidebar,.asset-browser-detail-panel) { background:var(--va-container) !important; border:1px solid var(--va-border) !important; border-radius:16px !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-detail-panel { gap:24px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tabs { background:var(--va-surface); padding:4px; border-radius:10px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tab { height:32px; padding:0 8px !important; border:0 !important; border-radius:7px !important; background:transparent !important; color:var(--va-tertiary) !important; font-size:14px !important; line-height:20px; font-weight:400 !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tab:is(:hover,.active,[aria-pressed="true"]) { background:var(--va-border) !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-count { background:transparent !important; color:var(--va-tertiary) !important; font-size:12px; font-weight:400; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-group.is-multi-variant { background:transparent !important; border-radius:14px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row { min-height:72px; padding:10px; gap:12px; background:var(--va-surface) !important; color:var(--va-secondary) !important; border:1px solid var(--va-border) !important; border-radius:12px; box-shadow:none !important; transition:background .18s,border-color .18s; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row:hover { background:var(--va-border) !important; border-color:var(--va-border-focus) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row.active { background:var(--va-border) !important; border-color:var(--va-tertiary) !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-copy strong { color:inherit !important; font-size:14px; line-height:20px; font-weight:500; display:block; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-copy span { color:var(--va-tertiary) !important; font-size:12px; line-height:18px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-thumb.is-empty { background-color:var(--va-border) !important; border-color:var(--va-border-focus) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region { padding:16px !important; border-radius:16px !important; border:1px solid var(--va-border) !important; background:transparent !important; gap:12px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-edit-region { --asset-editor-field-height:152px; padding:0 !important; border:0 !important; background:transparent !important; grid-template-rows:20px auto !important; column-gap:24px !important; row-gap:12px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-editor-right { gap:24px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-title { font-size:16px !important; line-height:24px; font-weight:500 !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-section-label { font-size:14px !important; line-height:20px !important; font-weight:500 !important; color:var(--va-tertiary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-preview-head > .drama-character-section-label { font-size:12px !important; line-height:18px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current { background-color:var(--va-bg) !important; border-color:var(--va-border) !important; border-radius:12px !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field,.drama-character-prompt-field) { background:var(--va-surface) !important; border:1px solid var(--va-border) !important; border-radius:20px !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-description { font-size:14px !important; line-height:24px !important; font-weight:400; color:var(--va-secondary) !important; padding:12px 16px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-description:not(.drama-character-description-field *) { background:var(--va-surface) !important; border:1px solid var(--va-border) !important; border-radius:20px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-description-field .drama-character-description { background:transparent !important; border:0 !important; border-radius:0 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-prompt { font-size:14px !important; line-height:24px !important; color:var(--va-secondary) !important; background:transparent !important; border:0 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description,.drama-character-prompt):is(:focus,:focus-visible) { outline:none !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-prompt::placeholder { color:var(--va-tertiary); }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-reference-row { padding:12px 14px 4px; box-sizing:border-box; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-reference[data-character-reference] { width:32px; height:32px; flex-basis:32px; border:1px solid var(--va-border) !important; border-radius:8px; background:var(--va-bg) !important; color:var(--va-tertiary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-reference-plus { font-size:22px; line-height:24px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-reference:hover { background-color:var(--va-border) !important; color:#FFFFFF !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-voice-section { margin-top:8px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-voice-bound { min-height:44px; background:var(--va-surface) !important; border:1px solid var(--va-border) !important; border-radius:12px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-voice-name { color:var(--va-secondary) !important; font-size:14px; line-height:20px; font-weight:500; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-source-button,.drama-character-history-toggle,.drama-character-param-trigger,.drama-character-voice-choice,.drama-character-description-confirm,.asset-add-character) { min-height:32px !important; border:1px solid var(--va-border) !important; border-radius:16px !important; padding:0 12px; background:var(--va-surface) !important; color:var(--va-tertiary) !important; font-size:14px !important; line-height:20px; font-weight:500 !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-source-button,.drama-character-history-toggle,.drama-character-param-trigger,.drama-character-voice-choice,.drama-character-description-confirm,.asset-add-character):not(:disabled):hover { background:var(--va-border) !important; color:#FFFFFF !important; border-color:var(--va-border-focus) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-description-confirm:disabled { background:var(--va-disabled-bg) !important; color:var(--va-disabled-text) !important; opacity:1 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-add .asset-add-character { height:40px; border-radius:12px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-source-button,.drama-character-voice-remove) svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.5; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-voice-remove { width:28px; height:28px; border:0 !important; border-radius:7px !important; background:transparent !important; color:var(--va-tertiary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-voice-remove:hover { background:rgba(255,92,122,.14) !important; color:#FF5C7A !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-generate,.asset-generate-all,.asset-next) { background:var(--va-brand) !important; color:var(--va-brand-ink) !important; border:0 !important; box-shadow:none !important; font-weight:500 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-generate,.asset-generate-all,.asset-next):not(:disabled):not(.is-blocked):hover { background:var(--va-brand-hover) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-generate,.asset-generate-all,.asset-next):not(:disabled):not(.is-blocked):active { background:var(--va-brand-active) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-generate:disabled,.asset-generate-all:disabled,.asset-next:disabled,.asset-next.is-blocked) { background:var(--va-brand-disabled) !important; color:var(--va-brand-ink) !important; opacity:1 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-generate { min-height:36px; border-radius:18px !important; padding:0 14px; font-size:14px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-stage-actions :is(.asset-generate-all,.asset-next,.asset-view-switch button) { height:44px; border-radius:22px !important; font-size:14px; font-weight:500; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-stage-actions .asset-view-switch button { background:var(--va-surface) !important; color:var(--va-secondary) !important; border:1px solid var(--va-border) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-stage-actions .asset-view-switch button:hover { background:var(--va-border) !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-param-menu,.drama-character-settings-menu,.drama-character-history-panel,.drama-character-voice-library) { background:var(--va-surface) !important; color:var(--va-secondary) !important; border:1px solid var(--va-border) !important; border-radius:16px !important; box-shadow:0 12px 32px rgba(0,0,0,.24) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-model-option,.drama-character-setting-option) { background:transparent !important; border-color:var(--va-border) !important; color:var(--va-secondary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-model-option,.drama-character-setting-option).active { background:var(--va-border) !important; border-color:var(--va-tertiary) !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-model-check { color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) button:focus-visible { outline:2px solid var(--va-border-focus) !important; outline-offset:2px; }
+/* 2026-10-27 Product Design 改动逻辑：第四步图片提示词的渐变边框从内部输入容器迁移到 asset-edit-region 外层面板，
+   覆盖标题、参考图、提示词和底部操作栏的完整外框；悬停与聚焦状态一并跟随外框，沿用原渐变颜色和圆角。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field:has([contenteditable="true"]),.drama-character-description[contenteditable="true"]:not(.drama-character-description-field *),.asset-edit-region:has(.drama-character-prompt-field textarea:not(:disabled):not([readonly]))) { position:relative; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field:has([contenteditable="true"]),.drama-character-description[contenteditable="true"]:not(.drama-character-description-field *),.asset-edit-region:has(.drama-character-prompt-field textarea:not(:disabled):not([readonly])))::after { content:""; position:absolute; inset:0; padding:1px; border-radius:inherit; pointer-events:none; z-index:3; background:radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%),#00FF90 0%,rgba(184,236,100,.48) 40%,rgba(250,255,159,.16) 70%,rgba(250,255,159,0) 100%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite:exclude; opacity:0; transition:opacity .25s ease-out; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field:has([contenteditable="true"]),.drama-character-description[contenteditable="true"]:not(.drama-character-description-field *),.asset-edit-region:has(.drama-character-prompt-field textarea:not(:disabled):not([readonly]))):hover { border-color:transparent !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field:has([contenteditable="true"]),.drama-character-description[contenteditable="true"]:not(.drama-character-description-field *),.asset-edit-region:has(.drama-character-prompt-field textarea:not(:disabled):not([readonly]))):hover::after { opacity:1; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.drama-character-description-field:has([contenteditable="true"]),.drama-character-description[contenteditable="true"]:not(.drama-character-description-field *),.asset-edit-region:has(.drama-character-prompt-field textarea:not(:disabled):not([readonly]))):focus-within::after { opacity:.7; }
+
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-description-field { display:flex; flex-direction:column; flex:0 0 var(--asset-editor-field-height); height:var(--asset-editor-field-height); min-height:0; margin-bottom:8px; overflow:hidden; box-sizing:border-box; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-description-field .drama-character-description { flex:1 1 0; height:0; min-height:0; max-height:none; margin:0; overflow-y:auto; }
+
+/* Three clear regions: list, interactive preview, editing. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel { padding:0 !important; border:0 !important; background:transparent !important; border-radius:0 !important; gap:16px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right { gap:16px !important; grid-template-rows:minmax(240px,1fr) auto !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region { padding:0 !important; gap:0 !important; overflow:hidden; background:var(--va-container) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-preview-head { padding:14px 16px; flex:0 0 auto; box-sizing:border-box; border-bottom:1px solid var(--va-border-light); flex-wrap:wrap; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-preview-head > .drama-character-section-label { display:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-preview-actions { flex-wrap:wrap; gap:6px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current { border:0 !important; border-radius:0 !important; background-color:var(--va-bg) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-edit-region { padding:16px !important; border:1px solid var(--va-border) !important; border-radius:16px !important; background:var(--va-container) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-toolbar { padding:12px 10px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tabs { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); gap:2px !important; width:100%; box-sizing:border-box; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab { display:flex; align-items:center; justify-content:center; flex-wrap:nowrap; white-space:nowrap !important; height:36px !important; padding:0 4px !important; gap:4px !important; min-width:0; font-size:13px !important; letter-spacing:0; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tab :is(.script-icon,.asset-count) { flex-shrink:0; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tab .script-icon { width:14px !important; height:14px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-tab .asset-count { min-width:0; padding:0; font-size:11px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step { background:var(--va-surface) !important; border-color:var(--va-border) !important; color:var(--va-tertiary) !important; box-shadow:none !important; font-weight:500; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step.active { background:var(--va-border) !important; border-color:var(--va-border) !important; color:var(--va-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step.active .step-num { background:var(--va-brand) !important; color:var(--va-brand-ink) !important; box-shadow:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step.complete { color:var(--va-secondary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step.complete .step-num { background:var(--va-border) !important; color:var(--va-secondary) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step:not(.active):not(.complete) { color:var(--va-disabled-text) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .script-status .step:not(.active):not(.complete) .step-num { background:var(--va-border) !important; color:var(--va-muted) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-panzoom] { background-image:radial-gradient(circle,rgba(154,166,178,.2) 1px,transparent 1px) !important; background-size:20px 20px !important; background-repeat:repeat !important; touch-action:none; cursor:grab; user-select:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-panzoom].is-dragging { cursor:grabbing; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-image { position:absolute; inset:20px; background-position:center; background-size:contain; background-repeat:no-repeat; transform-origin:50% 50%; pointer-events:none; will-change:transform; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-zoom-tools { position:absolute; bottom:14px; right:14px; z-index:4; display:flex; align-items:center; gap:4px; padding:4px; border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); box-shadow:0 4px 16px rgba(0,0,0,.2); }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-zoom-tools button { display:inline-flex; align-items:center; justify-content:center; height:28px; min-width:28px; padding:0 8px; border:0; border-radius:12px; background:transparent; color:var(--va-tertiary); font:500 12px/20px var(--va-font); cursor:pointer; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-zoom-tools button:hover { background:var(--va-border); color:#FFFFFF; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-zoom-tools svg { width:16px; height:16px; stroke:currentColor; stroke-width:1.5; fill:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-zoom-tools output { min-width:42px; text-align:center; color:var(--va-secondary); font-size:12px; font-variant-numeric:tabular-nums; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current:is(.is-empty,.is-generating) :is(.asset-preview-image,.asset-preview-zoom-tools) { display:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current:is(.is-empty,.is-generating) { cursor:default; }
+@media (max-width:680px) {
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab { font-size:12px !important; gap:3px !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab .script-icon { display:none; }
+}
+
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-panzoom]:focus-visible { outline:2px solid var(--va-border-focus); outline-offset:-2px; }
+
+/* Hoverable separator occupies the existing gap, without adding another column. */
+.asset-workspace .asset-main .asset-inner { position:relative; }
+.asset-list-resizer { display:none; }
+@media (min-width:901px) {
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner { grid-template-columns:var(--asset-list-width,292px) minmax(0,1fr); }
+.asset-workspace .asset-list-resizer { display:block; position:absolute; top:0; bottom:0; left:calc(var(--asset-list-width,292px) + 3px); width:12px; z-index:10; cursor:col-resize; touch-action:none; outline:none; }
+.asset-list-resizer::after { content:""; position:absolute; left:5px; top:16px; bottom:16px; width:2px; border-radius:2px; background:var(--va-border-focus); opacity:0; transition:opacity .18s; }
+.asset-list-resizer:is(:hover,:focus-visible)::after,.is-resizing-asset-list .asset-list-resizer::after { opacity:1; }
+.is-resizing-asset-list,.is-resizing-asset-list * { cursor:col-resize !important; user-select:none !important; }
+}
+
+/* Keep the scrollbar gutter stable; reveal only the thumb on local hover. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) * {
+  scrollbar-width:thin !important;
+  scrollbar-color:transparent transparent !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view):hover,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *:hover {
+  scrollbar-color:var(--va-muted) transparent !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view)::-webkit-scrollbar,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar {
+  width:6px; height:6px; background:transparent !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view)::-webkit-scrollbar-thumb,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar-thumb {
+  background:transparent !important; border:0 !important; border-radius:999px !important; box-shadow:none !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view):hover::-webkit-scrollbar-thumb,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *:hover::-webkit-scrollbar-thumb {
+  background:var(--va-muted) !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view)::-webkit-scrollbar-track,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar-track,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar-track-piece,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar-corner {
+  background:transparent !important; border:0 !important; box-shadow:none !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) *::-webkit-scrollbar-button { display:none; }
+
+/* One editor surface with two task tabs; the original controls keep their data bindings. */
+.asset-workspace[data-view="asset-library"] .asset-main .asset-edit-region {
+  display:flex !important; flex-direction:column; gap:12px !important;
+  height:304px; min-height:304px; box-sizing:border-box;
+}
+.asset-workspace .asset-editor-tabs { display:flex; gap:8px; flex:0 0 40px; align-items:flex-start; margin-inline:-16px; padding-inline:16px; box-sizing:border-box; border-bottom:1px solid var(--va-border-light); }
+.asset-workspace .asset-editor-tabs button { height:32px; padding:0 16px; border:0; border-radius:8px; background:transparent; color:var(--va-tertiary); font:500 14px/20px var(--va-font); cursor:pointer; }
+.asset-workspace .asset-editor-tabs button:is(:hover,[aria-selected="true"]) { background:var(--va-border); color:var(--va-text); }
+.asset-workspace .asset-main :is(.asset-generation-panel,.asset-settings-panel)[hidden] { display:none !important; }
+.asset-workspace .asset-main .asset-generation-panel { display:flex; flex-direction:column; gap:10px; flex:1; min-height:0; }
+.asset-workspace .asset-main .asset-generation-panel > .drama-character-section-label { margin:0 !important; flex:0 0 20px; color:var(--va-text) !important; }
+.asset-workspace .asset-main .asset-generation-panel .drama-character-reference-row { flex:0 0 auto; min-height:32px; padding:0; gap:10px; }
+.asset-workspace .asset-main .asset-generation-panel .drama-character-reference[data-character-reference] { width:auto; height:32px; flex-basis:auto; display:inline-flex; align-items:center; gap:6px; padding:0 10px; border:0 !important; border-radius:8px; background:transparent !important; }
+.asset-workspace .asset-main .asset-reference-label { font-size:14px; line-height:20px; }
+.asset-workspace .asset-main .asset-generation-panel > .drama-character-prompt { flex:1 1 0; width:100%; height:0; min-height:48px; padding:0; resize:none; overflow-y:auto; border:0 !important; border-radius:0 !important; box-shadow:none !important; font:400 14px/24px var(--va-font); }
+.asset-workspace .asset-main .asset-generation-panel .drama-character-source-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; flex:0 0 auto; gap:8px; min-height:36px; margin:0; padding:0; }
+.asset-workspace .asset-generation-panel .drama-character-generate { margin-left:auto; }
+.asset-workspace .asset-settings-trigger-label { margin-right:6px; }
+.asset-workspace .asset-main .asset-settings-panel { display:grid; grid-template-columns:minmax(0,1fr) clamp(240px,30%,360px); gap:24px; flex:1; min-height:0; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-editor-left { display:flex; flex-direction:column; align-self:stretch !important; min-height:0; padding:0 !important; margin:0; grid-area:auto; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-section-label { margin:0 0 12px !important; color:var(--va-text) !important; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-description-field { flex:1 1 0; height:0; margin:0; border:0 !important; border-radius:12px !important; background:transparent !important; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-description { padding:0 8px 0 0; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-description-actions { display:flex !important; flex:0 0 40px; padding:8px 0 0; justify-content:flex-start; }
+.asset-workspace .asset-main .asset-description-edit { min-height:32px; padding:0 16px; border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); color:var(--va-secondary); font:500 14px/20px var(--va-font); cursor:pointer; }
+.asset-workspace .asset-description-edit:hover { background:var(--va-border); color:var(--va-text); }
+.asset-workspace .asset-description-edit:disabled { color:var(--va-disabled-text); cursor:default; }
+.asset-workspace .drama-character-editor:not([data-description-editing="true"]) .asset-settings-panel [data-character-description-confirm] { display:none; }
+.asset-workspace .drama-character-editor[data-description-editing="true"] .asset-settings-panel .asset-description-edit { display:none; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-voice-section { min-width:0; margin:0; padding-left:24px; border-left:1px solid var(--va-border-light); }
+.asset-workspace .asset-settings-panel .drama-character-voice-choices { display:flex; flex-direction:column; gap:8px; border:0 !important; background:transparent !important; }
+.asset-workspace .asset-settings-panel .drama-character-voice-choice { flex:none; min-height:36px !important; justify-content:flex-start; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-voice-bound { min-height:48px; padding:8px 12px; gap:10px; box-sizing:border-box; }
+.asset-workspace .asset-settings-panel .drama-character-voice-name { flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.asset-workspace .asset-main .drama-character-editor:is(.is-scene-editor,.is-prop-editor) .asset-settings-panel { grid-template-columns:minmax(0,1fr); }
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="generate"] { position:relative; }
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="generate"]::after { content:""; position:absolute; inset:0; padding:1px; border-radius:inherit; pointer-events:none; z-index:3; background:radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%),#00FF90 0%,rgba(184,236,100,.48) 40%,rgba(250,255,159,.16) 70%,rgba(250,255,159,0) 100%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite:exclude; opacity:0; transition:opacity .25s; }
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="generate"]:hover::after { opacity:1; }
+@media(max-width:1000px) {
+.asset-workspace .asset-main .asset-edit-region { height:328px; min-height:328px; }
+.asset-workspace .asset-generation-panel .drama-character-param-trigger { font-size:12px !important; padding:0 8px; }
+.asset-workspace .asset-settings-trigger-label { display:none; }
+}
+
+.asset-workspace .asset-settings-panel :is(.drama-character-voice-bound,.drama-character-voice-choices)[hidden] { display:none !important; }
+
+/* Override the legacy fixed description height only inside the settings task. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description-field {
+  flex:1 1 0 !important;
+  height:0 !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description-actions {
+  flex:0 0 40px !important;
+  min-height:40px;
+  padding:8px 0 0 !important;
+  box-sizing:border-box;
+  align-items:flex-end;
+}
+
+/* Description glow belongs to the text editor, leaving the confirmation row outside. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description-field:has([contenteditable="true"])::after {
+  inset:0 0 40px;
+  border-radius:12px;
+  background:radial-gradient(220px circle at var(--glow-x,50%) var(--glow-y,50%),rgba(184,248,74,.8) 0%,rgba(184,248,74,.38) 32%,rgba(184,248,74,.12) 65%,transparent 100%);
+  opacity:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description-field:has(.drama-character-description[contenteditable="true"]:is(:hover,:focus))::after { opacity:1 !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description[contenteditable="true"] { padding:12px 16px; box-sizing:border-box; border-radius:12px !important; }
+
+/* Edit mode is reversible and has a clear input surface. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description[contenteditable="true"] { background:var(--va-surface) !important; }
+.asset-workspace .asset-description-cancel { min-height:32px; padding:0 16px; border:1px solid var(--va-border); border-radius:16px; background:var(--va-surface); color:var(--va-secondary); font:500 14px/20px var(--va-font); cursor:pointer; }
+.asset-workspace .asset-description-cancel:hover { background:var(--va-border); color:var(--va-text); }
+.asset-workspace .drama-character-editor:not([data-description-editing="true"]) .asset-description-cancel { display:none; }
+.asset-workspace .asset-main .asset-settings-panel .drama-character-description-actions { gap:8px; }
+
+/* Reference attachment is a distinct secondary action, separate from prompt text. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference[data-character-reference] {
+  height:32px;
+  min-height:32px;
+  padding:0 12px;
+  gap:6px;
+  border:1px solid var(--va-border) !important;
+  border-radius:16px;
+  background:var(--va-surface) !important;
+  color:var(--va-tertiary) !important;
+  box-sizing:border-box;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference[data-character-reference]:hover {
+  background:var(--va-border) !important;
+  border-color:var(--va-border-focus) !important;
+  color:#FFFFFF !important;
+}
+.asset-workspace .asset-generation-panel .drama-character-reference-plus { font-size:18px; line-height:20px; }
+
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference[data-character-reference] {
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  padding:0;
+  gap:0;
+  justify-content:center;
+  border-radius:8px;
+}
+
+/* Center the drawn plus without font-baseline offsets; show legible reference previews. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference-plus {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  line-height:0;
+}
+.asset-workspace .asset-generation-panel .drama-character-reference-plus svg { display:block; flex:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference-images { gap:10px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference-images .drama-character-reference.has-image {
+  width:56px;
+  height:56px;
+  min-height:56px;
+  flex:0 0 56px;
+  border:1px solid var(--va-border) !important;
+  border-radius:10px;
+  background-color:var(--va-bg) !important;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  box-sizing:border-box;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference-images .drama-character-reference.has-image:hover { border-color:var(--va-border-focus) !important; }
+
+/* Equal attachment tiles; removal is a separate button rather than a nested action. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference[data-character-reference] {
+  width:56px;
+  height:56px;
+  min-height:56px;
+  flex:0 0 56px;
+  border-radius:10px;
+}
+.drama-character-reference-item { position:relative; display:inline-flex; flex:none; }
+.drama-character-reference-remove {
+  position:absolute;
+  top:3px;
+  right:3px;
+  width:20px;
+  height:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid var(--va-border,#2b3642);
+  border-radius:6px;
+  background:var(--va-bg,#080d12);
+  color:var(--va-tertiary,#9aa6b2);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s ease,background-color .15s ease,color .15s ease;
+}
+.drama-character-reference-item:is(:hover,:focus-within) .drama-character-reference-remove { opacity:1; pointer-events:auto; }
+.drama-character-reference-remove:hover { color:#FF5C7A; background:#34202a; }
+.drama-character-reference-remove:focus-visible { outline:2px solid var(--va-tertiary,#9aa6b2); outline-offset:1px; }
+@media (hover:none) { .drama-character-reference-remove { opacity:1; pointer-events:auto; } }
+
+/* The gap is a draggable splitter; the two surfaces retain their existing outlines. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right[data-height-resizable] { position:relative; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right[data-height-resizable] .asset-edit-region {
+  height:var(--asset-edit-height,304px) !important;
+  min-height:284px !important;
+}
+/* Text scrolls inside the available space; the action row retains the 16px panel inset. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel > .drama-character-prompt { min-height:0 !important; }
+.asset-panel-height-resizer { position:absolute; left:0; right:0; height:16px; z-index:10; cursor:row-resize; touch-action:none; outline:none; }
+.asset-panel-height-resizer::after { content:""; position:absolute; top:7px; left:calc(50% - 28px); width:56px; height:2px; border-radius:2px; background:var(--va-tertiary); opacity:0; transition:opacity .15s; }
+.asset-panel-height-resizer:is(:hover,:focus-visible)::after,.is-resizing-asset-panels .asset-panel-height-resizer::after { opacity:1; }
+.asset-panel-height-resizer[hidden] { display:none; }
+.is-resizing-asset-panels,.is-resizing-asset-panels * { cursor:row-resize !important; user-select:none !important; }
+@media (max-width:1000px) {
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right[data-height-resizable] .asset-edit-region { height:var(--asset-edit-height,328px) !important; }
+}
+
+
+/* Role editing uses the single outer panel border, without an inner input card. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description[contenteditable="true"] {
+  background:transparent !important;
+  padding:0 8px 0 0;
+  border-radius:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-settings-panel .drama-character-description-field::after { display:none !important; }
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="settings"] { position:relative; }
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="settings"]:has([contenteditable="true"])::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  padding:1px;
+  border-radius:inherit;
+  pointer-events:none;
+  z-index:3;
+  background:radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%),#00FF90 0%,rgba(184,236,100,.48) 40%,rgba(250,255,159,.16) 70%,rgba(250,255,159,0) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  opacity:0;
+  transition:opacity .25s;
+}
+.asset-workspace .asset-main .asset-edit-region[data-asset-task="settings"]:has([contenteditable="true"]):hover::after { opacity:1; }
+
+/* Expanded workspace: preview and generator share the central column;
+   profile is a single quiet inspector, with no task switches or nested boxes. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right.has-inspector-layout {
+  grid-template-columns:minmax(0,1fr) clamp(280px,25%,340px) !important;
+  grid-template-rows:minmax(240px,1fr) auto !important;
+  column-gap:16px !important;
+}
+.asset-workspace .asset-main .has-inspector-layout > .asset-preview-region { grid-column:1; grid-row:1; }
+.asset-workspace .asset-main .has-inspector-layout > .asset-edit-region { grid-column:1; grid-row:2; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-inspector-layout > .asset-profile-inspector {
+  grid-column:2; grid-row:1 / 3;
+  display:flex !important; flex-direction:column; gap:0;
+  min-height:0; min-width:0; overflow:hidden; box-sizing:border-box;
+  border:1px solid var(--va-border); border-radius:16px;
+  background:var(--va-container); position:relative;
+}
+.asset-workspace .asset-profile-heading {
+  flex:0 0 auto; padding:18px 20px; border-bottom:1px solid var(--va-border-light);
+}
+.asset-workspace .asset-profile-heading h3 { margin:0; color:var(--va-text); font:500 16px/24px var(--va-font); }
+.asset-workspace .asset-generation-heading {
+  flex:0 0 auto; color:var(--va-text); font:500 14px/20px var(--va-font);
+  padding-bottom:12px; margin-bottom:0; border-bottom:1px solid var(--va-border-light);
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-editor-left {
+  flex:1 1 0; min-height:0; min-width:0; padding:20px !important;
+  display:flex; flex-direction:column; gap:0; align-self:stretch !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-description-field {
+  flex:1 1 0 !important; min-height:0 !important; height:0 !important; max-height:none !important;
+  border:0 !important; border-radius:0 !important; margin:0 !important; background:transparent !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-description {
+  flex:1 1 0; height:0; min-height:0; max-height:none; margin:0;
+  padding:0 6px 0 0 !important; font-size:14px !important; line-height:26px !important;
+  overflow-y:auto; white-space:pre-wrap; overflow-wrap:anywhere;
+  background:transparent !important; border:0 !important; border-radius:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-description-actions {
+  flex:0 0 auto !important; min-height:32px; padding:16px 0 0 !important;
+  align-items:center; justify-content:flex-start; gap:8px;
+}
+.asset-workspace .asset-profile-inspector .asset-description-heading {
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex:0 0 auto; margin-bottom:12px;
+}
+.asset-workspace .asset-main .asset-description-heading [data-character-description-label] { margin:0 !important; }
+.asset-workspace .asset-main .asset-description-heading .asset-description-edit {
+  display:inline-flex; align-items:center; gap:6px; padding:0 8px; background:transparent; border:0; border-radius:6px;
+}
+.asset-workspace .asset-description-heading .asset-description-edit svg { width:15px; height:15px; }
+.asset-workspace .asset-description-heading .asset-description-edit:hover { background:var(--va-surface); }
+.asset-workspace .drama-character-editor:not([data-description-editing="true"]) .asset-profile-inspector .drama-character-description-actions { display:none !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-voice-section {
+  flex:0 0 384px; height:384px; box-sizing:border-box; overflow-y:auto; padding:20px; margin:0; border-left:0; border-top:1px solid var(--va-border-light);
+}
+@media(max-width:1000px){
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-voice-section { flex-basis:328px; height:328px; }
+}
+.asset-workspace .asset-main .asset-profile-inspector .drama-character-section-label {
+  margin:0 0 12px !important; color:var(--va-text) !important;
+}
+.asset-workspace .asset-profile-inspector .drama-character-voice-bound {
+  width:100%; min-height:56px !important; border-radius:10px !important;
+}
+.asset-workspace .asset-main .asset-profile-inspector .drama-character-voice-choices { gap:8px; }
+.asset-workspace .asset-main .asset-profile-inspector .drama-character-voice-choice {
+  min-height:40px !important; width:100%; border-radius:10px !important;
+}
+.asset-workspace .asset-profile-inspector::after {
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  pointer-events:none; z-index:3; opacity:0; transition:opacity .25s;
+  background:radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%),#00FF90 0%,rgba(184,236,100,.48) 40%,rgba(250,255,159,.16) 70%,rgba(250,255,159,0) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.asset-workspace .asset-profile-inspector:has([contenteditable="true"]):hover::after { opacity:1; }
+/* On compact windows retain all three sections without forcing a narrow canvas. */
+@media (max-width:1250px) {
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right.has-inspector-layout {
+    grid-template-columns:minmax(0,1fr) 280px !important;
+  }
+  .asset-workspace .has-inspector-layout .drama-character-preview-head { align-items:flex-start; }
+  .asset-workspace .has-inspector-layout .drama-character-preview-actions { flex-basis:100%; margin-left:0 !important; }
+  .asset-workspace .has-inspector-layout .asset-generation-panel .drama-character-source-actions { gap:6px; }
+}
+@media (max-width:1000px) {
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right.has-inspector-layout {
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-template-rows:minmax(240px,1fr) auto auto !important;
+    overflow-y:auto;
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-inspector-layout > .asset-profile-inspector {
+    grid-column:1; grid-row:3; min-height:320px; overflow:visible;
+  }
+  .asset-workspace .has-inspector-layout > .asset-panel-height-resizer { display:none; }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector .drama-character-description-field {
+    flex:1 1 auto !important; height:180px !important;
+  }
+}
+
+/* Cards share one grid row; workflow actions occupy their own footer row. */
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner {
+  grid-template-rows:minmax(0,1fr) 44px; row-gap:16px;
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-stage-actions {
+  grid-column:1 / -1; grid-row:2; min-width:0; margin:0;
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-browser-sidebar,
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-browser-detail-panel { grid-row:1; align-self:stretch; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-list-resizer { bottom:60px; }
+
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-image-preview] {
+  background-image:radial-gradient(circle,rgba(154,166,178,.2) 1px,transparent 1px) !important;
+  background-size:20px 20px !important; background-repeat:repeat !important;
+  touch-action:auto; cursor:zoom-in;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-image-preview] .asset-preview-image { transform:none; will-change:auto; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-image-preview]:is(.is-empty,.is-generating) .asset-preview-image { display:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-image-preview][aria-disabled="true"] { cursor:default; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-current[data-asset-image-preview]:focus-visible { outline:2px solid var(--va-border-focus); outline-offset:-2px; }
+.asset-image-preview-dialog {
+  width:min(1600px,calc(100vw - 96px)); height:min(940px,calc(100dvh - 96px));
+  max-width:calc(100vw - 96px); max-height:calc(100dvh - 96px);
+  padding:0; margin:auto; box-sizing:border-box; overflow:hidden;
+  border:1px solid #2B3642; border-radius:20px; background:#0D141B; color:#F5F7FA;
+  box-shadow:0 24px 80px rgba(0,0,0,.45); font-family:var(--va-font,system-ui,sans-serif);
+}
+.asset-image-preview-dialog[open] { display:flex; flex-direction:column; }
+.asset-image-preview-dialog::backdrop { background:rgba(3,7,11,.82); }
+.asset-image-preview-head { display:flex; align-items:center; gap:20px; justify-content:space-between; flex:0 0 60px; padding:0 24px; border-bottom:1px solid rgba(255,255,255,.06); }
+.asset-image-preview-head h2 { margin:0; font-size:16px; line-height:24px; font-weight:500; }
+.asset-image-preview-head button { display:grid; place-items:center; width:32px; height:32px; padding:0; border:0; border-radius:8px; background:transparent; color:#9AA6B2; cursor:pointer; }
+.asset-image-preview-head button:hover { background:#2B3642; color:#FFF; }
+.asset-image-preview-head button:focus-visible { outline:2px solid #566474; outline-offset:2px; }
+.asset-image-preview-full { flex:1; min-height:0; margin:24px; background-position:center; background-size:contain; background-repeat:no-repeat; }
+@media (max-width:800px),(max-height:600px) {
+  .asset-image-preview-dialog { width:calc(100vw - 48px); height:calc(100dvh - 48px); max-width:calc(100vw - 48px); max-height:calc(100dvh - 48px); }
+  .asset-image-preview-head { padding-inline:16px; }
+  .asset-image-preview-full { margin:16px; }
+}
+
+/* History browsing is a reversible preview; the asset changes only on Apply. */
+.asset-workspace .drama-character-history-panel .drama-character-history{max-height:min(332px,calc(100dvh - 310px));scrollbar-width:thin;scrollbar-color:#35414e transparent}
+.asset-workspace .drama-character-history-panel .drama-character-history-version{transition:background .15s,border-color .15s;box-shadow:none}
+.asset-workspace .drama-character-history-panel .drama-character-history-version:hover:not(:disabled){background:#26313d;border-color:#566474}
+.asset-workspace .drama-character-history-panel .drama-character-history-version.active{border-color:#b8f84a;box-shadow:none}
+.asset-workspace .drama-character-history-panel .drama-character-history-item.active{border-color:#566474;box-shadow:none}
+.asset-workspace .drama-character-history-panel .drama-character-history-version.is-previewing{background:#2b3642;border-color:#9aa6b2}
+.asset-history-version-copy{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.asset-history-version-status{font-size:11px;line-height:16px;color:#9aa6b2}
+.asset-history-version-status.is-selected{color:#c8e89c}
+.drama-character-history-version.is-previewing .asset-history-version-status{color:#f5f7fa}
+.asset-history-footer{border-top:1px solid #2b3642;margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.asset-history-footer p{margin:0;color:#9aa6b2;font-size:11px;line-height:17px}
+.asset-history-apply{width:100%;min-height:34px;padding:7px 12px;border:1px solid transparent;border-radius:8px;background:#b8f84a;color:#101710;font:inherit;font-size:12px;font-weight:500;line-height:18px;cursor:pointer}
+.asset-history-apply:hover:not(:disabled){background:#cfff5a}
+.asset-history-apply:disabled{background:#202a35;color:#6f7b88;border-color:#2b3642;cursor:default}
+.asset-workspace .drama-character-history-panel button:focus-visible{outline:2px solid #9aa6b2;outline-offset:2px}
+
+/* Native top-layer history popover escapes preview-container clipping. */
+.asset-workspace .drama-character-history-panel[popover]:popover-open{
+ display:flex;flex-direction:column;position:fixed!important;inset:auto!important;
+ left:clamp(12px,var(--history-left,12px),max(12px,calc(100vw - 372px)))!important;top:var(--history-top,80px)!important;margin:0!important;
+ width:min(360px,calc(100vw - 24px))!important;max-height:min(var(--history-max-height,calc(100dvh - 24px)),calc(100dvh - var(--history-top,80px) - 12px));
+ padding:14px;box-sizing:border-box;overflow:hidden;gap:0;
+}
+.asset-workspace .drama-character-history-panel[popover] .drama-character-history-hint{flex:none;font-size:12px;line-height:18px;margin:0 0 12px}
+.asset-workspace .drama-character-history-panel[popover] .drama-character-history{flex:1 1 auto;min-height:0;max-height:none;gap:10px;overflow-y:auto;padding:2px}
+.asset-workspace .drama-character-history-panel[popover] .drama-character-history-version{grid-template-columns:140px minmax(0,1fr);min-height:90px;padding:6px;gap:14px}
+.asset-workspace .drama-character-history-panel[popover] .drama-character-history-version small{font-size:13px}
+.asset-workspace .drama-character-history-panel[popover] .asset-history-version-status{font-size:12px}
+.asset-workspace .drama-character-history-panel[popover] .asset-history-footer{flex:none;margin-top:12px;padding-top:12px}
+.asset-workspace .drama-character-history-panel[popover] .asset-history-apply{min-height:38px;font-size:13px}
+@media(max-width:420px){.drama-character-history-panel[popover] .drama-character-history-version{grid-template-columns:112px minmax(0,1fr);min-height:76px}}
+
+.asset-workspace .drama-character-history-panel[popover][hidden]{display:none!important}
+
+/* Align category icons, labels and counts on the same 20px line. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tabs { align-items:center; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab { align-items:center; justify-content:center; height:40px; min-height:40px; line-height:20px; white-space:nowrap; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab .script-icon { flex:0 0 16px; width:16px; height:16px; align-self:center; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab .asset-count { display:inline-flex; align-items:center; justify-content:center; height:20px; min-width:0; padding:0; margin:0; font-size:inherit; line-height:20px; font-variant-numeric:tabular-nums; }
+
+/* Asset generation follows the home script-upload button's neutral treatment. */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate:not(:disabled){background:#9aa6b2!important;color:#0b121a!important;border:0!important;box-shadow:none!important;min-height:36px;padding:0 18px;border-radius:999px!important;font-size:14px!important;line-height:20px;font-weight:500!important}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate:not(:disabled):hover{background:#fff!important;color:#0b121a!important}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate:not(:disabled):active{background:#d5dbe3!important}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate-cost{color:inherit!important;border-left-color:rgba(11,18,26,.25)!important;font-weight:500}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .detail-generate-sparkle{color:inherit!important}
+/* Canvas editing belongs to the same preview toolbar as image source and history. */
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-preview-region .asset-view-controls{display:flex;align-items:center;margin:0;flex:none}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-preview-region .asset-view-switch{display:flex;align-items:center;margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region .asset-view-switch button{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;min-height:32px!important;margin:0;padding:0 12px;border:1px solid var(--va-border)!important;border-radius:16px!important;background:var(--va-surface)!important;color:var(--va-tertiary)!important;font-size:14px!important;line-height:20px;font-weight:500!important;box-shadow:none!important;white-space:nowrap}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region .asset-view-switch button:hover{background:var(--va-border)!important;color:#fff!important;border-color:var(--va-border-focus)!important}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-preview-region .asset-view-switch svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5}
+
+/* Asset choices express hover and selection through fill only. Keep the existing
+   border footprint transparent so removing its color does not shift content. */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row,
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row:is(:hover,.active,[aria-selected="true"]),
+html body .asset-workspace .drama-character-history-panel :is(.drama-character-history-version,.drama-character-history-item),
+html body .asset-workspace .drama-character-history-panel :is(.drama-character-history-version,.drama-character-history-item):is(:hover,.active,.is-previewing,[aria-selected="true"]) {
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+html body .asset-workspace .drama-character-history-panel .drama-character-history-version.active { background:#222b35!important; }
+html body .asset-workspace .drama-character-history-panel .drama-character-history-version:hover:not(:disabled) { background:#26313d!important; }
+html body .asset-workspace .drama-character-history-panel .drama-character-history-version.is-previewing { background:#2b3642!important; }
+
+/* Character profile and image generation share the lower row at 1:2;
+   the full-height inspector is dedicated to voice binding. */
+.asset-workspace .asset-main .has-character-profile-layout > .asset-character-edit-row {
+  grid-column:1; grid-row:2;
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:16px;
+  height:var(--asset-edit-height,304px); min-height:284px; min-width:0;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-edit-row > .asset-character-profile {
+  display:flex; flex-direction:column; gap:0; min-width:0; min-height:0;
+  border:1px solid var(--va-border); border-radius:16px; background:var(--va-container);
+  overflow:hidden; position:relative; box-sizing:border-box;
+}
+.asset-workspace .asset-character-profile > .asset-profile-heading { padding:16px 16px 12px; }
+.asset-workspace .asset-character-profile > .asset-profile-heading h3 { font-size:14px; line-height:20px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-profile .drama-character-editor-left {
+  padding:12px 16px !important;
+}
+.asset-workspace .asset-character-profile .asset-description-heading { gap:4px; margin-bottom:8px; }
+.asset-workspace .asset-character-profile .asset-description-edit { flex:0 0 auto; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout .asset-character-profile .drama-character-description {
+  line-height:24px !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout .asset-character-edit-row > .asset-edit-region {
+  height:100% !important; min-height:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout > .asset-voice-inspector .drama-character-voice-section {
+  flex:1 1 0; height:auto; min-height:0; border-top:0; padding:20px 20px 88px;
+}
+.asset-workspace .asset-main .asset-voice-inspector .drama-character-voice-section > .drama-character-section-label { display:none; }
+@media (max-width:1000px) {
+  .asset-workspace .asset-main .has-character-profile-layout > .asset-character-edit-row { height:var(--asset-edit-height,328px); }
+}
+@media (max-width:760px) {
+  .asset-workspace .asset-main .has-character-profile-layout > .asset-character-edit-row {
+    grid-template-columns:minmax(0,1fr); height:auto; min-height:0;
+  }
+  .asset-workspace .asset-main .asset-character-edit-row > .asset-character-profile { min-height:260px !important; }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout .asset-character-edit-row > .asset-edit-region { height:304px !important; }
+}
+
+/* Role description actions share one position in the heading in both states. */
+.asset-workspace .asset-main .asset-character-profile .asset-description-heading {
+  min-height:32px;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-profile .asset-description-heading > .drama-character-description-actions {
+  flex:0 0 auto !important;
+  margin-left:auto;
+  padding:0 !important;
+  min-height:32px;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+}
+.asset-workspace .asset-character-profile .asset-description-heading > .asset-description-edit { margin-left:auto; }
+
+/* Character information has one heading and one consistent action position. */
+.asset-workspace .asset-character-profile > .asset-profile-heading {
+  display:flex; align-items:center; gap:8px; padding:8px 16px;
+  min-height:49px; box-sizing:border-box;
+}
+.asset-workspace .asset-character-profile > .asset-profile-heading h3 { margin-right:auto; white-space:nowrap; }
+.asset-workspace .asset-character-profile [data-character-description-label] { display:none !important; }
+.asset-workspace .asset-character-profile > .asset-profile-heading .asset-description-edit {
+  display:inline-flex; align-items:center; gap:6px; padding:0 8px; border:0; background:transparent;
+}
+.asset-workspace .asset-character-profile > .asset-profile-heading .asset-description-edit svg { width:15px; height:15px; }
+.asset-workspace .drama-character-editor[data-description-editing="true"] .asset-character-profile > .asset-profile-heading .asset-description-edit { display:none; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-profile > .asset-profile-heading > .drama-character-description-actions {
+  flex:0 0 auto !important; min-height:32px; padding:0 !important; gap:8px; align-items:center; justify-content:flex-end;
+}
+
+/* 2026-10-26 Product Design 展示适配：原 VinaAgent 的提示词外框仍在，不套用原稿的编辑状态和按钮隐藏逻辑。
+   原描述一直使用现有可编辑权限；确认按钮按原 disabled 条件启用，不新增编辑或取消流程。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) { background:var(--va-bg) !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main { background:var(--va-bg) !important; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner { grid-template-columns:292px minmax(0,1fr); grid-template-rows:minmax(0,1fr) !important; gap:18px; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-browser-sidebar { grid-row:1; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel { grid-row:1; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-surface {
+ display:flex; flex:1 1 0; min-width:0; min-height:0; padding:20px; box-sizing:border-box;
+ background-color:var(--va-bg); background-image:radial-gradient(circle,rgba(154,166,178,.2) 1px,transparent 1px); background-size:20px 20px;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface .drama-character-current {
+ flex:1 1 0; height:auto; min-height:0; max-height:none; width:100%; aspect-ratio:auto;
+ background-color:transparent !important; background-size:contain; background-repeat:no-repeat; background-position:center;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel.drama-character-prompt-field {
+ display:flex; flex-direction:column; flex:1 1 0; height:0; min-height:0; max-height:none; gap:10px;
+ padding:0; margin:0; overflow:visible; background:transparent !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-reference-row { flex:0 0 auto; min-height:56px; padding:0; gap:10px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel > .drama-character-prompt {
+ flex:1 1 0; width:100%; height:0; min-height:0; max-height:none; padding:0; resize:none; overflow-y:auto;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-generation-panel .drama-character-source-actions { min-height:36px; padding:0; gap:8px; flex:0 0 auto; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-heading { display:flex; align-items:center; gap:8px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-profile-heading h3 { margin-right:auto; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .is-character-description-confirm .asset-character-profile > .asset-profile-heading > .drama-character-description-actions {
+ display:flex !important; flex:0 0 auto !important; min-height:32px; padding:0 !important; gap:8px;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .is-character-description-confirm .asset-character-profile [data-character-description-confirm] { display:inline-flex !important; align-items:center; justify-content:center; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-add { border-color:var(--va-border-light); }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row { border-color:transparent !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-group.is-multi-variant { padding:0; margin:0; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-preview-head { min-height:64px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .drama-character-preview-actions { margin-left:auto; align-items:center; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region .asset-view-switch button { min-width:0; }
+/* 2026-10-27 Product Design 改动逻辑：采用“UI 稿最新”的面板内定位，操作组距宿主右侧/底部各 16px；保留原文案、积分及点击流程。 */
+.asset-workspace.has-asset-browser:not(.is-canvas-view):not(.is-parsing-assets) .asset-stage-actions {
+ position:absolute !important; inset:auto 16px 16px auto !important;
+ z-index:100; flex:none; width:max-content; max-width:calc(100vw - 48px); min-height:36px; height:auto;
+ margin:0; padding:0; gap:12px; border:0; background:transparent; box-shadow:none; pointer-events:none;
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions > * { pointer-events:auto; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions :is(.asset-batch-open,.asset-next) {
+ display:inline-flex; align-items:center; justify-content:center; height:36px; min-height:36px; min-width:0;
+ padding:0 16px; border:0; border-radius:999px !important; background:var(--va-brand) !important; color:var(--va-brand-ink) !important;
+ font:500 14px/20px var(--va-font); box-shadow:none !important;
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions :is(.asset-batch-open,.asset-next):hover:not(:disabled):not(.is-blocked) { background:var(--va-brand-hover) !important; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions :is(.asset-batch-open,.asset-next):is(:disabled,.is-blocked) { background:var(--va-brand-disabled) !important; opacity:1; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions .asset-batch-open > svg { display:none; }
+.asset-workspace .asset-stage-actions[hidden],.asset-workspace .asset-stage-actions [hidden] { display:none !important; }
+/* 2026-10-26 Product Design 样式调整：生成按钮采用原稿的白色胶囊，积分、图标和按钮内容沿用现有数据。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate:not(:disabled) { background:#fff !important; color:#0b121a !important; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-generation-panel .drama-character-generate:not(:disabled):hover { background:#d5dbe3 !important; }
+@media (max-width:1250px) {
+ .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-preview-head { flex-wrap:wrap; }
+}
+@media (max-width:1000px) {
+ .asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner { grid-template-columns:242px minmax(0,1fr); gap:12px; }
+ .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-inline-card { min-height:900px; }
+ .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-grid { overflow-y:auto; }
+}
+@media (max-width:680px) {
+ .asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner { grid-template-columns:180px minmax(280px,1fr); gap:10px; overflow-x:auto; }
+ .asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions { right:24px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); gap:8px; }
+}
+/* 2026-10-26 Product Design 样式调整：第四、第五步顶栏沿用 UI 稿子的深色底、浅灰文字与细分隔线，其他步骤不受影响。 */
+:is(.asset-workspace[data-view="asset-library"],.episode-workspace[data-view="episode-video"]) > .script-status { background:#0d141b !important; border-bottom-color:#2b3642 !important; box-shadow:none !important; }
+:is(.asset-workspace[data-view="asset-library"],.episode-workspace[data-view="episode-video"]) .script-back { background:#171e27 !important; color:#9aa6b2 !important; }
+:is(.asset-workspace[data-view="asset-library"],.episode-workspace[data-view="episode-video"]) .script-back-title { color:#f5f7fa; font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+
+/* 2026-10-26 Product Design 样式调整：点击资产图片后的大图弹窗按 UI 稿子与用户截图呈现。
+   同步原稿 modal-unified 对此弹窗的最终覆盖：16px 圆角、#171e27 面板、18px 标题、36px 关闭按钮。
+   原图保持 contain，不裁切、不拉伸；大屏最大 1600×940，四周预留 48px 安全边距，图片内边距 24px。
+   样式只作用于本次大图预览，不影响其他弹窗和原资产数据。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region [data-asset-lightbox]:not([aria-disabled="true"]) { cursor:zoom-in; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-preview-region [data-asset-lightbox]:focus-visible { outline:2px solid #3a4654; outline-offset:-2px; }
+html body dialog.asset-image-preview-dialog {
+ position:fixed; inset:0; width:min(1600px,calc(100vw - 96px)); height:min(940px,calc(100dvh - 96px));
+ max-width:calc(100vw - 96px); max-height:calc(100dvh - 96px); min-width:0; min-height:0;
+ margin:auto; padding:0; box-sizing:border-box; overflow:hidden;
+ border:1px solid #2b3642; border-radius:16px; background:#171e27; color:#f5f7fa;
+ font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+ box-shadow:0 24px 80px #0008;
+}
+html body dialog.asset-image-preview-dialog[open] { display:flex; flex-direction:column; }
+html body dialog.asset-image-preview-dialog:not([open]) { display:none; }
+html body dialog.asset-image-preview-dialog::backdrop { background:rgba(3,7,11,.82); }
+html body .asset-image-preview-dialog > .asset-image-preview-head {
+ display:flex; flex:0 0 60px; min-width:0; min-height:60px; align-items:center; justify-content:space-between;
+ gap:20px; margin:0; padding:0 24px; box-sizing:border-box; background:#171e27; border-bottom:1px solid rgba(255,255,255,.06);
+}
+html body .asset-image-preview-head h2 { margin:0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#f5f7fa; font-size:18px; line-height:28px; font-weight:600; letter-spacing:0; }
+html body .asset-image-preview-head button {
+ display:grid; place-items:center; flex:0 0 36px; width:36px; height:36px; min-width:36px; padding:0;
+ box-sizing:border-box; border:1px solid transparent; border-radius:8px; background:transparent; color:#b4bec8; box-shadow:none; cursor:pointer;
+}
+html body .asset-image-preview-head button svg { display:block; width:18px; height:18px; }
+html body .asset-image-preview-head button:hover { background:#2b3642; color:#fff; }
+html body .asset-image-preview-head button:focus-visible { outline:2px solid #566474; outline-offset:2px; }
+html body .asset-image-preview-dialog > .asset-image-preview-full {
+ flex:1 1 0; min-width:0; min-height:0; margin:24px;
+ background-color:transparent; background-position:center; background-size:contain; background-repeat:no-repeat;
+}
+@media (max-width:800px),(max-height:600px) {
+ html body dialog.asset-image-preview-dialog { width:calc(100vw - 48px); height:calc(100dvh - 48px); max-width:calc(100vw - 48px); max-height:calc(100dvh - 48px); }
+ html body .asset-image-preview-dialog > .asset-image-preview-head { padding-inline:16px; }
+ html body .asset-image-preview-dialog > .asset-image-preview-full { margin:16px; }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：第四步左右面板及列表行底色使用 UI 稿 1027
+   的容器/表面色，定向提高优先级以覆盖旧资产编辑器背景；只覆盖背景，不改变布局和选择逻辑。
+   面板为 rgba(15,21,28,.6)，普通列表行为 #171e27，悬停和选中行为 #2b3642。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-sidebar,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-inspector-layout > .asset-profile-inspector {
+  background:rgba(15,21,28,.6) !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-sidebar .asset-browser-row {
+  background:#171e27 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-sidebar .asset-browser-row:is(:hover,.active) {
+  background:#2b3642 !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：第四步预览标题栏的四个操作按钮按 UI 稿 1027
+   的 drama-asset-design-system.css 统一为 32px 高、16px 圆角、左右 12px 留白，
+   使用 #171e27 底色、#2b3642 描边和 #9aa6b2 文字；图标 16px、按钮间距 6px。
+   定向覆盖旧内嵌编辑器的紧凑尺寸，按钮事件、禁用条件及生成记录下拉逻辑继续沿用原实现。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-preview-actions {
+  display:flex; align-items:center; flex-wrap:wrap; gap:6px !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-preview-actions :is(.drama-character-source-button,.drama-character-history-toggle,.asset-view-switch button) {
+  display:inline-flex; align-items:center; justify-content:center;
+  box-sizing:border-box; height:32px !important; min-height:32px !important;
+  padding:0 12px !important; margin:0; border:1px solid var(--va-border) !important;
+  border-radius:16px !important; background:var(--va-surface) !important;
+  color:var(--va-tertiary) !important; font-family:var(--va-font);
+  font-size:14px !important; line-height:20px; font-weight:500 !important;
+  white-space:nowrap; box-shadow:none !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-source-button { gap:8px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-history-toggle { gap:7px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .asset-view-switch button { gap:6px; }
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-preview-actions :is(.drama-character-source-button,.drama-character-history-toggle,.asset-view-switch button):not(:disabled):hover {
+  background:var(--va-border) !important; border-color:var(--va-border-focus) !important; color:#fff !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-region .drama-character-preview-actions :is(.drama-character-source-button,.drama-character-history-toggle,.asset-view-switch button) svg {
+  width:16px !important; height:16px !important; flex:0 0 16px;
+  fill:none; stroke:currentColor; stroke-width:1.5;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：第四步资产生成态移植 UI 稿 1027 的
+   drama-loading-motion.css 柔光扩散背景和关键帧，以原 is-generating 状态驱动。
+   用三层绿色径向渐变及 3.4s/4.2s 往返动画替换旧 1.15s 线性扫光，
+   生成态去除预览底板内边距，使动效铺满预览区；文案显示在光晕上方。
+   仅改变生成态视觉，不更改请求、生成时长、图片回填或结束状态；减少动态偏好下停用动画。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-preview-surface:has(.drama-character-current.is-generating) {
+  padding:0; background:#080d12;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current.is-generating {
+  position:relative; isolation:isolate; overflow:hidden;
+  background:
+    radial-gradient(82% 92% at 18% 78%, rgba(18,121,93,.28), transparent 68%),
+    radial-gradient(76% 82% at 86% 22%, rgba(41,137,100,.20), transparent 70%),
+    radial-gradient(58% 68% at 54% 55%, rgba(111,164,69,.10), transparent 74%),
+    #080d12 !important;
+  background-size:154% 154%,148% 148%,142% 142%,auto !important;
+  animation:va-asset-loading-surface 4.2s ease-in-out infinite alternate !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current.is-generating::before {
+  content:""; position:absolute; inset:-28%; z-index:1;
+  background:
+    radial-gradient(42% 38% at 30% 68%, rgba(26,151,112,.34), transparent 76%),
+    radial-gradient(38% 44% at 72% 31%, rgba(77,154,91,.20), transparent 78%);
+  filter:blur(clamp(12px,3vmax,42px));
+  animation:va-asset-loading-diffusion 3.4s ease-in-out infinite alternate !important;
+  pointer-events:none;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current.is-generating::after {
+  /* 2026-10-27 Product Design 改动逻辑：生成态在柔光上方叠加 UI 稿的固定波点网格，
+     1px 灰蓝圆点按 20px 间距平铺；复用文案伪元素铺满预览区并居中显示生成中，
+     波点不参与底层柔光动画，结束生成后随 is-generating 一起移除。 */
+  position:absolute; inset:0; z-index:3; color:rgba(255,255,255,.92);
+  display:grid; place-items:center; pointer-events:none;
+  background:radial-gradient(circle,rgba(154,166,178,.2) 1px,transparent 1px);
+  background-size:20px 20px; background-position:0 0; background-repeat:repeat;
+  text-shadow:0 2px 14px rgba(0,0,0,.7);
+}
+@keyframes va-asset-loading-surface {
+  0% { background-position:8% 78%,86% 16%,44% 62%,0 0; }
+  48% { background-position:48% 34%,52% 72%,68% 38%,0 0; }
+  100% { background-position:76% 58%,24% 30%,32% 70%,0 0; }
+}
+@keyframes va-asset-loading-diffusion {
+  0% { transform:translate3d(-12%,8%,0) scale(1.04); opacity:.76; }
+  52% { transform:translate3d(6%,-7%,0) scale(1.17); opacity:1; }
+  100% { transform:translate3d(12%,7%,0) scale(1.09); opacity:.82; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current.is-generating,
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-current.is-generating::before {
+    animation:none !important;
+  }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：参考“UI 稿最新/assets/drama-asset-design-system.css”，
+   第四步预览、编辑和音色面板的共同外壳恢复透明、无外框，去掉面板间露出的灰蓝背景色带。
+   各内容面板继续使用现有底色、圆角和描边，保留参考稿的 16px 间距与原有交互。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel {
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-inline-card .drama-character-editor-dialog {
+  background:transparent !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-preview-head,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-inspector-layout > .asset-profile-inspector,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-edit-row > .asset-edit-region {
+  background:#13181e !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-edit-row > .asset-character-profile {
+  background:#12171c !important;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-profile-inspector > .asset-profile-heading,
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-profile > .asset-profile-heading {
+  background:#13181e !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：工作流激活时也统一清除外层面板和内部网格的
+   灰蓝底色及共同外框，避免高优先级规则重新让列间和行间露出背景色带；
+   资产网格、卡片、弹窗内壳及下方编辑行保持透明，只由各独立内容面板绘制底色。 */
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel {
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+}
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel > .asset-grid,
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-browser-detail-panel .asset-inline-card {
+  background:transparent !important;
+}
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-inline-card .drama-character-editor-dialog {
+  background:transparent !important;
+}
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .drama-character-editor-right.has-inspector-layout {
+  background:transparent !important;
+}
+body.drama-workflow-active .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .asset-character-edit-row {
+  background:transparent !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：全量生成沿用当前绿色底、黑色文字及胶囊轮廓，
+   使用图片提示词生成按钮相同的竖线/星形/积分结构；积分节点独立更新，画布入口同步展示。 */
+.asset-workspace #assetBatchOpen,
+.asset-workspace #characterGenerateAll { gap:7px; }
+#assetBatchOpen .asset-full-generate-cost,
+#characterGenerateAll .asset-full-generate-cost {
+ display:inline-flex; align-items:center; gap:5px; padding-left:8px;
+ /* 2026-10-27 Product Design 改动逻辑：明确积分区竖线的高度和边框优先级，使全量生成文案与积分之间显示与左侧图片生成按钮一致的分隔线；保留绿底黑字。 */
+ height:16px; border-left:1px solid rgba(11,18,26,.4) !important; color:inherit; font-size:12px; font-weight:500; line-height:16px; white-space:nowrap;
+}
+#assetBatchOpen .asset-full-generate-cost .detail-generate-sparkle,
+#characterGenerateAll .asset-full-generate-cost .detail-generate-sparkle { color:inherit !important; }
+body.drama-workflow-active #characterGenerateAll {
+ background:var(--va-brand,#b8f84a) !important; color:var(--va-brand-ink,#0b121a) !important;
+ border:0; border-radius:999px; box-shadow:none; font-weight:500;
+}
+body.drama-workflow-active #characterGenerateAll:disabled { background:var(--va-brand-disabled,#688e32) !important; cursor:default; }
+
+/* 2026-10-27 Product Design 改动逻辑：同步“UI 稿最新/assets/drama-workflow-footer.css”及
+   drama-asset-design-system.css 的最终尺寸：36px 高、左右内衬 16px、按钮间距 12px；
+   宿主为当前音色面板，面板内右下各 16px，与左侧图片生成按钮的底部内边距一致。
+   用明确的静态按钮定位覆盖旧 .asset-next 的固定定位及 44px 高度，单按钮/双按钮均右对齐。 */
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-voice-inspector { position:relative; }
+.asset-workspace.has-asset-browser:not(.is-canvas-view):not(.is-parsing-assets) .asset-stage-actions {
+ box-sizing:border-box; display:flex; align-items:center; justify-content:flex-end; flex-wrap:nowrap;
+ height:36px !important; min-height:36px !important; gap:12px !important; max-width:calc(100% - 32px);
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions :is(.asset-batch-open,.asset-next) {
+ position:static !important; inset:auto !important; box-sizing:border-box; flex:0 0 auto;
+ width:auto !important; height:36px !important; min-height:36px !important; margin:0 !important;
+ padding:0 16px !important; line-height:20px; font-size:14px; font-weight:500;
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：同步“UI 稿最新/assets/drama-asset-design-system.css”
+   的资产页标题排版：预览、资料和图片提示词统一 16px/24px、500 字重。
+   角色信息标题栏使用 8px 16px 内边距与 49px 最小高度，确认按钮保留原节点和状态，
+   标题与按钮在同一行垂直居中；正文同步参考稿 14px/24px，不改变输入和确认流程。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) :is(.asset-preview-title,.asset-profile-heading h3,.asset-generation-heading) {
+  font-size:16px !important; line-height:24px !important; font-weight:500 !important;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-character-profile > .asset-profile-heading {
+  display:flex; align-items:center; gap:8px; flex:0 0 auto;
+  padding:8px 16px; min-height:49px; box-sizing:border-box;
+  border-bottom:1px solid var(--va-border-light);
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-character-profile > .asset-profile-heading h3 {
+  margin:0 auto 0 0; white-space:nowrap;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-character-edit-row :is(.drama-character-description,.drama-character-prompt) {
+  font-size:14px !important; line-height:24px !important;
+}
+/* 2026-10-27 Product Design 改动逻辑：图片提示词标题按参考稿向上及两侧抵消面板的 16px
+   内边距，恢复通栏标题与分隔线；12px 16px 标题内边距加 24px 行高和 1px 分隔线
+   构成 49px 高度，与左侧角色信息标题栏对齐；下方内容和底部按钮继续使用原面板内边距。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-edit-region > .asset-generation-heading {
+  margin:-16px -16px 0; padding:12px 16px; min-height:49px; box-sizing:border-box;
+  flex:0 0 auto; color:var(--va-text); border-bottom:1px solid var(--va-border-light);
+}
+
+
+/* 2026-10-27 Product Design 改动逻辑：复用“UI 稿最新”的角色分组外框：同一角色的
+   所有形象包在一个 16px 圆角、1px 描边、8px 内边距的容器内；单形象角色同样有独立外框。
+   分组内采用纵向 8px 间距，并清除旧多形象负边距及行下边距，避免外框错位和重复留白；
+   仅角色分组使用此样式，分类隐藏和各形象原有选中、生成状态继续独立生效。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-browser-group[data-asset-group-type="character"] {
+  display:block; padding:8px; margin:0 0 10px; box-sizing:border-box;
+  border:1px solid var(--va-border); border-radius:16px;
+  background:rgba(23,29,36,.7) !important;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-browser-group[data-asset-group-type="character"] > div {
+  display:flex; flex-direction:column; gap:8px;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-browser-group[data-asset-group-type="character"] .asset-browser-row {
+  margin-bottom:0;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-browser-group[hidden] {
+  display:none !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：角色信息标题栏默认隐藏操作组，输入产生差异后
+   才并排展示确认修改和取消；覆盖旧版始终展示确认按钮的规则，保留原胶囊按钮样式。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .is-character-description-confirm:not([data-description-editing="true"]) .asset-character-profile > .asset-profile-heading > .drama-character-description-actions {
+  display:none !important;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .is-character-description-confirm[data-description-editing="true"] .asset-character-profile > .asset-profile-heading > .drama-character-description-actions {
+  display:flex !important;
+}
+html body .asset-workspace .is-character-description-confirm[data-description-editing="true"] .asset-character-profile .asset-description-cancel {
+  display:inline-flex; align-items:center; justify-content:center;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：角色信息的“确认修改”采用与“取消”相同的
+   secondary 文字色和悬停 text 文字色，仅覆盖可用状态，保留禁用状态的视觉提示。 */
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-character-profile [data-character-description-confirm]:not(:disabled) {
+  color:var(--va-secondary) !important;
+}
+html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-character-profile [data-character-description-confirm]:not(:disabled):hover {
+  color:var(--va-text) !important;
+}
+
+/* 2026-10-27 Product Design 修正逻辑：角色信息与图片提示词两个完整外框在普通 hover
+   时均显示第二步同款 300px 局部渐变描边；不依赖 generate 或 contenteditable 状态。
+   坐标由 drama-outline-border.js 按各框鼠标位置更新，覆盖标题和正文区域，音色框不参与。 */
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main :is(.asset-edit-region,.asset-profile-inspector:not(.asset-voice-inspector)) {
+  position:relative;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main :is(.asset-edit-region,.asset-profile-inspector:not(.asset-voice-inspector))::after {
+  content:""; display:block !important; position:absolute; inset:0; padding:1px;
+  border-radius:inherit; pointer-events:none; z-index:3;
+  background:radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%),#00FF90 0%,rgba(184,236,100,.48) 40%,rgba(250,255,159,.16) 70%,rgba(250,255,159,0) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask-composite:exclude;
+  opacity:0; transition:opacity .25s ease-out;
+}
+.asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main :is(.asset-edit-region,.asset-profile-inspector:not(.asset-voice-inspector)):hover::after {
+  opacity:1;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：角色信息和图片提示词整行共享拖动高度，
+   拖动条覆盖上方 16px 间隙，预览使用剩余高度；图片继续 contain 等比完整显示。
+   窄屏双框纵向排列时隐藏分隔条，沿用原有移动端滚动布局。 */
+@media (min-width:761px) {
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout > .asset-character-edit-row {
+    position:relative; height:var(--asset-edit-height,304px); min-height:284px;
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-main .has-character-profile-layout > .asset-preview-region {
+    min-height:0; overflow:hidden;
+  }
+  .asset-character-height-resizer {
+    display:block; position:absolute; top:-16px; left:0; right:0; height:16px;
+    z-index:12; cursor:row-resize; touch-action:none; outline:none;
+  }
+  .asset-character-height-resizer::after {
+    content:""; position:absolute; left:calc(50% - 28px); top:7px;
+    width:56px; height:2px; border-radius:2px; background:var(--va-tertiary);
+    opacity:0; transition:opacity .15s;
+  }
+  .asset-character-height-resizer:is(:hover,:focus-visible)::after,
+  .is-resizing-asset-panels .asset-character-height-resizer::after { opacity:1; }
+}
+@media (max-width:760px) { .asset-character-height-resizer { display:none; } }
+
+/* 2026-10-27 Product Design 改动逻辑：资产操作组以当前侧栏为宽度上限，
+   六语言按钮使用紧凑内边距和间距；普通栏宽同行展示，极窄栏宽自动换行。
+   生成文案可收缩，积分分隔线、星形与数字保留完整；确认按钮允许换行，避免撑出侧栏。 */
+.asset-workspace.has-asset-browser:not(.is-canvas-view):not(.is-parsing-assets) .asset-stage-actions {
+  width:max-content; max-width:calc(100% - 32px); height:auto !important;
+  flex-wrap:wrap; gap:8px !important;
+}
+.asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-stage-actions :is(.asset-batch-open,.asset-next) {
+  flex:0 1 auto; min-width:0; max-width:100%; height:auto !important;
+  /* 2026-10-27 Product Design：两个底部按钮统一为界面标准 14px/20px，六语言均不单独缩小字号；保留侧栏限宽与窄栏换行。 */
+  padding:6px 10px !important; font-size:14px !important; line-height:20px;
+  white-space:normal; overflow-wrap:anywhere;
+}
+.asset-workspace .asset-stage-actions #assetBatchOpen > span:first-child {
+  min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.asset-workspace .asset-stage-actions .asset-full-generate-cost { flex:0 0 auto; }
+.asset-workspace .asset-stage-actions [dir="rtl"] .asset-full-generate-cost {
+  padding-left:0; padding-right:8px; border-left:0 !important;
+  border-right:1px solid rgba(11,18,26,.4) !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：全量生成内部积分数字继承按钮的统一字号，
+   覆盖旧积分区的 12px 设置；星形图标继续使用原图标尺寸。 */
+.asset-workspace .asset-stage-actions #assetBatchOpen .asset-full-generate-cost {
+  font-size:inherit; line-height:20px;
+}
+.asset-workspace .asset-stage-actions #assetBatchOpen [data-asset-generate-cost] {
+  font-size:inherit;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：小屏资产列表默认从 292px 收窄至 260px，
+   1100px 以下再收窄至 240px；大屏和 680px 以下原移动布局沿用既有宽度。
+   缩减列表留白、缩略图和图文间距，把可用空间优先留给文字；保留字号，
+   长名称/状态自然换行并撑高卡片，避免裁切、省略或挤出左栏。 */
+@media (min-width:681px) and (max-width:1440px) {
+  .asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner {
+    grid-template-columns:260px minmax(0,1fr);
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-list {
+    padding:10px;
+  }
+  html body .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-browser-row {
+    padding:8px; gap:8px;
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-thumb {
+    width:56px; flex-basis:56px; height:40px;
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-copy {
+    flex:1 1 0; min-width:0;
+  }
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-row .drama-character-variant-copy :is(strong,span) {
+    white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere;
+    max-height:none; -webkit-line-clamp:unset;
+  }
+  /* 顶部三类资产继续完整显示，多语言名称较长时允许换行，不缩小已有字体。 */
+  .asset-workspace[data-view="asset-library"]:not(.is-canvas-view) .asset-browser-sidebar .asset-tab {
+    white-space:normal !important; overflow-wrap:anywhere; flex-wrap:wrap;
+    height:auto !important; min-height:36px; padding-block:4px !important;
+  }
+}
+@media (min-width:681px) and (max-width:1100px) {
+  .asset-workspace.has-asset-browser:not(.is-canvas-view) .asset-main .asset-inner {
+    grid-template-columns:240px minmax(0,1fr);
+  }
+}

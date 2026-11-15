@@ -1,0 +1,49 @@
+/* 2026-10-31 Product Design 改动逻辑：直接沿用用户提供的设计稿失败态专用样式，
+ * 仅覆盖异常项目第 2–5 步及普通项目现有图片/视频失败态的图标、文字和按钮外观；
+ * 原有项目状态、六语言文案、重试事件、生成动效和其他页面样式继续沿用。 */
+/* 开发对接用异常状态演示项目：只覆盖独立项目标记下的失败面板。
+   不修改普通项目的失败、生成中、重试事件或步骤布局。 */
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:not([data-setup-page="true"]) .script-detail.is-outline-failed > .script-outline-failure:not([hidden]) {
+  box-sizing:border-box;
+  gap:16px;
+  min-height:240px;
+  padding:24px 16px;
+  color:#d5dbe3;
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > img {
+  box-sizing:border-box;
+  width:64px;
+  height:64px;
+  padding:16px;
+  border-radius:50%;
+  background:rgba(255,92,122,.08);
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > p {
+  width:min(100%,520px);
+  margin:0;
+  padding:0;
+  color:#d5dbe3;
+  font-size:16px;
+  line-height:26px;
+  font-weight:500;
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > button[data-script-outline-retry] {
+  box-sizing:border-box;
+  min-width:96px;
+  min-height:36px;
+  height:auto;
+  margin:8px 0 0;
+  padding:8px 24px;
+  border:0;
+  border-radius:999px;
+  background:#e6ebef;
+  color:#18212b;
+  box-shadow:none;
+  font:500 14px/20px "Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  cursor:pointer;
+  transition:background .16s ease;
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > button[data-script-outline-retry]:hover:not(:disabled) { background:#f5f7fa; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > button[data-script-outline-retry]:active:not(:disabled) { background:#cbd3dc; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > button[data-script-outline-retry]:focus-visible { outline:2px solid #e6ebef; outline-offset:4px; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"] .script-outline-failure > button[data-script-outline-retry]:disabled { background:#29323d; color:#6f7b88; cursor:not-allowed; }

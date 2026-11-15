@@ -1,0 +1,228 @@
+/* 2026-10-27 Product Design 改动逻辑：直接沿用用户提供的 vina-drama-loading-package/assets/drama-loading-motion.css，
+ * 保留原始渐变、模糊和关键帧，限定为短剧第二、三步右侧正文生成态；2026-11-14 将集数栏排除在动效底层之外。
+ * 移除转圈和 200px 插画占位，状态文字在面板中心上移 24px，并置于两层柔光之上。
+ * 生成完成后由原 is-generating / hidden 状态恢复正文；减少动态效果偏好保留静态绿色背景。
+ */
+/* VinaAI short-drama generation background: reusable at any aspect ratio. */
+/* 2026-11-14 Product Design：大纲和剧本生成中立即预留独立集数列，覆盖旧 empty / overall 隐藏规则；
+ * 第二步到第三步过渡不必提前改写正文阶段。集数栏保持普通暗色表面，绿色动效仍限定正文第三列。
+ * 生成结束即移除临时标记，恢复大纲原三列/剧本原四列；窄屏继续沿用原上下排版。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-generation-episode-rail="true"]:not([data-setup-page="true"]) .episode-rail {
+  display: flex !important;
+  background: var(--va-container, #0c1117) !important;
+  border-color: var(--va-border, #2b3642) !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: 0 !important;
+  border-top-right-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+  box-shadow: none !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-generation-episode-rail="true"]:not([data-setup-page="true"]) :is(.script-detail, .script-generation-backdrop) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+@media (min-width: 761px) {
+  body.drama-workflow-active .script-workspace[data-view="script-studio"][data-generation-episode-rail="true"]:not([data-setup-page="true"]) .script-layout {
+    grid-template-columns: minmax(300px, var(--script-chat-width, 30%)) 8px minmax(0, 1fr) 86px !important;
+  }
+}
+/* 2026-11-14 Product Design：已完成集沿用当前按钮亮度；pending / generating 集保持暗灰，
+ * 覆盖选中与悬停，避免未完成内容看起来可查看。下一步灰显仍保留点击，由业务显示未完成 Toast。
+ * 仅作用于第三步的逐集状态，不改变大纲、异常项目和资产/视频页的原有按钮样式。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"]:not([data-setup-page="true"]) .episode-pill[data-script-generation-state="ready"] {
+  color: var(--va-text, #f5f7fa) !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"]:not([data-setup-page="true"]) .episode-pill:is([data-script-generation-state="pending"], [data-script-generation-state="generating"]),
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"]:not([data-setup-page="true"]) .episode-pill:is([data-script-generation-state="pending"], [data-script-generation-state="generating"]):is(:hover, :active) {
+  background: #0e141b !important;
+  border-color: #202a34 !important;
+  color: #59636f !important;
+  box-shadow: none !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"]:not([data-setup-page="true"]) .next-step.is-script-episodes-pending,
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"]:not([data-setup-page="true"]) .next-step.is-script-episodes-pending:is(:hover, :active) {
+  background: #2b3642 !important;
+  color: #9aa6b2 !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop {
+  position: absolute;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 82% at 16% 82%, rgba(18, 121, 93, .27), transparent 66%),
+    radial-gradient(90% 76% at 88% 18%, rgba(38, 132, 99, .18), transparent 69%),
+    #080d12 !important;
+  background-size: 155% 155%, 148% 148%, auto !important;
+  animation: vina-drama-ambient 4.2s ease-in-out infinite alternate !important;
+}
+
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -32%;
+  background:
+    radial-gradient(40% 35% at 28% 68%, rgba(27, 150, 111, .34), transparent 74%),
+    radial-gradient(36% 42% at 72% 31%, rgba(75, 153, 91, .22), transparent 76%),
+    radial-gradient(31% 28% at 55% 57%, rgba(117, 174, 67, .10), transparent 78%);
+  filter: blur(clamp(22px, 4.2vmax, 68px));
+  transform: translate3d(-8%, 7%, 0) scale(1.08);
+  animation: vina-drama-glow 3.6s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  pointer-events: none;
+}
+
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -34%;
+  background:
+    radial-gradient(35% 31% at 20% 26%, rgba(18, 113, 91, .20), transparent 78%),
+    radial-gradient(30% 37% at 78% 72%, rgba(34, 135, 101, .22), transparent 78%),
+    radial-gradient(25% 29% at 50% 45%, rgba(87, 153, 77, .12), transparent 80%);
+  filter: blur(clamp(28px, 5.4vmax, 82px));
+  transform: translate3d(9%, -5%, 0) scale(1.12);
+  animation: vina-drama-diffusion 4.6s cubic-bezier(.42, 0, .36, 1) infinite alternate;
+  pointer-events: none;
+}
+
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading > * { position: relative; z-index: 2; }
+
+
+
+@keyframes vina-drama-ambient {
+  0% { background-position: 12% 76%, 82% 16%, 0 0; }
+  100% { background-position: 56% 34%, 47% 68%, 0 0; }
+}
+
+@keyframes vina-drama-glow {
+  0% { transform: translate3d(-11%, 10%, 0) scale(1.04); opacity: .76; }
+  48% { transform: translate3d(5%, -5%, 0) scale(1.16); opacity: 1; }
+  100% { transform: translate3d(12%, 8%, 0) scale(1.08); opacity: .82; }
+}
+
+@keyframes vina-drama-diffusion {
+  0% { transform: translate3d(11%, -7%, 0) scale(1.08); opacity: .72; }
+  52% { transform: translate3d(-5%, 5%, 0) scale(1.18); opacity: .96; }
+  100% { transform: translate3d(-12%, -1%, 0) scale(1.10); opacity: .78; }
+}
+
+/* 2026-11-14 Product Design 改动逻辑：大纲和剧本共用绿色动效，底层只占正文第三列，不跨入右侧集数列；
+ * 集数栏沿用原背景、描边、标题及按钮样式，生成中也不透明化；Grid 自动跟随拖拽列宽及阿语列方向。
+ * :has 直接读取原 is-generating 状态，涵盖后续步骤返回二/三步、确认修改后的逻辑优化和重新生成。
+ * 背景不接收点击，文案仍在正文区域居中；第四、五步异常项目的全宽规则继续由下方覆盖。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-generation-backdrop {
+  display: none;
+  position: absolute;
+  grid-column: 3 / 4;
+  /* 2026-11-14 Product Design 修复：明确起止行线，与正文共用同一网格行；
+   * 仅指定起始行会让绝对定位底层延伸到布局底部内边距，造成生成态下面多出一截。 */
+  grid-row: 1 / 2;
+  inset: 0;
+  z-index: 0;
+  border: 1px solid var(--va-border, #2b3642);
+  border-radius: 16px;
+  pointer-events: none;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop {
+  display: block;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-detail {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* 2026-11-14：分集剧本动效沿用正文拼接边角，右边界在集数栏之前结束。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage="episode"] .script-generation-backdrop {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+/* 文案仍由原 loading 节点居中显示；移除其旧背景/转圈，露出正文内的绿色底层。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading {
+  position: absolute;
+  inset: 0;
+  background: transparent !important;
+  animation: none !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading::before,
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading::after {
+  content: none !important;
+  display: none !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading .script-state-content {
+  position: relative;
+  z-index: 2;
+  transform: translateY(-24px);
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating > .script-loading .script-state-copy { text-shadow: 0 2px 16px #000; }
+/* 2026-11-14：窄屏背景仅占正文所在第二行第一列，不覆盖上方对话及右侧集数列。 */
+@media (max-width: 760px) {
+  body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-generation-backdrop {
+    grid-column: 1 / 2;
+    /* 2026-11-14：窄屏也明确正文所在行的结束线，保留与其他面板一致的底部留白。 */
+    grid-row: 2 / 3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop,
+  body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop::before,
+  body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail.is-generating) > .script-generation-backdrop::after { animation: none !important; }
+}
+
+/* 2026-10-30 Product Design：只有独立新增项目的失败状态占满右侧内容区；
+ * 图标、提示、重试纵向居中，沿用站内错误图标、文字和品牌按钮颜色。
+ * 生成期间移除此类，完整播放原绿色动效两秒；失败后隐藏旧空态、正文和下一步，避免出现成功内容。
+ * 选择器限定项目标记与非设定页，返回首页或打开已有项目后不改变其布局和流程。 */
+.script-outline-failure { display: none; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:not([data-setup-page="true"]) .script-detail.is-outline-failed {
+  display: grid !important;
+  place-items: center;
+  overflow: hidden !important;
+  grid-template-rows: minmax(0, 1fr);
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:not([data-setup-page="true"]) .script-detail.is-outline-failed > :not(.script-outline-failure) { display: none !important; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:not([data-setup-page="true"]) .script-detail.is-outline-failed > .script-outline-failure:not([hidden]) {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  min-height: 240px;
+  text-align: center;
+}
+.script-outline-failure > img { display: block; width: 48px; height: 48px; flex-shrink: 0; }
+.script-outline-failure > p { margin: 0; color: var(--va-text, #f5f7fa); font-size: 20px; font-weight: 600; line-height: 1.5; }
+.script-outline-failure > button { min-width: 104px; min-height: 40px; padding: 10px 28px; border: 0; border-radius: 8px; background: #ff5c7a; color: #fff; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.script-outline-failure > button:hover { background: #ff758f; }
+.script-outline-failure > button:active { background: #e74866; }
+.script-outline-failure > button:focus-visible { outline: 2px solid #ff5c7a; outline-offset: 4px; }
+
+/* 2026-10-30 Product Design：第二、三步共用右侧失败布局；第四、五步将同一状态面板扩展至顶部导航下方的整个内容区，
+ * 隐藏对话、拖拽条与集数栏，生成动效底层同步铺满，失败图标/文字/红色重试按钮相对整个内容区居中。
+ * 项目标记、步骤标记与非设定页三重限定，其他项目、首页及第一步保持原布局。 */
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:not([data-setup-page="true"]) .script-detail.is-outline-failed { padding: 24px !important; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:is([data-outline-failure-step="4"],[data-outline-failure-step="5"]):not([data-setup-page="true"]) .script-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:is([data-outline-failure-step="4"],[data-outline-failure-step="5"]):not([data-setup-page="true"]) .script-layout > :is(.script-chat,.script-layout-resizer,.episode-rail) { display: none !important; }
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:is([data-outline-failure-step="4"],[data-outline-failure-step="5"]):not([data-setup-page="true"]) .script-layout > :is(.script-detail,.script-generation-backdrop) {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+/* 全宽等待文案与失败状态使用同一中心，移除原右栏生成文案的向上位移。 */
+body.drama-workflow-active .script-workspace[data-outline-failure-project="true"]:is([data-outline-failure-step="4"],[data-outline-failure-step="5"]):not([data-setup-page="true"]) .script-loading .script-state-content { transform: none !important; }

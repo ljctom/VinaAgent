@@ -1,0 +1,42 @@
+/* 2026-10-24 Product Design 改动逻辑：短剧顶部步骤导航对齐 UI稿1024。
+   当前步骤使用 #2b3642 灰蓝背景与同色描边，移除绿色外框及光晕；
+   当前数字保留品牌绿，已完成圆标与勾号改为中性灰蓝/浅灰。
+   按钮尺寸、圆角、字号、间距及连接线已与原稿一致，继续复用原基础样式。
+   仅覆盖短剧顶栏 .steps，不改返回/项目名/账户区、步骤 DOM、编号、状态计算、
+   跳转权限、确认流程或窄屏横向滚动；所有状态仍由原 JS 的 active/complete 类控制。 */
+body.drama-workflow-active .script-status .steps .step { box-shadow:none!important; }
+body.drama-workflow-active .script-status .steps .step.active {
+ background:#2b3642!important;border-color:#2b3642!important;color:#f5f7fa!important;
+}
+body.drama-workflow-active .script-status .steps .step.active .step-num {
+ background:#b8f84a!important;color:#0d1308!important;box-shadow:none!important;
+}
+body.drama-workflow-active .script-status .steps .step.complete .step-num { background:#2b3642!important;color:#d5dbe3!important; }
+body.drama-workflow-active .script-status .steps .step:focus-visible { outline:2px solid #3a4654!important;outline-offset:2px; }
+
+/* 2026-11-03 Product Design 改动逻辑：短剧项目名称保存后仍将焦点交还标题以保留键盘操作，
+   仅移除顶栏标题在 focus / focus-visible 状态下的绿色轮廓和光晕，避免编辑完成后残留绿色框；
+   编辑输入框、标题保存同步及其他控件的焦点提示继续沿用原逻辑。 */
+body.drama-workflow-active .script-status .script-back-title:is(:focus, :focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 2026-11-03 Product Design 改动逻辑：项目名退出编辑后统一作为普通文字展示，
+   展示标题及其悬停、聚焦状态均无边框、轮廓、背景或阴影；输入框仅在实际编辑时存在。 */
+body.drama-workflow-active .script-status [data-script-project-title],
+body.drama-workflow-active .script-status [data-script-project-title]:is(:hover, :focus, :focus-visible, :active) {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* 2026-11-03 Product Design 改动逻辑：所有短剧步骤的名称编辑框统一使用第一步原有的单层圆角边框，
+   聚焦时不附加 outline 或 box-shadow 外框；宽高、内边距、背景、字体及保存行为沿用原实现。 */
+body.drama-workflow-active .script-status > .script-back-group > input.script-title-input,
+body.drama-workflow-active .script-status > .script-back-group > input.script-title-input:is(:focus, :focus-visible) {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}

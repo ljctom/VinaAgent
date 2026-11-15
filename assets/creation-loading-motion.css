@@ -1,0 +1,96 @@
+/* 2026-11-09 Product Design：复用短剧原始绿色渐变、双层柔光和动画关键帧；
+ * 新增的全能创作专属根标记隔离所有规则，短剧代码和动画名保持原样。
+ */
+html.vina-creation-loading-enabled .vina-creation-loading-surface {
+  position: absolute;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 82% at 16% 82%, rgba(18, 121, 93, .27), transparent 66%),
+    radial-gradient(90% 76% at 88% 18%, rgba(38, 132, 99, .18), transparent 69%),
+    #080d12 !important;
+  background-size: 155% 155%, 148% 148%, auto !important;
+  animation: vina-creation-ambient 4.2s ease-in-out infinite alternate !important;
+}
+
+html.vina-creation-loading-enabled .vina-creation-loading-surface::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -32%;
+  background:
+    radial-gradient(40% 35% at 28% 68%, rgba(27, 150, 111, .34), transparent 74%),
+    radial-gradient(36% 42% at 72% 31%, rgba(75, 153, 91, .22), transparent 76%),
+    radial-gradient(31% 28% at 55% 57%, rgba(117, 174, 67, .10), transparent 78%);
+  filter: blur(clamp(22px, 4.2vmax, 68px));
+  transform: translate3d(-8%, 7%, 0) scale(1.08);
+  animation: vina-creation-glow 3.6s cubic-bezier(.45, 0, .55, 1) infinite alternate;
+  pointer-events: none;
+}
+
+html.vina-creation-loading-enabled .vina-creation-loading-surface::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -34%;
+  background:
+    radial-gradient(35% 31% at 20% 26%, rgba(18, 113, 91, .20), transparent 78%),
+    radial-gradient(30% 37% at 78% 72%, rgba(34, 135, 101, .22), transparent 78%),
+    radial-gradient(25% 29% at 50% 45%, rgba(87, 153, 77, .12), transparent 80%);
+  filter: blur(clamp(28px, 5.4vmax, 82px));
+  transform: translate3d(9%, -5%, 0) scale(1.12);
+  animation: vina-creation-diffusion 4.6s cubic-bezier(.42, 0, .36, 1) infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes vina-creation-ambient {
+  0% { background-position: 12% 76%, 82% 16%, 0 0; }
+  100% { background-position: 56% 34%, 47% 68%, 0 0; }
+}
+
+@keyframes vina-creation-glow {
+  0% { transform: translate3d(-11%, 10%, 0) scale(1.04); opacity: .76; }
+  48% { transform: translate3d(5%, -5%, 0) scale(1.16); opacity: 1; }
+  100% { transform: translate3d(12%, 8%, 0) scale(1.08); opacity: .82; }
+}
+
+@keyframes vina-creation-diffusion {
+  0% { transform: translate3d(11%, -7%, 0) scale(1.08); opacity: .72; }
+  52% { transform: translate3d(-5%, 5%, 0) scale(1.18); opacity: .96; }
+  100% { transform: translate3d(-12%, -1%, 0) scale(1.10); opacity: .78; }
+}
+
+
+/* 生成层覆盖原灰色扫光/图标及旧百分比层，保留节点尺寸与原提示词面板。 */
+/* 2026-11-09 Product Design：仅画布缩略图/对话预览作为相对容器；故事板占满主查看器，不能进入高优先级:is相对定位规则。 */
+html.vina-creation-loading-enabled :is(.node .thumb.generating, .vina-md-request-generating .vina-md-preview, .canvas-chat-generation-card.is-generating .canvas-chat-generation-preview) { position: relative; }
+/* 2026-11-09：生成态父容器直接铺满红框对应的整个故事板预览区，清除旧居中占位块的宽高、边距和变换限制。
+ * 只在生成态覆盖，完成/失败由原流程替换节点，图片区、播放器及下方操作栏不改变。
+ */
+html.vina-creation-loading-enabled body.vina-direct-mode #vinaDirectViewer > .vina-direct-placeholder.is-generating {
+  position: absolute !important; inset: 0 !important; box-sizing: border-box !important;
+  width: 100% !important; height: 100% !important; min-width: 0 !important; min-height: 0 !important;
+  max-width: none !important; max-height: none !important; margin: 0 !important; padding: 0 !important;
+  transform: none !important; place-self: stretch !important; border-radius: inherit; overflow: hidden;
+}
+html.vina-creation-loading-enabled .node .thumb.generating { animation: none !important; background: #080d12 !important; }
+html.vina-creation-loading-enabled :is(.node .thumb.generating, .vina-direct-placeholder.is-generating, .vina-md-request-generating .vina-md-preview, .canvas-chat-generation-card.is-generating .canvas-chat-generation-preview) > :not(.vina-creation-loading-surface) { visibility: hidden !important; }
+html.vina-creation-loading-enabled .vina-creation-loading-surface {
+  position: absolute !important; inset: 0; z-index: 10; display: grid; place-items: center;
+  width: 100%; height: 100%; min-height: 0; border-radius: inherit; pointer-events: none;
+  text-align: center; box-sizing: border-box;
+}
+html.vina-creation-loading-enabled .vina-creation-loading-copy {
+  position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+  gap: 7px; padding: 12px; transform: translateY(-8px); text-shadow: 0 2px 16px #000;
+}
+html.vina-creation-loading-enabled .vina-creation-loading-copy strong { color: #ecf3ef; font-size: 16px; line-height: 24px; font-weight: 600; }
+html.vina-creation-loading-enabled .vina-creation-loading-copy span { color: #82918b; font-size: 12px; line-height: 20px; font-weight: 400; }
+html.vina-creation-loading-enabled .is-storyboard .vina-creation-loading-copy { transform: translateY(-24px); gap: 8px; }
+html.vina-creation-loading-enabled .is-storyboard .vina-creation-loading-copy strong { font-size: 22px; line-height: 32px; }
+html.vina-creation-loading-enabled .is-storyboard .vina-creation-loading-copy span { font-size: 14px; line-height: 22px; }
+@media (prefers-reduced-motion: reduce) {
+  html.vina-creation-loading-enabled .vina-creation-loading-surface,
+  html.vina-creation-loading-enabled .vina-creation-loading-surface::before,
+  html.vina-creation-loading-enabled .vina-creation-loading-surface::after { animation: none !important; }
+}

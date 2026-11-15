@@ -1,0 +1,40 @@
+/* 2026-10-10 Product Design 改动逻辑：仅移植「设计参考」首页输入框的局部绿色渐变边框。
+   渐变半径、颜色和 250ms 显隐过渡与 home-v15-glass.css 一致；遮罩只保留 1px 边线，
+   不移植玻璃底色、布局或 home-dot-wave 波点背景。创作使用 .composer，短剧使用包含子导航的整卡。 */
+.view[data-view="canvas"] .home-composer-card .composer {
+  position: relative;
+}
+.view[data-view="canvas"] .home-composer-card .composer::after,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(300px circle at var(--glow-x, 50%) var(--glow-y, 50%), #00FF90 0%, rgba(184, 236, 100, .48) 40%, rgba(250, 255, 159, .16) 70%, rgba(250, 255, 159, 0) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .25s ease-out;
+}
+.view[data-view="canvas"] .home-composer-card .composer:is(:hover, :focus-within)::after,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]:is(:hover, :focus-within)::after {
+  opacity: 1;
+}
+/* 2026-10-10 改动逻辑：交互时让原有灰色内描边退场，避免与参考的彩色边线叠加；
+   离开且无输入焦点时自动恢复现有静态边框，不改变输入框尺寸或圆角。 */
+.view[data-view="canvas"] .home-composer-card .composer:is(:hover, :focus-within) {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+/* 2026-10-10 改动逻辑：减少动态效果偏好下取消渐变边框显隐动画，保留颜色反馈。 */
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-composer-card .composer::after,
+  .view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"]::after {
+    transition: none;
+  }
+}

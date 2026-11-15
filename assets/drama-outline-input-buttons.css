@@ -1,0 +1,35 @@
+/* 2026-10-25 Product Design 修复：大纲/剧本共用原 Figma 附件按钮，取消旧的大纲 32px 空白遮罩。
+ * 直接显示现有 attach.svg，不改点击、上传、禁用、发送与文件状态；适用于所有语言。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload] {
+ box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:0 0 40px;
+ width:40px!important;min-width:40px!important;max-width:40px;height:40px!important;min-height:40px!important;
+ padding:9px!important;border:1px solid #2b3642!important;border-radius:24px!important;background:#080d12!important;gap:0;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload] > img {
+ display:block!important;width:20px;height:20px;flex:0 0 20px;opacity:1!important;visibility:visible;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload]::before { content:none!important; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload]:not(:disabled):hover { background:#111923!important;border-color:#435366!important; }
+
+/* 2026-10-27 Product Design 改动逻辑：第二步大纲和第三步剧本的左下附件/上传剧本
+   对齐 UI 稿 1027：两按钮均高 32px、页面深色底和灰蓝文字，附件为无描边圆形，
+   附件图标从原 20px 调整为原稿 16px 并灰度显示；上传剧本保留文字与文件移除入口。
+   仅覆盖这两个步骤的按钮视觉，不改上传、附件菜单、文件名显示、移除或禁用逻辑。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"]:is([data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-chat .script-input .script-input-tools :is([data-script-chat-attachment-upload],[data-script-chat-upload]) {
+  box-sizing:border-box; display:inline-flex; align-items:center; justify-content:center;
+  height:32px !important; min-height:32px !important; padding:0 10px !important;
+  border:1px solid #2b3642 !important; border-radius:16px !important;
+  background:#080d12 !important; color:#9aa6b2 !important; box-shadow:none !important;
+  font-size:13px; line-height:20px; gap:7px;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"]:is([data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload] {
+  width:32px !important; min-width:32px !important; max-width:32px;
+  flex:0 0 32px; padding:0 !important; border:0 !important; border-radius:50% !important;
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"]:is([data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-chat .script-input .script-input-tools [data-script-chat-attachment-upload] > img {
+  width:16px; height:16px; flex:0 0 16px; filter:grayscale(1);
+}
+body.drama-workflow-active .script-workspace[data-view="script-studio"]:is([data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-chat .script-input .script-input-tools :is([data-script-chat-attachment-upload],[data-script-chat-upload]):not(:disabled):is(:hover,:focus-visible) {
+  background:#2b3642 !important; color:#f5f7fa !important; border-color:#2b3642 !important;
+}

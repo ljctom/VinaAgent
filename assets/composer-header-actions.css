@@ -1,0 +1,85 @@
+/* 2026-11-09 Product Design 改动逻辑：直接复用 /Users/a0000/Downloads/UI 新/assets/composer-header-actions.css
+ * 中短剧剪辑顶栏的 36px 高度、999px 圆角、字体、内边距与描边。
+ * 按最新要求将绿色主按钮改为导出，提交审核与导入共用深色次按钮样式；保留审核状态文案和事件。
+ * 仅保留 #episodeComposerActions 范围的 CSS，不应用参考文件中全能创作剪辑器的选择器。
+ * 顶栏布局、返回键和分集标题已与参考代码一致；保留原 DOM、按钮文案、事件绑定及审核状态逻辑。
+ * 视频预览圆角、留白与时间轴保持原样；短剧直接下载行为由 episode-video-mode.js 管理。
+ */
+html body #episodeComposerActions :is(#episodeComposerImport,[data-episode-composer-export-toggle],#episodeComposerReview) {
+  box-sizing:border-box !important; display:inline-flex; align-items:center; justify-content:center;
+  height:36px !important; min-height:36px !important; padding:0 16px !important;
+  border:1px solid #2b3642 !important; border-radius:999px !important;
+  background:#171e27 !important; color:#d5dbe3 !important;
+  font:500 14px/20px "Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif !important;
+  box-shadow:none !important; text-shadow:none !important; transform:none !important;
+  white-space:nowrap; cursor:pointer; transition:background-color .15s,border-color .15s,color .15s;
+}
+html body #episodeComposerActions :is(#episodeComposerImport,#episodeComposerReview):hover:not(:disabled) {
+  background:#2b3642 !important; border-color:#3a4654 !important; color:#f5f7fa !important;
+}
+/* 2026-11-09 Product Design 修复逻辑：通用按钮规则的 :is() 包含 ID，导致原属性选择器的绿色底被深色样式覆盖。
+ * 导出使用独立 ID，使主按钮配色与通用规则同等优先级并在后方生效；悬停及展开菜单时提亮，按下时加深。
+ * 仅作用于短剧顶栏导出按钮，审核与导入仍使用相同深色外观，禁用状态沿用下方规则。
+ */
+html body #episodeComposerActions #episodeComposerExport { background:#b8f84a !important; border-color:transparent !important; color:#0d1308 !important; }
+html body #episodeComposerActions #episodeComposerExport:is(:hover,[aria-expanded="true"]):not(:disabled) { background:#cfff5a !important; }
+html body #episodeComposerActions #episodeComposerExport:active:not(:disabled) { background:#9fdb3e !important; }
+/* 2026-11-09 样式修复：补全参考代码中的键盘焦点规则，与禁用状态分别生效。 */
+html body #episodeComposerActions :is(#episodeComposerImport,[data-episode-composer-export-toggle],#episodeComposerReview):focus-visible { outline:2px solid #9aa6b2 !important; outline-offset:3px; }
+html body #episodeComposerActions :is(#episodeComposerImport,[data-episode-composer-export-toggle],#episodeComposerReview):disabled {
+  background:#141a21 !important; border-color:#2b3642 !important; color:#4d5865 !important; opacity:1 !important; cursor:not-allowed;
+}
+html body #episodeComposerActions #episodeComposerImport[aria-busy="true"] { cursor:wait; }
+@media(prefers-reduced-motion:reduce) {
+ /* 2026-11-09 样式修复：补全减少动态效果规则，沿用参考代码关闭按钮颜色过渡。 */
+ html body #episodeComposerActions :is(#episodeComposerImport,[data-episode-composer-export-toggle],#episodeComposerReview) { transition:none; }
+}
+/* 2026-11-09 Product Design 改动逻辑：复用账号现有 is-team-account 标识，
+ * 按最新要求恢复团队版的提交审核入口，仅非团队版隐藏该按钮，并通过 display:none 移除占位。
+ * 操作组保留原有 Flex 和靠右布局，团队版依次显示提交审核、导入该集视频、导出；非团队版的导入与导出自动靠右。
+ * 切换账号时自动跟随现有标识更新，不保留上一账号的可见状态。
+ * 不新增账号状态或事件，不改变导入、导出、团队审核及全能创作的业务逻辑。
+ */
+html body:not(:has(.global-account.is-team-account)) .episode-detail-workspace.is-episode-composer-open #episodeComposerActions #episodeComposerReview {
+  display:none !important;
+}
+/* 2026-11-09 Product Design 改动逻辑：短剧导出等待时保持与普通导出及相邻按钮一致的 999px 椭圆胶囊圆角，
+ * 沿用暗绿色背景、深色文字与持续旋转图标；只调整等待态圆角，不修改下载或计时逻辑。
+ * aria-busy 与 disabled 防止重复触发；规则放在通用禁用样式后，避免等待态被覆盖成灰色。
+ */
+html body #episodeComposerActions #episodeComposerExport[aria-busy="true"] {
+  min-width:138px; gap:8px; border-radius:999px !important;
+  background:#58752e !important; border-color:transparent !important; color:#101a08 !important;
+  opacity:1 !important; cursor:wait;
+}
+html body #episodeComposerActions #episodeComposerExport .episode-composer-export-spinner {
+  flex:0 0 18px; width:18px; height:18px; filter:brightness(0); opacity:.75;
+  animation:episode-composer-export-spin .75s linear infinite;
+}
+@keyframes episode-composer-export-spin { to { transform:rotate(360deg); } }
+/* 2026-11-09 Product Design 改动逻辑：仅修复短剧顶栏导入中图标，固定 16px 尺寸并禁止压缩，
+ * 将外部 SVG 默认黑色描边转为浅色，避免在深色按钮上不可辨认；等待期间持续匀速旋转。
+ * 不改变按钮颜色、形状、确认弹窗及完成后的原有刷新流程，不影响全能创作。
+ */
+html body #episodeComposerActions #episodeComposerImport .episode-composer-import-spinner {
+  display:block; flex:0 0 16px; width:16px; height:16px;
+  filter:brightness(0) invert(1); opacity:.7;
+  animation:episode-composer-import-spin .75s linear infinite;
+}
+@keyframes episode-composer-import-spin { to { transform:rotate(360deg); } }
+/* 2026-11-09 Product Design 改动逻辑：导出默认态与合成中状态统一采用左侧两个按钮的 36px 外部高度，
+ * 显式约束最大/最小高度及上下间距，避免字体、加载内容或旧样式撑高按钮。
+ * 外层容器改用 Flex 垂直居中，消除行内按钮基线造成的上下偏移；保留宽度、椭圆圆角、颜色与全部业务逻辑。
+ * 规则仅选择短剧剪辑顶栏导出控件，不影响全能创作。
+ */
+html body #episodeComposerActions .episode-composer-export-wrap {
+  display:flex; align-items:center; align-self:center;
+}
+html body #episodeComposerActions #episodeComposerExport,
+html body #episodeComposerActions #episodeComposerExport[aria-busy="true"] {
+  box-sizing:border-box !important;
+  height:36px !important; min-height:36px !important; max-height:36px !important;
+  padding-top:0 !important; padding-bottom:0 !important;
+  margin-top:0 !important; margin-bottom:0 !important;
+  align-self:center; vertical-align:middle;
+}

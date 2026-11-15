@@ -1,0 +1,82 @@
+/* 2026-10-11 Product Design 改动逻辑：直接采用 Figma Toast 1621:6050 的背景、内描边、圆角、阴影、14/20/500 字体及原始状态图标；整个应用共用固定提示层，顶部定位 25vh 对应用户红框，业务提示的持续时间仍由原入口控制。 */
+:is(#vinaToastLayer,#pmProjectMemberToast).vina-toast-layer {
+  position: fixed !important;
+  top: 25vh !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(678px, calc(100vw - 32px));
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+}
+:is(#vinaToastLayer,#pmProjectMemberToast):empty { display: none !important; }
+:is(#vinaToastLayer,#pmProjectMemberToast) .vina-figma-toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: max-content;
+  max-width: 100%;
+  min-height: 52px;
+  padding: 16px 24px;
+  border: 0;
+  border-radius: 16px;
+  background: #171e27;
+  color: #fff;
+  /* Figma 的 1px 描边位于框内，不额外增加 52px 单行高度。 */
+  box-shadow: inset 0 0 0 1px #2b3642, 0 0 80px #000;
+  font-family: Inter, "Noto Sans SC", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+  pointer-events: none;
+  animation: vina-figma-toast-in 160ms ease-out both;
+}
+:is(#vinaToastLayer,#pmProjectMemberToast) .vina-figma-toast-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+:is(#vinaToastLayer,#pmProjectMemberToast) .vina-figma-toast-icon img { display: block; width: 16px; height: 16px; }
+:is(#vinaToastLayer,#pmProjectMemberToast) .vina-figma-toast-message {
+  min-width: 0;
+  max-width: 600px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@keyframes vina-figma-toast-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { :is(#vinaToastLayer,#pmProjectMemberToast) .vina-figma-toast { animation: none; } }
+
+/* 2026-10-28 Product Design 改动逻辑：短剧流程及首页短剧标签中的所有已接管 Toast，
+ * 从原 25vh 改为整个窗口高度的 50%，并向上平移提示层自身高度的一半，
+ * 使单条提示及多条提示组成的整体均在上下正中；保留原水平居中、间距和入场动效。
+ * 由现有 VinaToast 接管的整体逻辑检查、结果/校验、Agent、提示词优化、
+ * 分镜同步、参考图生成、合成/下载、审片和同源内嵌画布/剪辑提示全部共用此位置。
+ * 文案、图标、显示时长及业务逻辑沿用原实现，其他页面沿用原定位。
+ */
+body.drama-workflow-active :is(#vinaToastLayer,#pmProjectMemberToast).vina-toast-layer,
+body[data-primary-view="canvas"]:has(#home-drama-panel:not([hidden])) :is(#vinaToastLayer,#pmProjectMemberToast).vina-toast-layer {
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 2026-10-29 Product Design：项目成员移除提示直接共用上方短剧 Toast 样式，
+ * 独立手动 popover 仅负责穿过原生 dialog 顶层；窗口正中、2600ms 时长与短剧保持一致。
+ * 清除 popover 浏览器默认面板外观，实际卡片仍完全使用 vina-figma-toast。
+ */
+html body #pmProjectMemberToast.vina-toast-layer {
+ top:50%!important;left:50%!important;right:auto!important;bottom:auto!important;
+ transform:translate(-50%,-50%)!important;margin:0!important;padding:0!important;
+ border:0!important;background:transparent!important;overflow:visible!important;
+}
+html body #pmProjectMemberToast[hidden] {display:none!important;}

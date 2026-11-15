@@ -1,0 +1,480 @@
+/* 2026-10-12 Product Design 改动逻辑：按 ego 实读 vinaai.tv 的全能创作项目还原对话样式。
+ * 用户消息：rgba(184,236,100,.29)、24/24/0/24 圆角、16px 内边距、14px/20px 正文。
+ * AI 回复：左对齐、透明底、无边框和内边距；消息区 30px 留白、消息之间 24px。
+ * 确认选项卡：16px 圆角、12px 内边距及间距、#171E27 选项底、#6F7B88 选中描边。
+ * 2026-10-12 后续改动：输入其他选项占满一行；下方操作行左侧为灰色跳过按钮、右侧为继续按钮。
+ * 选项序号增加句点并对齐首行，长文案自然换行；保留现有选项、默认选中值及分页数据。
+ * 同时覆盖画布及故事板模式，排除带 character-asset-canvas-theme 的短剧资产画布。
+ * 不修改预置文案、默认选中项、项目数据、生成逻辑、附件或卡片禁用行为。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages {
+  padding: 30px !important;
+  gap: 24px !important;
+  background: transparent !important;
+  scrollbar-width: thin;
+  scrollbar-color: #47515e transparent;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages::-webkit-scrollbar {
+  width: 6px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #47515e;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg {
+  min-width: 0;
+  flex-shrink: 0;
+  margin: 0 !important;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg.ai {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-self: flex-start;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, .8) !important;
+  text-align: left;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg.user {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: min(100%, 360px) !important;
+  align-self: flex-end;
+  padding: 16px !important;
+  border: 0 !important;
+  border-radius: 24px 24px 0 24px !important;
+  background: rgba(184, 236, 100, .29) !important;
+  color: #fff !important;
+  text-align: left;
+}
+/* 附件消息复用原缩略图与播放交互，只把其文字区域绘制成同款用户气泡。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg.user.has-reference-images {
+  width: auto;
+  padding: 0 !important;
+  gap: 12px;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .user-reference-text {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 16px !important;
+  border-radius: 24px 24px 0 24px !important;
+  background: rgba(184, 236, 100, .29) !important;
+  color: #fff !important;
+  font: inherit;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg.ai p {
+  margin: 0 0 8px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .msg.ai p:last-child {
+  margin-bottom: 0;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-direction-card, .confirmation-card-shell, .example-creative-choice-panel) {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100% !important;
+  margin-top: 10px !important;
+  padding: 12px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 16px !important;
+  background: rgba(15, 21, 28, .6) !important;
+  color: #d5dbe3 !important;
+  box-shadow: none !important;
+  white-space: normal;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 12px !important;
+}
+/* 扁平化仅影响布局；原按钮、data 属性、自定义输入清除按钮与分页状态仍由现有脚本管理。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.creative-direction-options, .confirmation-batch-body) {
+  display: contents;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.creative-direction-title, .confirmation-batch-head, .creative-option) {
+  grid-column: 1 / -1;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.creative-other-input, .confirmation-batch-custom-field) {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-textarea {
+  grid-column: 1 / -1;
+  min-height: 96px;
+  height: auto !important;
+  padding: 11px 12px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  align-self: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-direction-title, .confirmation-card-question, .example-creative-choice-title) {
+  color: #fff !important;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 24px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-option, .confirmation-card-option) {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: 16px !important;
+  background: #171e27 !important;
+  color: #d5dbe3 !important;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  text-align: left;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-option:hover:not(:disabled), .creative-option.active, .confirmation-card-option:hover:not(:disabled), .confirmation-card-option.is-selected) {
+  border-color: #6f7b88 !important;
+  background: #171e27 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-option-index, .confirmation-batch-option-label, .example-creative-option-title) {
+  color: inherit !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+}
+/* 单选编号按参考页显示为普通行内数字，多选继续保留原勾选标记及语义。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-batch-option-marker {
+  width: auto;
+  min-width: 16px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin: 0;
+  border-radius: 0;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-card-option {
+  gap: 8px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-card-choice-mark {
+  border-color: #6f7b88 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-card-option.is-selected .confirmation-card-choice-mark {
+  border-color: #6f7b88 !important;
+  background: #171e27 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.confirmation-card-options, .example-creative-choice-panel) {
+  display: grid;
+  gap: 12px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-other-input, .confirmation-card-input) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 12px !important;
+  outline: none;
+  background: #080d12 !important;
+  color: #fff !important;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.confirmation-batch-custom-field .creative-other-input, .confirmation-card-input-wrap .confirmation-card-input) {
+  padding-right: 38px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-other-input, .confirmation-card-input)::placeholder {
+  color: #8d9196 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-other-input:focus, .creative-other-input.active, .confirmation-card-input:focus) {
+  border-color: #6f7b88 !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-confirm, .confirmation-card-continue) {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 108px;
+  min-width: 0 !important;
+  height: 36px !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 24px !important;
+  background: #b8f84a !important;
+  color: #0d1308 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-confirm, .confirmation-card-continue):disabled {
+  background: #b8f84a !important;
+  color: #0d1308 !important;
+  opacity: .62 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-card-back {
+  height: 36px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* 2026-10-12 Product Design 后续改动逻辑：序号与正文第一行对齐，句点后留 4px；只改变选项展示，不改选中值。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-option {
+  align-items: flex-start !important;
+  gap: 4px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages :is(.creative-option-index, .confirmation-batch-option-marker) {
+  align-self: flex-start;
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-top: 0 !important;
+  line-height: 20px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .confirmation-batch-option-copy {
+  min-width: 0;
+  flex: 1 1 0;
+}
+/* 跳过按钮使用中性灰底与浅灰文字，继续按钮保留原品牌绿；窄栏允许按钮文字自然换行。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-skip {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid #3a4654;
+  border-radius: 24px;
+  background: #2b3642;
+  color: #d5dbe3;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-skip:hover:not(:disabled),
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-skip:focus-visible {
+  border-color: #6f7b88;
+  background: #3a4654;
+  color: #fff;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-skip:disabled {
+  opacity: .62;
+  cursor: default;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-actions .creative-confirm {
+  max-width: 45%;
+  margin-left: auto;
+}
+
+/* 2026-10-12 Product Design 改动逻辑：确认卡标题与分页控件固定共用首行。
+ * 标题只占左列，覆盖原通用 grid-column:1/-1，避免标题挤占整行后使左右箭头落到左侧第二行。
+ * 页码与左右箭头保持在右上角；长标题在左列自然换行，不影响分页、按钮禁用状态或卡片数据。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-head > .creative-direction-title {
+  grid-column: 1 !important;
+  grid-row: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-head > .confirmation-batch-nav {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+/* 2026-10-12 Product Design 改动逻辑：带跳过按钮的操作行占满卡片可用宽度。
+ * 两按钮按 1.2:1 分配扣除 12px 间距后的空间，左侧略长；取消继续按钮原 108px 固定宽及 45% 最大宽度。
+ * 按钮等高，沿用灰色跳过与绿色继续样式；仅改尺寸，不改变发送文案、分页、禁用状态或默认数据。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-actions:has(> .creative-skip) {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  width: 100%;
+  gap: 12px;
+  align-items: stretch;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-actions:has(> .creative-skip) > :is(.creative-skip, .creative-confirm) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 36px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+}
+
+/* 2026-10-12 Product Design 多语言改动逻辑：两个确认卡操作按钮始终单行展示；实际字号由独立语言脚本按可用宽度适配，不截断译文。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-actions > :is(.creative-skip, .creative-confirm) {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  letter-spacing: 0;
+}
+
+/* 2026-11-03 Product Design 改动说明：全能创作选项卡按用户图二调整，
+ * 仅覆盖当前确认卡的 CSS，同时作用于画布与故事板，继续排除短剧资产画布。
+ * 选项取消数字色块，标题与说明采用同字号行内排版；有说明时补充视觉分隔符，长文案自然换行。
+ * 选中状态仅用略亮底色区分，原 active / aria-pressed、默认答案与单选多选处理全部保留。
+ * 其他选项使用同款深灰圆角底，空值时隐去不可点击的清除图标，有内容时继续展示原清除入口。
+ * 底部灰色跳过与柔和绿色继续按钮按内容宽度靠右排列，窄栏允许操作行换行。
+ * 标题右侧的上一题、页码、下一题维持现有布局、可见性及禁用状态；不修改事件、文案或提交逻辑。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card {
+  background: #0d141b !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-option {
+  min-height: 46px;
+  align-items: center !important;
+  gap: 0 !important;
+  border-color: transparent !important;
+  background: #171e27 !important;
+  color: #d5dbe3 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-option.active,
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-option:hover:not(:disabled) {
+  border-color: transparent !important;
+  background: #1e2732 !important;
+  color: #d5dbe3 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-option:focus-visible {
+  outline: 2px solid #6f7b88;
+  outline-offset: 2px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.confirmation-batch-option-marker, .creative-option-index) {
+  display: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-option-copy {
+  display: block;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.confirmation-batch-option-label, .confirmation-batch-option-description) {
+  display: inline;
+  color: inherit !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-option-label:has(+ .confirmation-batch-option-description)::after {
+  content: '：';
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-other-input {
+  min-height: 44px;
+  height: 44px !important;
+  border-color: transparent !important;
+  border-radius: 16px !important;
+  background: #171e27 !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-other-input::placeholder {
+  color: #6f7b88 !important;
+  opacity: 1;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card :is(.creative-other-input:focus, .creative-other-input.active) {
+  border-color: #6f7b88 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-textarea {
+  min-height: 96px;
+  height: auto !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .confirmation-batch-custom-clear:disabled {
+  opacity: 0;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-direction-actions {
+  display: flex !important;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-direction-actions > :is(.creative-skip, .creative-confirm) {
+  flex: 0 1 auto;
+  width: auto !important;
+  min-width: 60px !important;
+  max-width: 100% !important;
+  min-height: 32px;
+  height: 32px !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  font-family: inherit;
+  line-height: 20px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-skip {
+  background: #2b3642 !important;
+  color: #9aa6b2 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-skip:hover:not(:disabled) {
+  background: #3a4654 !important;
+  color: #d5dbe3 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-confirm {
+  background: #84ad32 !important;
+  color: #0d1308 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-confirm:hover:not(:disabled) {
+  background: #94bd42 !important;
+}
+
+/* 2026-11-03 Product Design 字号修正：按钮固定 14px 并按内容宽度展示，不参与横向压缩。
+ * 窄栏或较长译文可换到下一行，按钮内部文字必要时自然换行，高度随内容增长，避免缩成无法阅读的小字。
+ * 仅调整按钮排版，不改分页、选择、跳过或继续的业务处理。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .creative-direction-card .creative-direction-actions > :is(.creative-skip, .creative-confirm) {
+  flex: 0 0 auto;
+  min-width: min(60px, 100%) !important;
+  height: auto !important;
+  padding: 6px 16px !important;
+  font-size: 14px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}

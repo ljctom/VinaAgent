@@ -1,0 +1,231 @@
+/* 2026-10-12 Product Design 改动逻辑：按 ego 实读 vinaai.tv 全能创作参考页统一底色。
+ * 故事板与画布共用 #080D12；项目栏、Agent、故事板预览和历史栏共用 rgba(15,21,28,.6)。
+ * 外层容器透明，消除旧 #050505 实色在顶部与左侧形成的断层；舞台仍透明，点阵单独铺满视口。
+ * 标记仅由全能创作背景脚本安装，排除角色资产专用画布；仅调整颜色及背景绘制，不改布局与节点交互。
+ */
+html.vina-creation-background-ready,
+html.vina-creation-background-ready body {
+  background: #080d12 !important;
+  background-color: #080d12 !important;
+  background-image: none !important;
+}
+html.vina-creation-background-ready body {
+  isolation: isolate;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .app,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .product,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .product-body,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .main-slot,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .content-frame,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .workspace,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .canvas-shell,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .canvas-stage {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-direct-main,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-direct-history {
+  background: rgba(15, 21, 28, .6) !important;
+  border-color: #2b3642 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat-head,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .messages,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .composer-wrap,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-direct-history-head {
+  background: transparent !important;
+  border-color: #2b3642 !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-direct-viewer,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-switch {
+  background: #080d12 !important;
+  border-color: #2b3642 !important;
+  box-shadow: none !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-tab {
+  background: transparent !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-tab.is-active {
+  background: rgba(255, 255, 255, .2) !important;
+}
+/* 点阵在 body 的独立背景层绘制，位于内容后方，铺满视口且不截获鼠标或键盘事件。 */
+html.vina-creation-background-ready body > .vina-creation-dot-grid {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+/* 故事板保留参考页的纯色背景，切回画布时继续复用原视口点阵。 */
+html.vina-creation-background-ready body.vina-direct-mode > .vina-creation-dot-grid {
+  display: none;
+}
+
+/* 2026-10-12 Product Design 修正逻辑：左栏 .chat 同时承载项目栏、对话框及框外留白，
+ * 整栏着色和模糊会遮住页面背景，产生截图中的左右底色断层，因此容器保持透明且不模糊。
+ * 对话框仅由已有 ::before 轮廓填充，与右侧故事板主面板、历史栏共用 rgba(15,21,28,.6)。
+ * 标题胶囊仅由外层 .chat-head 着色，内部项目标题透明，避免半透明底色叠加后变亮。
+ * 画布模式框外留白直接透出全屏点阵；故事板模式透出 #080D12，保留原边框、布局和交互。
+ */
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat::before {
+  background: rgba(15, 21, 28, .6) !important;
+  border-color: #2b3642 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat > .chat-head {
+  background: rgba(15, 21, 28, .6) !important;
+  border-color: #2b3642 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat .chat-project-title,
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat > .canvas-conversation-head {
+  background: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+}
+
+/* 2026-10-12 Product Design 修正逻辑：画布旧主题的 :has(#character-asset-canvas-theme)
+ * 为选择器引入 ID 优先级，导致上次背景修正仅在故事板生效；本文件背景规则加入同一排除条件，
+ * 以最终加载顺序统一覆盖，画布左栏外侧保持透明，对话轮廓底色与故事板一致。
+ * 展开态项目胶囊统一使用左栏内容区 100% 宽度，移除画布旧规则减去 62px 造成的短截。
+ * 收起态全部使用同一内容区宽度：Agent 入口固定 105px，间距 12px，项目胶囊使用剩余宽度；
+ * 明确解除父级裁切，并将恢复入口定位在内容区内，防止固定 462px 与拖拽侧栏宽度混用造成缺角。
+ */
+@media (min-width: 761px) {
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat:not(.is-conversation-collapsed) > .chat-head {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed {
+    box-sizing: border-box;
+    width: var(--vina-agent-panel-width, 524px) !important;
+    min-width: var(--vina-agent-panel-width, 524px) !important;
+    max-width: var(--vina-agent-panel-width, 524px) !important;
+    overflow: visible !important;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed > .chat-head {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    flex-basis: 52px !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .chat-project-title {
+    box-sizing: border-box;
+    position: relative;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 52px !important;
+    padding: 0 131px 0 14px !important;
+    overflow: visible !important;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .chat-project-title::before {
+    box-sizing: border-box;
+    width: calc(100% - 117px) !important;
+    height: 52px !important;
+    border-color: #2b3642 !important;
+    background: rgba(15, 21, 28, .6) !important;
+    backdrop-filter: blur(10px);
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .canvas-conversation-restore {
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0 0 auto auto;
+    z-index: 2;
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+    height: 52px !important;
+    flex: 0 0 105px !important;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    border: 1px solid #2b3642 !important;
+    border-radius: 999px !important;
+    background: rgba(15, 21, 28, .6) !important;
+    backdrop-filter: blur(10px);
+    overflow: visible !important;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .project-name {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .chat.is-conversation-collapsed .canvas-project-title-input {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 1 0;
+  }
+}
+
+/* 2026-10-12 Product Design 改动逻辑：将图一故事板模式的顶部切换 Tab 样式提取为两种模式共用规则。
+ * 故事板与画布均使用 340×48 胶囊、24px 顶部距离、24px 外圆角、40px 高/20px 圆角的内部按钮。
+ * 字体、留白、背景和描边保持一致，模式切换只由原 is-active 类更新选中项，避免退回画布旧矩形样式。
+ * 规则继续排除角色资产专用画布，不改模式事件、画布视口及内容布局。
+ */
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-switch {
+  box-sizing: border-box !important;
+  position: fixed;
+  top: 24px !important;
+  left: 50%;
+  width: 340px !important;
+  max-width: calc(100vw - 48px) !important;
+  height: 48px !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  padding: 3px !important;
+  margin: 0 !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 24px !important;
+  background: #080d12 !important;
+  box-shadow: none !important;
+  transform: translateX(-50%);
+  backdrop-filter: blur(10px) !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-tab {
+  box-sizing: border-box;
+  height: 40px !important;
+  min-width: 0;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+  color: #9aa6b2 !important;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  box-shadow: none !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-tab:hover {
+  color: rgba(255, 255, 255, .84) !important;
+}
+html.vina-creation-background-ready body:not(:has(#character-asset-canvas-theme)) .vina-workbench-mode-tab.is-active {
+  background: rgba(255, 255, 255, .2) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}

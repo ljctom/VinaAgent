@@ -1,0 +1,63 @@
+/* 2026-10-10 Product Design 改动逻辑：提取「设计参考」的短剧配色，来源为
+   drama-setup-design-system.css、drama-outline-design-system.css 和 merged-design-system.css。
+   仅修改第一步设定卡片状态色、标题色、爆款预设选中边框，以及第二/第三步标题色。
+   不改变卡片尺寸、圆角、布局、字体、边框粗细/虚实、预设图片或原交互。 */
+
+/* 第一步设定卡片：未选中 #171e27；悬停、已选中或展开 #2b3642。
+   现有 has-selection / is-open 继续决定状态；编辑设定副本复用同一配色。 */
+.script-workspace[data-view="script-studio"] .script-setup-panel.has-setup-tiles .setup-tile-button {
+  background: #171e27 !important;
+  border-color: rgba(255,255,255,.06) !important;
+  color: #d5dbe3 !important;
+}
+.script-workspace[data-view="script-studio"] .script-setup-panel.has-setup-tiles .setup-tile-button:is(:hover, .has-selection, .is-open) {
+  background: #2b3642 !important;
+  border-color: #2b3642 !important;
+}
+.script-workspace[data-view="script-studio"] .script-setup-panel.has-setup-tiles .setup-tile-button:disabled {
+  background: #141a21 !important;
+  border-color: #222b35 !important;
+  color: #4d5865 !important;
+}
+/* 卡片内部图标底色、小标题和摘要文字匹配参考；滤镜只用于更换图标颜色。 */
+.script-workspace[data-view="script-studio"] .has-setup-tiles .setup-tile-icon {
+  background: #171e27 !important;
+  border-color: transparent !important;
+}
+.script-workspace[data-view="script-studio"] .has-setup-tiles .setup-tile-icon img {
+  filter: brightness(0) saturate(100%) invert(69%) sepia(9%) saturate(450%) hue-rotate(170deg) !important;
+}
+.script-workspace[data-view="script-studio"] .has-setup-tiles :is(.setup-tile-label, .setup-parameter-row-title) {
+  color: #9aa6b2 !important;
+}
+.script-workspace[data-view="script-studio"] .has-setup-tiles .setup-tile-value {
+  color: #f5f7fa !important;
+}
+/* 第一步分区和设定标题从原强调色改为参考的近白色；只覆盖颜色。 */
+.script-workspace[data-view="script-studio"] .script-setup-panel :is(.script-setup-title, .script-setup-label, .script-setup-choice-title, .script-setup-genres-title) {
+  color: #f5f7fa !important;
+}
+/* 爆款预设选中边框采用参考的白色；保留原单层边框、粗细和图片遮罩。 */
+.script-workspace[data-view="script-studio"] .script-setup-preset[aria-pressed="true"],
+.script-workspace[data-view="script-studio"] .script-setup-preset[aria-pressed="true"]:hover {
+  border-color: #fff !important;
+}
+/* 第二步大纲和第三步剧本：分区标题、角色/场景名称、分集/分场标题均使用参考近白色。
+   不调整正文、卡片背景、顶部步骤导航或标题的字号与字重。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"], [data-script-stage="overall"], [data-script-stage="episode"]):not([data-setup-page="true"]) :is(.section-title, .card-caption, .character-name, .episode-outline-title, .script-scene-card-title) {
+  color: #f5f7fa !important;
+}
+/* 参考中的标题图标为灰蓝色；保留原 SVG、图标尺寸与路径。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"], [data-script-stage="overall"], [data-script-stage="episode"]):not([data-setup-page="true"]) .section-title > svg {
+  color: #9aa6b2 !important;
+}
+
+/* 2026-10-10 Product Design 改动逻辑：复刻「设计参考」drama-outline-design-system.css
+   中角色描述与角色形象之间的分隔：1px、6% 白色横线，上方间隔 20px、下方内衬 16px。
+   使用现有相邻 character-detail-block，不添加可编辑内容或改变角色描述/形象生成逻辑；
+   大纲与分集剧本内的角色卡片共用，横线宽度跟随卡片内容区自适应。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="overall"], [data-script-stage="episode"]):not([data-setup-page="true"]) .subject-card .character-detail-block + .character-detail-block {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 16px;
+}

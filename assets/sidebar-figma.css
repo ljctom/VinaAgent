@@ -1,0 +1,136 @@
+/* 2026-10-02 Product Design 改动逻辑：Figma 6256:17937 主导航按钮为 64×62px、
+   12px 圆角、上下 12px 内边距、图文间距 4px、项间距 8px。
+   选中底色 #171e27 覆盖整项而非仅图标；保留既有侧栏宽度、菜单顺序和交互。 */
+.sidebar > .nav { width: 64px; gap: 8px; }
+.sidebar > .nav > .nav-item {
+  box-sizing: border-box;
+  width: 64px;
+  min-height: 62px;
+  height: 62px;
+  padding: 12px 0;
+  gap: 4px;
+  justify-content: center;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  color: #9aa6b2;
+}
+.sidebar > .nav > .nav-item.active { background: #171e27; color: #fff; }
+.sidebar > .nav > .nav-item .nav-icon {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  transform: none;
+  color: inherit;
+}
+.sidebar > .nav > .nav-item.active .nav-icon { background: transparent; }
+.sidebar > .nav .nav-label { margin-top: 0; font-size: 12px; font-weight: 400; line-height: 18px; }
+.sidebar > .nav .nav-divider { width: 64px; background: #171e27; }
+
+/* 2026-10-02 修复逻辑：直接显示 HTML 中嵌入的原始图片资源，取消外部 CSS mask。
+   图片不依赖本地文件跨源加载；明确重置旧导航图片的最小尺寸、偏移及拉伸比例。
+   默认用滤镜统一为 Figma 灰色，选中时变白；原 SVG 字节与模板 PNG 保持不变。 */
+.sidebar img.sidebar-figma-icon,
+.sidebar > .nav .nav-icon img.sidebar-figma-icon {
+  display: block;
+  flex: 0 0 auto;
+  width: var(--sidebar-icon-width, 15.998px);
+  height: var(--sidebar-icon-height, 15.998px);
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  aspect-ratio: auto;
+  object-fit: contain;
+  transform: none;
+  background: transparent;
+  filter: brightness(0) saturate(100%) invert(73%) sepia(9%) saturate(489%) hue-rotate(169deg) brightness(88%) contrast(87%);
+}
+.sidebar > .nav .nav-item.active .nav-icon img.sidebar-figma-icon { filter: brightness(0) invert(1); }
+.sidebar .sidebar-figma-icon-home { --sidebar-icon-height: 15.9884px; }
+.sidebar .sidebar-figma-icon-projects { --sidebar-icon-width: 15.9964px; }
+.sidebar .sidebar-figma-icon-skill { --sidebar-icon-width: 11.7059px; }
+.sidebar .sidebar-figma-icon-model { --sidebar-icon-width: 14.7528px; }
+
+/* 模板保留原透明双图片，团队保留原双人轮廓与统一的灰白状态。 */
+.sidebar .sidebar-figma-icon-template { --sidebar-icon-width: 20px; --sidebar-icon-height: 20px; }
+.sidebar > .nav .nav-item-team .nav-icon svg { width: 16px; height: 16px; stroke-width: 1.5; }
+
+/* 底部图标也直接嵌入显示，保留原工具背景、尺寸及展示行为。 */
+.sidebar .sidebar-bottom { width: 60px; gap: 4px; color: #9aa6b2; padding-top: 8px; border-top: 1px solid #171e27; }
+.sidebar .sidebar-tool-button { width: 32px; height: 32px; padding: 8px; border-radius: 8px; color: inherit; }
+/* 2026-11-14 Product Design 改动逻辑：仅移除底部耳机客服按钮的底色，改为透明普通图标按钮；保留图标、尺寸、位置及其他按钮样式。 */
+.sidebar .sidebar-tool-button:first-of-type { background: transparent; }
+
+/* 2026-10-02 模板图标修复逻辑：原双图片 PNG 带有深色背景，不能使用
+   brightness(0) 将所有像素统一着色，否则整张图会显示成实心方块。
+   模板单独保留原图颜色和既有 24px 尺寸，通过 screen 融合深色背景；
+   默认态和选中态均覆盖通用滤镜，菜单顺序、点击行为和选中底框保持不变。 */
+.sidebar > .nav .nav-item[data-view-target="template-library"] .nav-icon img.sidebar-figma-icon-template,
+.sidebar > .nav .nav-item[data-view-target="template-library"].active .nav-icon img.sidebar-figma-icon-template {
+  width: 24px;
+  height: 24px;
+  min-width: 0;
+  min-height: 0;
+  filter: none;
+  mix-blend-mode: screen;
+  transform: none;
+  object-fit: contain;
+}
+
+/* 2026-10-02 Product Design 对齐逻辑：模板 PNG 的可见图形偏右，
+   仅将该图片向左微移 3px，对齐相邻导航图标的视觉中线；
+   默认态与选中态使用同一偏移，不改变文字、背景框或点击区域。 */
+.sidebar > .nav .nav-item[data-view-target="template-library"] .nav-icon img.sidebar-figma-icon-template,
+.sidebar > .nav .nav-item[data-view-target="template-library"].active .nav-icon img.sidebar-figma-icon-template {
+  transform: translateX(-3px);
+}
+
+/* 2026-10-31 Product Design 改动逻辑：将原模板按钮移入底部三横线右侧的紧凑浮层，
+   沿用侧栏深色、12px 圆角、灰白图标与选中底色。菜单依附最下方按钮向右展开，
+   不改变主导航和其他底部图标；hidden 优先隐藏，避免弹性布局覆盖初始关闭状态。 */
+.sidebar .sidebar-more { position: relative; flex: 0 0 auto; width: 32px; height: 32px; }
+.sidebar .sidebar-more-toggle { cursor: pointer; background: transparent; }
+.sidebar .sidebar-more-toggle:hover,
+.sidebar .sidebar-more-toggle[aria-expanded="true"] { background: #222b35; color: #fff; }
+.sidebar .sidebar-more-toggle:focus-visible,
+.sidebar .sidebar-more-template:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+.sidebar .sidebar-more-menu {
+  position: absolute;
+  z-index: 100;
+  left: calc(100% + 22px);
+  bottom: 0;
+  width: 156px;
+  padding: 6px;
+  border: 1px solid #2b3540;
+  border-radius: 12px;
+  background: #151c24;
+  box-shadow: 0 8px 28px rgba(0,0,0,.4);
+}
+.sidebar .sidebar-more-menu[hidden] { display: none; }
+.sidebar .sidebar-more-template {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #9aa6b2;
+  cursor: pointer;
+}
+.sidebar .sidebar-more-template:hover,
+.sidebar .sidebar-more-template.active { color: #fff; background: #222b35; }
+.sidebar .sidebar-more-template .nav-icon { width: 24px; height: 24px; padding: 0; background: transparent; }
+.sidebar .sidebar-more-template .nav-label { margin: 0; font-size: 14px; font-weight: 400; line-height: 20px; }
+.sidebar .sidebar-more-template img.sidebar-figma-icon-template { width: 24px; height: 24px; filter: none; mix-blend-mode: screen; transform: translateX(-3px); }
+/* 2026-10-31：阿语侧栏镜像到屏幕右边时，浮层向内容区展开，避免越出屏幕。 */
+html[data-vina-ar] body:is(:not([data-primary-view="template-library"]),.team-console-open) .sidebar .sidebar-more-menu { left: auto; right: calc(100% + 22px); }

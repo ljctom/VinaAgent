@@ -1,0 +1,323 @@
+/* 2026-10-29 Product Design：第五步更新提醒复用原确认框白名单的尺寸、颜色和按钮规范。 */
+/* 2026-10-27 Product Design 改动逻辑：仅统一短剧各步骤的操作确认/删除确认/单按钮确认提示。
+   参考 UI 稿 1027/assets/modal-unified.css、confirmation-dialogs.css、white-action-buttons.css。
+   面板 480px / 内边距 24px / 圆角 16px；标题 18/28/600，正文 14/24/400；
+   操作行距正文 32px、按钮间距 12px、按钮高 36px；白色主操作、描边次操作、红色删除。
+   使用确认弹窗 ID 白名单：不覆盖同类名的导出格式弹窗，也不覆盖设置/模型/素材选择、
+   编辑表单、预览、生成等待层或 Agent 问题卡；保留所有隐藏状态、焦点和原有事件。
+   覆盖：批量生成资产、合成本集视频、逻辑检查、确认修改并继续、角色描述修改、资产调整提示、
+   视频未完成提示、站位图/分镜预览生成、未同步提示词、导入本集视频、同步模型、时长适配、
+   集数调整、大纲删除、场次删除、片段删除、复制示例；以及动态分镜删除、短语删除。
+   短剧资产与分集剪辑 iframe 单独加载同一 CSS，仅覆盖其中的结果删除和资产文件夹删除确认。
+*/
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) :is(#characterGenerateConfirm,#batchGenerateModal,#dramaLogicModal,#dramaStepChangeModal,#dramaVideoRefreshNotice,#characterDescriptionChangeModal,#dramaAssetAdjustmentModal,#episodeActionNoticeModal,#episodeShotAssetsConfirm,#storyboardSyncConfirmModal,#episodeComposerImportModal,#detailParamApplyConfirmModal,#detailDurationAdaptModal,#scriptCountChangeConfirmModal,#scriptOutlineDeleteConfirmModal,#scriptSceneDeleteConfirmModal,#projectDeleteModal,#exampleCopyModal),
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body :is(.vina-delete-confirm-modal,.asset-delete-modal) {
+  background:rgba(2,6,10,.72) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog)::backdrop {
+  background:rgba(2,6,10,.72) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) {
+  box-sizing:border-box !important;width:min(480px,100%) !important;max-width:calc(100vw - 32px) !important;min-width:0 !important;max-height:calc(100dvh - 32px) !important;height:auto !important;padding:24px !important;overflow:auto !important;border:1px solid #2b3642 !important;border-radius:16px !important;background:#171e27 !important;color:#f5f7fa !important;font-family:Inter,"Noto Sans SC","PingFang SC",sans-serif;box-shadow:0 24px 80px #0008 !important;opacity:1 !important;text-align:left !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is(h2,h3,.asset-delete-title,#dramaLogicTitle,#dramaStepChangeTitle,#characterDescriptionChangeTitle,#dramaAssetAdjustmentTitle) {
+  margin:0 !important;color:#f5f7fa !important;font-size:18px !important;line-height:28px !important;font-weight:600 !important;letter-spacing:0 !important;text-align:left !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is(p:not(#dramaLogicTitle):not(#dramaStepChangeTitle):not(#characterDescriptionChangeTitle):not(#dramaAssetAdjustmentTitle),.asset-delete-copy) {
+  margin:12px 0 0 !important;color:#b4bec8 !important;font-size:14px !important;line-height:24px !important;font-weight:400 !important;letter-spacing:0 !important;text-align:left !important;overflow-wrap:anywhere;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) {
+  display:flex !important;justify-content:flex-end !important;flex-wrap:wrap;gap:12px !important;margin:32px 0 0 !important;padding:0 !important;border:0 !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button {
+  box-sizing:border-box !important;min-width:0 !important;width:auto !important;flex:0 0 auto !important;min-height:36px !important;height:36px !important;padding:0 16px !important;border:1px solid #2b3642 !important;border-radius:999px !important;background:transparent !important;color:#d5dbe3 !important;font-family:inherit !important;font-size:14px !important;line-height:20px !important;font-weight:500 !important;letter-spacing:0 !important;box-shadow:none !important;text-shadow:none !important;filter:none !important;cursor:pointer;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:focus-visible {
+  outline:2px solid #9aa6b2 !important;outline-offset:3px !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:is(.confirm,.primary,.is-primary,.storyboard-sync-confirm-primary,.character-generate-confirm-button,[data-character-description-change-confirm]) {
+  background:#fff !important;border-color:#fff !important;color:#0b121a !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:is(.confirm,.primary,.is-primary,.storyboard-sync-confirm-primary,.character-generate-confirm-button,[data-character-description-change-confirm]):hover:not(:disabled):not([aria-disabled="true"]) {
+  background:#f5f7fa !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:is(.confirm,.primary,.is-primary,.storyboard-sync-confirm-primary,.character-generate-confirm-button,[data-character-description-change-confirm]):active:not(:disabled):not([aria-disabled="true"]) {
+  background:#e5e9ef !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:is(.is-danger,.script-outline-delete-confirm,.asset-delete-confirm,.project-delete-action.confirm) {
+  background:#dc3f45 !important;border-color:#dc3f45 !important;color:#fff !important;
+}
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog [data-confirm] {
+  background:#ef6262 !important;border-color:#ef6262 !important;color:#fff !important;
+}
+:is(html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterGenerateConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #batchGenerateModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaLogicModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaStepChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #characterDescriptionChangeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaAssetAdjustmentModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeActionNoticeModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeShotAssetsConfirm > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #storyboardSyncConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #episodeComposerImportModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailParamApplyConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #detailDurationAdaptModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptCountChangeConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptOutlineDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #scriptSceneDeleteConfirmModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #projectDeleteModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #exampleCopyModal > :is(section,[role="dialog"]),
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .storyboard-row-delete-dialog,
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-dialog,
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .asset-delete-dialog) :is([class$="-actions"]) > button:is(:disabled,[aria-disabled="true"]) {
+  background:#2b3642 !important;border-color:#2b3642 !important;color:#6f7b88 !important;opacity:.4 !important;cursor:not-allowed;
+}
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) .detail-quick-prompt-delete-dialog .detail-quick-prompt-delete-copy {
+  padding:0 !important;
+}
+html:is(.vina-episode-canvas-context,:has(body[data-drama-confirmation-ui="true"])) body .vina-delete-confirm-icon {
+  display:none !important;
+}
+
+/* 2026-10-27 Product Design 修复逻辑：分镜删除使用 showModal() 打开的原生 dialog，
+   必须独立限定定位与内容高度，防止共享页面布局中的拉伸、最小高度或 inset 规则
+   把确认框撑成贯穿屏幕的长条。面板在视口中心按标题、正文和按钮自然计算高度，
+   小屏超出视口时仅面板内部滚动；仅在 open 状态设置 display，保留原生关闭隐藏行为。
+   沿用确认弹窗设计稿的 480px 宽、24px 内边距和 16px 圆角，不改变删除事件。 */
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) dialog.storyboard-row-delete-dialog {
+  position:fixed !important;
+  inset:50% auto auto 50% !important;
+  transform:translate(-50%,-50%) !important;
+  margin:0 !important;
+  width:min(480px,calc(100vw - 32px)) !important;
+  height:fit-content !important;
+  min-height:0 !important;
+  max-height:calc(100dvh - 32px) !important;
+  block-size:fit-content !important;
+  min-block-size:0 !important;
+  max-block-size:calc(100dvh - 32px) !important;
+  align-self:center !important;
+  flex:none !important;
+  overflow:auto !important;
+}
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) dialog.storyboard-row-delete-dialog[open] {
+  display:block !important;
+}
+/* 2026-10-27：确认删除保持设计稿的危险操作红色，避免共享主操作样式覆盖为白色。 */
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) dialog.storyboard-row-delete-dialog .storyboard-sync-confirm-actions > button[data-confirm] {
+  background:#ef6262 !important;
+  border-color:#ef6262 !important;
+  color:#fff !important;
+}

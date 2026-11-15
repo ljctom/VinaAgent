@@ -1,0 +1,424 @@
+/* 2026-11-09 Product Design UI 改动：生成确认卡对齐来画参考页。
+ * 仅覆盖全能创作中的卡片、提示词预览、模型列表和参数弹窗外观。
+ * 保留原始 data-action、参数选项、选中值、时长边界与生成/计费流程。
+ * 本文件最后加载，以覆盖历史主题中强制展开、窄弹窗和蓝色控件样式。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card {
+  box-sizing: border-box;
+  display: grid !important;
+  gap: 24px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  margin-top: 24px !important;
+  padding: 12px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 16px !important;
+  background: rgba(15,21,28,.6) !important;
+  box-shadow: none !important;
+  align-content: start !important;
+  overflow: visible !important;
+  color: #d5dbe3 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0;
+  min-height: 30px;
+  padding: 0 52px 0 0 !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 24px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-card-title > :is(i,svg) { width: 16px; height: 16px; flex-shrink: 0; }
+body:not(:has(#character-asset-canvas-theme)) .generation-card-title > span:not(.generation-credit-badge) {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-credit-badge {
+  flex: 0 0 auto;
+  gap: 6px;
+  min-width: 62px;
+  height: 30px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid #2b3642 !important;
+  border-radius: 24px !important;
+  background: #080d12 !important;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 400;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-expand,
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-edit {
+  position: absolute !important;
+  top: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #a6b1bd !important;
+  cursor: pointer;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-expand {
+  right: 12px !important;
+  background: url('./canvas-ui-reference/chevron-down.svg') center / 16px no-repeat !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-card-expand > * { visibility: hidden; }
+body:not(:has(#character-asset-canvas-theme)) .generation-card.expanded .generation-card-expand { transform: rotate(180deg); }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-edit {
+  right: 40px !important;
+  background: url('./icons/review-annotation/pencil.svg') center / 16px no-repeat !important;
+  opacity: .8;
+}
+/* 预览只裁切显示层，不截断提示词内容；点击文字保留预览高度，原展开按钮负责显示完整文本。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card:not(.music-generation-card) .generation-prompt {
+  display: block !important;
+  box-sizing: border-box;
+  height: 80px !important;
+  min-height: 0 !important;
+  max-height: 80px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #d5dbe3 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  /* 2026-11-09 Product Design：按普通正文折叠 HTML 模板自带的换行与缩进，
+   * 去掉提示词首行上方空白和行首空格；只改变排版，不裁剪或改写提示词内容。
+   * 原内容中的段落元素及 br 继续换行，文字点击与箭头展开行为保持不变。 */
+  white-space: normal !important;
+  text-indent: 0 !important;
+  text-align: start !important;
+  overflow-wrap: anywhere;
+  box-shadow: none !important;
+  -webkit-mask-image: linear-gradient(#000 68%, transparent);
+  mask-image: linear-gradient(#000 68%, transparent);
+}
+/* 2026-11-09 Product Design 修正：提示词获得焦点不再改变预览高度，只有右上箭头切换 expanded 后才完整显示。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card:not(.music-generation-card).expanded .generation-prompt {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-params { min-width: 0; overflow: visible !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control {
+  display: grid !important;
+  justify-items: start;
+  gap: 8px !important;
+  overflow: visible !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls .node-param-group { max-width: 100%; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls .node-param-trigger {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: auto !important;
+  min-height: 36px !important;
+  max-width: 100%;
+  padding: 8px 12px !important;
+  border: 1px solid transparent !important;
+  border-radius: 24px !important;
+  background: #080d12 !important;
+  color: #9aa6b2 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-trigger::after {
+  content: ''; width: 12px; height: 12px; flex: 0 0 12px;
+  background: url('./canvas-ui-reference/chevron-down.svg') center / contain no-repeat;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-trigger > :is(i,svg) { display: none !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-group.open .node-param-trigger {
+  border-color: #2b3642 !important; background: #171e27 !important; color: #fff !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-group.open .node-param-trigger::after { transform: rotate(180deg); }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls [data-param-group='settings'] > .node-param-trigger::before {
+  content: ''; width: 16px; height: 16px; flex: 0 0 16px;
+  background: url('./canvas-ui-reference/parameters.svg') center / contain no-repeat;
+}
+body:not(:has(#character-asset-canvas-theme)) [data-confirm-model-logo]::before {
+  content: ''; width: 16px; height: 16px; flex: 0 0 16px;
+  background: var(--confirm-model-logo) center / contain no-repeat;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-actions { display: flex; justify-content: flex-end !important; gap: 12px !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-actions > button {
+  width: auto !important; min-width: 0 !important; height: 32px !important; min-height: 32px !important;
+  padding: 4px 16px !important; border: 0 !important; border-radius: 24px !important;
+  font-size: 14px !important; font-weight: 400 !important; line-height: 24px !important; box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-cancel { background: #2b3642 !important; color: #fff !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-confirm { background: #b8f84a !important; color: #0d1308 !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-confirm:hover:not(:disabled) { background: #c6ff69 !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card.disabled { opacity: .62 !important; filter: none !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card[data-confirm-ui-state='approved'] .generation-confirm:disabled { background: #dff9a6 !important; color: #0d1308 !important; }
+/* 弹窗保留原菜单及事件；只调整尺寸、定位、图标和选中外观。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control .node-param-menu {
+  box-sizing: border-box !important;
+  width: min(432px, calc(100vw - 24px)) !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 24px) !important;
+  padding: 20px !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 16px !important;
+  background: #171e27 !important;
+  color: #d5dbe3 !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.35) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #47515e transparent;
+  z-index: 10030 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .node-param-option {
+  box-sizing: border-box; display: flex; align-items: center; width: 100%;
+  min-height: 68px !important; padding: 12px !important; gap: 12px !important;
+  border: 0 !important; border-radius: 12px !important; background: transparent !important;
+  color: #fff !important; text-align: left;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls .model-menu .node-param-option:is(.selected,:hover) { background: #080d12 !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .model-icon {
+  width: 40px; height: 40px; flex: 0 0 40px; border: 0; border-radius: 12px; background-color: #242d38;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-icon[data-confirm-model-logo] {
+  background-image: var(--confirm-model-logo); background-position: center; background-size: 24px; background-repeat: no-repeat; font-size: 0;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-icon[data-confirm-model-logo]::before,
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-icon[data-confirm-model-logo] > *,
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu :is(.model-check,i[data-lucide='check'],svg.lucide-check) { display: none !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .model-name { color: #fff !important; font-size: 16px !important; font-weight: 600 !important; line-height: 24px; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .model-description {
+  color: #9aa6b2 !important; font-size: 12px !important; font-weight: 400 !important; line-height: 20px; white-space: normal; overflow-wrap: anywhere;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-param-section + .node-param-section { margin-top: 32px !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-param-section-title {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px !important; color: #9aa6b2 !important; font-size: 12px !important; font-weight: 400 !important; line-height: 20px;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-section:has([data-generation-param-key='ratio']) .node-param-section-title::before {
+  content: ''; width: 16px; height: 16px; background: url('./icons/drama-composer/ratio.svg') center / contain no-repeat;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-duration-section .node-param-section-title::before {
+  content: ''; width: 16px; height: 16px; background: url('./canvas-ui-reference/duration.svg') center / contain no-repeat;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-param-choice-grid { display: flex !important; flex-wrap: wrap; gap: 8px !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-param-choice {
+  box-sizing: border-box; min-width: 72px; min-height: 32px; padding: 4px 12px;
+  border: 1px solid transparent !important; border-radius: 8px !important; background: #111820 !important;
+  color: #d5dbe3 !important; font-size: 14px !important; font-weight: 400 !important; line-height: 24px;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls .settings-menu .node-param-choice:is(.selected,:hover) { border-color: #fff !important; background: #080d12 !important; color: #fff !important; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-param-choice[data-generation-param-key='ratio'] { width: calc((100% - 32px) / 5); min-width: 0; height: 64px; padding: 6px; gap: 6px; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-ratio-preview { border-width: 1.5px; border-radius: 3px; opacity: 1; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-control { gap: 8px; padding: 8px 0; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-range { height: 6px; background: linear-gradient(to right,#fff 0 var(--duration-progress,0%),#080d12 var(--duration-progress,0%) 100%); }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-range::-webkit-slider-thumb { width: 14px; height: 14px; border: 0; background: #fff; box-shadow: none; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-range::-moz-range-thumb { width: 14px; height: 14px; border: 0; background: #fff; box-shadow: none; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-input { width: 48px; height: 24px; border: 0; border-radius: 8px; background: #080d12; color: #d5dbe3; font-size: 14px; font-weight: 400; }
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .settings-menu .node-duration-value { gap: 8px; color: #d5dbe3; font-size: 12px; }
+/* 隐藏参数值仍由旧逻辑读取，不让布局覆盖 hidden 的原有语义。 */
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls [hidden] { display: none !important; }
+@media (max-width: 480px) {
+  body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control .node-param-menu { padding: 16px !important; }
+}
+
+/* 2026-11-09 Product Design / ego 参考页图标修正：
+ * 参数入口和时长复用参考页原 SVG，编辑图标采用 ego 读取的原始路径及描边。
+ * 将图形和明确颜色一起嵌入 data URL，不再依赖外部 SVG 遮罩加载。
+ * 分辨率采用参考页原有的 16px 圆框 HD 标记，替换先前不匹配的矩形徽标。
+ * 只改图标展示；保留原模型、参数、按钮事件和箭头独立展开行为。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-edit {
+  -webkit-mask: none !important;
+  mask: none !important;
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQTZCMUJEIiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJtNCAyMCA0LjItMSAxMC40LTEwLjRhMiAyIDAgMCAwLTIuOC0yLjhMNS40IDE2LjIgNCAyMFoiLz48cGF0aCBkPSJtMTQuNiA3IDIuOCAyLjgiLz48L3N2Zz4=") center / 16px 16px no-repeat !important;
+  opacity: 1;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls [data-param-group='settings'] > .node-param-trigger::before {
+  content: '' !important;
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  background: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBzdHJva2U9IiM5QUE2QjIiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgY2xhc3M9ImFpLWNhbnZhcy1nZW5lcmF0aW9uLXNldHRpbmdzX19jb250cm9sLWljb24gYWktY2FudmFzLWdlbmVyYXRpb24tc2V0dGluZ3NfX2NvbnRyb2wtaWNvbi0tcGFyYW1ldGVycyIgdmlld0JveD0iMCAwIDE2IDE2IiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTIgNGgxMk0yIDhoMTJNMiAxMmgxMiI+PC9wYXRoPjwvc3ZnPg==") center / 16px 16px no-repeat !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls [data-param-group='settings'].open > .node-param-trigger::before {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgY2xhc3M9ImFpLWNhbnZhcy1nZW5lcmF0aW9uLXNldHRpbmdzX19jb250cm9sLWljb24gYWktY2FudmFzLWdlbmVyYXRpb24tc2V0dGluZ3NfX2NvbnRyb2wtaWNvbi0tcGFyYW1ldGVycyIgdmlld0JveD0iMCAwIDE2IDE2IiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTIgNGgxMk0yIDhoMTJNMiAxMmgxMiI+PC9wYXRoPjwvc3ZnPg==") !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-section:has([data-generation-param-key='resolution']) .node-param-section-title::before {
+  content: 'HD' !important;
+  display: inline-flex !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid currentColor !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  color: #9aa6b2 !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 6px !important;
+  font-weight: 400 !important;
+  line-height: 6px !important;
+  letter-spacing: 0 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-duration-section .node-param-section-title::before {
+  content: '' !important;
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 16px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJhaS1jYW52YXMtZ2VuZXJhdGlvbi1zZXR0aW5nc19faGVhZGluZy1pY29uIGFpLWNhbnZhcy1nZW5lcmF0aW9uLXNldHRpbmdzX19oZWFkaW5nLWljb24tLWR1cmF0aW9uIiBkYXRhLWZpZ21hLW5vZGU9IjM1MDM6MTM3MjUiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgYXJpYS1oaWRkZW49InRydWUiPjxwYXRoIGQ9Ik04IDBDNi40MTc3NSAwIDQuODcxMDQgMC40NjkxOTIgMy41NTU0NCAxLjM0ODI0QzIuMjM5ODUgMi4yMjcyOSAxLjIxNDQ3IDMuNDc2NzIgMC42MDg5NjcgNC45Mzg1M0MwLjAwMzQ2NjI5IDYuNDAwMzQgLTAuMTU0OTYgOC4wMDg4NyAwLjE1MzcyMSA5LjU2MDcyQzAuNDYyNDAzIDExLjExMjYgMS4yMjQzMyAxMi41MzggMi4zNDMxNSAxMy42NTY5QzMuNDYxOTcgMTQuNzc1NyA0Ljg4NzQzIDE1LjUzNzYgNi40MzkyOCAxNS44NDYzQzcuOTkxMTMgMTYuMTU1IDkuNTk5NjYgMTUuOTk2NSAxMS4wNjE1IDE1LjM5MUMxMi41MjMzIDE0Ljc4NTUgMTMuNzcyNyAxMy43NjAyIDE0LjY1MTggMTIuNDQ0NkMxNS41MzA4IDExLjEyOSAxNiA5LjU4MjI1IDE2IDhDMTUuOTk3NyA1Ljg3ODk3IDE1LjE1NDEgMy44NDU0NyAxMy42NTQzIDIuMzQ1NjhDMTIuMTU0NSAwLjg0NTg4NiAxMC4xMjEgMC4wMDIyOTQwNSA4IDBWMFpNOCAxNC42NjY3QzYuNjgxNDYgMTQuNjY2NyA1LjM5MjUzIDE0LjI3NTcgNC4yOTYyIDEzLjU0MzFDMy4xOTk4NyAxMi44MTA2IDIuMzQ1MzkgMTEuNzY5NCAxLjg0MDgxIDEwLjU1MTJDMS4zMzYyMiA5LjMzMzA1IDEuMjA0MiA3Ljk5MjYxIDEuNDYxNDQgNi42OTk0QzEuNzE4NjcgNS40MDYxOSAyLjM1MzYxIDQuMjE4MzEgMy4yODU5NiAzLjI4NTk2QzQuMjE4MzEgMi4zNTM2MSA1LjQwNjIgMS43MTg2NyA2LjY5OTQgMS40NjE0M0M3Ljk5MjYxIDEuMjA0MiA5LjMzMzA1IDEuMzM2MjIgMTAuNTUxMiAxLjg0MDhDMTEuNzY5NCAyLjM0NTM5IDEyLjgxMDYgMy4xOTk4NyAxMy41NDMxIDQuMjk2MkMxNC4yNzU3IDUuMzkyNTMgMTQuNjY2NyA2LjY4MTQ2IDE0LjY2NjcgOEMxNC42NjQ3IDkuNzY3NTIgMTMuOTYxNyAxMS40NjIxIDEyLjcxMTkgMTIuNzExOUMxMS40NjIxIDEzLjk2MTcgOS43Njc1MiAxNC42NjQ3IDggMTQuNjY2N1pNOS4zMzMzNCA4QzkuMzM0NCA4LjIzNDMgOS4yNzM2OSA4LjQ2NDc1IDkuMTU3MzUgOC42NjgxMkM5LjA0MSA4Ljg3MTUgOC44NzMxMSA5LjA0MDYyIDguNjcwNiA5LjE1ODQ2QzguNDY4MDggOS4yNzYzIDguMjM4MDkgOS4zMzg2OSA4LjAwMzc5IDkuMzM5MzZDNy43Njk0OSA5LjM0MDAyIDcuNTM5MTUgOS4yNzg5MyA3LjMzNTk3IDkuMTYyMjRDNy4xMzI3OSA5LjA0NTU0IDYuOTYzOTUgOC44NzczNyA2Ljg0NjQ1IDguNjc0NjZDNi43Mjg5NiA4LjQ3MTk0IDYuNjY2OTUgOC4yNDE4NSA2LjY2NjY5IDguMDA3NTVDNi42NjY0MiA3Ljc3MzI0IDYuNzI3OSA3LjU0MyA2Ljg0NDkzIDcuMzQwMDJDNi45NjE5NyA3LjEzNzA0IDcuMTMwNDMgNi45Njg0OSA3LjMzMzM0IDYuODUxMzNWNC42NjY2N0M3LjMzMzM0IDQuNDg5ODYgNy40MDM1OCA0LjMyMDI5IDcuNTI4NiA0LjE5NTI2QzcuNjUzNjIgNC4wNzAyNCA3LjgyMzE5IDQgOCA0QzguMTc2ODIgNCA4LjM0NjM4IDQuMDcwMjQgOC40NzE0MSA0LjE5NTI2QzguNTk2NDMgNC4zMjAyOSA4LjY2NjY3IDQuNDg5ODYgOC42NjY2NyA0LjY2NjY3VjYuODUxMzNDOC44Njg3NSA2Ljk2NzU0IDkuMDM2NzIgNy4xMzQ4MyA5LjE1MzczIDcuMzM2NDVDOS4yNzA3NSA3LjUzODA2IDkuMzMyNjggNy43NjY4OSA5LjMzMzM0IDhaIiBmaWxsPSIjOUFBNkIyIj48L3BhdGg+PC9zdmc+") center / 16px 16px no-repeat !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-expand {
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZD0nTTMuNTI3IDUuNDc1YS42Ny42NyAwIDAgMSAuOTQ3IDBsMy4wNTMgMy4wNTNhLjY3LjY3IDAgMCAwIC45NDcgMGwzLjA1My0zLjA1M2EuNjcuNjcgMCAwIDEgLjk0Ny45NGwtMy4wNiAzLjA2YTIgMiAwIDAgMS0yLjgyNyAwbC0zLjA2LTMuMDZhLjY3LjY3IDAgMCAxIDAtLjk0WicgZmlsbD0nIzlBQTZCMicvPjwvc3ZnPg==") center / 16px 16px no-repeat !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .node-param-trigger::after {
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZD0nTTMuNTI3IDUuNDc1YS42Ny42NyAwIDAgMSAuOTQ3IDBsMy4wNTMgMy4wNTNhLjY3LjY3IDAgMCAwIC45NDcgMGwzLjA1My0zLjA1M2EuNjcuNjcgMCAwIDEgLjk0Ny45NGwtMy4wNiAzLjA2YTIgMiAwIDAgMS0yLjgyNyAwbC0zLjA2LTMuMDZhLjY3LjY3IDAgMCAxIDAtLjk0WicgZmlsbD0nIzlBQTZCMicvPjwvc3ZnPg==") center / contain no-repeat !important;
+}
+
+/* 2026-11-09 Product Design / ego：卡内编辑区使用 8px 内边距、248px 文本滚动区及取消/保存按钮。
+ * 正文与草稿分开显示，输入框与模型参数不承载未保存内容；编辑时箭头收起等同取消。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-edit {
+  display: grid !important;
+  place-items: center !important;
+  visibility: visible !important;
+  background: transparent !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card-edit > img {
+  display: block !important; visibility: visible !important;
+  width: 16px !important; height: 16px !important; max-width: none !important;
+  margin: 0 !important; padding: 0 !important; border: 0 !important;
+  opacity: 1 !important; filter: none !important; pointer-events: none;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card.is-prompt-editing > .generation-prompt,
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-card.is-prompt-editing > .generation-card-edit { display: none !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor {
+  display: grid !important; gap: 12px !important;
+  box-sizing: border-box !important; min-width: 0 !important;
+  padding: 8px !important; border: 1px solid #1d2833 !important;
+  border-radius: 12px !important; background: #080d12 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-field {
+  display: block !important; box-sizing: border-box !important;
+  width: 100% !important; height: 248px !important; min-height: 120px !important;
+  max-height: min(248px, 40vh) !important; margin: 0 !important; padding: 0 !important;
+  border: 0 !important; border-radius: 0 !important; background: transparent !important;
+  color: #fff !important; font-family: inherit !important; font-size: 14px !important;
+  font-weight: 400 !important; line-height: 20px !important; text-align: start !important;
+  white-space: pre-wrap !important; overflow-wrap: anywhere !important;
+  overflow-y: auto !important; resize: none !important; outline: none !important;
+  box-shadow: none !important; scrollbar-width: thin; scrollbar-color: #47515e transparent;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-actions { display: flex !important; justify-content: flex-end !important; gap: 12px !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-actions > button {
+  display: block !important; min-width: 72px !important; height: 32px !important;
+  padding: 0 16px !important; border: 0 !important; border-radius: 24px !important;
+  font-size: 16px !important; font-weight: 400 !important; line-height: 24px !important; cursor: pointer;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-cancel { background: #171e27 !important; color: #fff !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-save { background: #b8f84a !important; color: #0d1308 !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-prompt-editor-save:disabled { opacity: .5 !important; cursor: not-allowed; }
+/* 原菜单保留在原卡片内，用 popover top layer 绘制；清掉浏览器默认居中，使 JS 的视口坐标生效。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control .node-param-menu[data-confirmation-floating-menu] {
+  position: fixed !important; margin: 0 !important; right: auto !important; bottom: auto !important;
+  overflow-y: auto !important; overscroll-behavior: contain; z-index: 2147483000 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control .node-param-menu:popover-open { display: block !important; }
+/* 思考停止态同时覆盖旧按钮和共用组件：ego 原 40px 绿色圆形及 24px 图形（内部 12px 圆角方块）。 */
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:is(.vina-reply-stop,[data-reply-action='stop']) {
+  display: grid !important; place-items: center !important;
+  box-sizing: border-box !important; width: 40px !important; min-width: 40px !important;
+  max-width: 40px !important; height: 40px !important; min-height: 40px !important;
+  padding: 8px !important; border: 0 !important; border-radius: 24px !important;
+  background: #b8f84a !important; color: #080d12 !important;
+  box-shadow: none !important; opacity: 1 !important; cursor: pointer !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:not(.vina-creation-send-ui):is(.vina-reply-stop,[data-reply-action='stop']) > * { display: none !important; }
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:not(.vina-creation-send-ui):is(.vina-reply-stop,[data-reply-action='stop'])::after {
+  content: '' !important; display: block !important; position: static !important;
+  width: 24px !important; height: 24px !important; pointer-events: none;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3QgeD0iNiIgeT0iNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMS41IiBmaWxsPSIjMDgwRDEyIi8+PC9zdmc+') center / contain no-repeat !important;
+}
+
+/* 2026-11-09 Product Design：确认卡会员模型名称右侧复用画布的 15×12px 绿色钻石。
+ * 标记参与标题行排版，避免菜单滚动或副标题宽度变化时错位；只装饰会员模型，不替换选项或模型值。
+ */
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .model-name {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .generation-model-membership-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 2px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  vertical-align: middle;
+}
+body:not(:has(#character-asset-canvas-theme)) .generation-param-controls .model-menu .generation-model-membership-badge > img {
+  display: block !important;
+  visibility: visible !important;
+  width: 15px !important;
+  height: 12px !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* 2026-11-09 Product Design 修复：浮层尺寸完全交给可视空间计算，清除历史最小高度及位移；
+ * 使用 border-box 将内边距和边框计入限高，菜单内部滚动，不挤占或覆盖参数条。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .messages .generation-param-controls.split-param-control .node-param-menu[data-confirmation-floating-menu] {
+  box-sizing: border-box !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
+/* 2026-11-09 Product Design 修复：旧 :has(.open) 规则会把消息区改成 overflow:visible，
+ * 解除滚动容器并丢失原 scrollTop，使确认卡在弹窗打开时下移到输入框后方。
+ * 开关菜单始终保持对话栏裁切与消息区滚动；菜单由 popover top layer 独立向上显示，
+ * 无需解除祖先裁切，也不改变卡片占位、消息区高度或滚动位置。 */
+body:not(:has(#character-asset-canvas-theme)) .content-frame > .chat {
+  overflow: hidden !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .messages {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}

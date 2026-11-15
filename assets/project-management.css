@@ -1,0 +1,427 @@
+/* 2026-09-30 Product Design 改动逻辑：团队与个人账号均移除卡片项目管理按钮，团队卡片由 282px 缩至 240px，信息区由 96px 缩至 58px，不再为按钮预留高度。 */
+.project-management-entry{display:none}
+body.project-team-account .view[data-view="projects"] .project-card{height:auto;min-height:240px}
+body.project-team-account .view[data-view="projects"] .project-info{height:auto;min-height:58px}
+body.project-team-account .view[data-view="projects"] .project-info>div{width:100%;min-width:0}
+/* 2026-10-30 Product Design UI 改动：按“UI 稿 1030”保留短剧封面的深色胶囊，默认标签文字使用纯白色；仅调整外观。 */
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-stage-badge{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;min-height:27px;padding:0 11px;border-radius:999px;background:rgba(17,45,54,.9);color:#FFFFFF;font-size:12px;font-weight:600;line-height:1;white-space:nowrap;backdrop-filter:blur(8px)}
+/* 2026-10-30 Product Design UI 改动：复用“UI 稿 1030”的状态配色，制作阶段与未审核为白色，审核不通过为 #F4AE72，审核通过为 #67D4E8；沿用现有状态属性，不修改状态计算或筛选逻辑。 */
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card[data-project-status="未完成"] .project-stage-badge{color:#FFFFFF}
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card[data-project-status="未审核"] .project-stage-badge{color:#FFFFFF}
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card[data-project-status="审核不通过"] .project-stage-badge{color:#F4AE72}
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card[data-project-status="审核通过"] .project-stage-badge{color:#67D4E8}
+/* 2026-09-26 Product Design 改动逻辑：积分消耗与项目成员管理共用弹窗桌面最大宽度收至 960px，减少内容两侧空白；仍按视口宽度收缩，窄屏继续沿用下方单列布局。 */
+.pm-dialog{width:min(960px,calc(100vw - 48px));height:min(760px,calc(100dvh - 64px));max-width:none;max-height:none;padding:0;border:1px solid #34403f;border-radius:20px;background:#10171b;color:#e5eae7;box-shadow:0 32px 110px #0009;font-family:"Noto Sans SC","PingFang SC",sans-serif}
+.pm-dialog::backdrop{background:#020708bd;backdrop-filter:blur(5px)}
+.pm-dialog[open]{display:flex;flex-direction:column}
+.pm-dialog *{box-sizing:border-box}
+.pm-dialog button,.pm-dialog input{font:inherit}
+.pm-dialog button{cursor:pointer}
+.pm-dialog button:focus-visible,.pm-dialog input:focus-visible,.project-management-entry:focus-visible{outline:2px solid #b8f84a;outline-offset:3px}
+.pm-header{display:flex;align-items:center;justify-content:space-between;padding:26px 30px 22px;gap:20px}
+.pm-header h2{font-size:26px;margin:0;font-weight:650;line-height:1.35;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 2026-09-29 Product Design 改动逻辑：团队项目看板的成员和积分弹窗都隐藏页签，由标题栏底边区分标题与内容区。 */
+.pm-board-standalone .pm-header{border-bottom:1px solid #2b353b}
+.pm-subtitle{font-size:13px;color:#8e9c9f;max-width:850px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 2026-09-23 项目弹窗标题与关闭控件逻辑：标题单行展示，图标按钮维持足够点击区域和键盘焦点。 */
+.pm-close{flex:none;display:grid;place-items:center;width:40px;height:40px;border:1px solid #34403f;border-radius:9px;background:#1c252a;padding:0}
+.pm-close img{width:18px;height:18px}
+.pm-close:hover{background:#28343a}
+/* 2026-09-23 移除成员确认弹窗沿用项目管理的深色界面，危险操作需显式确认。 */
+.pm-confirm-dialog{width:min(420px,calc(100vw - 32px));max-width:none;padding:24px;border:1px solid #3a464b;border-radius:14px;background:#172126;color:#e5eae7;box-shadow:0 24px 80px #000b;font-family:"Noto Sans SC","PingFang SC",sans-serif}
+.pm-confirm-dialog::backdrop{background:#020708a8}
+.pm-confirm-dialog h3{font-size:18px;margin:0 0 12px}
+.pm-confirm-message{font-size:13px;line-height:1.7;color:#aebbc0;margin:0 0 24px}
+.pm-confirm-actions{display:flex;justify-content:flex-end;gap:10px}
+.pm-confirm-dialog button{font:inherit;cursor:pointer}
+.pm-confirm-dialog button:focus-visible{outline:2px solid #b8f84a;outline-offset:3px}
+.pm-confirm-remove{border:1px solid #a95353;border-radius:8px;background:#893b3b;color:#fff;padding:10px 16px;font-size:13px!important;font-weight:600!important}
+.pm-confirm-remove:hover{background:#a54848}
+.pm-tabs{display:flex;gap:30px;padding:0 30px;border-bottom:1px solid #2b353b}
+.pm-tabs button{padding:0 2px 17px;background:transparent;border:0;border-bottom:2px solid transparent;color:#8c999f;font-size:14px}
+.pm-tabs button[aria-selected="true"]{border-color:#b8f84a;color:#c0fb68}
+.pm-body{padding:26px 30px;overflow:auto;flex:1;min-height:0}
+/* 2026-09-29 Product Design 改动逻辑：看板成员弹窗的取消与保存固定在右下角，长成员名单滚动时操作仍可见。 */
+.pm-footer{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex:none;padding:16px 30px;border-top:1px solid #2b353b}
+.pm-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:30px}
+.pm-stat{border:1px solid #2c383d;background:#182126;border-radius:12px;padding:22px 24px}
+.pm-stat span{display:block;font-size:13px;color:#94a2a7;margin-bottom:13px}
+.pm-stat strong{font-size:30px;font-weight:600;letter-spacing:-.8px;font-variant-numeric:tabular-nums}
+.pm-stat small{font-size:12px;margin-left:8px;color:#7d8b91}
+.pm-stat:first-child strong{color:#b8f84a}
+.pm-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.pm-toolbar h3,.pm-column h3{font-size:15px;font-weight:600;margin:0}
+.pm-toolbar p,.pm-hint{font-size:12px;line-height:1.7;color:#86969b;margin:7px 0 0}
+.pm-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pm-search{width:220px;border:1px solid #344148;background:#182126;border-radius:8px;color:#e5eae7;padding:10px 12px;font-size:12px!important}
+.pm-primary,.pm-secondary{border:1px solid #b8f84a;background:#b8f84a;color:#172008;border-radius:8px;padding:10px 16px;font-size:13px!important;font-weight:600!important;white-space:nowrap}
+.pm-secondary{background:#1d272c;border-color:#36444b;color:#c4ced1}
+/* 2026-09-24 项目成员操作逻辑：移除成员使用与普通次要操作一致的按钮外观，并收紧表格内的按钮尺寸。 */
+.pm-table-action{padding:6px 12px;font-size:12px!important}
+.pm-table-wrap{overflow:auto;border:1px solid #2b373e;border-radius:10px}
+.pm-table{border-collapse:collapse;width:100%;font-size:13px;text-align:left;white-space:nowrap}
+.pm-table th{background:#1e282e;color:#90a0a7;font-weight:500;padding:14px 16px}
+.pm-table td{padding:17px 16px;border-top:1px solid #28343b;color:#c9d3d7}
+.pm-table td strong{font-weight:500;color:#eef2ef}
+.pm-table .pm-number{text-align:right;font-variant-numeric:tabular-nums}
+.pm-tag{font-size:11px;background:#27332b;color:#b6ccad;border:1px solid #394a3b;border-radius:5px;padding:4px 7px}
+.pm-link{border:0;background:transparent;color:#b8f84a;padding:5px 0;font-size:12px!important}
+.pm-link.pm-remove{color:#b1bdc4}
+.pm-muted{font-size:11px;color:#7b8a92}
+.pm-empty{text-align:center!important;padding:65px 20px!important;color:#7e9098!important}
+.pm-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pm-column{background:#141d22;border:1px solid #2b373e;border-radius:12px;padding:18px;min-width:0;min-height:300px}
+.pm-column-head{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:17px}
+.pm-column .pm-search{width:190px}
+.pm-column .pm-table td,.pm-column .pm-table th{padding:13px 10px}
+/* 2026-09-24 底栏移除后，保存反馈显示在项目成员标题下方。 */
+.pm-feedback{font-size:12px;color:#a6bb9c;line-height:1.6}
+@media(max-width:760px){.pm-dialog{width:calc(100vw - 20px);height:calc(100dvh - 24px);border-radius:14px}.pm-header,.pm-body{padding:20px}.pm-tabs{padding:0 20px}.pm-summary{gap:8px}.pm-stat{padding:15px 12px}.pm-stat strong{font-size:23px}.pm-stat small{display:block;margin:4px 0 0}.pm-columns{grid-template-columns:1fr}.pm-subtitle{max-width:60vw}}
+@media(max-width:760px){.pm-footer{padding:14px 20px}}
+
+/* 2026-09-26 Product Design：短剧专属筛选靠分类栏右侧向下展开；沿用深色底、绿色选中态。
+   五段青蓝色进度与步骤计数同处时间下方，不显示阶段文字，卡片高度随内容扩展。 */
+/* 2026-09-26 Product Design 对齐逻辑：分类栏宽度按卡片的 276px 列宽和 12px 列间距取整，让右侧状态筛选与当前最右侧卡片边缘对齐；窄屏仍不超过可用宽度。 */
+.view.library-page[data-view="projects"] .plain-tabs{display:flex;width:min(100%,1716px);width:min(100%,max(276px,calc(round(down,calc(100% + 12px),288px) - 12px)));overflow:visible;position:relative;z-index:5}
+.project-status-filter{position:relative;margin-left:auto;font-size:14px;color:#d5dbe3}
+.project-status-filter[hidden],.project-filter-empty[hidden]{display:none}
+.project-status-filter summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:22px;min-width:148px;padding:10px 14px;border:1px solid #334049;border-radius:10px;background:#151e25;cursor:pointer}
+.project-status-filter summary::-webkit-details-marker{display:none}
+.project-status-filter summary img{width:18px;height:18px}
+.project-status-filter[open] summary{border-color:#96c73d;box-shadow:0 0 0 3px #b8f84a18}
+.project-status-menu{position:absolute;right:0;top:calc(100% + 8px);width:200px;max-height:min(560px,65vh);overflow-y:auto;padding:7px;border:1px solid #34424d;border-radius:12px;background:#19222b;box-shadow:0 16px 40px #0006}
+/* 2026-09-29 Product Design 改动逻辑：筛选菜单不再渲染制作阶段和项目状态分组标题，选项直接连续排列。 */
+.project-status-menu button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;border-radius:7px;background:transparent;color:#d5dbe3;font:inherit;cursor:pointer}
+.project-status-menu button:hover{background:#26333d}
+.project-status-menu button[aria-pressed="true"]{background:#354425;color:#d0f99b}
+.project-status-filter summary:focus-visible,.project-status-menu button:focus-visible,.project-filter-empty button:focus-visible{outline:2px solid #b8f84a;outline-offset:2px}
+/* 2026-09-30 Product Design 改动逻辑：短剧卡片最小高度由 262px 收至画布的 240px，信息区由 86px 收至 58px，去掉时间与集数下方多余留白；自动高度仍容纳集数标签。团队账号与个人账号共用 240px 卡片与 58px 信息区，移除项目管理按钮后同步缩短。 */
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card{height:auto;min-height:240px}
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-info{height:auto;min-height:58px}
+body.project-team-account .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card{min-height:240px}
+body.project-team-account .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-info{min-height:58px}
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-info>div{width:100%;min-width:0}
+/* 2026-09-26 Product Design 修正逻辑：覆盖通用时间样式的 block 布局，使短剧时间与右侧集数标签保持同一行。 */
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-time{display:inline-block;vertical-align:middle}
+/* 2026-09-26 Product Design 改动逻辑：集数紧跟短剧项目时间显示为小椭圆标签；文字、底色与边框统一为低对比灰白色，单、双位数字均不换行。 */
+.view.library-page[data-view="projects"] [data-project-panel="drama"] .project-episode-count{display:inline-flex;align-items:center;vertical-align:middle;margin-left:8px;padding:1px 8px;border:1px solid #3b444b;border-radius:999px;background:#22292f;color:#a8b0b7;font-size:11px;line-height:16px;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 2026-09-29 Product Design 改动逻辑：移除短剧卡片的分段进度线与 x/5 数字样式，信息区仅保留项目名称、时间和集数。 */
+.project-filter-empty{padding:70px 20px;text-align:center;color:#8f9da9}
+.project-filter-empty button{padding:9px 16px;border:1px solid #43532e;border-radius:8px;background:#26321b;color:#c6ef94;cursor:pointer;font:inherit}
+@media(max-width:540px){.view.library-page[data-view="projects"] .plain-tabs{gap:6px;flex-wrap:wrap}.project-status-filter summary{min-width:130px;padding:9px 10px;gap:10px}.project-status-menu{width:180px}}
+
+/* 2026-10-29 Product Design UI 同步逻辑：以下项目页样式直接采用“项目设计稿”代码，统一画布与 AI 短剧的页签、卡片、字体、状态标签、时间集数和筛选控件；选择器限定项目视图，不修改数据与交互。 */
+/* 2026-10-29 项目页沿用已确认的产品设计系统。令牌仅在项目视图内生效，
+   保留项目数据、卡片网格及筛选、重命名、删除和打开项目的现有事件。 */
+html body .view.library-page[data-view="projects"] {
+  --project-bg: #080d12;
+  --project-card: #0f151c;
+  --project-surface: #171e27;
+  --project-raised: #222b35;
+  --project-border: #2b3642;
+  --project-border-hover: #3a4654;
+  --project-text: #f5f7fa;
+  --project-secondary: #d5dbe3;
+  --project-tertiary: #9aa6b2;
+  --project-muted: #6f7b88;
+  background: var(--project-bg);
+  color: var(--project-text);
+  font-family: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}
+/* 页面一级导航：16/24 Medium 文字与底部指示线；胶囊填充保留给二级筛选。 */
+html body .view.library-page[data-view="projects"] .plain-tabs {
+  min-height: 56px;
+  gap: 32px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--project-border);
+}
+html body .view.library-page[data-view="projects"] .plain-tab {
+  position: relative;
+  align-self: stretch;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--project-tertiary);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  box-shadow: none;
+  transition: color .16s ease;
+}
+html body .view.library-page[data-view="projects"] .plain-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--project-text);
+  opacity: 0;
+}
+html body .view.library-page[data-view="projects"] .plain-tab:hover {
+  background: transparent;
+  color: var(--project-text);
+}
+html body .view.library-page[data-view="projects"] .plain-tab.active {
+  background: transparent;
+  border-color: transparent;
+  color: var(--project-text);
+  box-shadow: none;
+  font-weight: 500;
+}
+html body .view.library-page[data-view="projects"] .plain-tab.active::after { opacity: 1; }
+html body .view.library-page[data-view="projects"] .project-card {
+  background: var(--project-card);
+  border-color: var(--project-border);
+  border-radius: 12px;
+  box-shadow: none;
+}
+html body .view.library-page[data-view="projects"] .project-card:hover {
+  background: var(--project-surface);
+  border-color: var(--project-border-hover);
+}
+html body .view.library-page[data-view="projects"] .project-cover {
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+}
+html body .view.library-page[data-view="projects"] .project-info { padding: 8px 12px; }
+html body .view.library-page[data-view="projects"] .project-title {
+  color: var(--project-text);
+  font: 400 14px/20px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+html body .view.library-page[data-view="projects"] .project-time {
+  color: var(--project-muted);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-episode-count {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 22px;
+  min-width: 40px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--project-surface);
+  border-color: var(--project-border);
+  color: var(--project-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-stage-badge {
+  box-sizing: border-box;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  background: rgba(15,21,28,.92);
+  font: 500 12px/18px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  box-shadow: none;
+}
+/* 2026-10-30 Product Design UI 改动：对齐“UI 稿 1030”的纯文字状态胶囊，移除装饰圆点，并覆盖旧的制作阶段灰色样式；标签内容与业务状态保持现有实现。 */
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-stage-badge::before { content:none; }
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-card[data-project-status="未完成"] .project-stage-badge { color:#FFFFFF; }
+/* 2026-10-29：标题独占一行，时间与集数分居下一行两端；重命名输入沿用标题网格位置。 */
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-info > div { display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto auto; align-items:center; gap:4px 12px; }
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] :is(.project-title,.project-title-input) { grid-column:1 / -1; grid-row:1; margin:0; }
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-time { grid-column:1; grid-row:2; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+html body .view.library-page[data-view="projects"] :is(.project-edit, .project-delete) {
+  background: var(--project-surface);
+  border: 1px solid var(--project-border);
+  color: var(--project-tertiary);
+}
+html body .view.library-page[data-view="projects"] .project-edit:hover {
+  background: var(--project-raised);
+  border-color: var(--project-border-hover);
+  color: var(--project-text);
+}
+html body .view.library-page[data-view="projects"] .project-delete:hover {
+  background: #38212b;
+  border-color: #6b3445;
+  color: #ff5c7a;
+}
+/* 同一封面操作组使用 32px 点击区和 18px 图标，清除默认按钮 padding 与 SVG 基线偏移。 */
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] :is(.project-edit,.project-delete) { display:grid; place-items:center; box-sizing:border-box; width:32px; min-width:32px; height:32px; min-height:32px; top:10px; right:10px; padding:0; margin:0; border-radius:8px; line-height:0; transform:none; }
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] .project-edit { right:50px; }
+html body .view.library-page[data-view="projects"] [data-project-panel="drama"] :is(.project-edit,.project-delete) svg { display:block; width:18px; height:18px; margin:0; padding:0; transform:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+html body .view.library-page[data-view="projects"] .project-card:focus-within :is(.project-edit, .project-delete) {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+html body .view.library-page[data-view="projects"] .project-title-input {
+  box-sizing: border-box;
+  appearance: none;
+  background: var(--project-surface);
+  border: 1px solid var(--project-border-hover);
+  outline: none;
+  box-shadow: none;
+  color: var(--project-text);
+  font: 400 14px/20px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+/* 重命名仅通过自身边框表达聚焦，避免输入边框与外围焦点环叠成双重描边。 */
+html body .view.library-page[data-view="projects"] .project-title-input:is(:focus, :focus-visible) {
+  border-color: var(--project-tertiary);
+  outline: none;
+  box-shadow: none;
+}
+html body .view.library-page[data-view="projects"] .project-status-filter { font: 400 14px/20px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+html body .view.library-page[data-view="projects"] .project-status-filter summary {
+  /* 紧凑筛选控件：32px 高，与一级导航分隔线之间保留约 12px 呼吸空间。 */
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  min-width: 120px;
+  padding: 0 12px;
+  gap: 12px;
+  background: var(--project-surface);
+  border-color: var(--project-border);
+  color: var(--project-secondary);
+  border-radius: 8px;
+  box-shadow: none;
+}
+html body .view.library-page[data-view="projects"] .project-status-filter summary img { width: 14px; height: 14px; }
+html body .view.library-page[data-view="projects"] .project-status-filter summary:hover,
+html body .view.library-page[data-view="projects"] .project-status-filter[open] summary {
+  background: var(--project-raised);
+  border-color: var(--project-border-hover);
+}
+html body .view.library-page[data-view="projects"] .project-status-menu {
+  /* 2026-10-30 Product Design UI 改动：按“UI 稿 1030”纵向排列状态选项并增加 6px 间距，保留菜单高度限制、滚动和现有筛选事件。 */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--project-surface);
+  border-color: var(--project-border);
+}
+html body .view.library-page[data-view="projects"] .project-status-menu button { flex-shrink: 0; color: var(--project-secondary); }
+html body .view.library-page[data-view="projects"] .project-status-menu button:hover { background: var(--project-raised); color: var(--project-text); }
+html body .view.library-page[data-view="projects"] .project-status-menu button[aria-pressed="true"] { background: var(--project-border); color: var(--project-text); }
+html body .view.library-page[data-view="projects"] .project-filter-empty { color: var(--project-tertiary); }
+html body .view.library-page[data-view="projects"] :is(.project-filter-empty button, .project-empty-new) {
+  background: var(--project-surface);
+  border-color: var(--project-border);
+  border-radius: 12px;
+  color: var(--project-secondary);
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 400;
+}
+html body .view.library-page[data-view="projects"] :is(.project-filter-empty button, .project-empty-new):hover {
+  background: var(--project-raised);
+  border-color: var(--project-border-hover);
+  color: var(--project-text);
+}
+html body .view.library-page[data-view="projects"] :is(.plain-tab, .project-status-filter summary, .project-status-menu button, .project-filter-empty button, .project-edit, .project-delete, .project-empty-new):focus-visible {
+  outline: 2px solid #566474;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .view.library-page[data-view="projects"] :is(.plain-tab, .project-card, .project-edit, .project-delete) { transition: none; }
+  html body .view.library-page[data-view="projects"] .project-card:hover { transform: none; }
+}
+
+/* 2026-10-30 Product Design UI 改动：仅项目页的删除确认弹窗复用“UI 稿 1030”外观。
+   深蓝灰面板宽 480px、内边距 24px、圆角 16px；标题 18/28/600、正文 14/24/400；
+   操作行上距 32px，36px 高的透明描边取消与红色确认按钮。保留 hidden、文案及全部删除/关闭事件。 */
+html body[data-primary-view="projects"] #projectDeleteModal {
+  padding: 16px;
+  background: rgba(2,6,10,.72);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #f5f7fa;
+  font: 400 14px/20px "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-dialog {
+  box-sizing: border-box;
+  width: min(480px,100%);
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  padding: 24px;
+  overflow: auto;
+  border-color: #2b3642;
+  border-radius: 16px;
+  background: #171e27;
+  color: #f5f7fa;
+  box-shadow: 0 24px 80px #0008;
+  text-align: left;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-title {
+  margin: 0;
+  color: #f5f7fa;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-message {
+  margin: 12px 0 0;
+  color: #b4bec8;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 32px 0 0;
+  padding: 0;
+  border: 0;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  width: auto;
+  flex: 0 0 auto;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #2b3642;
+  border-radius: 999px;
+  background: transparent;
+  color: #d5dbe3;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  box-shadow: none;
+  text-shadow: none;
+  filter: none;
+}
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action:hover:not(:disabled) { background:#2b3642; border-color:#3a4654; color:#f5f7fa; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action:active:not(:disabled) { background:#3a4654; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action.confirm { background:#dc3f45; border-color:#dc3f45; color:#fff; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action.confirm:hover:not(:disabled) { background:#c9353c; border-color:#c9353c; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action.confirm:active:not(:disabled) { background:#b52b33; border-color:#b52b33; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action:disabled { background:#2b3642; border-color:transparent; color:#6f7b88; opacity:1; cursor:not-allowed; }
+html body[data-primary-view="projects"] #projectDeleteModal .project-delete-action:focus-visible { outline:2px solid #9aa6b2; outline-offset:3px; }

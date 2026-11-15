@@ -1,0 +1,241 @@
+/* 2026-10-12 Product Design 改动逻辑：通过 ego 读取 vinaai.tv 全能创作输入栏的实际尺寸与状态。
+ * 加号 36×36、底色 #080D12、描边 #2B3642、绿色图标 16×16；发送 40×40、圆角 24、向上箭头 24×24。
+ * 发送可用色 #B8F84A；禁用色 rgba(55,64,79,.9)，图标 #080D12；悬停沿用参考页原色。
+ * 按钮行垂直居中，底部内边距 12px；加号比发送小 4px，因此底部额外留 2px。
+ * 图标直接复用 ego 读取到的参考页 SVG 图片资源；按钮 DOM、上传事件、发送事件和停止回复控件保持原有行为。
+ * 同时覆盖故事板与画布，排除角色资产专用画布。空输入仅同步置灰视觉，不把按钮禁用状态用于阻断确认卡或快捷提示词。
+ */
+body:not(:has(#character-asset-canvas-theme)) .chat .composer {
+  padding: 0 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .composer-actions {
+  align-items: center !important;
+  padding: 12px !important;
+  border-top: 0 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .canvas-chat-upload {
+  box-sizing: border-box;
+  display: grid !important;
+  place-items: center;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  flex: 0 0 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid #2b3642 !important;
+  border-radius: 999px !important;
+  background: #080d12 !important;
+  color: #b8f84a !important;
+  box-shadow: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .canvas-chat-upload > svg {
+  display: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat .canvas-chat-upload::after {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3e%3cpath%20d='M15.333%207.333H8.667V.667a.667.667%200%200%200-1.334%200v6.666H.667a.667.667%200%200%200%200%201.334h6.666v6.666a.667.667%200%200%200%201.334%200V8.667h6.666a.667.667%200%200%200%200-1.334Z'%20fill='%23B8F84A'/%3e%3c/svg%3e") center / contain no-repeat;
+  pointer-events: none;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn {
+  box-sizing: border-box;
+  display: grid !important;
+  place-items: center;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 40px !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 24px !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* 停止回复继续显示既有方形图标，不由向上箭头覆盖。 */
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:not(.vina-reply-stop):not([data-reply-action="stop"]) {
+  background: #b8f84a !important;
+  color: #080d12 !important;
+  cursor: pointer;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:not(.vina-reply-stop):not([data-reply-action="stop"]) > :is(svg, i) {
+  display: none !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:not(.vina-reply-stop):not([data-reply-action="stop"])::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3e%3cpath%20d='m17.71%209.88-4.3-4.29a2%202%200%200%200-2.82%200L6.29%209.88a1%201%200%200%200%201.42%201.41L11%208v11a1%201%200%201%200%202%200V8l3.29%203.29a1%201%200%201%200%201.42-1.41Z'%20fill='%23080D12'/%3e%3c/svg%3e") center / contain no-repeat;
+  pointer-events: none;
+}
+body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn:disabled:not(.vina-reply-stop):not([data-reply-action="stop"]) {
+  background: rgba(55, 64, 79, .9) !important;
+  color: #080d12 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+/* 无文字且无附件/节点引用时呈现参考页的置灰状态；有引用时仍允许原有发送路径使用素材。 */
+body:not(:has(#character-asset-canvas-theme)) .chat .composer:has(#prompt:placeholder-shown):not(.has-chat-images):not(:has(.selected-node-tray.active)):not(:has(.canvas-chat-image-card)) #sendBtn:not(.vina-reply-stop):not([data-reply-action="stop"]) {
+  background: rgba(55, 64, 79, .9) !important;
+  color: #080d12 !important;
+}
+
+/* 2026-10-14 Product Design 改动逻辑：全能创作项目（故事板/画布）的生成模式
+   菜单同步首页参考配色与原始自动生成图标。菜单移到 body 后也适用这些规则；
+   不设置定位属性，保留 JS 向上展开与视口边缘避让，角色资产专用画布除外。 */
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu {
+  background: #181e27 !important;
+  border-color: #2d3641 !important;
+  color: #d6dbe3 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu .auto-mode-option:is(:hover, :focus-visible, .selected) {
+  background: #090d11 !important;
+  color: #fff !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu .auto-mode-desc {
+  color: #9aa6b2 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu .auto-mode-check {
+  color: #c6f661 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu .auto-mode-option:focus-visible {
+  outline: 1px solid #c6f661;
+  outline-offset: -1px;
+}
+/* 原始图标为填充路径，取消通用线形图标描边，避免轮廓变粗或内部糊成一块。 */
+body:not(:has(#character-asset-canvas-theme)) :is(.auto-mode-trigger, .auto-mode-menu) svg.canvas-generation-auto-icon {
+  fill: currentColor !important;
+  stroke: none !important;
+  overflow: hidden;
+}
+
+/* 2026-10-14 Product Design 改动逻辑：全能创作生成模式使用精简译文，副标题最多两行；
+   收缩中间文字列并覆盖旧 nowrap，以两行高度兜底，图标与勾选保留独立列。 */
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-option > span {
+  min-width: 0 !important;
+}
+body:not(:has(#character-asset-canvas-theme)) .auto-mode-menu .auto-mode-desc {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  line-height: 1.25 !important;
+  max-height: 2.5em !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* 2026-11-08 Product Design：ego 读取 laihua.com 指定项目的实测参数。
+ * 统一全部全能创作项目的 Agent 发送按钮；不触及节点积分提交、短剧或角色资产画布。
+ * 空输入/协同锁定为 rgba(55,64,79,.9)，可发送为 #B8F84A；不创建额外 hover 缩放。
+ * 原任务停止事件保留；发送与停止图标统一用内嵌图片，不依赖外部 mask 或 Lucide 刷新。
+ */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  flex: 0 0 40px !important;
+  padding: 8px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 24px !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui[data-vina-send-state="ready"] {
+  background: #B8F84A !important;
+  color: #080D12 !important;
+  cursor: pointer !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui:is([data-vina-send-state="disabled"], [data-vina-send-state="locked"]) {
+  background: rgba(55,64,79,.9) !important;
+  color: #080D12 !important;
+  cursor: not-allowed !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui::before,
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui::after {
+  content: none !important;
+  display: none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui > :not(.vina-creation-send-icon) {
+  display: none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui > img.vina-creation-send-icon {
+  display: block !important;
+  visibility: visible !important;
+  position: static !important;
+  box-sizing: border-box !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  flex: 0 0 24px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  pointer-events: none;
+}
+/* 2026-11-08 Product Design：思考停止态按 ego 参考保持 40px 品牌绿圆按钮，图标由公共渲染切为深色圆角方块。
+ * 协同锁定优先级高于停止态，仍显示灰色发送箭头；实际停止点击及取消任务逻辑不变。
+ */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat #sendBtn.vina-creation-send-ui[data-vina-send-state="stop"] {
+  background: #B8F84A !important;
+  color: #080D12 !important;
+  cursor: pointer !important;
+}
+
+/* 2026-11-09 Product Design 改动说明：输入框底部按钮在画布和故事板统一采用故事板的常规字重 400。
+ * 显式覆盖早期按钮的 760 !important，标签继承同一字重；仅影响底部按钮，不调整文档标题或正文。
+ * Skill/风格恢复故事板原有 SVG，移除仅画布启用的实心遮罩替代图标，沿用原 SVG 的 2px 描边。
+ * 下拉箭头及手动模式线形图标共用同一描边；自动模式的实心图标继续保留原 fill 规则。
+ * 不改变按钮尺寸、位置、引用态边距、自适应标签、菜单、选中状态与业务事件。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer-left-actions :is(#canvasSkillTrigger,#canvasStyleTrigger,#autoModeTrigger,.canvas-chat-upload) {
+  font-weight:400 !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer-left-actions :is(#canvasSelectedSkillLabel,#canvasSelectedStyleLabel,#autoModeLabel) {
+  font-weight:inherit !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat :is(#canvasSkillTrigger,#canvasStyleTrigger)::before {
+  display:none !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat :is(#canvasSkillTrigger,#canvasStyleTrigger) > svg:first-child {
+  display:block !important;
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 14px !important;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer-left-actions :is(#canvasSkillTrigger,#canvasStyleTrigger,#autoModeTrigger) > svg:not(.canvas-generation-auto-icon) {
+  stroke-width:2 !important;
+}
+
+/* 2026-11-09 Product Design 改动逻辑：全能创作故事板与画布的输入面板共用画布外观，
+ * 统一 20px 圆角、蓝灰底色、边框和无阴影状态，避免模式切换后输入框产生外观差异。
+ * 按钮布局与交互态由共用 workbench 规则管理；文本/媒体引用仍保留各自已有的内容内边距。 */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer {
+  border-radius: 20px !important;
+  background: rgba(23, 30, 39, .96) !important;
+  border-color: #2b3642 !important;
+  box-shadow: none !important;
+}

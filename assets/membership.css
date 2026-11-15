@@ -1,0 +1,1266 @@
+/* 2026-10-30 Product Design：还原 Figma 7062:5584 团队会员页。
+ * 1920px 视口下内容宽 1352px，顶部导航按最新标注移除，活动横幅 256px；方案随导航移除自然上移。
+ * 会员类型支持个人／团队切换；未选中项提亮且仍暗于选中项，周期分别保留。四张卡片同高，推荐条位于卡片顶部外侧。
+ * 横幅、品牌、头像、勾选、折算及箭头均使用 Figma 原始资源，禁止将整页截图作为界面。
+ * 个人和团队套餐始终保持一行四列，窄屏时在卡片区域横向滚动。
+ */
+:root { --vm-page: #080d12; --vm-card: #171c22; --vm-disabled: #11171d; --vm-border: #303842; --vm-muted-border: #252d36; --vm-primary: #b8f84a; --vm-primary-strong: #9fe531; --vm-primary-soft: #d9ffa0; --vm-premium: #8e88ff; --vm-premium-soft: #c8c5ff; --vm-promo: #b8f84a; --vm-success: #74e59c; --vm-focus: #b8f84a; --vm-focus-soft: #d9ffa0; --vm-white: #f7f9fb; --vm-copy: #d5dbe3; --vm-muted: #8f9aa6; }
+html, body { margin: 0; width: 100%; min-height: 100%; background: var(--vm-page); color: var(--vm-white); }
+body { font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif; }
+.vm-page { position: fixed; z-index: 34000; inset: 0; overflow: auto; overscroll-behavior: contain; background: var(--vm-page); color: var(--vm-white); }
+/* 容器承接进入会员页时的焦点，不画外框；内部按钮继续显示键盘焦点。 */
+.vm-page:focus { outline: none; }
+.vm-page[hidden], .vm-panel[hidden] { display: none; }
+.vm-page *, .vm-page *::before, .vm-page *::after { box-sizing: border-box; }
+.vm-page button { font: inherit; }
+.vm-page button, .vm-page a { -webkit-tap-highlight-color: transparent; }
+.vm-page button:focus-visible, .vm-page a:focus-visible, .vm-page summary:focus-visible { outline: 2px solid var(--vm-primary); outline-offset: 4px; }
+.vm-page img { display: block; flex-shrink: 0; }
+/* 2026-10-30：顶部导航移除后，关闭按钮同步上移 56px，继续位于活动横幅右上角。 */
+
+
+.vm-topbar { height: 56px; background: #0d141b; }
+.vm-topbar-inner { display: flex; align-items: center; justify-content: space-between; width: min(1352px, calc(100% - 64px)); height: 100%; margin: 0 auto; }
+.vm-logo { display: flex; align-items: center; justify-content: space-between; width: 108px; height: 24px; text-decoration: none; }
+.vm-topbar-actions { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; line-height: 20px; color: #fff; }
+.vm-challenge { display: flex; align-items: center; gap: 8px; height: 32px; padding: 5px 13px; border: 1px solid var(--vm-border); border-radius: 30px; background: var(--vm-page); white-space: nowrap; }
+.vm-trophy { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 10px; background: var(--vm-primary); }
+.vm-top-member { position: relative; height: 32px; padding: 6px 24px; border: 0; border-radius: 18px; background: var(--vm-primary); color: #0d1308; cursor: pointer; white-space: nowrap; }
+.vm-top-offer { position: absolute; top: -8px; right: -4px; padding: 0 8px; border: 1px solid var(--vm-primary); border-radius: 30px; color: #fff; background: var(--vm-page); font-size: 10px; line-height: 14px; }
+.vm-user-info { display: flex; align-items: center; gap: 12px; height: 32px; padding: 1px 1px 1px 11px; border: 1px solid var(--vm-border); border-radius: 30px; background: var(--vm-page); }
+.vm-top-points { display: flex; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; color: #fff; cursor: pointer; }
+.vm-points-icon { display: grid; place-items: center; width: 20px; height: 20px; }
+.vm-user-divider { width: 1px; height: 20px; background: var(--vm-border); }
+.vm-avatar { position: relative; overflow: hidden; width: 28px; height: 28px; border: .583px solid rgba(79,220,255,.16); border-radius: 14px; background: #6f7b88; }
+.vm-avatar img { position: absolute; left: -7px; top: -1.166px; width: 42px; height: 42px; object-fit: cover; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.vm-shell { position: relative; width: min(1352px, calc(100% - 64px)); margin: 0 auto; padding: 64px 0 38px; }
+
+/* 2026-10-30 Product Design 标注调整：会员类型与付费周期的外容器由 446px 收窄至 320px，保持整体居中以及内部标签、周期按钮的尺寸。 */
+
+/* 2026-10-30 Product Design：删除企业版后改为两列，标签组用自动外边距整体居中；选中标记继续跟随团队会员文字中心。 */
+
+/* 2026-10-30 Product Design：未选中标签从 #4d5865 提亮至 #9aa6b2，低于选中白色；转换为按钮并保留两项居中尺寸。 */
+
+
+
+
+
+
+/* 2026-10-30 Product Design 标注调整：月度／年度仅调整文字颜色：选中为白字，未选中为灰字；胶囊背景仅出现在选中项。is-active 和 aria-pressed 继续由原周期逻辑同步，不改变周期或价格。 */
+
+
+
+
+
+
+
+
+.vm-vpoint-glyph { display: grid; width: 18px; height: 18px; place-items: center; border: 1px solid rgba(184,248,74,.34); border-radius: 50%; color: var(--vm-primary); background: rgba(184,248,74,.08); font-size: 9px; font-weight: 800; line-height: 1; }
+
+
+
+.vm-account-note { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 40px; margin: 28px 0 0; color: var(--vm-copy); font-size: 14px; line-height: 20px; }
+.vm-account-current { display: flex; align-items: center; gap: 16px; }
+.vm-account-note strong { color: #f7f9fb; font-weight: 650; }
+.vm-note-divider { width: 1px; height: 16px; background: var(--vm-border); }
+.vm-account-note button { display: flex; align-items: center; gap: 4px; padding: 0; border: 0; background: transparent; color: var(--vm-copy); cursor: pointer; font-size: 14px; line-height: 20px; white-space: nowrap; }
+
+
+
+/* 2026-11-04：只突出后台标记为推荐的专业版，不改变卡片尺寸与四列布局。 */
+
+
+
+
+/* 2026-10-30：个人不生成团队权益整块，卡片高度同步减去该区块 212px，核心权益自然接在模型列表后，避免保留空白占位。 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-10-30 Product Design：价格说明行沿用年度正文的 14px 常规字重、20px 行高；月度原价继承该正文样式，年度附带划线价保留 12px。 */
+
+
+
+/* 2026-10-30：月度原价数字匹配参考图中“年付 ¥1,188 /年”的字体大小，与 /月 单位保持一致，避免误用年度附带划线价的小字号。 */
+
+.vm-save-copy, .vm-flexible-copy { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 9px; color: #d8ffa0; background: rgba(184,248,74,.1); font-size: 10px; font-weight: 650; line-height: 17px; }
+.vm-flexible-copy { color: #b7c0c8; background: #242b32; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-11-04 Product Design：模型区参考“免费生成 / 无限使用模型”双面板；仅覆盖原模型折算与专用模型区域。 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-10-30：购买和记录弹窗沿用原组件结构；只同步团队页配色，不引入新的支付结果。 */
+    .vm-modal { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, .62); }
+    .vm-modal[hidden] { display: none; }
+    .vm-modal-card { width: min(508px, 100%); max-height: min(700px, calc(100vh - 40px)); overflow: auto; border: 1px solid rgba(125, 195, 216, .24); border-radius: 15px; color: #e4ebf0; background: #171e27; box-shadow: 0 24px 80px rgba(0, 0, 0, .5); }
+    .vm-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 21px 15px; border-bottom: 1px solid rgba(128, 165, 186, .17); }
+    .vm-modal-head h2 { margin: 0 0 5px; font-size: 18px; font-weight: 680; }
+    .vm-modal-head p { margin: 0; color: #8fa1ae; font-size: 11px; line-height: 1.6; }
+    .vm-modal-close { width: 28px; height: 28px; border: 0; border-radius: 50%; color: #bac6cf; background: #2b3642; cursor: pointer; font-size: 19px; line-height: 1; }
+    .vm-modal-body { padding: 18px 21px 21px; }
+    .vm-modal-option { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; margin-bottom: 9px; padding: 13px; border: 1px solid rgba(127, 157, 176, .21); border-radius: 10px; color: #d8e1e8; background: #141a21; text-align: left; }
+    button.vm-modal-option { cursor: pointer; }
+    .vm-modal-option.is-selected { border-color: rgba(184,248,74,.7); background: rgba(112,157,39,.1); box-shadow: inset 0 0 0 1px rgba(184,248,74,.05); }
+    .vm-modal-option strong { display: block; margin-bottom: 3px; font-size: 13px; }
+    .vm-modal-option span { color: #8f9faa; font-size: 11px; line-height: 1.5; }
+    .vm-modal-option b { flex: 0 0 auto; color: var(--vm-primary-soft); font-size: 14px; }
+    .vm-modal-callout { padding: 12px 13px; border: 1px solid rgba(127, 158, 178, .18); border-radius: 9px; color: #aab6bf; background: #141a21; font-size: 12px; line-height: 1.7; }
+    .vm-consult-qr { display: grid; justify-items: center; gap: 10px; margin: 2px 0 4px; text-align: center; }
+    .vm-consult-qr img { display: block; width: min(216px, 76vw); aspect-ratio: 1; padding: 7px; border: 1px solid rgba(79,220,255,.36); border-radius: 12px; background: #fff; image-rendering: pixelated; }
+    .vm-consult-qr strong { color: #edf5f8; font-size: 14px; }
+    .vm-consult-qr span { color: #94a3ae; font-size: 12px; line-height: 1.6; }
+    .vm-modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 17px; }
+    .vm-modal-actions button { height: 34px; padding: 0 13px; border: 1px solid rgba(128, 161, 181, .23); border-radius: 17px; color: #d4dde4; background: #2b3642; cursor: pointer; font-size: 12px; }
+    .vm-modal-actions .vm-primary { color: #061b22; border-color: var(--vm-primary); background: var(--vm-primary); font-weight: 750; }
+    .vm-finder { display: grid; gap: 16px; }
+    .vm-finder fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .vm-finder legend { margin-bottom: 8px; color: #e9eef2; font-size: 12px; font-weight: 700; }
+    .vm-finder-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .vm-finder-options.is-frequency { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .vm-finder-options button { min-height: 38px; padding: 7px 6px; border: 1px solid #35414b; border-radius: 10px; color: #aeb8c1; background: #111820; cursor: pointer; font-size: 11px; }
+    .vm-finder-options button.is-selected { border-color: #b8f84a; color: #f2ffe0; background: rgba(116,164,40,.15); box-shadow: inset 0 0 0 1px rgba(184,248,74,.07); }
+    .vm-finder-result { padding: 14px; border: 1px solid rgba(184,248,74,.32); border-radius: 12px; background: linear-gradient(145deg, rgba(69,98,28,.26), #111820 70%); }
+    .vm-finder-result > span { display: block; color: #7f909b; font-size: 10px; }
+    .vm-finder-result > strong { display: block; margin-top: 2px; color: #effbfe; font-size: 17px; }
+    .vm-finder-result p { margin: 6px 0 12px; color: #a8b4bd; font-size: 11px; line-height: 18px; }
+    .vm-finder-result .vm-primary { width: 100%; height: 36px; border: 1px solid #caff72; border-radius: 18px; color: #172207; background: #b8f84a; cursor: pointer; font-size: 12px; font-weight: 750; }
+
+@keyframes vmGuidedPlan { 0%, 100% { box-shadow: inherit; } 20%, 70% { border-color: #caff72; box-shadow: 0 0 0 3px rgba(184,248,74,.14), 0 0 44px rgba(136,201,36,.2); } }
+@keyframes vmActionSheen { 0%, 68% { left: -38%; opacity: 0; } 73% { opacity: .75; } 86%, 100% { left: 118%; opacity: 0; } }
+
+/* 2026-10-30：仅在四列无法容纳 320px 卡片时缩为两列；每行给推荐条留出 32px，避免上下行重叠。 */
+@media (max-width: 1279px) {
+  
+  
+  
+  
+  
+  .vm-account-note { flex-wrap: wrap; }
+}
+
+
+@media (max-width: 1000px) {
+  
+  
+  
+  
+  
+  
+  
+  .vm-challenge { display: none; }
+  
+  .vm-account-note { margin-top: 30px; }
+}
+
+
+@media (max-width: 760px) {
+  .vm-topbar-inner, .vm-shell { width: calc(100% - 32px); }
+  .vm-topbar-actions { gap: 8px; }
+  .vm-top-member { display: none; }
+  .vm-user-info { gap: 8px; }
+  .vm-topbar-actions, .vm-top-points { font-size: 11px; }
+  .vm-logo { flex-shrink: 0; margin-right: 12px; }
+  
+  
+  
+  
+  
+  
+  
+  
+  .vm-shell { padding-top: 40px; padding-bottom: 32px; }
+  
+  
+  
+  
+  
+  
+  .vm-account-note { margin-top: 24px; font-size: 12px; line-height: 20px; }
+  .vm-account-current { flex-wrap: wrap; gap: 8px; }
+  .vm-account-note button { font-size: 12px; }
+  
+  
+  
+  
+  .vm-finder-options.is-frequency { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+
+
+
+
+}
+
+
+@media (prefers-reduced-motion: reduce) { .vm-page { scroll-behavior: auto; }  }
+
+
+
+/* 2026-11-09 Product Design：统一会员页视觉节奏与绿色品牌语言。
+ * 保持现有价格、权益、套餐和交互内容不变；仅调整层级、间距、对比度、视觉锚点与响应式表现。 */
+:root {
+  --vm-page: #070c0b;
+  --vm-card: #101817;
+  --vm-disabled: #0c1312;
+  --vm-border: rgba(181, 215, 198, .18);
+  --vm-muted-border: rgba(181, 215, 198, .11);
+  --vm-primary: #a8ef5a;
+  --vm-primary-strong: #84d43b;
+  --vm-primary-soft: #ddffbb;
+  --vm-premium: #9d8cff;
+  --vm-premium-soft: #e5dfff;
+  --vm-promo: #a8ef5a;
+  --vm-success: #72d7a0;
+  --vm-focus: #b9ff74;
+  --vm-focus-soft: #e5ffc9;
+  --vm-white: #f5f8f5;
+  --vm-copy: #c4d0ca;
+  --vm-muted: #8b9a94;
+}
+html, body { background: var(--vm-page); }
+.vm-page {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(84, 139, 48, .1), transparent 36%),
+    linear-gradient(180deg, #070c0b 0%, #080d0c 54%, #060a09 100%);
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.vm-shell {
+  width: min(1352px, calc(100% - 64px));
+  padding: 72px 0 56px;
+}
+.vm-shell::before {
+  position: absolute;
+  z-index: -1;
+  top: 20px;
+  left: 50%;
+  width: min(980px, 80vw);
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(105, 175, 54, .075), transparent 66%);
+  content: "";
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+
+
+
+
+
+
+
+
+
+.vm-account-note {
+  min-height: 60px;
+  margin-top: 32px;
+  padding: 10px 12px 10px 18px;
+  border: 1px solid rgba(181, 215, 198, .12);
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(20, 31, 27, .74), rgba(12, 19, 17, .62));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+.vm-account-current { gap: 14px; color: #aebbb4; }
+.vm-account-note strong { color: #f1f8f3; }
+
+
+
+
+
+.vm-vpoint-glyph { border-color: rgba(168, 239, 90, .32); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.vm-save-copy, .vm-flexible-copy {
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #d9ffb6;
+  background: rgba(168, 239, 90, .09);
+  font-size: 10px;
+}
+.vm-flexible-copy { color: #aab7b1; background: rgba(181, 215, 198, .08); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.vm-modal { background: rgba(2, 6, 5, .72); backdrop-filter: blur(6px); }
+.vm-modal-card {
+  border-color: rgba(181, 215, 198, .2);
+  border-radius: 18px;
+  color: #e5eee9;
+  background: #101816;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .56), inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+.vm-modal-head { padding: 22px 23px 17px; border-bottom-color: rgba(181, 215, 198, .13); }
+.vm-modal-head h2 { font-size: 19px; }
+.vm-modal-head p { color: #8fa099; }
+.vm-modal-close { border-radius: 9px; color: #c0cdc7; background: #1d2925; }
+.vm-modal-body { padding: 20px 23px 23px; }
+.vm-modal-option {
+  margin-bottom: 10px;
+  padding: 14px;
+  border-color: rgba(181, 215, 198, .15);
+  border-radius: 11px;
+  color: #dbe6e0;
+  background: #0c1312;
+}
+.vm-modal-option.is-selected {
+  border-color: rgba(168, 239, 90, .62);
+  background: rgba(71, 111, 42, .12);
+}
+.vm-modal-callout { border-color: rgba(181, 215, 198, .14); border-radius: 10px; color: #aebcb5; background: #0c1312; }
+.vm-modal-actions button { height: 38px; padding: 0 15px; border-color: rgba(181, 215, 198, .17); border-radius: 10px; background: #1d2925; }
+.vm-modal-actions .vm-primary { color: #132007; border-color: var(--vm-primary); background: var(--vm-primary); }
+.vm-finder-options button { border-color: rgba(181, 215, 198, .16); border-radius: 10px; color: #aebcb5; background: #0c1312; }
+.vm-finder-options button.is-selected { border-color: rgba(168, 239, 90, .56); color: #efffde; background: rgba(75, 113, 44, .14); }
+.vm-finder-result { border-color: rgba(168, 239, 90, .28); background: linear-gradient(145deg, rgba(60, 95, 34, .2), #0c1312 72%); }
+.vm-finder-result .vm-primary { color: #132007; border-color: var(--vm-primary); background: var(--vm-primary); }
+
+
+
+
+@media (max-width: 1100px) {
+  
+  
+  
+  .vm-shell { width: calc(100% - 64px); }
+  .vm-account-note { align-items: flex-start; flex-direction: column; gap: 10px; padding: 13px 14px; }
+  .vm-account-current { width: 100%; }
+  
+}
+
+
+@media (max-width: 760px) {
+  
+  .vm-topbar-inner, .vm-shell { width: calc(100% - 32px); }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  .vm-shell { padding-top: 42px; padding-bottom: 36px; }
+  
+  
+  
+  .vm-account-note { margin-top: 24px; padding: 12px; }
+  .vm-account-current { align-items: flex-start; flex-wrap: wrap; gap: 7px 10px; font-size: 12px; line-height: 19px; }
+  .vm-note-divider { height: 14px; }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+}
+
+
+
+/* 2026-11-09 Product Design：参考 Pika、Luma 与 Runway 的套餐层级，
+ * 用灰绿、青绿、亮绿、亮紫建立四档识别；推荐档仍为主要转化锚点，豪华档用亮紫表达高阶产能。 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-11-09 Product Design：参考主流订阅页的卡片悬停反馈，用档位色边框、抬升、光学辉光和一次循环流光强化可交互感。 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes vmTierSweep {
+  0% { background-position: 180% 0; }
+  100% { background-position: -80% 0; }
+}
+
+
+
+/* 2026-11-11：顶部 Banner 与会员导航直接同步项目源文件，仅倒计时保留动态翻页。 */
+
+.vm-close { position: fixed; z-index: 4; top: 12px; right: 18px; width: 32px; height: 32px; border: 0; border-radius: 0; outline: none; box-shadow: none; color: #d5dbe3; background: transparent; cursor: pointer; font-size: 22px; line-height: 1; }
+.vm-page .vm-close:hover, .vm-page .vm-close:active, .vm-page .vm-close:focus, .vm-page .vm-close:focus-visible { border: 0; outline: none; box-shadow: none; background: transparent; color: #fff; }
+.vm-hero { position: relative; height: 256px; overflow: hidden; background: #05080c; }
+.vm-banner-art { position: absolute; top: 0; left: calc(50% - 1280px); overflow: hidden; width: 2560px; height: 256px; filter: blur(8px); pointer-events: none; }
+.vm-banner-art img { position: absolute; left: 7.58%; top: 0; width: 100.15%; height: 100.15%; max-width: none; }
+.vm-hero-inner { position: relative; display: flex; align-items: flex-start; justify-content: space-between; width: min(1352px, calc(100% - 64px)); height: 100%; margin: 0 auto; }
+.vm-hero-copy { padding-top: 72px; }
+.vm-hero h2 { margin: 0; font-size: 32px; font-weight: 700; line-height: 40px; color: #fff; }
+.vm-hero h2 span { color: #b8f84a; }
+.vm-hero-copy p { margin: 24px 0 0; font-size: 16px; font-weight: 400; line-height: 24px; color: #d5dbe3; }
+.vm-countdown { flex: 0 0 360px; height: 136px; margin-top: 60px; padding: 7px; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; background: rgba(255,255,255,.06); backdrop-filter: blur(16px); }
+.vm-countdown > p { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 14px; line-height: 20px; color: #fff; }
+.vm-countdown > p::before, .vm-countdown > p::after { content: ""; width: 48px; height: 1px; background: linear-gradient(90deg, transparent, #cfff5a); filter: blur(.5px); }
+.vm-countdown > p::after { transform: rotate(180deg); }
+.vm-countdown-values { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; height: 84px; }
+.vm-countdown-values > div { display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4px 0 3px; border: 1px solid rgba(255,255,255,.1); border-radius: 14px; background: rgba(255,255,255,.06); backdrop-filter: blur(10px); }
+.vm-countdown-values strong { font-size: 40px; font-weight: 700; line-height: 48px; color: #fff; }
+.vm-countdown-values span { font-size: 14px; line-height: 20px; color: #d5dbe3; }
+.vm-shell > h1 { margin: 0; color: #fff; font-size: 48px; font-weight: 700; line-height: 58px; text-align: center; scroll-margin-top: 32px; }
+.vm-selector { width: 320px; height: 110px; margin: 24px auto 0; overflow: hidden; border: 1px solid #2b3642; border-radius: 33px; background: linear-gradient(180deg, #171e27, #000); }
+.vm-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 280px; max-width: 100%; height: 56px; margin: 0 auto; padding: 0 12px; }
+.vm-tabs > button { position: relative; display: flex; justify-content: center; align-items: center; min-width: 0; padding: 0; border: 0; background: transparent; color: #9aa6b2; font-size: 15px; font-weight: 700; line-height: 24px; cursor: pointer; }
+.vm-tabs > button:not(.is-active):hover { color: #d5dbe3; }
+.vm-tabs > button:focus-visible { outline-offset: -5px; border-radius: 12px; }
+.vm-tabs > button.is-active { color: #fff; }
+.vm-tabs > button.is-active::before { content: ""; position: absolute; top: 0; left: calc(50% - 14.5px); width: 29px; height: 1px; background: #fff; }
+.vm-cycle { display: flex; align-items: center; width: 188px; height: 40px; margin: 0 auto; padding: 4px; border-radius: 20px; background: #141a21; }
+.vm-cycle button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: 0 0 72px; height: 32px; padding: 4px 20px; border: 0; border-radius: 24px; color: #9aa6b2; background: transparent; cursor: pointer; font-size: 16px; font-weight: 500; line-height: 24px; white-space: nowrap; }
+.vm-cycle button[data-vm-value="yearly"] { flex-basis: 108px; }
+.vm-cycle button.is-active { background: #2b3642; color: #fff; }
+.vm-cycle b { padding: 0 6px; border-radius: 24px; background: #b8f84a; color: #080d12; font-size: 10px; font-weight: 500; line-height: 16px; }
+.vm-vpoint-button { position: absolute; top: 181px; right: 0; display: flex; align-items: center; justify-content: center; gap: 4px; width: 165px; height: 40px; padding: 0; border: 0; border-radius: 20px; background: #171e27; color: #9aa6b2; cursor: pointer; font-size: 16px; font-weight: 500; line-height: 24px; }
+.vm-vpoint-button:hover { background: #2b3642; color: #f5f7fa; }@media (max-width: 1279px) {
+.vm-hero h2 { max-width: 650px; font-size: 27px; line-height: 36px; }
+.vm-countdown { flex-basis: 320px; }
+.vm-countdown-values strong { font-size: 36px; }}
+
+@media (max-width: 1000px) {
+.vm-hero-copy { padding-top: 55px; }
+.vm-hero h2 { max-width: 520px; font-size: 24px; line-height: 34px; }
+.vm-hero-copy p { font-size: 13px; line-height: 21px; }
+.vm-countdown { flex-basis: 260px; height: 126px; }
+.vm-countdown-values { gap: 5px; height: 74px; }
+.vm-countdown-values strong { font-size: 28px; line-height: 40px; }
+.vm-countdown-values span { font-size: 12px; }
+.vm-vpoint-button { top: 258px; height: 32px; width: 140px; font-size: 14px; }}
+
+@media (max-width: 760px) {
+.vm-hero-inner { width: calc(100% - 32px); }
+.vm-hero { height: 320px; }
+.vm-hero-inner { flex-direction: column; justify-content: flex-start; }
+.vm-hero-copy { padding-top: 35px; }
+.vm-hero h2 { padding-right: 24px; font-size: 22px; line-height: 32px; }
+.vm-hero-copy p { margin-top: 15px; font-size: 11px; line-height: 20px; }
+.vm-countdown { flex: 0 0 auto; width: 260px; height: 116px; margin-top: 20px; }
+.vm-countdown > p { margin-bottom: 6px; }
+.vm-banner-art { left: calc(50% - 1530px); top: 64px; }
+.vm-shell > h1 { font-size: 36px; line-height: 46px; }
+.vm-selector { width: min(320px, 100%); }
+.vm-tabs { padding: 0 4px; }
+.vm-tabs > button { font-size: 14px; }
+.vm-vpoint-button { position: static; margin: 24px 0 0 auto; }}
+
+
+/* 顶部沿用项目源文件的排版与字体；套餐卡片继续使用副本自身样式。 */
+.vm-hero, .vm-selector, .vm-close, .vm-shell > h1, .vm-shell > .vm-vpoint-button {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.vm-shell { padding-top: 64px; }
+.vm-shell > .vm-vpoint-button { right: max(0px, calc((100% - 1352px) / 2)); }
+/* 2026-11-11：逐位翻页；上半页连续折到中线，下半页仅短暂交叉淡化。 */
+.vm-countdown-values .vm-flip-card { --vm-digit-height: 48px; --vm-digit-size: 40px; position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: var(--vm-digit-height); font-size: var(--vm-digit-size); font-weight: 700; font-variant-numeric: tabular-nums; }
+.vm-flip-card > .vm-digit-value { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.vm-flip-card::after { position: absolute; z-index: 4; top: 50%; right: 0; left: 0; height: 1px; background: rgba(0,0,0,.1); box-shadow: 0 1px 0 rgba(255,255,255,.035); content: ""; pointer-events: none; }
+.vm-flip-card .vm-digit-stack { position: relative; flex: 0 0 1ch; width: 1ch; height: 100%; font: inherit; perspective: 700px; }
+.vm-digit-half { position: absolute; left: 0; width: 100%; height: 50%; overflow: hidden; pointer-events: none; }
+.vm-digit-half strong { position: absolute; left: 0; width: 100%; height: var(--vm-digit-height); font-size: var(--vm-digit-size); line-height: var(--vm-digit-height); text-align: center; font-variant-numeric: tabular-nums; }
+.vm-digit-top { top: 0; }
+.vm-digit-top strong { top: 0; }
+.vm-digit-bottom { bottom: 0; }
+.vm-digit-bottom strong { bottom: 0; }
+.vm-digit-previous { z-index: 2; opacity: 0; }
+.vm-digit-previous.vm-digit-top { transform-origin: center bottom; backface-visibility: hidden; }
+.vm-digit-stack.is-flipping .vm-digit-previous.vm-digit-top { will-change: transform; }
+.vm-digit-stack.is-flipping .vm-digit-bottom { will-change: opacity; }
+@media (max-width: 1279px) { .vm-countdown-values .vm-flip-card { --vm-digit-size: 36px; } }
+
+@media (max-width: 1000px) { .vm-countdown-values .vm-flip-card { --vm-digit-height: 40px; --vm-digit-size: 28px; } }
+
+@media (max-width: 760px) { .vm-shell { padding-top: 40px; } .vm-shell > .vm-vpoint-button { right: auto; } }
+
+
+.vm-hero, .vm-selector { color: #f5f7fa; }
+.vm-page .vm-close, .vm-page .vm-shell > .vm-vpoint-button { font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif; }
+
+/* 2026-11-11：圈定的会员标题、导航和当前方案区同步项目源文件。
+ * 独立限制此区域的宽度与背景；下方套餐卡片继续保留副本的内容与排版。 */
+.vm-shell { padding-top: 0; }
+.vm-shell::before { display: none; }
+.vm-plan-header {
+  position: relative;
+  isolation: isolate;
+  width: min(1352px, 100%);
+  margin: 0 auto;
+  padding: 64px 0 0;
+  color: #f5f7fa;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.vm-plan-header::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 64px);
+  background: #080d12;
+  content: "";
+  box-shadow: 0 0 0 100vmax #080d12;
+  clip-path: inset(0 -100vmax);
+  pointer-events: none;
+}
+.vm-plan-header > h1 { margin: 0; color: #fff; font-size: 48px; font-weight: 700; line-height: 58px; text-align: center; scroll-margin-top: 32px; }
+.vm-plan-header > .vm-vpoint-button { right: 0; }
+.vm-plan-header .vm-account-note { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; min-height: 20px; margin: 48px 0 0; padding: 0; border: 0; border-radius: 0; color: #d5dbe3; background: transparent; box-shadow: none; font-size: 14px; line-height: 20px; }
+.vm-plan-header .vm-account-current { display: flex; align-items: center; width: auto; gap: 16px; color: inherit; }
+.vm-plan-header .vm-account-note strong { color: #b8f84a; font-weight: 500; }
+.vm-plan-header .vm-note-divider { width: 1px; height: 16px; background: #2b3642; }
+.vm-plan-header .vm-account-note button { display: flex; align-items: center; gap: 4px; padding: 0; border: 0; background: transparent; color: #d5dbe3; cursor: pointer; font-size: 14px; line-height: 20px; white-space: nowrap; }
+
+@media (max-width: 1279px) { .vm-plan-header .vm-account-note { flex-wrap: wrap; } }
+
+@media (max-width: 1000px) { .vm-plan-header .vm-account-note { margin-top: 72px; } }
+
+@media (max-width: 760px) {
+  .vm-plan-header { width: 100%; padding-top: 40px; }
+  .vm-plan-header > h1 { font-size: 36px; line-height: 46px; }
+  .vm-plan-header .vm-account-note { margin-top: 24px; font-size: 12px; line-height: 20px; }
+  .vm-plan-header .vm-account-current { flex-wrap: wrap; gap: 8px; }
+  .vm-plan-header .vm-account-note button { font-size: 12px; }
+}
+
+
+/* 2026-11-11：套餐版心与项目源文件一致：最大 1352px，列间距 24px。 */
+
+/* 2026-11-11：会员卡片统一为项目的中性深色、灰蓝层级与克制的主操作色。 */
+.vm-page { background: #080d12; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-11-11 晚间：只精修套餐卡片的材质、数字层级与权益排版。 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2026-11-12：本期暂不上线无限模型权益，隐藏模块并释放布局空间。 */
+
+
+/* 2026-11-12：免费生成仅列出可用模型名称，不展示次数、分辨率或不可用项。 */
+
+
+
+
+
+/* 2026-11-12：套餐卡片恢复项目源文件样式参数与排版。 */
+.vm-grid { --vm-page: #080d12; --vm-card: #171e27; --vm-disabled: #141a21; --vm-border: #2b3642; --vm-muted-border: #222b35; --vm-primary: #b8f84a; --vm-white: #f5f7fa; --vm-copy: #d5dbe3; --vm-muted: #9aa6b2; }
+
+/* 2026-11-12：缩放时保持四列；可用宽度不足时横向滚动，并为卡片推荐条及悬停上移保留顶部空间。 */
+.vm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(248px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 24px;
+  padding-top: 40px;
+  overflow-x: auto;
+}
+.vm-plan-wrap { position: relative; min-width: 0; }
+.vm-plan { position: relative; display: flex; flex-direction: column; gap: 16px; min-height: 1238px; height: 100%; padding: 24px; border: 1px solid rgba(255,255,255,.06); border-radius: 16px; background: var(--vm-card); }
+.vm-page[data-vm-audience="personal"] .vm-plan { min-height: 1026px; }
+.vm-ribbon { position: absolute; top: -32px; left: 0; right: 0; height: 56px; padding: 6px 8px 30px; border-radius: 16px 16px 0 0; background: var(--vm-primary); color: #0d1308; font-size: 14px; font-weight: 700; line-height: 20px; text-align: center; }
+.vm-plan h2 { margin: 0; color: #fff; font-size: 20px; font-weight: 700; line-height: 28px; }
+.vm-price { display: flex; align-items: baseline; gap: 6px; min-height: 40px; color: #fff; }
+.vm-price strong { font-size: 32px; font-weight: 700; line-height: 40px; white-space: nowrap; }
+.vm-price > span { color: var(--vm-muted); font-size: 12px; font-weight: 400; line-height: 18px; white-space: nowrap; }
+.vm-price em { font-style: normal; color: #fff; }
+.vm-price-meta { display: flex; align-items: baseline; gap: 6px; min-height: 20px; margin: 0; color: var(--vm-muted); font-size: 14px; font-weight: 400; line-height: 20px; white-space: nowrap; }
+.vm-price-meta s { font-size: inherit; font-weight: inherit; line-height: inherit; }
+.vm-price-meta.is-monthly s { font-size: inherit; font-weight: inherit; line-height: inherit; }
+.vm-plan-action { flex: 0 0 48px; width: 100%; height: 48px; margin: 0; padding: 0 8px; border: 0; border-radius: 24px; background: #3b4755; color: #f5f7fa; cursor: pointer; font-size: 15px; font-weight: 700; line-height: 20px; }
+.vm-plan-action:hover:enabled { background: #495767; filter: none; }
+.vm-plan-action:focus-visible { outline: 2px solid #f5f7fa; outline-offset: 3px; }
+.vm-plan-action:disabled { color: #9aa6b2; background: #141a21; border: 1px solid #3b4653; cursor: not-allowed; }
+.vm-points { display: flex; align-items: center; gap: 6px; min-height: 44px; margin: 0; padding: 11px; border: 1px solid var(--vm-muted-border); border-radius: 16px; background: var(--vm-disabled); color: #fff; font-size: 14px; font-weight: 700; line-height: 20px; white-space: nowrap; }
+.vm-points b { color: var(--vm-primary); font-weight: 700; }
+.vm-plan-features, .vm-card-section { display: flex; flex-direction: column; gap: 12px; }
+.vm-section-label { display: flex; align-items: center; gap: 8px; height: 30px; margin: 0; padding: 8px 0 4px; color: var(--vm-muted); font-size: 12px; font-weight: 500; line-height: 18px; white-space: nowrap; }
+.vm-section-line { display: flex; align-items: center; flex: 1; min-width: 0; height: 1px; overflow: hidden; }
+.vm-section-line img { max-width: 100%; }
+.vm-conversion-list, .vm-model-list, .vm-benefit-list { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.vm-conversion-list li, .vm-model-list li, .vm-benefit-list li { display: flex; align-items: center; gap: 8px; min-height: 26px; padding: 4px 0; color: var(--vm-copy); font-size: 12px; font-weight: 500; line-height: 18px; }
+.vm-conversion-list li > span, .vm-model-list li > span:first-of-type, .vm-benefit-list li > span { flex: 1; min-width: 0; }
+.vm-conversion-list strong { margin-left: auto; color: #c0fb70; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.vm-model-badge { flex: 0 0 auto; margin-left: auto; padding: 0 12px; border-radius: 9px; color: var(--vm-white); background: var(--vm-border); font-size: 12px; font-weight: 400; line-height: 18px; white-space: nowrap; }
+.vm-model-badge.is-new { color: #4da3ff; }
+.vm-team-benefit-list { display: flex; flex-direction: column; gap: 16px; min-height: 158px; margin: 0; padding: 18px 24px; border: 1px solid var(--vm-border); border-radius: 12px; background: var(--vm-page); list-style: none; }
+.vm-team-benefit-list li { display: flex; align-items: center; gap: 8px; min-height: 18px; color: var(--vm-copy); font-size: 12px; font-weight: 500; line-height: 18px; }
+.vm-team-benefit-copy { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.vm-team-benefit-copy b { color: #d2ff5a; font-weight: 700; }
+/* 本期免费模型仅展示名称与可用状态，无限模型仍隐藏。 */
+.vm-grid .vm-model-access-unlimited { display: none; }
+.vm-model-access-row[hidden] { display: none; }
+.vm-model-access-panel { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.vm-model-access-wrap { display: flex; flex-direction: column; gap: 12px; }
+.vm-model-access-list { min-height: 0; }
+.vm-model-name { min-width: 0; overflow-wrap: anywhere; }
+.vm-model-more { display: flex; align-items: center; justify-content: center; gap: 6px; width: max-content; margin: 4px auto 0; padding: 4px 8px; border: 0; background: transparent; color: #9aa6b2; cursor: pointer; font-size: 12px; line-height: 18px; }
+.vm-model-more:hover { color: #f5f7fa; }
+.vm-model-more i { width: 5px; height: 5px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); }
+.vm-model-more[aria-expanded="true"] i { transform: rotate(225deg); }
+
+.vm-grid { color: #f5f7fa; font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif; }
+
+.vm-grid .vm-model-more { font-size: 12px; line-height: 18px; }
+
+/* 2026-11-12：补齐不可用模型，四档折叠和展开时行数一致。 */
+.vm-model-access-free .vm-model-access-row.is-disabled { color: #737e88; }
+.vm-model-access-free .vm-model-access-row.is-disabled .vm-model-name { color: inherit; }
+.vm-model-access-free .vm-model-access-row > .vm-check-icon { flex: 0 0 16px; width: 16px; height: 16px; }
+
+/* 2026-11-12：团队数据横排三列，预计产能独立面板，均位于购买按钮前。 */
+.vm-capacity-summary { overflow: hidden; border: 1px solid #2b3642; border-radius: 12px; background: #141a21; }
+.vm-capacity-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); margin: 0; padding: 0; list-style: none; }
+.vm-capacity-grid li { display: flex; min-width: 0; min-height: 62px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; }
+.vm-capacity-grid li + li { border-left: 1px solid #2b3642; }
+.vm-capacity-value { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.vm-capacity-value svg { flex: 0 0 14px; width: 14px; height: 14px; fill: none; stroke: #9aa6b2; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.vm-capacity-value strong { color: #f5f7fa; font-size: 13px; font-weight: 600; line-height: 18px; font-variant-numeric: tabular-nums; }
+.vm-capacity-grid li > span { color: #9aa6b2; font-size: 10px; line-height: 14px; white-space: nowrap; }
+.vm-production-panel { min-height: 104px; padding: 12px; border: 1px solid #2b3642; border-radius: 12px; background: #141a21; }
+.vm-production-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.vm-production-heading > strong { color: #d5dbe3; font-size: 11px; font-weight: 600; line-height: 18px; }
+.vm-production-help { display: grid; flex: 0 0 16px; width: 16px; height: 16px; place-items: center; border: 1px solid #465565; border-radius: 50%; color: #9aa6b2; font-size: 11px; line-height: 14px; cursor: help; }
+.vm-production-values { display: grid; gap: 5px; margin-top: 9px; }
+.vm-production-values p { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; margin: 0; }
+.vm-production-values strong { color: #f5f7fa; font-size: 12px; font-weight: 600; line-height: 18px; font-variant-numeric: tabular-nums; }
+.vm-production-values p > span { color: #9aa6b2; font-size: 11px; line-height: 18px; }
+
+/* 2026-11-12：补回套餐副标题及订阅周期标记，统一四档标题区高度。 */
+.vm-plan-heading { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: start; gap: 4px 8px; min-height: 50px; }
+.vm-plan-heading > h2 { grid-column: 1; grid-row: 1; }
+.vm-plan-subtitle { grid-column: 1 / -1; grid-row: 2; min-height: 18px; margin: 0; color: #9aa6b2; font-size: 12px; font-weight: 400; line-height: 18px; }
+.vm-current-tag { grid-column: 2; grid-row: 1; align-self: center; padding: 3px 8px; border: 1px solid #3b4959; border-radius: 12px; color: #d5dbe3; background: #25313e; font-size: 10px; font-weight: 500; line-height: 16px; white-space: nowrap; }
+
+/* 2026-11-12：仅提亮卡面背景并上移，不改变内容亮度，不使用发光或投影。 */
+@property --vm-card-surface { syntax: "<color>"; inherits: false; initial-value: #171e27; }
+.vm-grid .vm-plan-wrap > .vm-plan { --vm-card-surface: #171e27; background-color: var(--vm-card-surface); filter: none; box-shadow: none; transition: transform .22s cubic-bezier(.2,.7,.2,1), --vm-card-surface .18s ease, background-color .18s ease; }
+.vm-grid .vm-plan-wrap > .vm-ribbon { filter: none; transition: transform .22s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) and (pointer: fine) {
+  .vm-grid .vm-plan-wrap:hover { z-index: 1; }
+  .vm-grid .vm-plan-wrap:hover > .vm-plan { --vm-card-surface: #202b38; transform: translateY(-6px); filter: none; box-shadow: none; }
+  .vm-grid .vm-plan-wrap:hover > .vm-ribbon { transform: translateY(-6px); filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vm-grid .vm-plan-wrap > .vm-plan, .vm-grid .vm-plan-wrap > .vm-ribbon { transition: none; }
+  .vm-grid .vm-plan-wrap:hover > .vm-plan, .vm-grid .vm-plan-wrap:hover > .vm-ribbon { transform: none; }
+}
+
+/* 2026-11-12：专业版保持纯绿，豪华版以蓝绿渐变建立更高档次。 */
+.vm-grid .vm-plan-wrap[data-vm-plan-name="专业版"] > .vm-plan { border-color: #b8f84a; }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="专业版"] > .vm-ribbon { background: #b8f84a; }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] { --vm-luxury-gradient: linear-gradient(110deg, #55b8ff 0%, #38d7cc 52%, #a4ed68 100%); }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] > .vm-plan {
+  border-color: transparent;
+  background: linear-gradient(var(--vm-card-surface), var(--vm-card-surface)) padding-box, var(--vm-luxury-gradient) border-box;
+  background-color: var(--vm-card-surface);
+}
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] > .vm-ribbon { color: #08242b; background: var(--vm-luxury-gradient); }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] .vm-plan-action:enabled { color: #08242b; background: var(--vm-luxury-gradient); }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] .vm-plan-action:hover:enabled { background: linear-gradient(110deg, #70c4ff 0%, #57e1d6 52%, #b5f584 100%); filter: none; }
+/* 豪华版内部模块、图标与其它档位共用基础样式，仅外描边、顶部标签和购买按钮保留渐变。 */
+
+/* 2026-11-12：专业/豪华档升级收益置于产能面板与购买按钮之间，四档保持对齐。 */
+.vm-upgrade-slot { display: flex; min-height: 62px; }
+.vm-upgrade-gain { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 8px; width: 100%; min-height: 62px; padding: 9px; border: 1px solid #2b3642; border-radius: 10px; background: #141a21; }
+.vm-gain-heading { display: grid; grid-template-columns: 14px auto; align-items: center; gap: 0 4px; padding-right: 8px; border-right: 1px solid #2b3642; }
+.vm-gain-heading > span { display: grid; grid-row: 1 / 3; width: 14px; height: 14px; place-items: center; border-radius: 50%; color: #d5dbe3; background: #2b3642; font-size: 10px; font-weight: 700; }
+.vm-gain-heading strong { color: #d5dbe3; font-size: 10px; font-weight: 600; line-height: 15px; white-space: nowrap; }
+.vm-gain-heading small { color: #9aa6b2; font-size: 9px; line-height: 13px; white-space: nowrap; }
+.vm-gain-metrics { display: grid; grid-auto-columns: minmax(0,1fr); grid-auto-flow: column; gap: 5px; }
+.vm-gain-metrics > span { display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 1px; }
+.vm-gain-metrics b { color: #f5f7fa; font-size: 11px; font-weight: 600; line-height: 16px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.vm-gain-metrics em { color: #9aa6b2; font-size: 9px; font-style: normal; line-height: 13px; white-space: nowrap; }
+@media (max-width: 760px) { .vm-upgrade-slot:empty { display: none; } }
+
+/* QA 模块同步源项目样式，隔离旧版偏绿色变量，文案不变。 */
+.vm-faq { --vm-white: #f5f7fa; --vm-muted: #9aa6b2; --vm-muted-border: #222b35; --vm-primary: #b8f84a; }
+.vm-faq { width: min(1116px, 100%); min-height: 540px; margin: 120px auto 0; }
+.vm-faq h2 { margin: 0; color: var(--vm-white); font-size: 32px; font-weight: 700; line-height: 40px; text-align: center; }
+.vm-faq > p { margin: 12px 0 0; color: var(--vm-muted); font-size: 16px; font-weight: 400; line-height: 24px; text-align: center; }
+.vm-faq-list { width: min(800px, 100%); min-height: 440px; margin: 24px auto 0; }
+.vm-faq details { padding: 0 4px; border-bottom: 1px solid var(--vm-muted-border); }
+.vm-faq summary { display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 20px 0; color: var(--vm-white); cursor: pointer; font-size: 16px; font-weight: 400; line-height: 24px; list-style: none; }
+.vm-faq summary::-webkit-details-marker { display: none; }
+.vm-faq details[open] summary { align-items: flex-start; min-height: 80px; padding-bottom: 12px; color: var(--vm-primary); font-weight: 700; }
+.vm-faq details[open] summary img { margin-top: 15px; }
+.vm-faq details p { margin: 0 0 20px; color: var(--vm-muted); font-size: 14px; font-weight: 400; line-height: 20px; }
+.vm-faq .vm-chevron-up, .vm-faq details[open] .vm-chevron-down { display: none; }
+.vm-faq details[open] .vm-chevron-up { display: block; }
+@media (max-width: 760px) {
+  .vm-faq { margin-top: 72px; min-height: 480px; }
+  .vm-faq h2 { font-size: 28px; line-height: 36px; }
+  .vm-faq > p { font-size: 13px; }
+  .vm-faq summary { font-size: 14px; }
+  .vm-faq details p { font-size: 12px; }
+}
+
+/* 产能费率提示：沿用页面中性深色，支持悬停和键盘聚焦。 */
+.vm-production-help { position: relative; }
+.vm-production-tooltip { position: absolute; z-index: 5; right: -1px; bottom: calc(100% + 9px); width: max-content; max-width: 240px; padding: 8px 10px; border: 1px solid #3b4959; border-radius: 6px; background: #25313e; color: #f5f7fa; font-size: 12px; font-weight: 400; line-height: 18px; white-space: normal; text-align: left; visibility: hidden; opacity: 0; pointer-events: none; }
+.vm-production-help:hover .vm-production-tooltip, .vm-production-help:focus .vm-production-tooltip { visibility: visible; opacity: 1; }
+.vm-production-help:focus-visible { outline: 2px solid #9aa6b2; outline-offset: 3px; }
+
+/* 模型、团队权益、核心权益的内容行留白减半；字号及模块间距不变。 */
+.vm-grid .vm-model-access-free .vm-model-list, .vm-grid .vm-benefit-list { gap: 6px; }
+.vm-grid .vm-model-access-free .vm-model-list li, .vm-grid .vm-benefit-list li { min-height: 22px; padding-top: 2px; padding-bottom: 2px; }
+.vm-grid .vm-team-benefit-list { gap: 8px; min-height: 134px; }
+.vm-grid .vm-plan, .vm-page[data-vm-audience="personal"] .vm-grid .vm-plan { min-height: 0; }
+
+/* 推荐档卡面与标签呼应，内部面板继续共用中性色。 */
+.vm-grid .vm-plan-wrap[data-vm-plan-name="专业版"] > .vm-plan { --vm-card-surface: #171f1c; }
+.vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"] > .vm-plan { --vm-card-surface: #161f26; }
+@media (hover: hover) and (pointer: fine) {
+  .vm-grid .vm-plan-wrap[data-vm-plan-name="专业版"]:hover > .vm-plan { --vm-card-surface: #202c27; }
+  .vm-grid .vm-plan-wrap[data-vm-plan-name="豪华版"]:hover > .vm-plan { --vm-card-surface: #202c35; }
+}
+
+/* 进一步收紧卡片下半部上下留白。 */
+.vm-grid .vm-plan-features, .vm-grid .vm-card-section { gap: 8px; }
+.vm-grid .vm-section-label { height: 24px; padding-top: 4px; padding-bottom: 2px; }
+.vm-grid .vm-model-access-free .vm-model-list, .vm-grid .vm-benefit-list { gap: 4px; }
+.vm-grid .vm-model-access-free .vm-model-list li, .vm-grid .vm-benefit-list li { min-height: 20px; padding-top: 1px; padding-bottom: 1px; }
+.vm-grid .vm-team-benefit-list { gap: 6px; min-height: 116px; padding-top: 12px; padding-bottom: 12px; }
+.vm-grid .vm-model-more { margin-top: 0; padding-top: 2px; padding-bottom: 2px; }
+
+/* 内部摘要、产能和团队权益面板统一深色底，无描边。 */
+.vm-grid .vm-capacity-summary, .vm-grid .vm-production-panel, .vm-grid .vm-team-benefit-list { background: #080d12; border-color: transparent; }
+.vm-grid .vm-capacity-grid li + li { border-left-color: transparent; }
+
+/* 团队摘要三列之间使用居中的短分割线。 */
+.vm-grid .vm-capacity-grid li { position: relative; }
+.vm-grid .vm-capacity-grid li + li::before { content: ""; position: absolute; left: -1px; top: 50%; width: 1px; height: 28px; transform: translateY(-50%); background: #2b3642; pointer-events: none; }
+
+/* 一、二级 Tab 沿用项目文字下划线与灰蓝胶囊体系。 */
+.vm-plan-header { padding-top: 32px; }
+.vm-plan-header .vm-selector { width: 100%; height: auto; margin: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; }
+.vm-plan-header .vm-tabs { display: flex; justify-content: center; gap: 32px; width: 100%; height: 56px; margin: 0; padding: 0; border-bottom: 1px solid #2b3642; }
+.vm-plan-header .vm-tabs > button { font-size: 16px; font-weight: 500; line-height: 24px; }
+.vm-plan-header .vm-tabs > button.is-active::before { top: auto; bottom: -1px; left: 0; width: 100%; height: 2px; border-radius: 2px; }
+.vm-toolbar { position: relative; display: flex; align-items: center; justify-content: center; min-height: 32px; margin-top: 20px; }
+.vm-plan-header .vm-cycle { width: auto; height: 32px; margin: 0; padding: 2px; gap: 4px; border-radius: 18px; background: #141a21; }
+.vm-plan-header .vm-cycle button { flex: none; height: 28px; padding: 4px 16px; font-size: 14px; line-height: 20px; }
+.vm-plan-header .vm-cycle button.is-active { background: #2b3642; color: #fff; }
+.vm-plan-header .vm-toolbar .vm-vpoint-button { position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: auto; height: 28px; margin: 0; padding: 0 16px; font-size: 12px; line-height: 18px; }
+.vm-plan-header .vm-account-note { margin-top: 32px; }
+.vm-grid .vm-check-icon, .vm-grid .vm-model-access-free .vm-model-access-row > .vm-check-icon { flex: 0 0 12px; width: 12px; height: 12px; color: inherit; }
+.vm-points-notice { margin: 24px 0 0; color: #9aa6b2; font-size: 12px; line-height: 20px; }
+.vm-faq details[open] summary { color: #fff; }
+.vm-faq details[open] .vm-chevron-up { filter: grayscale(1) brightness(2); }
+@media (max-width: 760px) {
+ .vm-plan-header { padding-top: 24px; }
+ .vm-toolbar { justify-content: flex-start; }
+ .vm-plan-header .vm-account-note { margin-top: 24px; }
+ .vm-plan-header .vm-cycle button { padding-right: 12px; padding-left: 12px; }
+}
+
+/* 二级 Tab 采用项目资产库胶囊的尺寸与底座。 */
+.vm-plan-header .vm-cycle { height: 38px; padding: 3px; gap: 2px; border: 1px solid #2b3642; border-radius: 999px; background: #171e27; }
+/* 个人与团队会员共用周期切换，月度和年度按钮文字统一使用 14px。 */
+.vm-plan-header .vm-cycle button { height: 30px; padding: 6px 14px; font-size: 14px; font-weight: 400; line-height: 18px; }
+.vm-plan-header .vm-cycle button.is-active { font-weight: 500; }
+.vm-plan-header .vm-cycle button:not(.is-active):hover { color: #f5f7fa; background: #222b35; }
+
+/* 当前方案、周期切换和 V 点超市共用一行。 */
+.vm-plan-header .vm-toolbar .vm-account-note { position: absolute; left: 0; top: 50%; transform: translateY(-50%); margin: 0; }
+@media (max-width: 1100px) {
+ .vm-plan-header .vm-toolbar { flex-wrap: wrap; justify-content: center; gap: 16px; }
+ .vm-plan-header .vm-toolbar .vm-account-note { position: static; transform: none; flex-basis: 100%; margin: 0; }
+ .vm-plan-header .vm-toolbar .vm-vpoint-button { top: auto; bottom: 5px; transform: none; }
+}
+@media (max-width: 760px) { .vm-plan-header .vm-toolbar { justify-content: flex-start; } }
+
+/* 左侧方案文字与胶囊控件做 2px 光学对齐。 */
+@media (min-width: 1101px) { .vm-plan-header .vm-toolbar .vm-account-note { transform: translateY(calc(-50% + 2px)); } }
+
+/* 页面关闭入口：放大圆形点击区，远离视口边缘。 */
+.vm-page .vm-close { display: grid; place-items: center; top: 24px; right: 32px; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: #25313e; color: #f5f7fa; font-size: 28px; font-weight: 400; line-height: 1; box-shadow: none; }
+.vm-page .vm-close:hover, .vm-page .vm-close:active, .vm-page .vm-close:focus, .vm-page .vm-close:focus-visible { border-radius: 50%; background: #354352; color: #fff; box-shadow: none; }
+.vm-page .vm-close:focus-visible { outline: 2px solid #9aa6b2; outline-offset: 3px; }
+@media (max-width: 760px) { .vm-page .vm-close { top: 16px; right: 20px; } }
+
+/* 收紧 Banner 与一级会员 Tab 之间的留白。 */
+.vm-plan-header { padding-top: 12px; }
+@media (max-width: 760px) { .vm-plan-header { padding-top: 12px; } }
+
+/* 2026-11-12：保留 38px 圆形按钮，由上方网格将固定尺寸的关闭图标水平、垂直居中。 */
+.vm-page .vm-close { width: 38px; height: 38px; }
+
+/* 2026-11-12：译文沿用四列和原控件位置。窄标签保留单行，说明在各自容器内换行。 */
+[data-vm-localized] .vm-hero-copy,
+[data-vm-localized] .vm-plan-heading,
+[data-vm-localized] .vm-plan-header .vm-account-current,
+[data-vm-localized] .vm-modal-head > div,
+[data-vm-localized] .vm-modal-option > div {
+  min-width: 0;
+}
+[data-vm-localized] .vm-hero-copy,
+[data-vm-localized] .vm-plan-action,
+[data-vm-localized] .vm-team-benefit-copy,
+[data-vm-localized] .vm-faq,
+[data-vm-localized] .vm-modal {
+  overflow-wrap: anywhere;
+}
+[data-vm-localized] .vm-capacity-grid li > span,
+[data-vm-localized] .vm-plan-subtitle,
+[data-vm-localized] .vm-account-current > span:first-child {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-vm-localized] .vm-note-divider,
+[data-vm-localized] .vm-account-current > button,
+[data-vm-localized] .vm-modal-close {
+  flex-shrink: 0;
+}
+[data-vm-localized] .vm-team-benefit-copy {
+  flex-wrap: wrap;
+  gap: 0 6px;
+  white-space: normal;
+}
+[data-vm-localized] .vm-countdown-values {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+[data-vm-localized] .vm-countdown > p::before,
+[data-vm-localized] .vm-countdown > p::after {
+  flex: 0 1 48px;
+}
+[data-vm-localized] .vm-countdown {
+  max-width: 100%;
+}
+[data-vm-localized] .vm-modal-actions {
+  flex-wrap: wrap;
+}
+[data-vm-localized] .vm-modal-actions button {
+  min-height: 38px;
+  height: auto;
+}
+[data-vm-localized] .vm-production-tooltip {
+  width: max-content;
+  max-width: min(192px, 70vw);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+[data-vm-localized] .entitlement-center__filter-menu > summary,
+[data-vm-localized] .entitlement-center__filter-options button,
+[data-vm-localized] .entitlement-center__table-cell,
+[data-vm-localized] .billing-calendar-shortcuts button,
+[data-vm-localized] .billing-layer {
+  overflow-wrap: anywhere;
+}
+[data-vm-localized] .points-recharge__notice {
+  min-width: 0;
+  white-space: normal;
+}
+@media (min-width: 1101px) {
+  [data-vm-localized] .vm-plan-header .vm-toolbar .vm-account-note {
+    max-width: calc((100% - 208px) / 2);
+  }
+}

@@ -1,0 +1,202 @@
+/* 2026-09-30 Product Design 改动逻辑：爆款预设保持原样；其他设置统一为图标、标题与单行省略摘要。
+   通过 ego 读取 Liblib：未选中使用 #161616 底色叠加透明至 6% 白色的纵向渐变及 16% 白色虚线；
+   已选中/展开使用参考面板 #212121 上的 6% 白色背景及实线，悬停叠加参考的 4% 白色反馈。
+   “设定”复用爆款预设标题类，浮层继续在两行按钮下方向下展开，沿用原输入和选项样式。 */
+.script-setup-panel.has-setup-tiles .setup-tile-heading {
+  margin-top: 22px;
+  margin-bottom: 10px;
+}
+.script-setup-panel.has-setup-tiles .setup-tile-heading .script-setup-label { margin: 0; }
+.script-setup-panel.has-setup-tiles .setup-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 0;
+}
+.has-setup-tiles .setup-tile-slot,
+.has-setup-tiles .setup-tile-native-control { display: contents; }
+.script-setup-panel.has-setup-tiles .setup-tile-button {
+  order: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 96px;
+  padding: 16px;
+  border: 1px dashed rgba(255,255,255,.16);
+  border-radius: 16px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.06) 100%), linear-gradient(#161616, #161616);
+  color: #f4f4f4;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  box-shadow: none;
+  transition: background .16s, border-color .16s;
+}
+.script-setup-panel.has-setup-tiles .setup-tile-button.has-selection,
+.script-setup-panel.has-setup-tiles .setup-tile-button.is-open {
+  border-style: solid;
+  border-color: rgba(255,255,255,.16);
+  background: linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)), linear-gradient(#212121, #212121);
+}
+/* 悬停只叠加参考的白色反馈层，保留未选中纵向渐变和已选中实线状态。 */
+.script-setup-panel.has-setup-tiles .setup-tile-button:hover {
+  background: linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04)), linear-gradient(180deg, transparent 0%, rgba(255,255,255,.06) 100%), linear-gradient(#161616, #161616);
+}
+.script-setup-panel.has-setup-tiles .setup-tile-button.has-selection:hover,
+.script-setup-panel.has-setup-tiles .setup-tile-button.is-open:hover {
+  background: linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04)), linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)), linear-gradient(#212121, #212121);
+}
+.has-setup-tiles .setup-tile-button:focus-visible { outline: 2px solid #69e3e4; outline-offset: 3px; }
+.has-setup-tiles .setup-tile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  height: 42px;
+  border: 1px solid #454545;
+  border-radius: 11px;
+  background: #333;
+}
+.has-setup-tiles .setup-tile-icon img { width: 25px; height: 25px; object-fit: contain; opacity: .7; }
+.has-setup-tiles .setup-tile-copy { display: flex; flex-direction: column; gap: 7px; min-width: 0; flex: 1; }
+.has-setup-tiles .setup-tile-label { color: #a0a0a0; font-size: 13px; white-space: nowrap; }
+.script-setup-panel.has-setup-tiles .setup-tile-value {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #f4f4f4;
+  font-size: 16px;
+  font-weight: 400;
+}
+/* 浮层在网格中跨满一行：向下展开且不被面板的滚动边界裁切，按钮排列始终保持不动。 */
+.script-setup-panel.has-setup-tiles .setup-tile-popup {
+  order: 1;
+  grid-column: 1 / -1;
+  position: static;
+  /* 2026-09-30 修复逻辑：取消原集数菜单的居中位移及上下定位，统一使用下方网格浮层位置。 */
+  inset: auto;
+  transform: none;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-height: none;
+  margin: 2px 0 0;
+  padding: 22px;
+  border: 1px solid #3d3d3d;
+  border-radius: 20px;
+  background: #202020;
+  box-shadow: 0 12px 28px rgba(0,0,0,.15);
+}
+.script-setup-panel.has-setup-tiles .setup-tile-popup[hidden] { display: none !important; }
+/* 2026-10-01 Product Design 改动逻辑：集数、比例和目标国家的弹窗统一每行五个按钮，
+   选项超过五个自动换行，自定义集数输入区继续独占一行；首次设定和编辑副本共用此规则。 */
+.script-setup-panel.has-setup-tiles .episode-count-popover.setup-tile-popup {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 12px;
+}
+.has-setup-tiles .setup-tile-popup .episode-count-option {
+  min-height: 44px;
+  height: auto;
+  border: 1px solid #484848;
+  border-radius: 12px;
+  color: #bdbdbd;
+  background: #202020;
+}
+.has-setup-tiles .setup-tile-popup .episode-count-option.active,
+.has-setup-tiles .setup-tile-popup .episode-count-option[aria-selected="true"] {
+  border-color: #62d4d4;
+  background: rgba(64,196,197,.12);
+  color: #88eded;
+}
+.has-setup-tiles .setup-tile-popup .episode-count-custom { grid-column: 1 / -1; }
+.has-setup-tiles .setup-tile-popup .script-setup-choice-group,
+.has-setup-tiles .setup-tile-popup .script-setup-genres { margin: 0; }
+.has-setup-tiles .setup-tile-popup .script-setup-choice-title,
+.has-setup-tiles .setup-tile-popup .script-setup-genres-title { margin: 0 0 18px; font-size: 16px; font-weight: 600; color: #eee; }
+.has-setup-tiles .setup-tile-popup .script-setup-choice-title small { margin-left: 8px; font-size: 13px; color: #888; }
+/* 2026-10-01 Product Design 改动逻辑：题材、受众、角色、时代、看点、情绪和结构弹窗统一每行五个，
+   自定义按钮与普通选项按相同网格排列，选择和编辑逻辑沿用原行为。 */
+.has-setup-tiles .setup-tile-popup .script-setup-choice-options,
+.has-setup-tiles .setup-tile-popup .script-setup-genres-options {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.has-setup-tiles .setup-tile-popup .script-setup-genre {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #484848;
+  background: #202020;
+  color: #bdbdbd;
+  font-size: 15px;
+}
+.has-setup-tiles .setup-tile-popup .script-setup-genre[aria-pressed="true"] {
+  border-color: #62d4d4;
+  background: rgba(64,196,197,.12);
+  color: #88eded;
+}
+.has-setup-tiles .setup-tile-popup .script-setup-genre-custom { border-style: dashed; }
+/* 2026-09-30 Product Design 改动逻辑：画风弹窗的 AI 真人剧和 AI 漫剧选项固定每行八个，
+   超过八个自动换行；保留选择器优先级覆盖分步页自动列数规则。
+   2026-10-01 改动逻辑：画风保留八列，其余设置弹窗统一五列。 */
+.script-setup-panel.has-setup-tiles .setup-tile-popup .script-setup-style-grid { grid-template-columns: repeat(8,minmax(0,1fr)); }
+.has-setup-tiles .setup-tile-popup .script-setup-tabs { width: 100%; }
+.has-setup-tiles .setup-tile-popup .script-setup-genre-editor { margin-top: 14px; }
+/* 收起设定摘要时标题随按钮区一起隐藏，重新展开时恢复。 */
+.script-setup-overlay.is-confirmed:not(.is-reviewing) .has-setup-tiles .setup-tile-heading,
+.script-setup-overlay.is-confirmed:not(.is-reviewing) .has-setup-tiles .setup-tile-grid { display: none; }
+@media (max-width: 1100px) {
+  .script-setup-panel.has-setup-tiles .setup-tile-button { gap: 9px; padding: 12px; }
+  .has-setup-tiles .setup-tile-icon { flex-basis: 34px; height: 34px; }
+  .has-setup-tiles .setup-tile-icon img { width: 22px; height: 22px; }
+}
+@media (max-width: 760px) {
+  .script-setup-panel.has-setup-tiles .setup-tile-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 460px) {
+  .script-setup-panel.has-setup-tiles .setup-tile-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+  .script-setup-panel.has-setup-tiles .setup-tile-popup { padding: 16px; }
+  /* 2026-10-01 改动逻辑：窄屏的非画风弹窗同样沿用五列，超过五项自动换行。 */
+}
+
+/* 2026-09-30 Product Design 改动逻辑：Liblib 原图标已经保留源颜色和路径透明度，取消旧替代图标的额外透明度，避免叠加后变暗。 */
+.has-setup-tiles .setup-tile-icon img[src*="/liblib-setup/"] { opacity: 1; }
+
+/* 2026-09-30 Product Design 改动逻辑：短剧设定及其编辑副本的自定义集数行保持单行水平排列，
+   标签、输入框和单位使用相同中心线；边框下方留白不再依赖底部对齐，输入高度包含内边距。 */
+.script-setup-panel .episode-count-custom {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  height: 48px;
+  padding-top: 12px;
+  box-sizing: border-box;
+  line-height: 30px;
+}
+.script-setup-panel .episode-count-custom > span { flex: 0 0 auto; white-space: nowrap; }
+.script-setup-panel .episode-count-custom .episode-count-input {
+  flex: 0 0 72px;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 0 8px;
+  line-height: 30px;
+}
+
+/* 2026-09-30 Product Design 改动逻辑：短剧设定页的“爆款预设”和“设定”两个分区标题
+   统一放大至 18px，使用与现有青色强调风格一致的浅青色；仅限定标题容器内的文字，
+   同时覆盖首次设定和编辑副本，不影响按钮摘要、弹窗标题或选项交互。 */
+.script-setup-panel.has-setup-tiles .script-setup-presets-heading .script-setup-label {
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #88eded;
+}

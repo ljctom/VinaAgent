@@ -1,0 +1,202 @@
+/* 2026-11-08 Product Design：协同状态变量在画布与故事板共用，不再被 vina-direct-mode 排除。
+ * 修复故事板输入框变回灰边、标签丢失绿底和说明文字变白；仅已有协同状态类生效。
+ */
+/* 2026-11-07 Product Design：按用户提供的 /Users/jcl/Documents/设计规范/ 校准协同节点。
+ * 依据：01_设计规范.md 的字体、4px 间距建议、胶囊圆角和禁用语义；
+ * 状态绿色与透明底色复用 reference/assets/team-figma-colors.css 的 #55E08A、12%/35%。
+ * 原包没有“协同编辑中”专用组件；20px 头像、4px 间距与内边距是沿用现有节点的局部实现。
+ * 所有变量和规则只挂在协同状态类上，不引入全局主题、不改变账号判断与锁定逻辑。
+ */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) :is(.workspace #node-4.node.vina-collaboration-locked, .workspace #nodeGeneratePanel.vina-collaboration-readonly, .chat .composer.vina-collaboration-chat-locked, .chat .vina-collaboration-chat-status) {
+  --vina-collaboration-status: #55E08A;
+  --vina-collaboration-status-bg: rgba(85, 224, 138, .12);
+  --vina-collaboration-status-border: rgba(85, 224, 138, .35);
+  --vina-collaboration-disabled-bg: #141A21;
+  --vina-collaboration-disabled-border: #222B35;
+  --vina-collaboration-disabled-text: #4D5865;
+  --vina-collaboration-disabled-brand: #3D4F2A;
+  --vina-collaboration-caption: #6F7B88;
+}
+/* 普通态与选中态都保持完整绿框；1px 原描边加 1px 连续外轮廓构成清晰的 2px 线，不加发光和多层投影。
+ * 采用现有主题的完整作用域和专属节点 ID，防止 outline:none!important 再次覆盖绿框；不占布局空间。
+ */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #node-4.node.vina-collaboration-locked > .thumb {
+  border-color: var(--vina-collaboration-status) !important;
+  outline: 1px solid var(--vina-collaboration-status) !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+.node.vina-collaboration-locked { cursor: default; }
+.node.vina-collaboration-locked > .connect-handle { display: none !important; }
+/* 2026-11-09 Product Design：选中节点的描边和名单姓名右侧圆点共用成员颜色。
+ * 仅对协同脚本标记的选中/占用节点生效；#stage 作用域覆盖默认白色选中框，兼容图片、视频、音乐和文本节点。
+ * 画布/故事板共用映射，离开协同项目清除标记后自动恢复原样式。
+ */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .workspace #stage .node[data-vina-collaboration-member]:is(.selected, .vina-collaboration-locked) > .thumb {
+  border-color: var(--vina-collaboration-member-color) !important;
+  outline: 1px solid var(--vina-collaboration-member-color) !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+/* 状态标签：Caption/Medium 12/18/500，4px 基础间距，半透明绿色只作用于背景。
+ * 标签保持右上角锚点和原头像资源，独立于节点图片边框，不增加 hover/点击等按钮暗示。
+ */
+.node.vina-collaboration-locked > .vina-collaboration-editor,
+.vina-collaboration-chat-status > .vina-collaboration-editor {
+  position: absolute;
+  z-index: 5;
+  top: -36px;
+  inset-inline-end: 0;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--vina-collaboration-status-border);
+  border-radius: 999px;
+  background: var(--vina-collaboration-status-bg);
+  color: var(--vina-collaboration-status);
+  font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.vina-collaboration-editor[hidden], .vina-collaboration-readonly-hint[hidden] { display: none; }
+.vina-collaboration-editor img { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; object-fit: cover; }
+/* 标题与标签间距为 8px；仅限制此占用节点，保留完整名称的既有 DOM 与辅助信息。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #node-4.node.vina-collaboration-locked > .node-header { padding-inline-end: 88px !important; box-sizing: border-box !important; }
+.node.vina-collaboration-locked > .node-header .node-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 禁用区使用规范颜色逐项表达，不再用整组 opacity 同时压暗文字和参考图片。
+ * 提交按钮采用下方局部中性禁用样式；不修改实际 disabled 属性与事件拦截。
+ */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly {
+  border-color: var(--vina-collaboration-disabled-border) !important;
+  background: var(--vina-collaboration-disabled-bg) !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly :is(.inline-prompt, .canvas-reference-editor, .generation-controls, .node-prompt-expand) {
+  opacity: 1;
+  color: var(--vina-collaboration-disabled-text) !important;
+  cursor: not-allowed !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly :is(button, input, textarea, select, [contenteditable], .node-param-trigger, .node-param-summary) {
+  color: var(--vina-collaboration-disabled-text) !important;
+  cursor: not-allowed !important;
+}
+/* 2026-11-08 Product Design：只美化协同只读节点的积分提交按钮。
+ * 依据用户设计规范：外胶囊 #141A21、细描边 #2B3642、内圆 #222B35；
+ * 紧凑积分与箭头使用弱提示 #6F7B88，保持可辨认的灰阶层级，不整组降低透明度。
+ * 复用现有积分 SVG 并仅对图标去色，避免残留绿色造成可点击暗示；尺寸、积分值与禁用逻辑均不变。
+ */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend {
+  background: var(--vina-collaboration-disabled-bg) !important;
+  border: 1px solid #2B3642 !important;
+  color: var(--vina-collaboration-caption) !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend::before {
+  filter: grayscale(1) brightness(.72);
+  opacity: .72;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend .send-circle {
+  background: #222B35 !important;
+  color: var(--vina-collaboration-caption) !important;
+  box-shadow: none !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend .send-circle::before {
+  background: currentColor !important;
+}
+.vina-collaboration-readonly-hint {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  margin: 0;
+  color: var(--vina-collaboration-caption);
+  font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+
+/* 2026-11-07 Product Design：左侧输入框复用节点的状态绿外框及同一头像标签。
+ * 上方说明为规范 Caption/Regular 12/18/400、#6F7B88；右侧标签为同一 Caption/Medium。
+ * 状态行独立占位，避免被输入框 overflow 裁切；小字可换行，不覆盖标签或挤入输入区。
+ */
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer.vina-collaboration-chat-locked {
+  border-color: var(--vina-collaboration-status) !important;
+  outline: 1px solid var(--vina-collaboration-status) !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+.vina-collaboration-chat-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-end: 8px;
+  min-width: 0;
+}
+.vina-collaboration-chat-status[hidden] { display: none !important; }
+.vina-collaboration-chat-status > .vina-collaboration-editor {
+  position: static;
+  flex: 0 0 auto;
+}
+.vina-collaboration-chat-hint {
+  min-width: 0;
+  margin: 0;
+  color: var(--vina-collaboration-caption);
+  font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+html.vina-canvas-ui-reference body:not(:has(#character-asset-canvas-theme)) .chat .composer.vina-collaboration-chat-locked :is(textarea, .canvas-chat-reference-editor, button, input, select) {
+  color: var(--vina-collaboration-disabled-text) !important;
+  cursor: not-allowed !important;
+}
+
+/* 2026-11-08 Product Design：对话发送/停止的尺寸、背景和图标全部由 canvas-composer-reference.css 统一。
+ * 实时协同仅提供锁定状态和输入限制，不再定义独立按钮外观，避免覆盖共享发送或停止样式。
+ */
+/* 节点提交箭头采用同一稳定渲染方式；图片不继承 SVG 的实心填充，不受积分文本挤压。 */
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend .send-circle.vina-collaboration-stable-arrow {
+  display: grid !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  padding: 4px !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend .send-circle.vina-collaboration-stable-arrow::before {
+  content: none !important;
+  display: none !important;
+}
+html.vina-canvas-ui-reference body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .workspace #nodeGeneratePanel.vina-collaboration-readonly #nodeGenerateSend .send-circle.vina-collaboration-stable-arrow > img.vina-collaboration-node-send-icon {
+  display: block !important;
+  visibility: visible !important;
+  position: static !important;
+  box-sizing: border-box !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  flex: 0 0 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  pointer-events: none;
+}

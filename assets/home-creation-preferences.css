@@ -1,0 +1,106 @@
+/* 2026-10-24 Product Design 改动逻辑：入口位于首页创作工具栏“灵感”之后，
+   复用现有胶囊尺寸、配色；弹窗按短剧第一步参考使用深色双栏、灰蓝选中态和白色保存按钮。
+   样式仅作用于创作偏好，不覆盖短剧设定；窄屏上下排列，短视口在内容区独立滚动。 */
+.view[data-view="canvas"] .composer-tools .home-creation-preferences-trigger {
+  display:inline-flex;align-items:center;justify-content:center;flex:none;gap:8px;
+  height:31px;min-height:31px;padding:0 12px;border:0;border-radius:999px;
+  background:#202832;color:#d5dbe3;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer;
+}
+.view[data-view="canvas"] .composer-tools .home-creation-preferences-trigger:is(:hover,[aria-expanded="true"]) {background:#29323d;color:#f5f7fa}
+/* 2026-11-09 Product Design 改动逻辑：模型偏好复用原图标的内嵌 SVG，以 currentColor 跟随工具栏文字颜色，常态和悬停均与左侧图标一致。 */
+.home-creation-preferences-trigger svg {display:block;width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor}
+.home-creation-preferences-trigger:focus-visible {outline:2px solid #9aa6b2;outline-offset:3px}
+/* 2026-11-09 Product Design UI 同步：弹窗样式沿用 UI 1109，使用等宽双栏、24px 圆角与内边距、
+   深色背景、胶囊操作按钮、模型选中勾号及三列两行比例卡片；同步字体、间距、状态和滚动条样式。
+   仅替换弹窗视觉规则，保留输入框入口样式；参数含义、模型联动、草稿与保存行为均不调整。 */
+body.creation-preferences-open {overflow:hidden}
+#homeCreationPreferencesDialog {
+  box-sizing:border-box;width:960px;max-width:calc(100vw - 48px);max-height:calc(100dvh - 48px);
+  margin:auto;padding:0;overflow:hidden;border:1px solid #2b3642;border-radius:24px;
+  background:#0f151c;color:#f5f7fa;box-shadow:0 24px 80px #0009;
+  font:400 14px/22px Inter,"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+#homeCreationPreferencesDialog:not([open]) {display:none}
+#homeCreationPreferencesDialog[open] {display:flex;flex-direction:column}
+#homeCreationPreferencesDialog::backdrop {background:rgba(0,0,0,.64);backdrop-filter:blur(4px)}
+#homeCreationPreferencesDialog * {box-sizing:border-box}
+#homeCreationPreferencesDialog button {font:inherit;cursor:pointer;transition:background-color .15s,color .15s}
+#homeCreationPreferencesDialog button:focus-visible {outline:2px solid #9aa6b2;outline-offset:2px}
+#homeCreationPreferencesDialog [hidden] {display:none!important}
+#homeCreationPreferencesDialog .creation-preferences-head {display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex:none;padding:24px 24px 20px}
+#homeCreationPreferencesDialog h2 {margin:0 0 6px;font-size:18px;line-height:26px;font-weight:600;color:#f5f7fa}
+#homeCreationPreferencesDialog p {margin:0;font-size:14px;line-height:22px;color:#9aa6b2}
+#homeCreationPreferencesDialog .creation-preferences-close {display:grid;place-items:center;flex:none;width:36px;height:36px;padding:0;border:0;border-radius:999px;background:transparent;color:#9aa6b2}
+#homeCreationPreferencesDialog .creation-preferences-close:hover {background:#222b35;color:#f5f7fa}
+#homeCreationPreferencesDialog .creation-preferences-close img {display:block;width:20px;height:20px;filter:brightness(0) invert(.65)}
+#homeCreationPreferencesDialog .creation-preferences-tabs {display:flex;flex:none;gap:24px;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+#homeCreationPreferencesDialog .creation-preferences-tabs button {position:relative;min-height:40px;padding:0 4px 12px;border:0;border-radius:0;background:transparent;color:#9aa6b2;font-weight:500}
+#homeCreationPreferencesDialog .creation-preferences-tabs button:hover {color:#f5f7fa}
+#homeCreationPreferencesDialog .creation-preferences-tabs button[aria-selected="true"] {color:#f5f7fa}
+#homeCreationPreferencesDialog .creation-preferences-tabs button[aria-selected="true"]::after {content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;border-radius:2px;background:#f5f7fa}
+#homeCreationPreferencesDialog .creation-preferences-body {min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#4d5865 transparent}
+#homeCreationPreferencesDialog .creation-preferences-layout {display:grid;grid-template-columns:1fr 1fr;min-height:420px}
+#homeCreationPreferencesDialog h3 {margin:0 0 12px;color:#d5dbe3;font-size:14px;line-height:20px;font-weight:500}
+#homeCreationPreferencesDialog .creation-preferences-models {min-width:0;max-height:min(512px,calc(100dvh - 285px));padding:24px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-gutter:stable;scrollbar-color:transparent transparent}
+#homeCreationPreferencesDialog .creation-preferences-models:hover {scrollbar-color:#4d5865 transparent}
+#homeCreationPreferencesDialog .creation-preferences-model-list {display:flex;flex-direction:column;gap:8px}
+#homeCreationPreferencesDialog .creation-preferences-model {display:flex;align-items:center;gap:12px;min-height:72px;width:100%;padding:12px;border:0;border-radius:12px;background:transparent;color:#f5f7fa;text-align:left;box-shadow:none}
+#homeCreationPreferencesDialog .creation-preferences-model:hover {background:#222b35}
+#homeCreationPreferencesDialog .creation-preferences-model[aria-pressed="true"] {background:#2b3642}
+#homeCreationPreferencesDialog .creation-preferences-model-icon {display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:#080d12;overflow:hidden}
+#homeCreationPreferencesDialog .creation-preferences-model-icon img {width:40px;height:40px;object-fit:contain}
+#homeCreationPreferencesDialog .creation-preferences-model-copy {display:grid;gap:4px;min-width:0;flex:1}
+#homeCreationPreferencesDialog .creation-preferences-model-title {display:flex;align-items:center;gap:8px;min-width:0}
+#homeCreationPreferencesDialog .creation-preferences-model-title strong {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;line-height:20px;font-weight:500}
+#homeCreationPreferencesDialog .creation-preferences-duration {display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:20px;padding:0 6px;border:1px solid #3a4654;border-radius:999px;background:#222b35;color:#9aa6b2;font-size:12px;line-height:18px;font-weight:400;white-space:nowrap}
+#homeCreationPreferencesDialog .creation-preferences-description {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#9aa6b2;font-size:12px;line-height:18px}
+#homeCreationPreferencesDialog .creation-preferences-parameters {min-width:0;padding:24px;border-left:1px solid rgba(255,255,255,.06);background:#0d141b}
+#homeCreationPreferencesDialog .creation-preferences-block+.creation-preferences-block {margin-top:32px}
+#homeCreationPreferencesDialog .creation-preferences-resolutions {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#homeCreationPreferencesDialog .creation-preferences-ratios {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#homeCreationPreferencesDialog [data-preferences-param] {min-width:0;min-height:36px;padding:8px 12px;border:0;border-radius:10px;background:#171e27;color:#d5dbe3;text-align:center;font-size:14px;line-height:20px;font-weight:500;box-shadow:none}
+#homeCreationPreferencesDialog [data-preferences-param]:hover {background:#222b35;color:#f5f7fa}
+#homeCreationPreferencesDialog [data-preferences-param][aria-pressed="true"] {background:#2b3642;color:#f5f7fa}
+#homeCreationPreferencesDialog [data-preferences-param="ratio"] {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:88px;padding:12px 6px;border-radius:12px}
+#homeCreationPreferencesDialog .creation-preferences-ratio-icon {display:grid;place-items:center;height:32px;width:32px;color:#9aa6b2}
+#homeCreationPreferencesDialog .creation-preferences-ratio-icon img {display:block;max-height:24px;max-width:26px;object-fit:fill;opacity:.85}
+#homeCreationPreferencesDialog .creation-preferences-footer {display:flex;justify-content:flex-end;flex:none;gap:12px;padding:24px;border-top:1px solid rgba(255,255,255,.06);background:#0f151c}
+#homeCreationPreferencesDialog .creation-preferences-footer button {min-height:36px;padding:7px 20px;border-radius:999px;font-size:14px;line-height:20px;font-weight:500}
+#homeCreationPreferencesDialog .creation-preferences-cancel {border:1px solid #2b3642;background:transparent;color:#d5dbe3}
+#homeCreationPreferencesDialog .creation-preferences-cancel:hover {background:#222b35;border-color:#566474}
+#homeCreationPreferencesDialog .creation-preferences-save {border:1px solid #fff;background:#fff;color:#111820}
+#homeCreationPreferencesDialog .creation-preferences-save:hover {background:#e4e9ef;border-color:#e4e9ef}
+.creation-preferences-toast[hidden] {display:none}
+@media(max-width:760px) {
+  #homeCreationPreferencesDialog {max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}
+  #homeCreationPreferencesDialog .creation-preferences-head {padding:20px 20px 16px}
+  #homeCreationPreferencesDialog .creation-preferences-tabs {padding:0 20px}
+  #homeCreationPreferencesDialog .creation-preferences-layout {grid-template-columns:1fr;min-height:0}
+  #homeCreationPreferencesDialog .creation-preferences-models {max-height:240px;padding:20px}
+  #homeCreationPreferencesDialog .creation-preferences-parameters {padding:20px;border-left:0;border-top:1px solid #2b3642}
+  #homeCreationPreferencesDialog .creation-preferences-footer {padding:16px 20px}
+  .view[data-view="canvas"] .composer-tools:has(.home-creation-preferences-trigger) {flex-wrap:wrap}
+}
+@media(hover:none) {#homeCreationPreferencesDialog .creation-preferences-models {scrollbar-color:#4d5865 transparent}}
+
+/* 2026-11-09：智能选择与具体参数使用相同尺寸/圆角/底色，保留同组单选语义，不再作为整行按钮。 */
+#homeCreationPreferencesDialog .creation-preferences-smart-option[data-preferences-param="resolution"] {display:flex;align-items:center;justify-content:center}
+#homeCreationPreferencesDialog .creation-preferences-model-icon .creation-preferences-smart-model-icon {
+  width:24px;height:24px;object-fit:contain;
+}
+
+/* 2026-11-09：模型偏好采用24px弹窗圆角/内边距、36px胶囊操作、灰蓝选中态；原参数联动与保存逻辑不变。 */
+#homeCreationPreferencesDialog .creation-preferences-model[aria-pressed="true"]::after {
+  content:""; flex:0 0 16px; width:16px; height:16px; background:#f5f7fa;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8 3 3 7-7' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+#homeCreationPreferencesDialog .creation-preferences-close:hover img {filter:brightness(0) invert(.95)}
+#homeCreationPreferencesDialog .creation-preferences-model:active,
+#homeCreationPreferencesDialog [data-preferences-param]:active {background:#3a4654}
+#homeCreationPreferencesDialog :is(.creation-preferences-body,.creation-preferences-models) {scrollbar-color:transparent transparent}
+#homeCreationPreferencesDialog :is(.creation-preferences-body,.creation-preferences-models):is(:hover,:focus-within) {scrollbar-color:#566474 transparent}
+@media(hover:none) {#homeCreationPreferencesDialog :is(.creation-preferences-body,.creation-preferences-models) {scrollbar-color:#566474 transparent}}
+@media(prefers-reduced-motion:reduce) {#homeCreationPreferencesDialog button {transition:none}}
+
+#homeCreationPreferencesDialog .creation-preferences-ratio-shape {display:block;flex:none;border:1.5px solid currentColor;border-radius:3px}
+#homeCreationPreferencesDialog [data-preferences-param="ratio"]:is(:hover,[aria-pressed="true"]) .creation-preferences-ratio-icon {color:#f5f7fa}

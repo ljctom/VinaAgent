@@ -1,0 +1,810 @@
+/* 2026-09-30 Product Design 改动逻辑：资产与视频界面沿用 Figma 设计规范 91:2 的颜色体系。
+ * 页面 #080D12、面板 rgba(15,21,28,.6)、卡片 #171E27；按钮与选中态使用 #B8F84A 品牌绿。
+ * 主文字/正文/辅助/弱提示依次使用 #F5F7FA/#D5DBE3/#9AA6B2/#6F7B88，状态色保留独立语义。
+ * 所有规则只覆盖颜色与原有阴影的颜色；不修改布局、尺寸、图片、视频、滤镜、文案或交互脚本。
+ * 2026-10-10 Product Design 改动逻辑：时长按钮（如 9s）移出通用卡片配色覆盖，
+ * 沿用原工具栏与相邻按钮一致的深色背景、辅助文字、边框及悬停/聚焦/展开状态；所有时长值共用该样式。
+ * 图片预览、封面、缩略图及 iframe 内部画布保留原内容和展示方式；透明布局容器保持透明。
+ */
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) {
+ --media-page:#080d12; --media-panel:rgba(15,21,28,.6); --media-card:#171e27;
+ --media-brand:#b8f84a; --media-hover:#cfff5a; --media-active:#9fdb3e;
+ --media-brand-disabled:#3d4f2a; --media-subtle:rgba(184,248,74,.1216);
+ --media-text:#f5f7fa; --media-copy:#d5dbe3; --media-secondary:#9aa6b2;
+ --media-caption:#6f7b88; --media-disabled-text:#4d5865; --media-inverse:#0d1308;
+ --media-border:#2b3642; --media-focus:#3a4654; --media-light:rgba(255,255,255,.06);
+ --media-disabled-bg:#141a21; --media-disabled-border:#222b35;
+ --episode-bg:#080d12; --episode-panel:rgba(15,21,28,.6); --episode-panel-solid:#0f151c;
+ --episode-control:#171e27; --episode-card:#171e27; --episode-border:#2b3642;
+ --episode-text:#d5dbe3; --episode-muted:#9aa6b2; --episode-accent:#b8f84a;
+ color:var(--media-text);
+}
+
+/* 2026-10-10 Product Design 改动逻辑：短剧视频预览下方的下载、播放方式、重拍共用默认与 hover/focus 样式。
+ * 以同一组选择器覆盖通用配色，避免下载和重拍被刷成卡片色、播放方式却保留旧背景。
+ * 按钮尺寸继续沿用现有响应式规则；播放方式外层去掉边框，防止出现双圈；禁用按钮保留不可用反馈。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-player-actions :is(.detail-player-action, .detail-play-mode-trigger) {
+  box-sizing:border-box;
+  padding:0;
+  border:1px solid var(--media-border);
+  border-radius:50%;
+  background:var(--media-card);
+  color:var(--media-secondary);
+  box-shadow:none;
+  transition:background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-player-actions .detail-play-mode { border:0; background:transparent; }
+body.drama-workflow-active .episode-detail-workspace .detail-player-actions :is(.detail-player-action, .detail-play-mode-trigger):not([aria-disabled="true"]):not(:disabled):is(:hover, :focus-visible, [aria-expanded="true"]) {
+  border-color:var(--media-brand);
+  background:var(--media-subtle);
+  color:var(--media-brand);
+  outline:none;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-player-actions :is(.detail-player-action, .detail-play-mode-trigger):is([aria-disabled="true"], :disabled) {
+  border-color:var(--media-disabled-border);
+  background:var(--media-disabled-bg);
+  color:var(--media-disabled-text);
+  cursor:not-allowed;
+}
+/* 2026-10-10 改动逻辑：下载使用现有 SVG 图片，禁用时维持灰色图标，避免旧 hover 滤镜把不可用按钮染绿。 */
+body.drama-workflow-active .episode-detail-workspace .detail-player-actions .detail-player-action:is([aria-disabled="true"], :disabled) .detail-player-download-icon img {
+  filter:brightness(0) saturate(100%) invert(71%) sepia(10%) saturate(393%) hue-rotate(168deg) brightness(90%);
+}
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace) { background:var(--media-page); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-generating-state { background:var(--media-page); color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-sidebar,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-detail-panel,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-preview-region,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-edit-region,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-prompt-panel,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-story-panel.episode-agent-sidebar,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-player-panel,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-timeline-panel { background:var(--media-panel); border-color:var(--media-border); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-add,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-info,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-editor-head,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-editor-left,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-head,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-foot,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tabs,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools { border-color:var(--media-light); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-row,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-card:not(.asset-inline-card),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-prompt-field,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-bound,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-choices,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-card,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-script-readonly,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-script-scene,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-composer,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm { background:var(--media-card); border-color:var(--media-border); color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-group.is-multi-variant { background:var(--media-card); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-row:hover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant:hover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-card:hover { border-color:var(--media-focus); background:var(--media-card); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-row.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-tab.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tabs button[aria-selected="true"],
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision label:has(input:checked) { background:var(--media-subtle); border-color:var(--media-brand); color:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant.active { box-shadow:0 0 0 3px rgba(184,248,74,.07); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-tab.active::after { background:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-card:not(.asset-inline-card):hover { border-color:var(--media-focus); box-shadow:0 24px 58px rgba(0,0,0,.34),0 0 0 3px rgba(184,248,74,.07); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-tab,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-count,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-section-label,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-character-description,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-sub,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-meta,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant-copy span,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-browser-row .drama-character-variant-copy span,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-param-group-title { color:var(--media-secondary); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-count,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-variant-kind { background:var(--media-card); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-name,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-preview-title,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-name,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-head h1,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-title,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-welcome,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-name,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-name { color:var(--media-text); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-sub,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-editor-head p,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-history-hint,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-model-copy small,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-hint,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-subtitle,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-label { color:var(--media-caption); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-sub.pending { color:#ff5c7a; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-badge,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-done:not(.episode-status-capsule) { background:rgba(85,224,138,.1216); color:#55e08a; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-dialog,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-editor-dialog { border-color:var(--media-border); color:var(--media-text); }
+
+body.drama-workflow-active .drama-character-editor .drama-character-editor-dialog { background:rgba(15,21,28,.6); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-dialog { background:var(--media-panel); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-editor-left { background-color:var(--media-panel); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-description-field,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-description:not(.drama-character-description-field .drama-character-description) { background-color:var(--media-card); border-color:var(--media-border); color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-description,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-prompt,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-prompt-input,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-message,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm p,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-composer textarea { color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-param-menu,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-history-panel,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-library,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-param-popover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-history-popover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-play-mode-popover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-menu,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-switcher-menu { background:var(--media-panel); border-color:var(--media-border); color:var(--media-text); }
+
+/* 2026-10-11 Product Design 改动逻辑：资产模型下拉弹窗不再继承透明度为 .6 的共享面板色，改用同色相实心深色，完整遮住底层图片与提示词；单资产与批量生成入口共用，模型选择状态及点击逻辑保持不变。 */
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .drama-character-editor, .asset-batch-modal) .drama-character-param-menu:is([data-character-model-menu], [data-asset-batch-model-menu]) { background: #0f151c; opacity: 1; backdrop-filter: none; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-param-trigger,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-history-toggle,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-play,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-remove,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-select-all,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-view-switch button,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-add-character,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-button,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-action,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-param-choice,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools button,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools select,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-files button,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-player-action { background:var(--media-card); border-color:var(--media-border); color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-param-trigger:hover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-history-toggle:hover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-view-switch button:hover,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-button:hover:not(.is-unavailable),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-param-choice:hover { border-color:var(--media-focus); color:var(--media-text); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-model-option.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-settings-option.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-voice-play.is-playing,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-param-choice.selected,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-model-option.selected,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-switcher-option[aria-selected="true"],
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-play-mode-option.active,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-side-panel-controls button.is-active { background:var(--media-subtle); border-color:var(--media-brand); color:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-history-version.active { border-color:var(--media-brand); box-shadow:0 0 0 2px rgba(184,248,74,.16); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-message[data-role="user"] { background:rgba(184,236,100,.29); border-color:var(--media-border); color:#fff; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-composer:focus-within,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-prompt-field:focus-within { border-color:var(--media-focus); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-prompt-field:focus-within,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-description[contenteditable="true"]:focus { box-shadow:0 0 0 3px rgba(184,248,74,.08); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) textarea::placeholder,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) input::placeholder { color:var(--media-secondary); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) :focus-visible { outline-color:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision input { accent-color:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress { color:var(--media-secondary); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress strong { color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress progress { accent-color:var(--media-brand); background-color:var(--media-disabled-bg); color:var(--media-brand); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress progress::-webkit-progress-bar { background-color:var(--media-disabled-bg); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress progress::-webkit-progress-value,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-video-progress progress::-moz-progress-bar { background-color:var(--media-brand); }
+
+/* 2026-10-01 Product Design 修复逻辑：角色描述确认按钮沿用独立透明底描边样式，
+   不参与生成按钮的默认、悬停、按下及禁用品牌配色，避免禁用深色文字叠加透明度后不可读。 */
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-open,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-next,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .character-generate-all,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit-icon,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-trigger,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-import-trigger,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-btn,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-all,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-arrow,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools .episode-agent-send,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision button,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm button:not([data-cancel]) { background:var(--media-brand); border-color:var(--media-brand); color:var(--media-inverse); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-open:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-next:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .character-generate-all:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit-icon:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-trigger:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-import-trigger:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-btn:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-all:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-arrow:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools .episode-agent-send:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision button:hover:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm button:not([data-cancel]):hover:not(:disabled) { background:var(--media-hover); border-color:var(--media-hover); color:var(--media-inverse); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-open:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-next:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .character-generate-all:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit-icon:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-trigger:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-import-trigger:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-btn:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-all:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-arrow:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools .episode-agent-send:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision button:active:not(:disabled),
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm button:not([data-cancel]):active:not(:disabled) { background:var(--media-active); border-color:var(--media-active); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-open:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-next:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .character-generate-all:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .asset-batch-submit-icon:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-export-trigger:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-composer-import-trigger:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-btn:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-all:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-arrow:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-tools .episode-agent-send:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-decision button:disabled,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm button:not([data-cancel]):disabled { background:var(--media-brand-disabled); border-color:var(--media-disabled-border); color:var(--media-disabled-text); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate { box-shadow:0 7px 18px rgba(184,248,74,.2),inset 0 1px rgba(255,255,255,.08); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate:hover:not(:disabled) { box-shadow:0 9px 22px rgba(184,248,74,.26),inset 0 1px rgba(255,255,255,.1); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate-cost,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-video-action-cost { border-color:rgba(13,19,8,.3); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .drama-character-generate-cost .detail-generate-sparkle,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .detail-generate-btn .detail-generate-sparkle { color:var(--media-inverse); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-agent-confirm [data-cancel] { background:var(--media-card); color:var(--media-copy); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-button.is-unavailable,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-button:disabled { background:var(--media-disabled-bg); color:var(--media-disabled-text); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule { background:var(--media-card); border-color:var(--media-border); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-divider { background:var(--media-border); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-completion { color:#55e08a; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-review { color:var(--media-secondary); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule.is-incomplete .episode-status-completion,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule.is-incomplete .episode-status-review { color:var(--media-secondary); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="待审核"] { background:rgba(255,203,77,.1216); border-color:rgba(255,203,77,.3); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="待审核"] .episode-status-review { color:#ffcb4d; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="通过"] { background:rgba(85,224,138,.1216); border-color:rgba(85,224,138,.3); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="通过"] .episode-status-review { color:#55e08a; }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="不通过"] { background:rgba(255,92,122,.1216); border-color:rgba(255,92,122,.3); }
+
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="不通过"] .episode-status-review,
+body.drama-workflow-active :is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace, .drama-character-editor, .asset-batch-modal) .episode-status-capsule[data-review-status="不通过"] .episode-status-completion { color:#ff5c7a; }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) :is(#characterDescriptionChangeModal, #dramaAssetAdjustmentModal, #batchGenerateModal, #episodeExportModal, .asset-batch-modal, .drama-character-editor) { background:rgba(0,0,0,.55); }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) :is(.batch-generate-dialog, .episode-export-dialog) { background:rgba(15,21,28,.6); border-color:#2b3642; color:#f5f7fa; }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) :is(.batch-generate-description, .episode-export-description) { color:#9aa6b2; }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) :is(.batch-generate-action, .episode-export-option) { background:#171e27; border-color:#2b3642; color:#f5f7fa; }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) .batch-generate-action.confirm { background:#b8f84a; border-color:#b8f84a; color:#0d1308; }
+
+body.drama-workflow-active:has(:is(.asset-workspace[data-view="asset-library"], .episode-workspace[data-view="episode-video"], .episode-detail-workspace):not([hidden])) :is(.episode-export-option:hover, .episode-export-option:focus-visible) { background:rgba(184,248,74,.1216); border-color:#b8f84a; color:#b8f84a; }
+
+/* 2026-09-30 Product Design 改动逻辑：编辑按钮移出上方品牌主按钮分组，沿用剪辑、下载、审片的深色描边样式与悬停状态。
+ * 概览卡保留原 115deg 渐变方向与色阶位置，改用低饱和绿灰到蓝灰；正文、标签和进度统一采用规范颜色。
+ * 不调整卡片尺寸、封面、数据、进度值或操作逻辑。
+ */
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-panel { background:linear-gradient(115deg,#263327 0%,#202c31 52%,#252d3a 100%); border-color:var(--media-border); box-shadow:inset 0 1px 0 var(--media-light); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-heading h1,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress strong { color:var(--media-text); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-outline,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-tags-ellipsis { color:var(--media-copy); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-count,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-tag { background:var(--media-light); border-color:var(--media-border); color:var(--media-secondary); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress { border-color:var(--media-border); color:var(--media-secondary); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress progress { background:var(--media-disabled-bg); color:var(--media-brand); accent-color:var(--media-brand); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress progress::-webkit-progress-bar { background:var(--media-disabled-bg); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress progress::-webkit-progress-value { background:var(--media-brand); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-progress progress::-moz-progress-bar { background:var(--media-brand); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-outline-tooltip,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-tags-tooltip { background:#171e27; border-color:var(--media-border); color:var(--media-copy); }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-outline:focus-visible,
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-project-tags-wrap:focus-visible { outline-color:var(--media-brand); }
+
+/* 2026-09-30 Product Design 改动逻辑：人物站位图和分镜预览图采用透明描边按钮，积分分隔线与图标随文字配色。
+ * 所有交互状态保持透明底色；生成视频主按钮保留品牌绿，原点击和积分逻辑不变。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh { background:transparent; border-color:var(--media-focus); color:var(--media-copy); box-shadow:none; }
+/* 2026-10-27 Product Design 改动逻辑：第五步人物站位图、分镜预览图的 hover 按照设计稿 assets/drama-media-colors.css 恢复透明背景、品牌绿边框和品牌绿文字；图标与积分继承文字颜色，键盘焦点沿用设计稿状态。 */
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:hover:not(:disabled),
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:focus-visible { background:transparent; border-color:var(--media-brand); color:var(--media-brand); }
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:active:not(:disabled) { background:transparent; border-color:var(--media-active); color:var(--media-active); }
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh:disabled { background:transparent; border-color:var(--media-disabled-border); color:var(--media-disabled-text); }
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh .detail-video-action-cost { background:transparent; border-left-color:var(--media-focus); color:inherit; }
+body.drama-workflow-active .episode-detail-workspace .detail-generate-btn.detail-video-action.detail-asset-refresh .detail-generate-sparkle { color:inherit; }
+
+/* 2026-09-30 Product Design 改动逻辑：参数弹窗使用不透明深色背景，遮住下方分镜表；底部批量应用区同步配色。
+ * 参数选项明确使用实线边框，消除浏览器默认凸起边框；选中项沿用品牌绿，不调整弹窗定位、尺寸或选项逻辑。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover.episode-global-popover { background:#0f151c; border-color:var(--media-border); color:var(--media-text); }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-param-apply-row { background:#171e27; border-color:var(--media-border); color:var(--media-secondary); }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-param-group-title { color:var(--media-secondary); }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-param-choice { border:1px solid var(--media-border); background:var(--media-card); color:var(--media-copy); box-shadow:none; }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-param-choice:hover { border-color:var(--media-focus); color:var(--media-text); }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-param-choice.selected { border-color:var(--media-brand); background:var(--media-subtle); color:var(--media-brand); }
+body.drama-workflow-active .episode-detail-workspace .detail-param-popover .detail-ratio-preview { border-color:currentColor; }
+
+/* 2026-09-30 Product Design 改动逻辑：提示词与分镜表的 @ 标签统一为品牌绿描边、浅绿底与绿文字；缩略图保持真实素材颜色。
+ * 左侧“已完成，提交审核”使用品牌主按钮颜色；已提交保持浅绿状态，撤回悬停沿用错误色语义，不改审核行为。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-mention-token { background:var(--media-subtle); border-color:var(--media-brand); color:var(--media-brand); }
+body.drama-workflow-active .episode-detail-workspace .detail-mention-token .detail-mention-thumb { background-color:var(--media-card); }
+body.drama-workflow-active #detailReviewComplete { background:#b8f84a; border-color:#b8f84a; color:#0d1308; }
+body.drama-workflow-active #detailReviewComplete:hover:not(:disabled) { background:#cfff5a; border-color:#cfff5a; color:#0d1308; }
+body.drama-workflow-active #detailReviewComplete:active:not(:disabled) { background:#9fdb3e; border-color:#9fdb3e; color:#0d1308; }
+body.drama-workflow-active #detailReviewComplete.is-approved { background:rgba(184,248,74,.1216); border-color:#b8f84a; color:#b8f84a; }
+body.drama-workflow-active #detailReviewComplete.is-approved:hover:not(:disabled) { background:rgba(255,92,122,.16); border-color:#ff5c7a; color:#ff5c7a; }
+body.drama-workflow-active #detailReviewComplete:disabled { background:#3d4f2a; border-color:#222b35; color:#4d5865; }
+
+/* 2026-09-30 Product Design 改动逻辑：按用户最新参考图，将视频提示词与分镜表 @ 标签改为绿色细描边的圆角矩形。
+ * 浅绿背景与白色常规字重对应参考样式，缩略图沿用上方同名素材；长名称单行省略，保留完整引用文字和原交互。
+ * 保持提示词与分镜表各自已有标签高度及缩略图尺寸，不调整内容布局、素材或生成逻辑。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-mention-token {
+  border:1px solid var(--media-brand);
+  border-radius:12px;
+  background:var(--media-subtle);
+  color:var(--media-text);
+  font-weight:400;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-mention-token > span:last-child {
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+body.drama-workflow-active .episode-detail-workspace .detail-mention-token .detail-mention-thumb {
+  border-radius:6px;
+}
+
+/* 2026-09-30 Product Design 改动逻辑：分集视频进度使用 Figma 品牌绿和禁用背景轨道。
+ * WebKit 与 Firefox 伪元素分别声明，避免不支持的伪元素使整组规则失效；不改变进度数值、宽度或更新逻辑。
+ */
+/* 2026-10-11 Product Design 改动逻辑：分集视频进度条的空轨道改为更清晰的灰蓝色，0/4 与部分未完成区域都能与卡片底色区分；已生成部分继续使用原绿色，原生 progress 与 WebKit 轨道同步。 */
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-video-progress progress { background:#3a4654; color:#b8f84a; accent-color:#b8f84a; }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-video-progress progress::-webkit-progress-bar { background:#3a4654; }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-video-progress progress::-webkit-progress-value { background:#b8f84a; }
+body.drama-workflow-active .episode-workspace[data-view="episode-video"] .episode-video-progress progress::-moz-progress-bar { background:#b8f84a; }
+
+
+/* 2026-10-10 Product Design 改动逻辑：只优化短剧剪辑顶栏的三个按钮与导出菜单配色。
+ * 导入、导出共用青灰底、浅青文字与描边，默认/悬停/按下/禁用保持同色体系；审核用青绿色实底突出主操作。
+ * 已提交使用深绿底与浅绿文字，撤回悬停保留红色语义；不修改按钮顺序、尺寸、文案或审核/导出事件。
+ * 导出菜单改为不透明蓝灰底与细边框，标题提高对比，选项图标浅青、正文浅白，悬停及键盘聚焦共用青灰高亮。
+ * 规则放在通用品牌绿覆盖之后，并限定 is-episode-composer-open，避免影响其他短剧步骤与全能创作。
+ */
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open :is(.episode-composer-import-trigger, .episode-composer-export-trigger) {
+  background:#263b3e;
+  color:#cde5e1;
+  box-shadow:inset 0 0 0 1px #3e5b5e;
+  transition:background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open :is(.episode-composer-import-trigger, .episode-composer-export-trigger):hover:not(:disabled),
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-trigger[aria-expanded="true"]:not(:disabled) {
+  background:#324c50;
+  color:#ecf8f5;
+  box-shadow:inset 0 0 0 1px #5d8588;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open :is(.episode-composer-import-trigger, .episode-composer-export-trigger):active:not(:disabled) {
+  background:#203235;
+  color:#cde5e1;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview {
+  background:#56d6c5;
+  border-color:#56d6c5;
+  color:#082924;
+  box-shadow:none;
+  transition:background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview:hover:not(:disabled) {
+  background:#76e3d4;
+  border-color:#76e3d4;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview:active:not(:disabled) {
+  background:#40bfae;
+  border-color:#40bfae;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview.is-approved {
+  background:#183e34;
+  border-color:#427e66;
+  color:#9ce3ba;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview.is-approved:hover:not(:disabled) {
+  background:#44242e;
+  border-color:#b56479;
+  color:#ffb3c5;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open :is(.episode-composer-import-trigger, .episode-composer-export-trigger):disabled,
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open #episodeComposerReview:disabled {
+  background:#1c292c;
+  border-color:#344247;
+  color:#73898b;
+  box-shadow:inset 0 0 0 1px #344247;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-menu {
+  border:1px solid #34434e;
+  background:#1b252e;
+  color:#edf3f5;
+  box-shadow:0 16px 40px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.04);
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-label {
+  color:#a2b5bf;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-menu button {
+  background:transparent;
+  color:#edf3f5;
+  transition:background-color 140ms ease, color 140ms ease;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-menu button :is(svg, i) {
+  color:#8dccbf;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open .episode-composer-export-menu button:is(:hover, :focus-visible) {
+  background:#2b4145;
+  color:#ecf8f5;
+}
+body.drama-workflow-active .episode-detail-workspace.is-episode-composer-open :is(.episode-composer-import-trigger, .episode-composer-export-trigger, #episodeComposerReview, .episode-composer-export-menu button):focus-visible {
+  outline:2px solid #86e2d3;
+  outline-offset:2px;
+}
+
+/* 2026-10-11 Product Design 改动逻辑：按用户截图及 vinabot 第 5 集实际样式同步底部片段封面。
+ * 封面选中时用 1px 白色实线代替品牌绿描边，未选中用 #2b3642，圆角统一 10px；移除旧 outline、阴影和悬停位移，避免双边与发光。
+ * 待生成底色为 #171e27，关闭原封面渐变遮罩；标签距左上角 8px，黑色 55% 透明胶囊、12px/18px 灰蓝文字、500 字重、4px 10px 内边距。
+ * 中央占位复用参考页面原始图标，尺寸 36.105px × 35.28px；仅改变片段卡片视觉，生成中/失败提示及生成/切换行为仍沿用原逻辑。
+ */
+body.drama-workflow-active .episode-detail-workspace .shot-card .shot-thumb {
+  box-sizing:border-box;
+  border:1px solid #2b3642;
+  border-radius:10px;
+  outline:none;
+  box-shadow:none;
+  transform:none;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.active .shot-thumb {
+  border-color:#fff;
+  outline:none;
+  box-shadow:none;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-ungenerated .shot-thumb {
+  background:#171e27 !important;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-ungenerated .shot-thumb::after {
+  display:none;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-ungenerated .shot-state-badge {
+  top:8px;
+  left:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:content-box;
+  height:auto;
+  padding:4px 10px;
+  border:0;
+  border-radius:999px;
+  background:rgba(0,0,0,.55);
+  color:#9aa6b2;
+  font-size:12px;
+  font-weight:500;
+  line-height:18px;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-ungenerated .shot-ungenerated-icon {
+  width:60px;
+  height:57.143px;
+  overflow:hidden;
+}
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-ungenerated .shot-ungenerated-icon img {
+  display:block;
+  width:36.105px;
+  height:35.28px;
+}
+
+/* 2026-10-11 Product Design 修复逻辑：保留首尾加号完整描边，同时恢复所有缩略图原来的位置。
+ * 滚动容器左右各向外扩展 22px，并以内部 22px 留白抵消扩展：首卡坐标为原起点 -22px +22px，卡片位置及间距不变。
+ * 额外空间只供伸出卡片的加号绘制；外层允许显示溢出，避免窄屏面板内边距不足 20px 时再次裁切圆形描边。
+ * 横向滚动仍由 shot-strip 管理，自定义滚动条仍沿用原尺寸与计算；不改变缩略图大小、按钮位置及显隐逻辑。
+ */
+body.drama-workflow-active .episode-detail-workspace .shot-strip {
+  box-sizing:border-box;
+  width:calc(100% + 44px);
+  margin-left:-22px;
+  margin-right:-22px;
+  padding-left:22px;
+  padding-right:22px;
+}
+body.drama-workflow-active .episode-detail-workspace .episode-timeline-panel {
+  overflow:visible;
+}
+
+/* 2026-10-11 Product Design 改动逻辑：片段卡片右上角删除按钮由 top:8px 下移至 14px，与左侧生成状态标签在视觉上对齐。
+ * 仅调整垂直位置，按钮尺寸、右侧距离、悬停/选中显隐和删除事件沿用原逻辑；不移动缩略图或状态标签。
+ */
+body.drama-workflow-active .episode-detail-workspace .shot-card .shot-delete-btn {
+  top:14px;
+}
+
+/* 2026-10-11 Product Design 改动逻辑：历史记录弹窗单独使用不透明实心深色，覆盖共享 --media-panel 的 .6 透明度；弹窗完整遮住后方视频和分镜，尺寸、锚点及版本高亮不变。 */
+body.drama-workflow-active .episode-detail-workspace #detailHistoryPopover { background:#171e27; opacity:1; backdrop-filter:none; -webkit-backdrop-filter:none; }
+
+
+/* 2026-10-11 Product Design 改动逻辑：按照用户提供的短剧设计稿，将画面和两行播放控件分成独立卡片。
+ * 上方画面保留细边框及圆角，去掉旧暗色渐变遮罩和透明视频，完整展示现有视频内容。
+ * 2026-10-11 用户补充调整：取消画面容器内边距与内层描边，视频上下撑满容器；内层沿用外层圆角，两侧留白与外圈共用深灰底色。
+ * 下方第一行仅放播放、进度和时间；第二行保留现有下载/播放方式/重拍/历史，最右侧为全屏，两行通过细线分隔。
+ * 使用共享配色变量并覆盖旧视口尺寸规则，确保拖动视频列宽和窄屏布局时，控件不会回到画面内或挤占时间轴。
+ */
+body.drama-workflow-active .episode-detail-workspace .detail-player-panel {
+  grid-template-rows:minmax(0,1fr) auto;
+  gap:10px;
+  border:0;
+  background:transparent;
+}
+.episode-detail-workspace .detail-preview-wrap {
+  box-sizing:border-box;
+  min-height:0;
+  padding:0;
+  border:1px solid var(--episode-border,#2b3642);
+  border-radius:16px;
+  background:var(--episode-panel-solid,#0f151c);
+}
+.episode-detail-workspace .detail-preview {
+  min-height:0;
+  border:0;
+  border-radius:inherit;
+  background-position:center;
+  background-size:cover;
+}
+.episode-detail-workspace .detail-preview::after { display:none; }
+.episode-detail-workspace .detail-preview:not(.is-rendering) video { opacity:1; mix-blend-mode:normal; object-fit:contain; }
+.episode-detail-workspace .detail-player-controls {
+  box-sizing:border-box;
+  min-width:0;
+  padding:8px 12px;
+  border:1px solid var(--episode-border,#2b3642);
+  border-radius:16px;
+  background:var(--episode-panel-solid,#0f151c);
+}
+.episode-detail-workspace .detail-player-controls .detail-preview-controls {
+  position:relative;
+  inset:auto;
+  min-height:32px;
+  grid-template-columns:32px minmax(24px,1fr) auto;
+  gap:10px;
+}
+.episode-detail-workspace .detail-player-controls .detail-play-btn {
+  box-sizing:border-box;
+  width:32px;
+  height:32px;
+  padding:0;
+  border:0;
+  background:var(--episode-accent,#b8f84a);
+  color:#0d1308;
+  backdrop-filter:none;
+}
+.episode-detail-workspace .detail-player-controls .detail-play-btn:is(:hover,:focus-visible):not(:disabled) { background:#cfff5a; color:#0d1308; }
+.episode-detail-workspace .detail-player-controls .detail-play-btn:focus-visible { outline:2px solid var(--episode-accent,#b8f84a); outline-offset:3px; }
+.episode-detail-workspace .detail-player-controls .detail-timeline { border-radius:999px; background:#2b3642; }
+.episode-detail-workspace .detail-player-controls .detail-timeline-range::-webkit-slider-thumb {
+  width:10px;
+  height:10px;
+  margin-top:-3px;
+  border:0;
+  background:#f5f7fa;
+  box-shadow:none;
+}
+.episode-detail-workspace .detail-player-controls .detail-timeline-range::-moz-range-thumb { width:10px; height:10px; border:0; background:#f5f7fa; box-shadow:none; }
+.episode-detail-workspace .detail-player-controls .detail-video-time { min-width:0; color:var(--episode-muted,#9aa6b2); font-size:12px; font-weight:400; font-variant-numeric:tabular-nums; }
+.episode-detail-workspace .detail-player-controls .detail-player-actions {
+  box-sizing:border-box;
+  min-height:0;
+  margin-top:8px;
+  padding:8px 0 0;
+  gap:8px;
+  border:0;
+  border-top:1px solid var(--episode-border,#2b3642);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.episode-detail-workspace .detail-player-controls .detail-player-action,
+.episode-detail-workspace .detail-player-controls .detail-play-mode-trigger { flex:0 0 32px; width:32px; height:32px; }
+.episode-detail-workspace .detail-player-controls .detail-play-mode { flex:0 0 32px; width:32px; height:32px; }
+.episode-detail-workspace .detail-player-controls .detail-fullscreen { position:relative; inset:auto; margin-left:auto; }
+.episode-detail-workspace .detail-player-controls :is(.detail-play-btn,.detail-timeline-range):disabled { opacity:.4; cursor:not-allowed; }
+/* 2026-10-30 Product Design 改动逻辑：失败和未生成使用相同的可见播放行，保留灰色播放按钮、进度条与片段时长。
+ * 禁用状态继续由现有脚本控制，不允许播放或拖动；复用现有 disabled 灰色样式，切换状态不改变控制卡高度。 */
+.episode-detail-workspace .detail-player-panel:has(.detail-preview:is(.is-generation-failed,.is-ungenerated)) .detail-preview-controls { visibility:visible; }
+/* 全屏目标包含整个播放器：画面自适应剩余高度，底部操作固定占位；页面回退也可通过最右侧按钮或 Esc 退出。 */
+body.drama-workflow-active .episode-detail-workspace .detail-player-panel.is-fullscreen-view {
+  position:fixed;
+  inset:0;
+  z-index:32000;
+  box-sizing:border-box;
+  width:100vw;
+  height:100dvh;
+  padding:16px;
+  border-radius:0;
+  background:#080d12;
+  grid-template-rows:minmax(0,1fr) auto;
+  gap:10px;
+}
+.episode-detail-workspace .detail-player-panel.is-fullscreen-view .detail-preview { background-size:contain; background-repeat:no-repeat; }
+.episode-detail-workspace .detail-player-panel.is-fullscreen-view .detail-player-controls { width:min(100%,640px); justify-self:center; }
+/* 2026-10-11 兼容逻辑：历史菜单展开时已有规则将播放器改为 relative 并提升层级；全屏状态保留 fixed 与全屏层级，确保在全屏内打开历史不会把播放器拉回页面布局。 */
+.episode-detail-workspace .detail-player-panel.is-fullscreen-view:has(#detailHistoryPopover:not([hidden])) { position:fixed; z-index:32000; }
+@media (max-width:599.98px) {
+  .episode-detail-workspace .detail-preview-wrap { padding:0; border-radius:12px; }
+  .episode-detail-workspace .detail-player-controls { padding:8px; border-radius:12px; }
+  .episode-detail-workspace .detail-player-controls .detail-preview-controls { gap:6px; }
+  .episode-detail-workspace .detail-player-controls .detail-video-time { font-size:10px; }
+}
+
+/* 2026-10-30 Product Design：未生成及其他禁用播放状态使用中性灰按钮和低对比进度条，保持播放器原布局；已生成可播放时自动恢复原样式。 */
+.episode-detail-workspace .detail-player-controls .detail-play-btn:disabled { background:#29343e; border-color:#38434e; color:#85919c; opacity:.65; cursor:not-allowed; box-shadow:none; }
+.episode-detail-workspace .detail-player-controls .detail-preview-timeline-wrap:has(.detail-timeline-range:disabled) { opacity:.5; cursor:not-allowed; }
+.episode-detail-workspace .detail-player-controls .detail-timeline-range:disabled { opacity:1; cursor:not-allowed; }
+
+/* 2026-10-30 Product Design 改动逻辑：普通项目失败片段保留原缩略图，只将左上角状态改为红色“生成失败”；右侧沿用现有警告图标，纵向居中显示图标、单行失败文案和红色重试按钮，隐藏旧违规说明。 */
+body.drama-workflow-active .episode-detail-workspace .shot-card.is-standard-generation-failed .shot-thumb {
+  background:var(--shot-cover) center / cover no-repeat !important;
+}
+/* 2026-10-30 Product Design 调整逻辑：失败标签与左侧已生成标签共用 22px 高、8px 水平内边距、11px 圆角及 12px/22px 字体，继承同一卡片字重；仅将底色、边框和文字换为对应红色。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.is-standard-generation-failed .shot-state-badge {
+  top:8px;
+  left:8px;
+  height:22px;
+  padding:0 8px;
+  border:1px solid rgba(255,95,95,.35);
+  border-radius:11px;
+  background:rgba(42,16,24,.9);
+  color:#ff5f5f;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:inherit;
+  line-height:22px;
+  box-shadow:none;
+}
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure {
+  width:100%;
+  flex-direction:column;
+  align-items:center;
+}
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure-message {
+  display:none;
+}
+/* 2026-10-30 Product Design：退款提示和译文允许按窄预览区自动折行。 */
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure-title {
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure-confirm {
+  /* 2026-10-30 Product Design 调整逻辑：重试改为透明底、红色描边及红字的空心按钮，移除实心按钮阴影；悬停只提亮描边与文字，保留原重试交互。 */
+  min-width:88px;
+  background:transparent;
+  border-color:#e5484d;
+  color:#ff5f5f;
+  box-shadow:none;
+}
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure-confirm:hover {
+  background:transparent;
+  border-color:#f2555a;
+  color:#ff7b7f;
+}
+.episode-detail-workspace .detail-preview.is-standard-generation-failed .detail-generation-failure-confirm:focus-visible {
+  outline:2px solid #ff9b9e;
+  outline-offset:3px;
+}
+
+/* 2026-10-30 Product Design：已生成用缩略图伪元素、生成失败用独立标签，统一二者的外框与文字几何。
+ * 显式采用 border-box，22px 为包含 1px 描边的实际总高度，统一距顶/左 8px、内边距、行高、字重和垂直居中；
+ * 防止伪元素的 content-box 与独立元素的盒模型不同而产生高度差；标签原有灰色/红色区分保持不变。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:not(.is-ungenerated):not(.is-rendering):not(.is-failed) .shot-thumb::before,
+/* 2026-11-10 Product Design 改动逻辑：生成中标签复用已生成标签的几何规则，
+ * 统一 22px 高、11px 胶囊圆角、字号字重和内边距；保留各自原状态文字及生成任务。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.is-standard-generation-failed .shot-state-badge,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.is-rendering .shot-state-badge {
+  position:absolute;
+  top:8px;
+  left:8px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  height:22px;
+  min-height:22px;
+  margin:0;
+  padding:0 8px;
+  border-width:1px;
+  border-style:solid;
+  border-radius:11px;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:500;
+  line-height:20px;
+  white-space:nowrap;
+  transform:none;
+  pointer-events:none;
+}
+
+/* 2026-10-30 Product Design：角色、短剧视频及各步骤失败提示共用换行规则；
+ * 约束文字与按钮在容器内，阿语读取方向由六语言适配器同步，不改生成状态和点击行为。 */
+body.drama-workflow-active :is(.asset-character-image-failure,.detail-generation-failure,.script-outline-failure) > [data-generation-failure-copy] {
+  box-sizing:border-box;
+  min-width:0;
+  max-width:100%;
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  text-align:center;
+}
+body.drama-workflow-active .detail-preview.is-generation-failed .detail-generation-failure {
+  box-sizing:border-box;
+  min-width:0;
+  max-width:100%;
+  padding-inline:12px;
+}
+body.drama-workflow-active .script-outline-failure > p { width:min(100%,520px); padding-inline:16px; }
+body.drama-workflow-active :is(.asset-character-image-failure,.detail-generation-failure,.script-outline-failure) > button[data-generation-failure-copy] { height:auto; min-height:36px; }

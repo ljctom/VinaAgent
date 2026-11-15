@@ -1,0 +1,59 @@
+/* 2026-09-23 Product Design：参考截图使用青绿色编辑边框和胶囊工具栏；固定红色标记，无颜色选择器。 */
+/* 输入框整体加高；附件与正文共享边框，避免截图看起来是输入框之外的独立卡片。 */
+.review-annotation-input-shell { display:flex; flex-direction:column; min-height:224px; padding:14px; border:1px solid #34414d; border-radius:12px; background:#10161c; transition:border-color .15s; }
+.review-annotation-input-shell:focus-within { border-color:#4b9e92; }
+.review-comment-composer .review-annotation-input-shell .review-comment-input { flex:1; min-height:138px; padding:4px 0 12px; border:0; border-radius:0; resize:vertical; background:transparent; box-shadow:none; }
+.review-annotation-input-shell:has(.review-annotation-draft:not([hidden])) .review-comment-input { min-height:108px; }
+.review-annotation-input-shell .review-comment-submit { width:auto; flex:none; min-width:94px; margin:0 0 0 auto; padding:0 13px; border-color:#54e5d0; background:#54e5d0; color:#09251f; }
+.review-annotation-input-shell .review-annotation-composer-actions { padding-top:10px; border-top:1px solid #273039; }
+.review-annotation-composer-actions { display:flex; align-items:center; gap:8px; margin-top:8px; }
+.review-annotation-entry { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border:1px solid #34414d; border-radius:8px; background:#161e27; color:#a9b5c2; font:inherit; font-size:12px; cursor:pointer; }
+.review-annotation-entry:hover,.review-annotation-entry[aria-pressed="true"] { color:#54e5d0; border-color:#3b827b; background:#203936; }
+.review-annotation-entry:disabled { opacity:.4; cursor:not-allowed; }
+.review-annotation-icon { display:block; width:22px; height:22px; background:currentColor; mask:var(--annotation-icon) center/contain no-repeat; -webkit-mask:var(--annotation-icon) center/contain no-repeat; flex:none; }
+.review-annotation-entry .review-annotation-icon { width:17px; height:17px; }
+.review-annotation-status { margin:7px 0 0; color:#9baab9; font-size:12px; line-height:1.5; }
+.review-annotation-status:empty { display:none; }
+/* 编辑时冻结原帧，隐藏整组播放控件和分镜时间轴，原视频保留以免重载。 */
+.review-viewer-panel.is-annotating .review-player-controls,.review-viewer-panel.is-annotating .review-storyboard-timeline { display:none; }
+.review-viewer-panel.is-annotating .review-video-stage { border-color:transparent; overflow:visible; background:#030506; }
+.review-viewer-panel.is-annotating #reviewVideo { visibility:hidden; }
+.review-annotation-surface { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:14px; outline:2px solid #52e4cf; box-shadow:0 0 0 6px #52e4cf18; }
+.review-annotation-surface canvas { width:100%; height:100%; display:block; border-radius:14px; touch-action:none; cursor:crosshair; }
+.review-annotation-surface[hidden],.review-annotation-toolbar[hidden],.review-annotation-draft[hidden],.review-annotation-text[hidden] { display:none; }
+.review-annotation-toolbar { display:flex; align-self:center; align-items:center; justify-content:center; gap:8px; flex:none; max-width:100%; box-sizing:border-box; margin:10px 0 3px; padding:10px 16px; border:1px solid #36625e; border-radius:999px; background:#1b1e22; box-shadow:0 7px 24px #0003; }
+.review-annotation-tool { position:relative; display:flex; align-items:center; justify-content:center; width:42px; height:42px; flex:none; padding:0; border:0; border-radius:50%; background:transparent; color:#95a3b8; cursor:pointer; }
+.review-annotation-tool:hover { background:#30343a; color:#fff; }
+.review-annotation-tool[aria-pressed="true"] { background:#284943; color:#54e5d0; }
+.review-annotation-tool:disabled { opacity:.35; cursor:not-allowed; }
+.review-annotation-tool::after { content:attr(data-tooltip); position:absolute; z-index:10; top:calc(100% + 9px); left:50%; transform:translateX(-50%); padding:5px 8px; border-radius:6px; background:#d5d7d8; color:#34383c; font-size:12px; white-space:nowrap; opacity:0; pointer-events:none; }
+.review-annotation-tool:hover::after,.review-annotation-tool:focus-visible::after { opacity:1; }
+.review-annotation-toolbar button:focus-visible,.review-annotation-entry:focus-visible { outline:2px solid #54e5d0; outline-offset:3px; }
+.review-annotation-divider { height:28px; width:1px; background:#393d43; margin:0 4px; }
+.review-annotation-cancel,.review-annotation-done { border:0; padding:8px 16px; border-radius:999px; font:inherit; font-size:14px; font-weight:650; cursor:pointer; }
+.review-annotation-cancel { background:transparent; color:#a3afbf; }
+.review-annotation-cancel:hover { color:white; }
+.review-annotation-done { background:#54e5d0; color:#06221e; box-shadow:0 0 17px #54e5d026; }
+.review-annotation-done:hover { background:#75f1df; }
+.review-annotation-text { position:absolute; z-index:2; box-sizing:border-box; min-height:38px; padding:2px; resize:none; background:#111a; color:#fa494d; border:1px dashed #54e5d0; outline:none; line-height:1.25; font-family:Arial,"Microsoft YaHei",sans-serif; font-weight:600; }
+.review-annotation-draft { position:relative; width:128px; margin:2px 0 14px; }
+.review-annotation-draft > button:first-child { padding:0; display:block; overflow:hidden; border:1px solid #36625e; border-radius:8px; background:#10171c; color:#a5b5bc; font:inherit; font-size:11px; cursor:pointer; }
+.review-annotation-draft img { display:block; width:126px; max-height:90px; object-fit:contain; }
+.review-annotation-draft span { display:block; padding:4px; }
+.review-annotation-remove { position:absolute; right:-7px; top:-7px; display:flex; align-items:center; justify-content:center; width:22px; height:22px; border:1px solid #49545d; border-radius:50%; background:#10171c; color:#dbe3e9; cursor:pointer; }
+.review-annotation-remove .review-annotation-icon { width:13px; height:13px; }
+.review-comment-annotation-image { display:block; width:100%; height:auto; max-height:220px; object-fit:contain; margin-top:10px; border:1px solid #34414d; border-radius:8px; background:#030506; }
+@media(max-width:620px) { .review-annotation-toolbar { gap:2px; padding:8px; } .review-annotation-tool { width:32px; height:36px; } .review-annotation-cancel,.review-annotation-done { padding:7px 10px; font-size:12px; } }
+
+/* 2026-09-23 Product Design：完整展示横竖视频原始比例；标注入口仅显示笔图标，保留可访问名称。 */
+.review-video-stage #reviewVideo { object-fit:contain; }
+.review-annotation-entry { width:36px; height:36px; padding:0; justify-content:center; border:0; background:transparent; }
+.review-annotation-icon { background:none; mask:none; -webkit-mask:none; }
+.review-annotation-entry .review-annotation-icon { width:20px; height:20px; }
+
+/* 2026-09-23：多行文字由输入事件自动撑高，不限制行数；长串文字可折行，不使用内部滚动条。 */
+.review-annotation-text { overflow:hidden; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-all; }
+
+/* 2026-09-23 Product Design：参考图复用标注缩略图尺寸、边框及关闭按钮，多图自动换行，空附件区不占高度。 */
+.review-annotation-attachments { display:flex; flex-wrap:wrap; gap:0 16px; }
+.review-reference-thumbnail { overflow:hidden; border:1px solid #36625e; border-radius:8px; background:#10171c; }

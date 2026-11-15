@@ -1,0 +1,85 @@
+/* 2026-09-30 Product Design 改动逻辑：团队管理三个页签沿用 Figma 规范的页面、卡片、边框、文字与品牌绿。
+ * 成员额度和项目制作进度均采用品牌绿；角色、正常、待处理和异常标记分别采用规范品牌、成功、警告与错误色。
+ * 概况卡保留渐变，调整为绿灰到蓝灰；所有覆盖仅涉及颜色，不修改头像、封面、布局、数据或管理逻辑。
+ */
+#teamConsoleOverlay, #teamConsole { background:#080d12; color:#f5f7fa; }
+#teamConsole .team-console-header { background:#0b1118; border-color:#2b3642; }
+#teamConsole .team-console-title, #teamConsole .team-name-display,
+#teamConsole .team-overview-heading h3, #teamConsole .team-metrics dd { color:#f5f7fa; }
+#teamConsole .team-summary-card { background:linear-gradient(120deg,#263327 0%,#202c31 58%,#171e27 100%); border-color:#2b3642; }
+#teamConsole .team-overview-card { background:linear-gradient(115deg,#263327 0%,#202c31 52%,#252d3a 100%); border-color:#2b3642; box-shadow:inset 0 1px 0 rgba(255,255,255,.06); }
+#teamConsole .team-panel { background:#0f151c; border-color:#2b3642; }
+#teamConsole :is(.team-tabs,.team-toolbar,.team-overview-group,.team-metrics > div) { border-color:#2b3642; }
+#teamConsole :is(.team-id,.team-metrics dt,.team-metric-capacity,.team-tab,.team-toolbar) { color:#9aa6b2; }
+#teamConsole .team-tab:hover, #teamConsole .team-tab.is-active { color:#b8f84a; }
+#teamConsole .team-tab.is-active::after { background:#b8f84a; }
+#teamConsole .team-table th { background:#171e27; color:#d5dbe3; border-color:#2b3642; }
+#teamConsole .team-table td { color:#d5dbe3; border-color:#2b3642; }
+#teamConsole #teamMemberTableWrap .team-table th:first-child { background:#171e27; box-shadow:1px 0 0 #2b3642; }
+#teamConsole #teamMemberTableWrap .team-table td:first-child { background:#0f151c; box-shadow:1px 0 0 #2b3642; }
+#teamConsole .team-table tbody tr:hover td,
+#teamConsole #teamMemberTableWrap .team-table tbody tr:hover td:first-child { background:#171e27; }
+#teamConsole :is(.team-monthly-credits-track,.team-production-track span) { background:#2b3642; }
+#teamConsole .team-monthly-credits-fill,
+#teamConsole .team-production-track span.is-active { background:#b8f84a; }
+#teamConsole .team-production, #teamConsole .team-project-review-counts { color:#9aa6b2; }
+#teamConsole .team-table td.team-project-credits, #teamConsole #teamBalanceValue,
+#teamConsole .team-account-you { color:#b8f84a; }
+#teamConsole .team-tag { background:rgba(184,248,74,.1216); border-color:#3d4f2a; color:#b8f84a; }
+/* 2026-10-10 Product Design 改动逻辑：只区分成员列表的两种角色标签；管理员沿用品牌黄绿色，普通成员用浅蓝色文字、淡蓝底和蓝色边框，在深色表格中清晰区分角色。 */
+#teamConsole .team-tag.team-role-admin { background:rgba(184,248,74,.1216); border-color:#3d4f2a; color:#b8f84a; }
+#teamConsole .team-tag.team-role-member { background:rgba(125,185,255,.12); border-color:rgba(125,185,255,.3); color:#7db9ff; }
+#teamConsole .team-tag.status { background:rgba(85,224,138,.12); border-color:rgba(85,224,138,.35); color:#55e08a; }
+#teamConsole .team-tag.pending { background:rgba(255,203,77,.12); border-color:rgba(255,203,77,.35); color:#ffcb4d; }
+#teamConsole .team-button { background:#b8f84a; border-color:#b8f84a; color:#0d1308; }
+#teamConsole .team-button:hover:not(:disabled) { background:#cfff5a; border-color:#cfff5a; color:#0d1308; }
+#teamConsole .team-button:active:not(:disabled) { background:#9fdb3e; border-color:#9fdb3e; }
+#teamConsole .team-button.secondary { background:#171e27; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-button.secondary:hover:not(:disabled) { background:#171e27; border-color:#3a4654; color:#f5f7fa; }
+#teamConsole .team-overview-heading .team-button.secondary.compact { background:rgba(184,248,74,.1216); border-color:#3d4f2a; color:#b8f84a; }
+#teamConsole .team-overview-heading .team-button.secondary.compact:hover:not(:disabled) { background:rgba(184,248,74,.18); border-color:#b8f84a; color:#cfff5a; }
+#teamConsole :is(.team-status-trigger,.team-search-input,.team-cell-name-input,.team-name-input) { background:#141a21; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-status-menu { background:#171e27; border-color:#2b3642; color:#d5dbe3; }
+#teamConsole .team-button:disabled { background:#141a21; border-color:#222b35; color:#4d5865; }
+
+/* 2026-10-20 Product Design 改动逻辑：团队页保留原应用壳层里的品牌和侧栏，只隐藏其他业务内容；
+ * 52px 顶栏继续放置品牌及共用账户区，团队内容按现有侧栏宽度向右留位，避免整页覆盖导航。
+ * 标题已移入内容区，与概况和表格共享内边距；侧栏团队项高亮，其他导航恢复默认外观。
+ */
+body.team-console-open > .app { min-height: 0; }
+body.team-console-open > .app > :not(.sidebar) { display: none !important; }
+body.team-console-open .app::before { display: block; top: 0; background: #080d12; }
+body.team-console-open .app > .sidebar { display: flex !important; inset: 52px auto 0 0; width: var(--sidebar-w); }
+body.team-console-open .sidebar .brand { display: flex; top: 0; }
+body.team-console-open > .global-account { top: 8px; right: 24px; transform: none; }
+body.team-console-open #teamConsoleOverlay {
+  box-sizing: border-box;
+  width: calc(100% - var(--sidebar-w));
+  margin-left: var(--sidebar-w);
+  padding-top: 52px;
+}
+body.team-console-open #teamConsole { min-height: calc(100dvh - 52px); }
+body.team-console-open #teamConsole .team-console-body { max-width: none; padding: 24px 32px 32px; }
+body.team-console-open #teamConsole .team-console-header {
+  position: static;
+  height: auto;
+  min-height: 44px;
+  flex: 0 0 auto;
+  padding: 0 0 20px;
+  background: transparent;
+}
+body.team-console-open #teamConsole .team-console-title { margin: 0; font-size: 22px; line-height: 28px; }
+body.team-console-open .sidebar > .nav > .nav-item.active { background: transparent; color: #9aa6b2; }
+body.team-console-open .sidebar > .nav > .nav-item.active .nav-icon img.sidebar-figma-icon { filter: none; }
+body.team-console-open .sidebar > .nav > .nav-item-team { background: #171e27; color: #fff; }
+/* 2026-10-20 改动逻辑：PRD 面板展开时同时扣除主导航与面板宽度；窄屏按原面板覆盖方式，只为主导航保留空间。 */
+body.team-console-open.requirements-panel-open #teamConsoleOverlay {
+  width: calc(100vw - var(--sidebar-w) - var(--requirements-panel-width));
+}
+@media (max-width: 980px) {
+  body.team-console-open.requirements-panel-open #teamConsoleOverlay { width: calc(100vw - var(--sidebar-w)); }
+}
+@media (max-width: 760px) {
+  body.team-console-open #teamConsole .team-console-body { padding: 20px 16px 32px; gap: 16px; }
+  body.team-console-open #teamConsole .team-console-header { padding: 0 0 16px; }
+}

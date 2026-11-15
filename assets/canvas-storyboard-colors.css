@@ -1,0 +1,768 @@
+/* 2026-09-30 Product Design 改动逻辑：全能创作故事板模式按 ego 实读的 vinabot.ai 参考页与 Figma 规范统一配色。
+ * 页面 #080D12、面板 rgba(15,21,28,.6)、选项 #171E27、历史选中 #2B3642；品牌绿 #B8F84A，用户消息 rgba(184,236,100,.29)。
+ * 已确认/已提交卡片使用参考页 .62 不透明度，确认完成按钮 #DFF9A6；保留所有原禁用状态及事件行为。
+ * 规则只在故事板模式生效，仅覆盖颜色、阴影颜色和置灰视觉，不改位置、尺寸、文案、图片、媒体、节点或业务逻辑。
+ * WebKit 与 Firefox 进度伪元素分别声明，避免整组失效；原浏览器媒体控件保持原生操作。
+ */
+
+body.vina-direct-mode:not(.unused-storyboard-scope) { --blue:#b8f84a; --line:#2b3642; --text:#f5f7fa; --muted:#9aa6b2; background:#080d12 !important; color:#f5f7fa !important; color-scheme:dark; }
+
+body.vina-direct-mode .app,
+body.vina-direct-mode .content-frame,
+body.vina-direct-mode .workspace,
+body.vina-direct-mode .composer-wrap,
+body.vina-direct-mode .messages { background:transparent !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .chat,
+body.vina-direct-mode .chat-project-title,
+body.vina-direct-mode .vina-direct-main,
+body.vina-direct-mode .vina-direct-history { background:rgba(15,21,28,.6) !important; border-color:#2b3642 !important; color:#f5f7fa !important; box-shadow:none !important; }
+
+body.vina-direct-mode .chat-head,
+body.vina-direct-mode .vina-direct-history-head,
+body.vina-direct-mode .composer-actions,
+body.vina-direct-mode .reference-strip { background:transparent !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .vina-workbench-mode-switch { background:#080d12 !important; border-color:#2b3642 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-workbench-mode-tab { background:transparent !important; color:#9aa6b2 !important; }
+
+body.vina-direct-mode .vina-workbench-mode-tab.is-active { background:rgba(255,255,255,.2) !important; color:#ffffff !important; box-shadow:none !important; }
+
+body.vina-direct-mode .msg.ai { background:transparent !important; border-color:transparent !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .msg.user { background:rgba(184,236,100,.29) !important; color:#ffffff !important; border-color:transparent !important; box-shadow:none !important; }
+
+body.vina-direct-mode .msg.thinking,
+body.vina-direct-mode .empty-chat,
+body.vina-direct-mode .vina-direct-placeholder,
+body.vina-direct-mode .vina-direct-history-empty,
+body.vina-direct-mode .vina-direct-empty-state { color:#6f7b88 !important; }
+
+body.vina-direct-mode .generation-card,
+body.vina-direct-mode .creative-direction-card,
+body.vina-direct-mode .confirmation-batch-card,
+body.vina-direct-mode .confirmation-card-shell,
+body.vina-direct-mode .example-creative-choice-panel { background:rgba(15,21,28,.6) !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .generation-card-title,
+body.vina-direct-mode .creative-direction-title,
+body.vina-direct-mode .confirmation-card-question,
+body.vina-direct-mode .example-creative-choice-title,
+body.vina-direct-mode .confirmation-batch-option-label,
+body.vina-direct-mode .vina-direct-history-title,
+body.vina-direct-mode .vina-direct-redraw-title { color:#f5f7fa !important; }
+
+body.vina-direct-mode .generation-prompt,
+body.vina-direct-mode .generation-prompt textarea,
+body.vina-direct-mode .generation-prompt input,
+body.vina-direct-mode .generation-prompt .prompt-text,
+body.vina-direct-mode .generation-prompt [contenteditable],
+body.vina-direct-mode .music-generation-prompt,
+body.vina-direct-mode .music-generation-style,
+body.vina-direct-mode .music-generation-lyrics { background:transparent !important; color:#d5dbe3 !important; border-color:#2b3642 !important; }
+
+body.vina-direct-mode .creative-option,
+body.vina-direct-mode .confirmation-card-option { background:#171e27 !important; border-color:transparent !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .creative-option:hover:not(:disabled),
+body.vina-direct-mode .confirmation-card-option:hover:not(:disabled) { background:#222b35 !important; border-color:#3a4654 !important; }
+
+body.vina-direct-mode .creative-option.active,
+body.vina-direct-mode .confirmation-card-option.is-selected { background:rgba(184,248,74,.1216) !important; border-color:#b8f84a !important; color:#f5f7fa !important; box-shadow:none !important; }
+
+body.vina-direct-mode .creative-option-index,
+body.vina-direct-mode .confirmation-batch-option-description,
+body.vina-direct-mode .example-creative-option-subtitle,
+body.vina-direct-mode .confirmation-card-hint,
+body.vina-direct-mode .confirmation-card-progress,
+body.vina-direct-mode .music-generation-section-title { color:#9aa6b2 !important; }
+
+body.vina-direct-mode .confirmation-batch-option-marker { background:#2b3642 !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .creative-option.active .confirmation-batch-option-marker,
+body.vina-direct-mode .creative-option.active .creative-option-index { background:#b8f84a !important; color:#0d1308 !important; }
+
+body.vina-direct-mode .confirmation-card-choice-mark { border-color:#3a4654 !important; }
+
+body.vina-direct-mode .confirmation-card-option.is-selected .confirmation-card-choice-mark { border-color:#b8f84a !important; background:#0d1308 !important; }
+
+body.vina-direct-mode .creative-other-input,
+body.vina-direct-mode .confirmation-batch-textarea,
+body.vina-direct-mode .confirmation-card-input { background:#080d12 !important; color:#f5f7fa !important; border-color:#2b3642 !important; caret-color:#b8f84a; box-shadow:none !important; }
+
+body.vina-direct-mode input::placeholder,
+body.vina-direct-mode textarea::placeholder,
+body.vina-direct-mode [contenteditable]::before { color:#4d5865 !important; }
+
+body.vina-direct-mode .creative-other-input:focus,
+body.vina-direct-mode .creative-other-input.active,
+body.vina-direct-mode .confirmation-card-input:focus { border-color:#b8f84a !important; box-shadow:0 0 0 2px rgba(184,248,74,.12) !important; }
+
+body.vina-direct-mode .creative-confirm,
+body.vina-direct-mode .generation-confirm,
+body.vina-direct-mode .confirmation-card-continue,
+body.vina-direct-mode .send,
+body.vina-direct-mode .vina-direct-redraw-send { background:#b8f84a !important; border-color:#b8f84a !important; color:#0d1308 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .creative-confirm:hover:not(:disabled),
+body.vina-direct-mode .generation-confirm:hover:not(:disabled),
+body.vina-direct-mode .confirmation-card-continue:hover:not(:disabled),
+body.vina-direct-mode .send:hover:not(:disabled),
+body.vina-direct-mode .vina-direct-redraw-send:hover:not(:disabled) { background:#cfff5a !important; border-color:#cfff5a !important; color:#0d1308 !important; }
+
+body.vina-direct-mode .creative-confirm:active:not(:disabled),
+body.vina-direct-mode .generation-confirm:active:not(:disabled),
+body.vina-direct-mode .confirmation-card-continue:active:not(:disabled),
+body.vina-direct-mode .send:active:not(:disabled),
+body.vina-direct-mode .vina-direct-redraw-send:active:not(:disabled) { background:#9fdb3e !important; border-color:#9fdb3e !important; }
+
+body.vina-direct-mode .generation-cancel,
+body.vina-direct-mode .confirmation-card-back,
+body.vina-direct-mode .confirmation-batch-nav-button { background:#2b3642 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .generation-card.disabled,
+body.vina-direct-mode .creative-direction-card.disabled,
+body.vina-direct-mode .confirmation-card-shell.is-submitted { opacity:.62 !important; filter:none !important; }
+
+body.vina-direct-mode .chat .messages .creative-option.example-disabled,
+body.vina-direct-mode .chat .messages .creative-other-input.example-disabled { opacity:.62 !important; filter:none !important; }
+
+body.vina-direct-mode .chat .messages .creative-option.example-disabled.active { background:#171e27 !important; border-color:transparent !important; color:#9aa6b2 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .generation-card.disabled .generation-confirm { background:#dff9a6 !important; border-color:#dff9a6 !important; color:#0d1308 !important; }
+
+body.vina-direct-mode .creative-confirm:disabled,
+body.vina-direct-mode .confirmation-batch-card .creative-confirm:disabled,
+body.vina-direct-mode .generation-confirm:disabled,
+body.vina-direct-mode .confirmation-card-continue:disabled { background:#3d4f2a !important; border-color:#222b35 !important; color:#9aa6b2 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .send:disabled { background:rgba(55,64,79,.9) !important; border-color:#222b35 !important; color:#080d12 !important; opacity:1 !important; }
+
+body.vina-direct-mode .composer { background:rgba(23,30,39,.96) !important; border-color:#2b3642 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .composer textarea,
+body.vina-direct-mode .composer [contenteditable] { background:transparent !important; color:#f5f7fa !important; caret-color:#b8f84a; }
+
+body.vina-direct-mode .canvas-skill-trigger,
+body.vina-direct-mode .canvas-style-trigger,
+body.vina-direct-mode .composer-icon,
+body.vina-direct-mode .auto-mode-trigger,
+body.vina-direct-mode .node-param-trigger { background:#080d12 !important; color:#9aa6b2 !important; border-color:#2b3642 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .canvas-skill-control.selected .canvas-skill-trigger,
+body.vina-direct-mode .canvas-style-control.selected .canvas-style-trigger { background:rgba(184,248,74,.1216) !important; color:#b8f84a !important; border-color:#b8f84a !important; }
+
+body.vina-direct-mode .node-param-menu,
+body.vina-direct-mode .generation-param-controls.split-param-control .node-param-menu,
+body.vina-direct-mode .canvas-skill-menu,
+body.vina-direct-mode .canvas-style-menu,
+body.vina-direct-mode .auto-mode-tip,
+body.vina-direct-mode .vina-direct-reference-preview,
+body.vina-direct-mode .vina-delete-confirm-dialog,
+body.vina-direct-mode .vina-direct-toast { background:#171e27 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .generation-param-controls.split-param-control .node-param-trigger { background:#080d12 !important; border-color:#2b3642 !important; color:#9aa6b2 !important; }
+
+body.vina-direct-mode .node-param-option,
+body.vina-direct-mode .generation-param-controls.split-param-control .node-param-option { color:#d5dbe3 !important; }
+
+body.vina-direct-mode .node-param-option.selected,
+body.vina-direct-mode .node-param-option:hover,
+body.vina-direct-mode .generation-param-controls.split-param-control .node-param-option.selected,
+body.vina-direct-mode .generation-param-controls.split-param-control .node-param-option:hover { background:rgba(184,248,74,.1216) !important; color:#b8f84a !important; }
+
+body.vina-direct-mode .model-description,
+body.vina-direct-mode .confirmation-batch-option-description,
+body.vina-direct-mode .vina-direct-param strong { color:#9aa6b2 !important; }
+
+body.vina-direct-mode .model-name { color:#f5f7fa !important; }
+
+body.vina-direct-mode .model-check { stroke:#b8f84a !important; }
+
+body.vina-direct-mode .vina-direct-param,
+body.vina-direct-mode .vina-direct-credit { background:rgba(255,255,255,.06) !important; border-color:transparent !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-direct-credit svg,
+body.vina-direct-mode .generation-credit-badge svg,
+body.vina-direct-mode .generation-credit-badge i { color:#b8f84a !important; fill:rgba(184,248,74,.18) !important; }
+
+body.vina-direct-mode .generation-credit-badge { background:#080d12 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-direct-viewer,
+body.vina-direct-mode .vina-direct-viewer img,
+body.vina-direct-mode .vina-direct-viewer video,
+body.vina-direct-mode .vina-direct-audio-player,
+body.vina-direct-mode .vina-direct-history-thumb,
+body.vina-direct-mode .vina-direct-history-thumb.thumb,
+body.vina-direct-mode .vina-direct-history-thumb img { background-color:#080d12 !important; border-color:rgba(255,255,255,.06) !important; }
+
+body.vina-direct-mode .vina-direct-audio-icon,
+body.vina-direct-mode .vina-direct-history-thumb.is-music { background:#171e27 !important; color:#b8f84a !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-direct-actions { background:#080d12 !important; border-color:#2b3642 !important; }
+
+body.vina-direct-mode .vina-direct-action,
+body.vina-direct-mode .vina-direct-action.is-primary,
+body.vina-direct-mode .vina-direct-action.is-compose { background:transparent !important; border-color:transparent !important; color:#9aa6b2 !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-direct-action:hover:not(:disabled),
+body.vina-direct-mode .vina-direct-action.is-compose:hover:not(:disabled) { background:#171e27 !important; border-color:#2b3642 !important; color:#f5f7fa !important; box-shadow:none !important; }
+
+body.vina-direct-mode .vina-direct-action[data-tooltip]::after,
+body.vina-direct-mode .vina-direct-action[data-tooltip]::before { background:#171e27 !important; border-color:#2b3642 !important; color:#f5f7fa !important; }
+
+body.vina-direct-mode .vina-direct-history-card { background:transparent !important; border-color:transparent !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .vina-direct-history-card:hover { background:#171e27 !important; }
+
+body.vina-direct-mode .vina-direct-history-card.is-active { background:#2b3642 !important; border-color:transparent !important; }
+
+body.vina-direct-mode .vina-direct-history-name { color:#d5dbe3 !important; }
+
+body.vina-direct-mode .vina-direct-history-meta,
+body.vina-direct-mode .vina-direct-history-state { color:#9aa6b2 !important; }
+
+body.vina-direct-mode .vina-direct-history-state.is-generating { color:#b8f84a !important; }
+
+body.vina-direct-mode .vina-direct-history-state.is-pending { color:#ffcb4d !important; }
+
+body.vina-direct-mode .vina-direct-history-state.is-failed,
+body.vina-direct-mode .generation-failed,
+body.vina-direct-mode .canvas-chat-generation-deleted-title,
+body.vina-direct-mode .canvas-chat-generation-deleted-icon { color:#ff5c7a !important; }
+
+body.vina-direct-mode .msg.error { background:rgba(255,92,122,.12) !important; border-color:rgba(255,92,122,.35) !important; color:#ff5c7a !important; }
+
+body.vina-direct-mode .messages,
+body.vina-direct-mode .vina-direct-history-list { scrollbar-color:#3a4654 transparent; }
+
+body.vina-direct-mode::-webkit-scrollbar-thumb { background:#3a4654 !important; }
+
+body.vina-direct-mode .vina-delete-confirm-button { background:#2b3642 !important; border-color:#3a4654 !important; color:#d5dbe3 !important; }
+
+body.vina-direct-mode .vina-delete-confirm-button.is-danger { background:#ff5c7a !important; border-color:#ff5c7a !important; color:#0d1308 !important; }
+
+/* 2026-09-30 Product Design 改动逻辑：全能创作画布模式左侧 Agent 复用上方故事板对话栏全部配色。
+ * 共享消息、确认卡、选项、禁用与提交状态、输入框、参数和积分颜色；规则仅限定 .chat 内，不覆盖画布节点、连线或右侧工具。
+ * 排除短剧角色资产专用主题；保留原有尺寸、布局、图像、滚动、交互及生成逻辑。
+ */
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat { --blue:#b8f84a; --line:#2b3642; --text:#f5f7fa; --muted:#9aa6b2; color-scheme:dark; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer-wrap,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .messages { background:transparent !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .chat-project-title { background:rgba(15,21,28,.6) !important; border-color:#2b3642 !important; color:#f5f7fa !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .chat-head,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer-actions,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .reference-strip { background:transparent !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .msg.ai { background:transparent !important; border-color:transparent !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .msg.user { background:rgba(184,236,100,.29) !important; color:#ffffff !important; border-color:transparent !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .msg.thinking,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .empty-chat { color:#6f7b88 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-card,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-direction-card,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-card,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-shell,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .example-creative-choice-panel { background:rgba(15,21,28,.6) !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-card-title,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-direction-title,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-question,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .example-creative-choice-title,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-option-label { color:#f5f7fa !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-prompt,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-prompt textarea,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-prompt input,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-prompt .prompt-text,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-prompt [contenteditable],
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .music-generation-prompt,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .music-generation-style,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .music-generation-lyrics { background:transparent !important; color:#d5dbe3 !important; border-color:#2b3642 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-option { background:#171e27 !important; border-color:transparent !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option:hover:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-option:hover:not(:disabled) { background:#222b35 !important; border-color:#3a4654 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option.active,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-option.is-selected { background:rgba(184,248,74,.1216) !important; border-color:#b8f84a !important; color:#f5f7fa !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option-index,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-option-description,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .example-creative-option-subtitle,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-hint,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-progress,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .music-generation-section-title { color:#9aa6b2 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-option-marker { background:#2b3642 !important; color:#d5dbe3 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option.active .confirmation-batch-option-marker,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-option.active .creative-option-index { background:#b8f84a !important; color:#0d1308 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-choice-mark { border-color:#3a4654 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-option.is-selected .confirmation-card-choice-mark { border-color:#b8f84a !important; background:#0d1308 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-other-input,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-textarea,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-input { background:#080d12 !important; color:#f5f7fa !important; border-color:#2b3642 !important; caret-color:#b8f84a; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat input::placeholder,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat textarea::placeholder,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat [contenteditable]::before { color:#4d5865 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-other-input:focus,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-other-input.active,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-input:focus { border-color:#b8f84a !important; box-shadow:0 0 0 2px rgba(184,248,74,.12) !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-confirm,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-confirm,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-continue,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .send { background:#b8f84a !important; border-color:#b8f84a !important; color:#0d1308 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-confirm:hover:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-confirm:hover:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-continue:hover:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .send:hover:not(:disabled) { background:#cfff5a !important; border-color:#cfff5a !important; color:#0d1308 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-confirm:active:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-confirm:active:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-continue:active:not(:disabled),
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .send:active:not(:disabled) { background:#9fdb3e !important; border-color:#9fdb3e !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-cancel,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-back,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-nav-button { background:#2b3642 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-card.disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-direction-card.disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-shell.is-submitted { opacity:.62 !important; filter:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .messages .creative-option.example-disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .messages .creative-other-input.example-disabled { opacity:.62 !important; filter:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .messages .creative-option.example-disabled.active { background:#171e27 !important; border-color:transparent !important; color:#9aa6b2 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-card.disabled .generation-confirm { background:#dff9a6 !important; border-color:#dff9a6 !important; color:#0d1308 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .creative-confirm:disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-card .creative-confirm:disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-confirm:disabled,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-card-continue:disabled { background:#3d4f2a !important; border-color:#222b35 !important; color:#9aa6b2 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .send:disabled { background:rgba(55,64,79,.9) !important; border-color:#222b35 !important; color:#080d12 !important; opacity:1 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer { background:rgba(23,30,39,.96) !important; border-color:#2b3642 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer textarea,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer [contenteditable] { background:transparent !important; color:#f5f7fa !important; caret-color:#b8f84a; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-skill-trigger,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-style-trigger,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .composer-icon,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .auto-mode-trigger,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .node-param-trigger { background:#080d12 !important; color:#9aa6b2 !important; border-color:#2b3642 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-skill-control.selected .canvas-skill-trigger,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-style-control.selected .canvas-style-trigger { background:rgba(184,248,74,.1216) !important; color:#b8f84a !important; border-color:#b8f84a !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .node-param-menu,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-param-controls.split-param-control .node-param-menu,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-skill-menu,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-style-menu,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .auto-mode-tip { background:#171e27 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-param-controls.split-param-control .node-param-trigger { background:#080d12 !important; border-color:#2b3642 !important; color:#9aa6b2 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .node-param-option,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-param-controls.split-param-control .node-param-option { color:#d5dbe3 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .node-param-option.selected,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .node-param-option:hover,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-param-controls.split-param-control .node-param-option.selected,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-param-controls.split-param-control .node-param-option:hover { background:rgba(184,248,74,.1216) !important; color:#b8f84a !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .model-description,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .confirmation-batch-option-description { color:#9aa6b2 !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .model-name { color:#f5f7fa !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .model-check { stroke:#b8f84a !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-credit-badge svg,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-credit-badge i { color:#b8f84a !important; fill:rgba(184,248,74,.18) !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-credit-badge { background:#080d12 !important; border-color:#2b3642 !important; color:#d5dbe3 !important; box-shadow:none !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .generation-failed,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-chat-generation-deleted-title,
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .canvas-chat-generation-deleted-icon { color:#ff5c7a !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .msg.error { background:rgba(255,92,122,.12) !important; border-color:rgba(255,92,122,.35) !important; color:#ff5c7a !important; }
+
+body:not(.vina-direct-mode):not(:has(#character-asset-canvas-theme)) .chat .messages { scrollbar-color:#3a4654 transparent; }
+
+
+/* 2026-10-01 Product Design / Figma UI 改动逻辑：
+ * 来源：V1.2.0 故事板 4059:21053、4059:23995、4561:14982、4059:21282。
+ * 1920px 设计采用 24px 外间距、300px 历史栏、30px 面板内边距；缩窄屏幕时保留可用工作区。
+ * 顶部切换器为 340×48 圆角胶囊；参数 26px、参考素材 26px、播放器圆角 20px。
+ * Agent 气泡、生成卡、输入工具栏、历史卡和删除弹窗只改 CSS 展示。
+ * 所有规则限定 body.vina-direct-mode；不更改预置图片/媒体地址、文案、事件、生成状态、
+ * 原生播放控件、禁用状态、Agent 拖拽宽度与收起逻辑；不扩散到画布或短剧界面。
+ */
+body.vina-direct-mode {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+body.vina-direct-mode .vina-direct-workspace {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  padding: 96px 24px 24px;
+  background: #080d12;
+}
+body.vina-direct-mode .vina-direct-main {
+  padding: 30px;
+  border-radius: 24px;
+}
+body.vina-direct-mode .vina-direct-main,
+body.vina-direct-mode .vina-direct-history {
+  backdrop-filter: blur(10px);
+}
+body.vina-direct-mode .vina-workbench-mode-switch {
+  box-sizing: border-box;
+  top: 24px;
+  width: 340px;
+  max-width: calc(100vw - 48px);
+  height: 48px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 3px;
+  border-radius: 24px;
+  background: rgba(15,21,28,.6) !important;
+  backdrop-filter: blur(10px);
+}
+body.vina-direct-mode .vina-workbench-mode-tab {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+/* 项目标题与对话面板的背景分开绘制，沿用原面板轮廓及不拦截鼠标的伪元素。 */
+body.vina-direct-mode .chat {
+  background: transparent !important;
+}
+body.vina-direct-mode .chat::before {
+  border-color: #2b3642 !important;
+  background: rgba(15,21,28,.6) !important;
+  backdrop-filter: blur(10px);
+}
+body.vina-direct-mode .chat > .chat-head {
+  background: rgba(15,21,28,.6) !important;
+}
+body.vina-direct-mode .project-name {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+body.vina-direct-mode .canvas-brand-wordmark {
+  color: #b8f84a;
+}
+body.vina-direct-mode .chat .messages {
+  padding: 30px 30px 12px !important;
+}
+body.vina-direct-mode .msg.user {
+  padding: 16px !important;
+  border-radius: 24px 24px 0 24px !important;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+body.vina-direct-mode .chat .messages .generation-card,
+body.vina-direct-mode .chat .messages .creative-direction-card,
+body.vina-direct-mode .chat .messages .confirmation-card-shell {
+  padding: 12px !important;
+  border-radius: 16px !important;
+  border-color: #2b3642 !important;
+}
+body.vina-direct-mode .generation-card-title {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 24px;
+}
+body.vina-direct-mode .generation-prompt {
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  font-size: 14px;
+  line-height: 20px;
+}
+body.vina-direct-mode .generation-param-controls .node-param-trigger {
+  border-radius: 16px !important;
+  font-size: 14px;
+}
+body.vina-direct-mode .generation-actions {
+  gap: 12px !important;
+}
+body.vina-direct-mode .generation-cancel,
+body.vina-direct-mode .generation-confirm {
+  min-width: 108px;
+  min-height: 32px !important;
+  height: 32px;
+  padding: 4px 16px !important;
+  border-radius: 24px !important;
+  font-size: 14px;
+  font-weight: 400 !important;
+  line-height: 24px;
+}
+/* 指令输入框复用原附件和工具组件；圆角与间距变化不修改其显隐及自适应图标逻辑。 */
+body.vina-direct-mode .composer {
+  border-radius: 20px !important;
+  background: #171e27 !important;
+}
+body.vina-direct-mode .chat .composer-actions {
+  padding: 12px 16px 16px !important;
+  border-top: 0 !important;
+}
+body.vina-direct-mode .composer-left-actions {
+  gap: 12px !important;
+}
+body.vina-direct-mode .canvas-skill-trigger,
+body.vina-direct-mode .canvas-style-trigger,
+body.vina-direct-mode .composer-icon,
+body.vina-direct-mode .auto-mode-trigger,
+body.vina-direct-mode .send {
+  border-radius: 24px !important;
+  font-weight: 400;
+}
+body.vina-direct-mode .canvas-chat-reference-row,
+body.vina-direct-mode .selected-node-tray {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+/* 结果参数与现有媒体共享原数据，保持图片/视频 contain 和浏览器原生播放交互。 */
+body.vina-direct-mode .vina-direct-result-head {
+  gap: 12px;
+  padding-bottom: 24px;
+}
+body.vina-direct-mode .vina-direct-param-line {
+  min-height: 26px;
+  gap: 12px;
+}
+body.vina-direct-mode .vina-direct-params {
+  gap: 12px;
+  min-height: 26px;
+}
+body.vina-direct-mode .vina-direct-param,
+body.vina-direct-mode .vina-direct-credit {
+  box-sizing: border-box;
+  min-width: 0;
+  height: 26px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+body.vina-direct-mode .vina-direct-credit {
+  gap: 8px;
+}
+body.vina-direct-mode .vina-direct-references {
+  gap: 8px;
+}
+body.vina-direct-mode .vina-direct-reference {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  flex-basis: 26px;
+  border-radius: 8px;
+  background: #222b35;
+}
+body.vina-direct-mode .vina-direct-reference:hover,
+body.vina-direct-mode .vina-direct-reference:focus-visible {
+  border-color: #ffffff;
+  box-shadow: none;
+}
+body.vina-direct-mode .vina-direct-reference-preview {
+  width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.4);
+}
+body.vina-direct-mode .vina-direct-reference-preview-media {
+  height: 200px;
+  background: #171e27;
+}
+body.vina-direct-mode .vina-direct-reference-preview-title {
+  padding: 8px 14px;
+  background: #2b3642;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 18px;
+}
+body.vina-direct-mode .vina-direct-viewer {
+  min-height: 0;
+  border: 0;
+  border-radius: 20px;
+}
+body.vina-direct-mode .vina-direct-main.is-empty .vina-direct-viewer {
+  border-radius: 20px;
+  background: #080d12 !important;
+}
+body.vina-direct-mode .vina-direct-empty-state {
+  gap: 12px;
+  color: #9aa6b2 !important;
+  font-size: 14px;
+  line-height: 20px;
+}
+body.vina-direct-mode .vina-direct-empty-state img {
+  width: 200px;
+  height: 200px;
+  min-width: 0;
+  min-height: 0;
+  background: transparent !important;
+}
+body.vina-direct-mode .vina-direct-empty-state span {
+  white-space: normal;
+}
+body.vina-direct-mode .vina-direct-actions {
+  margin-top: 24px;
+}
+/* 历史卡采用 Figma 96×54 缩略图及 14/12px 两级文字，原任务顺序、选中态和状态颜色不变。 */
+body.vina-direct-mode .vina-direct-history-head {
+  min-height: 70px;
+  padding: 0 30px;
+  border-bottom-color: rgba(255,255,255,.06) !important;
+}
+body.vina-direct-mode .vina-direct-history-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+}
+body.vina-direct-mode .vina-direct-history-list {
+  gap: 10px;
+  padding: 20px 29px;
+}
+body.vina-direct-mode .vina-direct-history-card {
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  min-height: 66px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 10px;
+}
+body.vina-direct-mode .vina-direct-history-thumb,
+body.vina-direct-mode .vina-direct-history-thumb.thumb {
+  box-sizing: border-box;
+  width: 96px;
+  height: 54px;
+  min-height: 54px;
+  border-radius: 6px;
+}
+body.vina-direct-mode .vina-direct-history-copy {
+  gap: 8px;
+}
+body.vina-direct-mode .vina-direct-history-name {
+  color: #ffffff !important;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+body.vina-direct-mode .vina-direct-history-meta {
+  font-size: 12px;
+  line-height: 18px;
+}
+body.vina-direct-mode .vina-direct-history-empty {
+  color: #4d5865 !important;
+  font-size: 14px;
+  line-height: 20px;
+}
+/* 删除弹窗只调整现有容器、标题及按钮样式，不增加 Figma 中的新关闭事件或改动确认逻辑。 */
+body.vina-direct-mode .vina-delete-confirm-modal {
+  background: rgba(0,0,0,.55);
+  backdrop-filter: none;
+}
+body.vina-direct-mode .vina-delete-confirm-dialog {
+  box-sizing: border-box;
+  width: min(400px, calc(100vw - 40px));
+  padding: 24px;
+  border-radius: 24px;
+}
+body.vina-direct-mode .vina-delete-confirm-icon {
+  display: none;
+}
+body.vina-direct-mode .vina-delete-confirm-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+body.vina-direct-mode .vina-delete-confirm-copy {
+  margin-top: 16px;
+  color: #9aa6b2;
+  font-size: 14px;
+  line-height: 20px;
+}
+body.vina-direct-mode .vina-delete-confirm-actions {
+  gap: 12px;
+  margin-top: 48px;
+}
+body.vina-direct-mode .vina-delete-confirm-button {
+  min-width: 108px;
+  height: 32px;
+  border: 0;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+/* 缩窄窗口仅压缩留白和历史卡，保留 Agent 原 CSS 变量及拖拽持久化值。 */
+@media (min-width: 761px) {
+  html.vina-resizable-agent-ready body.vina-direct-mode .chat:not(.is-conversation-collapsed) > .chat-head {
+    width: 100% !important;
+    height: 52px !important;
+    min-height: 52px;
+    flex-basis: 52px !important;
+    margin-bottom: 20px;
+    border-radius: 24px;
+  }
+}
+@media (max-width: 1440px) {
+  body.vina-direct-mode .vina-direct-workspace {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+  body.vina-direct-mode .vina-direct-main { padding: 24px; }
+  body.vina-direct-mode .vina-direct-history-head { padding-inline: 20px; }
+  body.vina-direct-mode .vina-direct-history-list { padding-inline: 16px; }
+  body.vina-direct-mode .chat .messages { padding-inline: 20px !important; }
+}
+@media (max-width: 1120px) {
+  body.vina-direct-mode .vina-direct-workspace {
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 16px;
+    padding-inline: 16px;
+  }
+  body.vina-direct-mode .vina-direct-main { padding: 20px; }
+  body.vina-direct-mode .vina-direct-history-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+  }
+  body.vina-direct-mode .vina-direct-history-thumb,
+  body.vina-direct-mode .vina-direct-history-thumb.thumb { width: 76px; }
+  body.vina-direct-mode .composer-left-actions { gap: 6px !important; }
+  body.vina-direct-mode .chat .composer-actions { padding-inline: 8px !important; }
+}
+@media (max-width: 760px) {
+  body.vina-direct-mode .vina-direct-main { padding: 16px; }
+  body.vina-direct-mode .chat .messages { padding-inline: 16px !important; }
+  body.vina-direct-mode .vina-direct-empty-state img { width: 150px; height: 150px; }
+}

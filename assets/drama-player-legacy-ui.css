@@ -1,0 +1,215 @@
+/* 2026-11-04 Product Design 改动逻辑：只将短剧右侧播放器按钮、播放方式菜单、
+   历史浮层和片段重拍弹窗恢复为“旧版 UI”的样式。
+   旧版来源：episode-player-controls.css、storyboard-workspace-design-system.css、
+   detail-remake-design-system.css；不导入旧版业务脚本，不覆盖其他页面或分镜区域。
+   现有下载、播放方式、重拍、历史切换、归档及生成事件继续使用原实现。 */
+
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn,#detailFullscreenButton) {
+  box-sizing:border-box;display:grid;place-items:center;position:relative;
+  flex:0 0 32px;width:32px;height:32px;min-width:32px;min-height:32px;padding:0;
+  border:1px solid #35414e;border-radius:50%;background:#171e27;color:#aab5c2;
+  box-shadow:none;appearance:none;backdrop-filter:none;cursor:pointer;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn,#detailFullscreenButton):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible,[aria-expanded="true"]) {
+  border-color:#718093!important;background:#2b3642!important;color:#f5f7fa!important;box-shadow:none!important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn,#detailFullscreenButton):focus-visible {
+  outline:2px solid #9aa6b2;outline-offset:2px;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn,#detailFullscreenButton):is(:disabled,[aria-disabled="true"]) {
+  border-color:#222b35;background:#141a21;color:#4d5865;cursor:not-allowed;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn,#detailFullscreenButton) svg {
+  width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailDownloadButton:not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) .detail-player-download-icon img {filter:brightness(0) invert(1)!important}
+
+/* 旧版历史列表的尺寸、排版、版本徽标和中性选中状态；归档分组保留当前数据。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-actions .detail-history-wrap { position:relative; top:auto; right:auto; margin:0; flex:0 0 32px; width:32px; height:32px; z-index:20; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-icon { display:block; width:18px; height:18px; opacity:.7; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryBtn:hover .detail-history-icon,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryBtn:focus-visible .detail-history-icon,
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryBtn[aria-expanded="true"] .detail-history-icon { opacity:1; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryBtn[aria-expanded="true"] { border-color:rgba(184,248,74,.62); background:#182219; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-popover { box-sizing:border-box; position:absolute; inset:auto 0 calc(100% + 10px) auto; z-index:30; width:min(218px,calc(100vw - 32px)); height:258px; display:flex; flex-direction:column; padding:16px; border:1px solid #2b3642; border-radius:16px; background:#171e27; box-shadow:0 0 50px #000; color:#f5f7fa; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-popover[hidden] { display:none; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-popover h3 { margin:0 0 16px; color:#f5f7fa; font-size:16px; font-weight:700; line-height:24px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-list { min-height:0; display:flex; flex-direction:column; gap:12px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#48515a transparent; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version { box-sizing:border-box; display:flex; flex:0 0 54px; align-items:center; gap:12px; width:100%; height:54px; padding:12px; border:1px solid #2b3642; border-radius:12px; background:transparent; color:#d5dbe3; text-align:left; cursor:pointer; font:inherit; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version:hover { background:#202832; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version.active { border-color:#b8f84a; background:#202a26; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version:focus-visible { outline:2px solid #b8f84a; outline-offset:-3px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version:disabled { opacity:.55; cursor:wait; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version-badge { display:grid; place-items:center; flex:0 0 30px; height:30px; border-radius:50%; background:#2b3642; color:#b8f84a; font-size:12px; font-weight:700; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version-date { min-width:0; font-size:12px; line-height:15px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version-date span { display:block; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-version-date time { display:block; color:#9aa6b2; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-empty { margin:0; padding:24px 0; color:#9aa6b2; font-size:13px; text-align:center; }
+
+/* Player menus are anchored to the action row, staying inside the player column. */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(.detail-play-mode,.detail-history-wrap){position:static}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls :is(#detailPlayModePopover,#detailHistoryPopover){
+ position:absolute;top:auto;bottom:calc(100% + 10px);transform:none;box-sizing:border-box;
+ max-width:100%;background:#171e27;opacity:1;border:1px solid #2b3642;border-radius:12px;
+ backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 12px 32px #0006;z-index:30;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailPlayModePopover{left:0;right:auto;width:160px;padding:6px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailHistoryPopover{
+ left:auto;right:0;width:218px;height:auto;max-height:min(320px,calc(100dvh - 120px));padding:16px;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-list{max-height:224px;overflow-y:auto}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPlayModePopover .detail-play-mode-option{min-height:36px;border-radius:7px;color:#9aa6b2;background:transparent;font-size:13px;font-weight:400}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPlayModePopover .detail-play-mode-option:is(:hover,:focus-visible,.active){color:#f5f7fa;background:#2b3642}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-panel:not(.is-fullscreen-view):has(:is(#detailHistoryPopover,#detailPlayModePopover):not([hidden])){position:relative;z-index:60}
+
+/* Neutral history panel: selected surface, white check, and a bounded scrolling list. */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailHistoryPopover{
+ width:260px;max-width:100%;padding:16px 12px 12px;border-radius:14px;max-height:min(384px,calc(100dvh - 120px));
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover h3{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 4px 12px;font-size:14px;line-height:22px;font-weight:600;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-history-count{font-size:11px;line-height:18px;font-weight:400;color:#6f7b88}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-list{
+ gap:6px;max-height:300px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3a4654 transparent;padding:2px;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version{
+ flex:0 0 62px;height:62px;gap:10px;padding:10px;border:1px solid transparent;border-radius:10px;background:transparent;color:#d5dbe3;box-shadow:none;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version:hover:not(:disabled){background:#222b35;border-color:transparent}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version.active{background:#2b3642;border-color:#3a4654;color:#f5f7fa}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version:focus-visible{outline:2px solid #9aa6b2;outline-offset:-2px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version-badge{
+ flex:0 0 34px;height:34px;border-radius:9px;background:#222b35;color:#9aa6b2;font-size:12px;font-weight:500;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .active .detail-history-version-badge{background:#3a4654;color:#f5f7fa}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version-date{flex:1;min-width:0;font-size:12px;line-height:18px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version-meta{display:flex;align-items:center;gap:8px;margin-top:2px;color:#6f7b88;font-size:11px;line-height:16px;white-space:nowrap}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version-date time{color:#9aa6b2;font-size:11px;line-height:16px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-current{color:#9aa6b2;font-size:10px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-check{display:grid;place-items:center;flex:0 0 16px;width:16px;color:#f5f7fa}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-check svg{width:16px;height:16px}
+
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls .detail-player-actions { position:relative; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailPlayModePopover { display:grid;gap:4px; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailPlayModePopover[hidden],
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-player-controls #detailHistoryPopover[hidden] { display:none!important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPlayModePopover .detail-play-mode-option:is(:hover,:focus-visible,.active,[aria-checked="true"]) { background:#2b3642!important;border-color:#718093!important;color:#f5f7fa!important;outline:none; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailPlayModePopover .detail-play-mode-option svg {width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-version.active:hover:not(:disabled) {background:#2b3642;border-color:#3a4654;}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-check svg {fill:none;stroke:currentColor;}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-group-title {flex:none;margin:10px 4px 4px;font-size:12px;line-height:18px;font-weight:400;color:#9aa6b2;}
+
+/* 以下为旧版片段重拍弹窗的局部原始样式，所有规则限定 #detailRemakeModal。 */
+/* Short-drama remake: shared canvas/storyboard surfaces and control hierarchy. */
+#detailRemakeModal{padding:28px;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);font-family:var(--va-font,Inter,"Noto Sans SC","PingFang SC",sans-serif);color:#d5dbe3}
+#detailRemakeModal .detail-remake-dialog{width:min(1280px,calc(100vw - 64px));height:min(920px,calc(100dvh - 64px));min-height:0;border:1px solid #2b3642;border-radius:24px;background:#0d141b;box-shadow:0 32px 96px #0008}
+#detailRemakeModal .detail-remake-head{min-height:84px;padding:20px 24px 12px;gap:12px;border:0;background:transparent}
+#detailRemakeModal :is(.detail-remake-back,.detail-remake-close){width:32px;height:32px;flex-basis:32px;border-radius:50%;color:#9aa6b2;background:transparent}
+#detailRemakeModal :is(.detail-remake-back,.detail-remake-close):hover{background:#222b35;color:#f5f7fa}
+#detailRemakeModal .detail-remake-copy{gap:4px}
+#detailRemakeModal .detail-remake-title{font-size:16px;line-height:24px;font-weight:600;color:#f5f7fa}
+#detailRemakeModal .detail-remake-subtitle{font-size:12px;line-height:18px;color:#9aa6b2;font-weight:400}
+#detailRemakeModal .detail-remake-body{padding:0 24px 24px;gap:16px;grid-template-rows:minmax(180px,1fr) 72px minmax(180px,.42fr)}
+#detailRemakeModal .detail-remake-player{min-height:0;border:0;border-radius:20px;background:#080d12}
+#detailRemakeModal .detail-remake-player-video{background:#080d12;object-fit:contain}
+#detailRemakeModal .detail-remake-player-controls{left:16px;right:16px;bottom:16px;padding:4px 12px;min-height:40px;grid-template-columns:28px auto minmax(0,1fr);gap:12px;border:0;border-radius:24px;background:rgba(8,13,18,.78);backdrop-filter:none}
+#detailRemakeModal .detail-remake-play{width:28px;height:28px;color:#f5f7fa}
+#detailRemakeModal .detail-remake-time{font-size:11px;min-width:80px;color:#9aa6b2}
+#detailRemakeModal #detailRemakeCurrent{color:#f5f7fa}
+#detailRemakeModal .detail-remake-progress{appearance:none;height:4px;border:0;border-radius:4px;background:#3a4654;accent-color:#f5f7fa}
+#detailRemakeModal .detail-remake-progress::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border:0;border-radius:50%;background:#f5f7fa}
+#detailRemakeModal .detail-remake-progress::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:#f5f7fa}
+#detailRemakeModal .detail-remake-timeline-card{padding:10px;border:1px solid #2b3642;border-radius:18px;background:#111820;box-shadow:none}
+#detailRemakeModal .detail-remake-timeline{height:50px;border:0;border-radius:10px;background:#080d12;overflow:visible}
+#detailRemakeModal .detail-remake-filmstrip{inset:0;border-radius:10px}
+#detailRemakeModal .detail-remake-frame{opacity:.9;border-color:#080d1255}
+#detailRemakeModal .detail-remake-selection{border-color:#399bff;border-radius:4px;background:#399bff1a}
+#detailRemakeModal .detail-remake-selection::before,#detailRemakeModal .detail-remake-selection::after{background:#399bff}
+#detailRemakeModal .detail-remake-handle{width:8px;border-radius:3px;background:#399bff}
+#detailRemakeModal .detail-remake-handle::after{content:"";position:absolute;left:3px;top:calc(50% - 6px);height:12px;width:2px;border-radius:1px;background:#fff}
+#detailRemakeModal .detail-remake-selection-time{min-width:0;padding:4px 7px;border-radius:12px;background:#080d1299;font-weight:400;font-size:11px}
+#detailRemakeModal .detail-remake-playhead,#detailRemakeModal .detail-remake-playhead::before{background:#f5f7fa}
+#detailRemakeModal .detail-remake-add-preview{border-radius:5px;border-color:#9aa6b2;background:#080d1280;font-weight:400}
+#detailRemakeModal .detail-remake-prompt{padding:0;border:1px solid #2b3642;border-radius:20px;background:#141b23;box-shadow:none;overflow:visible}
+#detailRemakeModal .detail-remake-prompt-sections{padding:0 16px;scrollbar-color:#3a4654 transparent}
+#detailRemakeModal .detail-remake-prompt-section{padding:14px 0 12px;min-height:118px}
+#detailRemakeModal .detail-remake-prompt-section + .detail-remake-prompt-section{margin:0;padding-top:12px;border-color:#2b3642}
+#detailRemakeModal .detail-remake-selected-line{min-height:24px;margin-bottom:10px}
+#detailRemakeModal .detail-remake-range-chip{height:24px;padding:0 8px;border-radius:7px;background:#222b35;color:#9aa6b2;font-size:12px;font-weight:400;gap:6px}
+#detailRemakeModal .detail-remake-range-chip svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5}
+#detailRemakeModal .detail-remake-segment-delete{width:24px;height:24px;border-radius:50%;background:#080d12;color:#9aa6b2}
+#detailRemakeModal .detail-remake-segment-delete:hover{background:#2b3642;color:#f5f7fa}
+#detailRemakeModal .detail-remake-textarea{display:block;box-sizing:border-box;min-height:52px;font-size:14px;line-height:24px;color:#d5dbe3;caret-color:#f5f7fa;padding:0}
+#detailRemakeModal .detail-remake-textarea::placeholder{color:#9aa6b2}
+#detailRemakeModal .detail-remake-textarea:focus{color:#f5f7fa}
+#detailRemakeModal .detail-remake-tools{min-height:56px;box-sizing:border-box;padding:10px 12px;border-color:#2b3642;gap:10px}
+#detailRemakeModal .detail-remake-param-btn{min-width:0;height:36px;border:1px solid transparent;border-radius:18px;background:#080d12;color:#9aa6b2;padding:0 12px;font-size:13px;font-weight:400;gap:8px}
+#detailRemakeModal .detail-remake-param-btn:hover,#detailRemakeModal .detail-remake-param-btn[aria-expanded="true"]{background:#171e27;border-color:#3a4654;color:#f5f7fa}
+#detailRemakeModal .remake-param-icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;flex:none}
+#detailRemakeModal .remake-chevron{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.6;transition:transform .15s}
+#detailRemakeModal [aria-expanded="true"] .remake-chevron{transform:rotate(180deg)}
+#detailRemakeModal .detail-remake-menu{left:0;bottom:calc(100% + 8px);min-width:260px;padding:8px;border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#d5dbe3;box-shadow:0 16px 40px #0006}
+#detailRemakeModal .detail-remake-menu-option{min-height:40px;padding:10px 12px;border:0;border-radius:8px;font-size:13px;font-weight:400;color:#9aa6b2}
+#detailRemakeModal .detail-remake-menu-option:hover,#detailRemakeModal .detail-remake-menu-option.selected{background:#2b3642;color:#f5f7fa}
+#detailRemakeModal .detail-remake-menu.compact{min-width:200px;padding:16px;display:flex;gap:6px;flex-wrap:wrap}
+#detailRemakeModal .remake-menu-title{width:100%;font-size:13px;color:#9aa6b2;line-height:20px;margin-bottom:4px}
+#detailRemakeModal .detail-remake-menu.compact .detail-remake-menu-option{width:auto;min-height:28px;padding:4px 10px;font-size:12px}
+#detailRemakeModal .detail-remake-submit{height:38px;min-width:92px;padding:0 7px 0 12px;border:1px solid #2b3642;border-radius:20px;background:#080d12;color:#f5f7fa;font-size:13px;font-weight:500;gap:10px}
+#detailRemakeModal .detail-remake-submit-circle{width:24px;height:24px;border-radius:50%;background:#b8f84a;color:#0d1308;font-weight:500}
+#detailRemakeModal .detail-remake-submit:disabled{opacity:1;background:#141a21;border-color:#222b35;color:#4d5865;cursor:not-allowed}
+#detailRemakeModal .detail-remake-submit:disabled .detail-remake-submit-circle{background:#2b3642;color:#6f7b88}
+#detailRemakeModal .detail-remake-submit:not(:disabled):hover{background:#171e27;border-color:#3a4654}
+#detailRemakeModal .detail-remake-submit:not(:disabled):hover .detail-remake-submit-circle{background:#cfff5a}
+#detailRemakeModal button:focus-visible{outline:2px solid #9aa6b2;outline-offset:3px}
+@media(max-height:760px){#detailRemakeModal{padding:16px}#detailRemakeModal .detail-remake-dialog{height:calc(100dvh - 32px)}#detailRemakeModal .detail-remake-head{min-height:68px;padding-top:12px}#detailRemakeModal .detail-remake-body{grid-template-rows:minmax(120px,1fr) 64px minmax(154px,.6fr);gap:12px;padding-bottom:16px}#detailRemakeModal .detail-remake-timeline{height:42px}}
+@media(max-width:640px){#detailRemakeModal{padding:12px}#detailRemakeModal .detail-remake-dialog{width:calc(100vw - 24px);height:calc(100dvh - 24px);border-radius:18px}#detailRemakeModal .detail-remake-head{padding:12px;gap:8px}#detailRemakeModal .detail-remake-subtitle{font-size:11px}#detailRemakeModal .detail-remake-body{padding:0 12px 12px;gap:12px}#detailRemakeModal .detail-remake-player-controls{left:8px;right:8px;bottom:8px;gap:6px;padding:4px 8px}#detailRemakeModal .detail-remake-tools{gap:6px;padding:8px}#detailRemakeModal .detail-remake-param-btn{font-size:12px;padding:0 10px}#detailRemakeModal .detail-remake-submit{min-width:74px;gap:6px;padding-left:9px}#detailRemakeModal .detail-remake-menu{min-width:220px}}
+
+/* Match the existing unified model and video-settings flyouts. */
+#detailRemakeModal #detailRemakeModelMenu{width:min(360px,calc(100vw - 48px));min-width:0;box-sizing:border-box;padding:20px;box-shadow:0 20px 48px #0008;max-height:calc(100dvh - 160px);overflow-y:auto}
+#detailRemakeModal #detailRemakeModelMenu .detail-remake-menu-option{display:flex;align-items:center;gap:12px;box-sizing:border-box;min-height:64px;width:100%;padding:12px;border-radius:10px;text-align:left;background:transparent;color:#f5f7fa}
+#detailRemakeModal #detailRemakeModelMenu .detail-remake-menu-option:hover{background:#202936}
+#detailRemakeModal #detailRemakeModelMenu .detail-remake-menu-option.selected{background:#2b3642}
+#detailRemakeModal .remake-model-icon{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:#080d12;overflow:hidden}
+#detailRemakeModal .remake-model-icon img{display:block;width:40px;height:40px;object-fit:contain}
+#detailRemakeModal .remake-model-copy{display:grid;gap:4px;min-width:0;flex:1}
+#detailRemakeModal .remake-model-copy strong{font-size:14px;line-height:20px;font-weight:500;color:#f5f7fa}
+#detailRemakeModal .remake-model-copy small{font-size:12px;line-height:18px;font-weight:400;color:#6f7b88}
+#detailRemakeModal #detailRemakeResolutionMenu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:min(280px,calc(100vw - 48px));min-width:0;box-sizing:border-box;padding:20px;gap:8px;box-shadow:0 20px 48px #0008}
+#detailRemakeModal #detailRemakeResolutionMenu .remake-menu-title{grid-column:1/-1;margin:0 0 4px;font-size:12px;line-height:18px;font-weight:400;color:#9aa6b2}
+#detailRemakeModal #detailRemakeResolutionMenu .detail-remake-menu-option{min-width:0;width:100%;min-height:40px;padding:0 8px;border:0;border-radius:10px;background:#111820;color:#aab5c2;font-size:13px;line-height:20px;font-weight:500}
+#detailRemakeModal #detailRemakeResolutionMenu .detail-remake-menu-option:hover{background:#202936;color:#f5f7fa}
+#detailRemakeModal #detailRemakeResolutionMenu .detail-remake-menu-option.selected{background:#2b3642;color:#f5f7fa}
+#detailRemakeModal #detailRemakeResolutionMenu .detail-remake-menu-option:active{background:#354252}
+
+/* 2026-11-04：仅在该弹窗内复用旧版 modal-unified.css / brand-button-states.css
+   最终生效的外框、标题、关闭按钮和禁用提交色值，不加载会影响其他弹窗的全局规则。 */
+#detailRemakeModal .detail-remake-dialog {box-sizing:border-box;border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#f5f7fa;box-shadow:0 24px 80px #0008;}
+#detailRemakeModal .detail-remake-title {margin:0;color:#f5f7fa;font-size:18px;line-height:28px;font-weight:600;letter-spacing:0;text-align:left;}
+#detailRemakeModal .detail-remake-close {box-sizing:border-box;width:36px;height:36px;min-width:36px;padding:0;border:1px solid transparent;border-radius:8px;background:transparent;color:#b4bec8;box-shadow:none;}
+#detailRemakeModal .detail-remake-submit:disabled {background:rgba(55,64,79,.9);border-color:transparent;color:#0d1308;opacity:1;box-shadow:none;text-shadow:none;filter:none;transform:none;cursor:not-allowed;}
+@media(max-width:640px) {#detailRemakeModal .detail-remake-dialog {border-radius:16px;}}
+
+/* 2026-11-04 Product Design 改动逻辑：仅为空历史浮层预留内容高度，将“暂无历史记录”
+   水平、垂直居中；标题仍位于顶部，有版本时继续使用旧版列表与滚动样式。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover:has(.detail-history-empty) .detail-history-list {
+  display:grid;place-items:center;min-height:min(220px,calc(100dvh - 200px));padding:0;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailHistoryPopover .detail-history-empty {
+  margin:0;padding:0;color:#9aa6b2;font-size:13px;line-height:20px;font-weight:400;text-align:center;
+}
+
+/* 2026-11-10 Product Design 改动逻辑：视频生成期间保留下载按钮及原占位，
+ * 撤销生成态隐藏规则；由业务同步 aria-disabled，复用上方与其他播放器按钮共用的置灰样式。
+ * 完成后沿用原可用状态恢复，不改生成动效或下载事件。 */
+
+/* 2026-11-10 Product Design 改动逻辑：生成中下载/片段重拍的 tooltip 与完成态共用
+ * 原不透明背景、白字和胶囊样式。旧按钮整体 opacity:.42 会连带淡化伪元素 tooltip，
+ * 因此生成期间把透明度收敛到图标，按钮底色/描边/禁用逻辑继续沿用既有规则。
+ * hover 和键盘聚焦正常触发原 tooltip；按钮本身仍置灰，不开放下载或重拍操作。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open):has(.detail-preview.is-rendering) :is(#detailDownloadButton,#detailRemakeButton)[aria-disabled="true"] {
+  opacity: 1;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open):has(.detail-preview.is-rendering) :is(#detailDownloadButton,#detailRemakeButton)[aria-disabled="true"] > :is(.detail-player-download-icon,svg) {
+  opacity: .42;
+}

@@ -1,0 +1,205 @@
+/* 2026-11-04 Product Design 改动逻辑：
+ * 参考 /Users/a0000/Documents/UI 新/assets/video-composer-design-reference.css，
+ * 只将图二红框内的工具栏、时间标尺、轨道、胶片、裁剪柄及播放头样式应用到短剧剪辑器。
+ * 所有规则限定 .libtv-editor.is-episode-composer；不改变全能创作、父页和顶栏。
+ * 视频预览仅使用文件末尾的等比缩放、圆角与留白规则。
+ * 调整底部区域高度以容纳参考三轨布局；横向时间换算、素材内容、按钮事件、撤销、导出均沿用原实现。
+ * 旧脚本仍写入原内容高度，CSS 仅覆盖展示高度；选中轨道通过 :has 跟随已有选中 class，无需新增状态逻辑。
+ * 音量仍使用原浮层结构、原滑杆及原事件，仅更换可见按钮图标；不引入参考工程的额外业务状态。
+ */
+.libtv-editor.is-episode-composer {
+  --vc-page: #080d12;
+  --vc-panel: #141a21;
+  --vc-card: #171e27;
+  --vc-track-bg: #141a21;
+  --vc-track-selected-bg: #171e27;
+  --vc-hover: #1d2532;
+  --vc-border: #2b3642;
+  --vc-focus: #3a4654;
+  --vc-line: rgba(255,255,255,.06);
+  --vc-primary: #f5f7fa;
+  --vc-secondary: #d5dbe3;
+  --vc-tertiary: #9aa6b2;
+  --vc-caption: #6f7b88;
+  --vc-disabled: #4d5865;
+  --vc-brand: #b8f84a;
+  --vc-brand-hover: #cfff5a;
+  --vc-brand-text: #0d1308;
+  --vc-snap: #818cf8;
+}
+.libtv-editor.is-full.is-episode-composer { grid-template-rows: minmax(100px,1fr) 340px; }
+.libtv-editor.is-episode-composer .libtv-timeline-shell {
+  color: var(--vc-primary);
+  font: 14px/1.5 "Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-editor.is-episode-composer .libtv-timeline-shell-button { box-sizing: border-box; min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--vc-tertiary); font-family: inherit; font-weight: 400; cursor: pointer; transition: background .1s,border-color .1s,color .1s; }
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-editor.is-episode-composer .libtv-timeline-shell-button:hover:not(:disabled) { border-color: var(--vc-border); background: var(--vc-hover); color: var(--vc-primary); }
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-editor.is-episode-composer .libtv-timeline-shell-button:focus-visible,
+.libtv-editor.is-episode-composer .libtv-timeline-shell input:focus-visible { outline: 2px solid var(--vc-tertiary); outline-offset: 2px; }
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-editor.is-episode-composer .libtv-timeline-shell-button:disabled { color: var(--vc-disabled); opacity: .4; cursor: default; }
+/* 原始 SVG 保留自身 width/height，不用全局 100% 规则拉伸。 */
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-figma-icon { display: block; flex: none; max-width: none; pointer-events: none; user-select: none; }
+.libtv-editor.is-episode-composer .libtv-timeline-shell .libtv-editor.is-episode-composer .libtv-timeline-shell-button > svg { width: 16px; height: 16px; }
+
+.libtv-editor.is-episode-composer .libtv-timeline-shell { grid-template-rows: 46px minmax(0,1fr); border: 0; border-top: 1px solid var(--vc-border); border-radius: 0; background: var(--vc-panel); box-shadow: none; }
+.libtv-editor.is-episode-composer.is-full .libtv-timeline-shell { margin: 0; }
+/* 半屏仍保留整套三轨规格；仅切换原有全屏恢复及关闭控件。 */
+.libtv-editor.is-episode-composer.is-half { height: min(340px,56vh); min-height: 304px; padding: 0; }
+.libtv-editor.is-episode-composer.is-half .libtv-timeline-shell { border-radius: 0; margin: 0; }
+.libtv-editor.is-episode-composer .libtv-timeline-toolbar { grid-template-columns: minmax(406px,1fr) auto minmax(180px,1fr); gap: 12px; padding: 0 12px; border-bottom: 1px solid var(--vc-line); background: var(--vc-panel); }
+.libtv-editor.is-episode-composer .libtv-tool-group { gap: 8px; }
+.libtv-editor.is-episode-composer .libtv-timeline-toolbar > .libtv-tool-group:first-child { overflow: visible; }
+.libtv-editor.is-episode-composer .libtv-timeline-toolbar > .libtv-tool-group:first-child > .libtv-editor.is-episode-composer-button:not(.libtv-subtitle-tool) { width: 32px; padding: 0; }
+.libtv-editor.is-episode-composer [data-libtv-split],
+.libtv-editor.is-episode-composer [data-libtv-add-subtitle] { position: relative; margin-left: 25px; }
+.libtv-editor.is-episode-composer [data-libtv-split]::before,
+.libtv-editor.is-episode-composer [data-libtv-add-subtitle]::before { content: ""; position: absolute; left: -17px; top: 50%; width: 1px; height: 16px; background: var(--vc-border); transform: translateY(-50%); pointer-events: none; }
+.libtv-editor.is-episode-composer .libtv-subtitle-tool { display: inline-flex; width: auto; min-width: 92px; height: 28px; justify-content: center; gap: 8px; padding: 0 10px; border: 1px solid var(--vc-border); border-radius: 8px; background: transparent; color: var(--vc-secondary); font-size: 12px; font-weight: 500; }
+.libtv-editor.is-episode-composer .libtv-subtitle-tool-label { font-family: inherit; }
+.libtv-editor.is-episode-composer .libtv-subtitle-tool.is-active { background: transparent; border-color: var(--vc-border); color: var(--vc-secondary); }
+.libtv-editor.is-episode-composer .libtv-add-audio-tool { margin-left: 4px; }
+.libtv-editor.is-episode-composer .libtv-transport { position: absolute; left: 50%; top: 50%; display: flex; align-items: center; gap: 12px; width: max-content; min-width: 0; height: 32px; transform: translate(-50%,-50%); }
+.libtv-editor.is-episode-composer .libtv-time-display { position: static; display: inline-flex; gap: 8px; font-size: 12px; line-height: 18px; font-weight: 400; font-variant-numeric: tabular-nums; transform: none; }
+.libtv-editor.is-episode-composer .libtv-time-current { color: var(--vc-brand); font-weight: 400; }
+.libtv-editor.is-episode-composer .libtv-time-separator { color: var(--vc-disabled); font-size: 12px; }
+.libtv-editor.is-episode-composer .libtv-time-total { color: var(--vc-caption); }
+.libtv-editor.is-episode-composer .libtv-play { position: static; min-width: 32px; width: 32px; height: 32px; padding: 0; border: 1px solid var(--vc-border); border-radius: 10px; background: var(--vc-card); color: #fff; box-shadow: none; transform: none; }
+.libtv-editor.is-episode-composer .libtv-play:hover:not(:disabled) { border-color: var(--vc-focus); background: var(--vc-hover); }
+.libtv-editor.is-episode-composer .libtv-play > svg { width: 14px; height: 14px; }
+.libtv-editor.is-episode-composer .libtv-full-preview-button { position: static; min-width: 32px; width: 32px; height: 32px; padding: 0; border-radius: 7px; transform: none; }
+.libtv-editor.is-episode-composer .libtv-zoom-control { gap: 8px; }
+/* 2026-11-09 Product Design 改动逻辑：仅在短剧全屏剪辑器隐藏“收起预览”的半屏入口，
+ * 使用 display:none 一并移除按钮占位；右侧工具组沿用原有靠右布局，减号、缩放滑杆和加号随之整体右移。
+ * 选择器同时限定 is-full 与 is-episode-composer，不影响全能创作及其半屏切换，也不改缩放范围或事件。
+ */
+.libtv-editor.is-full.is-episode-composer [data-libtv-mode] { display: none !important; }
+.libtv-editor.is-episode-composer .libtv-zoom-button { min-width: 24px; width: 24px; height: 24px; padding: 0; border: 1px solid var(--vc-border); border-radius: 8px; background: var(--vc-card); }
+.libtv-editor.is-episode-composer .libtv-zoom { width: 72px; height: 18px; margin: 0; cursor: pointer; }
+.libtv-editor.is-episode-composer.is-half .libtv-half-expand { min-width: 32px; width: 32px; height: 32px; padding: 0; border-radius: 7px; background: transparent; color: var(--vc-secondary); }
+
+.libtv-editor.is-episode-composer .libtv-timeline-body { grid-template-columns: 88px minmax(0,1fr); }
+.libtv-editor.is-episode-composer .libtv-track-labels { padding-top: 34px; border-right: 1px solid var(--vc-line); background: var(--vc-panel); }
+.libtv-editor.is-episode-composer .libtv-track-label { box-sizing: border-box; height: 104px; gap: 5px; padding: 0 6px 0 12px; color: var(--vc-secondary); font-size: 12px; font-weight: 500; }
+.libtv-editor.is-episode-composer .libtv-track-label:first-child { height: 58px; }
+.libtv-editor.is-episode-composer .libtv-track-label:last-child { height: 96px; }
+.libtv-editor.is-episode-composer .libtv-track-label + .libtv-track-label { border-top-color: var(--vc-line); }
+.libtv-editor.is-episode-composer .libtv-track-label .libtv-track-volume { min-width: 24px; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 5px; }
+.libtv-editor.is-episode-composer .libtv-volume-control { display: inline-flex; position: relative; margin-left: auto; }
+.libtv-editor.is-episode-composer .libtv-volume-control.is-open .libtv-track-volume { background: var(--vc-line); }
+.libtv-editor.is-episode-composer .libtv-timeline-scroll { scrollbar-width: thin; scrollbar-color: var(--vc-border) transparent; }
+.libtv-editor.is-episode-composer .libtv-timeline-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+.libtv-editor.is-episode-composer .libtv-timeline-scroll::-webkit-scrollbar-track { background: transparent; }
+.libtv-editor.is-episode-composer .libtv-timeline-scroll::-webkit-scrollbar-thumb { border-radius: 2px; background: var(--vc-border); }
+.libtv-editor.is-episode-composer .libtv-timeline-content { height: auto !important; min-height: 100%; }
+.libtv-editor.is-episode-composer .libtv-ruler { height: 34px; border-top: 0; border-bottom: 1px solid var(--vc-line); background: var(--vc-panel); }
+.libtv-editor.is-episode-composer .libtv-ruler-tick { top: auto; bottom: 0; height: 4px; background: var(--vc-border); }
+.libtv-editor.is-episode-composer .libtv-ruler-tick.is-half { height: 6px; background: var(--vc-border); }
+.libtv-editor.is-episode-composer .libtv-ruler-tick.is-major { height: 10px; background: var(--vc-disabled); }
+.libtv-editor.is-episode-composer .libtv-ruler-label { top: auto; bottom: 15px; color: var(--vc-caption); font-size: 12px; line-height: 18px; font-weight: 400; transform: translateX(3px); }
+.libtv-editor.is-episode-composer .libtv-track { height: 104px; border-bottom: 1px solid var(--vc-line); background: var(--vc-track-bg); }
+.libtv-editor.is-episode-composer .libtv-subtitle-track { height: 58px; }
+.libtv-editor.is-episode-composer .libtv-track[data-track="audio"] { height: 96px; }
+/* Figma 选中素材时仅提亮所在轨道，左侧标签及其它轨道保持原底色。 */
+.libtv-editor.is-episode-composer .libtv-track.is-selected-track { background: var(--vc-track-selected-bg); }
+.libtv-editor.is-episode-composer .libtv-clip { top: 13px; height: 78px; border: 1px solid var(--vc-focus); border-radius: 4px; background: var(--vc-card); }
+.libtv-editor.is-episode-composer .libtv-clip.is-selected { border-color: #fff; box-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-filmstrip { opacity: .9; }
+.libtv-editor.is-episode-composer .libtv-filmstrip-placeholder { background: var(--vc-card); }
+.libtv-editor.is-episode-composer .libtv-clip-name { font-size: 10px; font-weight: 500; color: var(--vc-primary); }
+.libtv-editor.is-episode-composer .libtv-subtitle-clip { top: 14px; height: 30px; border-color: rgba(85,224,138,.35); background: rgba(85,224,138,.12); }
+.libtv-editor.is-episode-composer .libtv-subtitle-clip.is-selected { border-color: #55e08a; box-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-subtitle-clip .libtv-clip-name { top: 50%; left: 8px; color: #55e08a; font-size: 10px; line-height: 16px; text-shadow: none; transform: translateY(-50%); }
+.libtv-editor.is-episode-composer .libtv-audio-clip { top: 14px; height: 68px; border-color: rgba(77,163,255,.28); background: rgba(77,163,255,.08); }
+.libtv-editor.is-episode-composer .libtv-audio-clip.is-selected { border-color: #4da3ff; box-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-audio-clip .libtv-clip-name { top: 6px; left: 8px; color: #4da3ff; font-size: 10px; line-height: 16px; text-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-waveform { inset: 26px 6px 8px; opacity: .85; background: repeating-linear-gradient(90deg,#4da3ff 0 2px,transparent 2px 4px); }
+/* 裁剪命中宽度保持原交互，白色可见部分按设计为 4px。 */
+.libtv-editor.is-episode-composer .libtv-trim { width: 8px; background: transparent; opacity: 0; }
+.libtv-editor.is-episode-composer .libtv-clip.is-selected .libtv-trim { opacity: 1; }
+.libtv-editor.is-episode-composer .libtv-trim::before { content: ""; position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; pointer-events: none; }
+.libtv-editor.is-episode-composer .libtv-trim.left { left: 0; cursor: url('./icons/video-composer/5aefd.svg') 12 12,w-resize; }
+.libtv-editor.is-episode-composer .libtv-trim.left::before { left: 0; }
+.libtv-editor.is-episode-composer .libtv-trim.right { right: 0; cursor: url('./icons/video-composer/82117.svg') 12 12,e-resize; }
+.libtv-editor.is-episode-composer .libtv-trim.right::before { right: 0; }
+.libtv-editor.is-episode-composer .libtv-clip.is-trimming { z-index: 15; }
+.libtv-editor.is-episode-composer .libtv-clip.is-dragging { border-color: transparent; background: rgba(255,255,255,.06); opacity: .9; }
+.libtv-editor.is-episode-composer .libtv-clip.is-dragging > * { visibility: hidden; }
+.libtv-editor.is-episode-composer .libtv-clip-drag-shadow { z-index: 20; border-color: #fff; box-shadow: none; opacity: 1; cursor: grabbing; }
+.libtv-editor.is-episode-composer .libtv-clip-drag-shadow.libtv-audio-clip { border-color: #4da3ff; }
+.libtv-editor.is-episode-composer .libtv-clip-drag-shadow::after { content: ""; position: absolute; inset: 0; z-index: 5; border-left: 4px solid #fff; border-right: 4px solid #fff; pointer-events: none; }
+.libtv-editor.is-episode-composer .libtv-drag-placeholder { position: absolute; z-index: 0; border-radius: 4px; background: rgba(255,255,255,.06); opacity: .9; pointer-events: none; }
+.libtv-editor.is-episode-composer .libtv-subtitle-placeholder { top: 14px; height: 30px; }
+.libtv-editor.is-episode-composer .libtv-subtitle-clip.is-subtitle-dragging { z-index: 20; transform: translateY(-7px); cursor: grabbing; }
+.libtv-editor.is-episode-composer .libtv-playhead { top: 34px; background: #fff; }
+.libtv-editor.is-episode-composer .libtv-playhead::before { display: none; }
+.libtv-editor.is-episode-composer .libtv-playhead-cap { position: absolute; top: -13px; left: -4px; width: 9px; height: 12px; overflow: hidden; pointer-events: none; }
+.libtv-editor.is-episode-composer .libtv-playhead-asset { display: block; max-width: none; }
+.libtv-editor.is-episode-composer .libtv-playhead.is-snapping { background: var(--vc-snap); box-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-snap-guide { top: 34px; background: var(--vc-snap); box-shadow: none; }
+.libtv-editor.is-episode-composer .libtv-drop-hint { top: 34px; border-color: var(--vc-snap); color: var(--vc-secondary); background: rgba(15,21,28,.9); }
+
+/* 沿用原选中状态，不增加或改变素材选择逻辑。 */
+.libtv-editor.is-episode-composer .libtv-track:has(> .libtv-clip.is-selected) { background: var(--vc-track-selected-bg); }
+/* 保留原生滑杆的实时进度绘制，无需引入参考工程的额外同步函数。 */
+.libtv-editor.is-episode-composer .libtv-zoom { accent-color: #fff; }
+.libtv-editor.is-episode-composer .libtv-volume-control { display: inline-flex; }
+.libtv-editor.is-episode-composer .libtv-track-label > .libtv-figma-icon { flex: none; }
+@media (max-height: 680px) {
+  .libtv-editor.is-episode-composer.is-full.is-episode-composer { grid-template-rows: minmax(80px,1fr) 304px; }
+}
+@media (max-height: 680px) {
+  .libtv-editor.is-episode-composer .libtv-track-label:not(:first-child):not(:last-child), .libtv-editor.is-episode-composer .libtv-track[data-track="video"] { height: 84px; }
+  .libtv-editor.is-episode-composer .libtv-track-label:last-child, .libtv-editor.is-episode-composer .libtv-track[data-track="audio"] { height: 80px; }
+  .libtv-editor.is-episode-composer .libtv-clip:not(.libtv-subtitle-clip):not(.libtv-audio-clip) { height: 58px; }
+  .libtv-editor.is-episode-composer .libtv-audio-clip { height: 52px; }
+}
+@media (min-height: 681px) {
+  .libtv-editor.is-episode-composer.is-half { height: 340px; }
+}
+@media (max-width: 1100px) {
+  .libtv-editor.is-episode-composer .libtv-timeline-toolbar { grid-template-columns: minmax(300px,1fr) auto minmax(150px,1fr); gap: 6px; padding: 0 8px; }
+  .libtv-editor.is-episode-composer .libtv-timeline-toolbar > .libtv-tool-group:first-child { gap: 4px; }
+  .libtv-editor.is-episode-composer .libtv-timeline-toolbar > .libtv-tool-group:first-child > .libtv-editor.is-episode-composer-button:not(.libtv-subtitle-tool) { min-width: 28px; width: 28px; }
+  .libtv-editor.is-episode-composer [data-libtv-split], .libtv-editor.is-episode-composer [data-libtv-add-subtitle] { margin-left: 12px; }
+  .libtv-editor.is-episode-composer [data-libtv-split]::before, .libtv-editor.is-episode-composer [data-libtv-add-subtitle]::before { left: -9px; }
+  .libtv-editor.is-episode-composer .libtv-subtitle-tool { min-width: 0; gap: 5px; padding: 0 6px; font-size: 11px; }
+  .libtv-editor.is-episode-composer .libtv-transport { gap: 8px; }
+  .libtv-editor.is-episode-composer .libtv-time-display { gap: 4px; font-size: 11px; }
+  .libtv-editor.is-episode-composer .libtv-zoom { width: 48px; }
+}
+@media (max-width: 900px) {
+  .libtv-editor.is-episode-composer .libtv-timeline-toolbar { grid-template-columns: minmax(180px,1fr) auto minmax(140px,1fr); }
+  .libtv-editor.is-episode-composer .libtv-subtitle-tool-label { display: none; }
+  .libtv-editor.is-episode-composer .libtv-subtitle-tool { min-width: 28px; width: 28px; padding: 0; }
+  .libtv-editor.is-episode-composer .libtv-time-display { gap: 3px; font-size: 10px; }
+}
+/* 2026-11-09 Product Design 改动逻辑：按参考图将短剧最后一步剪辑器的视频显示为 12px 圆角框，
+ * 预览区四周保留 12px 间距，与顶部栏、时间轴和窗口边缘分开；背景沿用短剧剪辑器深色页面色。
+ * 取消原 1120px 宽度上限，以留白后的可用高度等比放大视频并水平居中。
+ * 网格显式使用可收缩的一行一列，避免媒体固有尺寸撑开预览区；窄屏继续受可用宽度约束。
+ * 保留 object-fit:contain，画面不拉伸、不裁切；只修改预览布局，不修改媒体、播放、字幕或导出逻辑。
+ */
+.libtv-editor.is-full.is-episode-composer .libtv-preview-stage {
+  grid-template: minmax(0,1fr) / minmax(0,1fr);
+  margin: 12px;
+  padding: 0;
+  border-radius: 12px;
+  background: var(--vc-page);
+}
+.libtv-editor.is-full.is-episode-composer .libtv-preview-video {
+  /* 2026-11-09 Product Design 改动逻辑：短剧预览按视频固有宽高比计算宽度，
+   * 覆盖通用播放器固定的 16:9 比例与黑色底，消除实际视频比例略窄时两侧露出的黑条。
+   * 圆角贴合视频画面，沿用现有等比完整显示及四周间距；不影响全能创作或媒体文件。
+   */
+  aspect-ratio: auto;
+  background: transparent;
+  width: auto;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+}

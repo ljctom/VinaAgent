@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>会员方案 - VinaAI</title>
+  <!-- 2026-10-30 Product Design：沿用 Figma 会员方案布局；默认团队会员，支持切换个人会员，个人价格独立配置并移除团队权益。 -->
+  <!-- 2026-11-12：迁入 UI 1112 的会员页结构与样式，复用 VinaAgent 的模型会员提示样式。 -->
+  <link rel="stylesheet" href="./assets/toast.css?v=20261029-project-member-top-layer">
+  <link rel="stylesheet" href="./assets/membership.css?v=20261114-native-store">
+</head>
+<body>
+  <!-- 打开时允许脚本聚焦会员页容器，容器本身不加入 Tab 顺序。 -->
+  <main class="vm-page" id="membershipPage" aria-label="团队会员方案" data-vm-audience="team" tabindex="-1" hidden>
+    <!-- 2026-11-12：使用对称图标，让关闭按钮的网格直接居中图形，消除字体基线偏移。 -->
+    <button class="vm-close" id="vmMembershipClose" type="button" aria-label="关闭会员方案">
+      <img src="./assets/icons/asset-preview-close.svg" width="22" height="22" alt="">
+    </button>
+    <!-- 2026-10-30 Product Design 标注调整：移除最顶部整条导航栏及其占位，页面直接从活动横幅开始。 -->
+    <section class="vm-hero" aria-labelledby="vmCampaignTitle">
+      <div class="vm-banner-art" aria-hidden="true"><img src="./assets/images/membership/banner.png" alt=""></div>
+      <div class="vm-hero-inner">
+        <div class="vm-hero-copy"><h2 id="vmCampaignTitle">Seedance 系列 &amp; MiniMax H3 会员生成<span>限时折扣</span></h2><p>年会员低至 4 折 | Seedance 2.5 低至 0.4 元/秒<br>MiniMax H3 6 折 | Seedance 2.5 &amp; 2.0 Fast / Mini 全线折扣</p></div>
+        <div class="vm-countdown" data-vm-deadline="2026-12-07T00:00:00+08:00" aria-label="活动倒计时"><p>活动倒计时</p><div class="vm-countdown-values"><div class="vm-countdown-unit"><span class="vm-flip-card"><strong data-vm-countdown="days">32</strong></span><span>天</span></div><div class="vm-countdown-unit"><span class="vm-flip-card"><strong data-vm-countdown="hours">08</strong></span><span>时</span></div><div class="vm-countdown-unit"><span class="vm-flip-card"><strong data-vm-countdown="minutes">48</strong></span><span>分</span></div><div class="vm-countdown-unit"><span class="vm-flip-card"><strong data-vm-countdown="seconds">24</strong></span><span>秒</span></div></div></div>
+      </div>
+    </section>
+    <div class="vm-shell">
+      <header class="vm-plan-header" id="vmPlansTitle">
+      
+      <!-- 2026-10-30：会员类型改为可交互 Tab；个人和团队分别保存计费周期，选择后同步套餐、购买入口和说明内容。 -->
+      <div class="vm-selector">
+        <!-- 2026-10-30 Product Design 标注调整：保留两项居中布局；未选中项提高亮度但低于白色选中项，支持点击与方向键切换。 -->
+        <div class="vm-tabs" role="tablist" aria-label="选择会员类型"><button id="vmPersonalTab" type="button" role="tab" data-vm-audience="personal" aria-selected="false" aria-controls="vmMembershipPanel" tabindex="-1">个人会员</button><button id="vmTeamTab" class="is-active" type="button" role="tab" data-vm-audience="team" aria-selected="true" aria-controls="vmMembershipPanel" tabindex="0">团队会员</button></div>
+      </div>
+      <div class="vm-toolbar">
+        <div class="vm-account-note" id="vmTeamMembershipNote" aria-live="polite"></div>
+        <div class="vm-cycle" role="group" aria-label="选择团队套餐周期"><button type="button" data-vm-cycle="team" data-vm-value="monthly" aria-pressed="false">月度</button><button class="is-active" type="button" data-vm-cycle="team" data-vm-value="yearly" aria-pressed="true">年度 <b>优惠</b></button></div>
+<button class="vm-vpoint-button" type="button" data-vm-vpoint="team">V 点超市<img src="./assets/images/membership/purchase-arrow.svg" alt=""></button>
+      </div>
+
+      </header>
+      <section class="vm-panel" id="vmMembershipPanel" role="tabpanel" data-vm-panel="team" aria-labelledby="vmTeamTab" tabindex="0">
+        <section class="vm-grid" id="vmTeamGrid" aria-label="团队会员套餐"></section>
+        <p class="vm-points-notice">积分按月发放，31天内有效，逾期自动清空，不可叠加</p>
+        <section class="vm-faq" aria-labelledby="vmTeamFaqTitle">
+          <h2 id="vmTeamFaqTitle">团队使用说明</h2><p>固定席位套餐适合协作创作与统一管理。</p>
+          <div class="vm-faq-list">
+            <details open><summary>团队套餐如何续费或升级？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>同档续费仅延长有效期；月付可升级至更高档月付或年付，年付仅可升级至更高档年付。当前周期已发放的团队 V 点不回收，未发放部分按升级规则处理。</p></details>
+            <details><summary>团队 V 点如何分配和使用？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>团队套餐内的 V 点进入当前团队积分池，由管理员统一管理。成员生成内容时按团队权限和实时模型消耗从团队积分池扣除。</p></details>
+            <details><summary>团队席位可以中途调整吗？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>当前套餐包含固定席位数。需要更多席位时可升级更高档套餐；减少席位或降级需在当前套餐到期后重新选择。</p></details>
+            <details><summary>免费生成和无限使用模型会变化吗？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>适用模型、分辨率、次数和有效周期由后台会员配置统一发布，套餐页会同步展示当前生效的权益。</p></details>
+            <details><summary>哪些成员可以审片？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>审片能力仅向具备对应团队权限的成员开放；管理员负责成员、项目和团队 V 点等管理。</p></details>
+            <details><summary>个人账户与团队账户的资产互通吗？<img class="vm-chevron-up" src="./assets/images/membership/chevron-up.svg?v=20261112-production-tooltip-v34" alt=""><img class="vm-chevron-down" src="./assets/images/membership/chevron-down.svg" alt=""></summary><p>个人与团队的会员、V 点和资产独立管理。切换团队时不会自动转移个人项目，团队内容也不会计入个人套餐。</p></details>
+          </div>
+        </section>
+      </section>
+    </div>
+    <div class="vm-modal" id="vmMembershipModal" role="dialog" aria-modal="true" aria-labelledby="vmModalTitle" hidden><section class="vm-modal-card"><header class="vm-modal-head"><div><h2 id="vmModalTitle">确认选择</h2><p id="vmModalSubtitle">套餐信息</p></div><button class="vm-modal-close" type="button" data-vm-modal-close aria-label="关闭弹窗">×</button></header><div class="vm-modal-body" id="vmModalBody"></div></section></div>
+  </main>
+  <!-- 2026-10-30：更新套餐脚本缓存版本，启用个人／团队切换、独立价格和个人权益布局；保留此前移除标签与单位的调整。 -->
+  <!-- 2026-10-30：先加载个人资格会话桥接，再初始化会员页；个人开通后返回账号菜单即可隐藏个人横幅，团队卡片不受影响。 -->
+  <script src="./assets/personal-membership-state.js?v=20261030"></script>
+  <!-- 2026-10-30：更新会员脚本缓存，嵌入弹窗时由右上角关闭通知宿主退出覆盖层，会员页视觉样式保持原样。 -->
+  <!-- 2026-11-12：先注册语言接收器，会员页初始化后再翻译，保留 FAQ 的中文源文案。 -->
+  <script src="./assets/membership-copy.js?v=20261114-vpoint-three-states"></script>
+  <script src="./assets/membership-i18n.js?v=20261114-vpoint-amount"></script>
+  <!-- 2026-11-14：移除透明 iframe 超市模式；此页内部超市保留原弹窗，关闭后返回当前会员方案。 -->
+  <!-- 2026-11-14：与首页共用 V 点包及操作，并在关闭时取消旧回调；会员页保留原全屏背景。 -->
+  <!-- 2026-11-14：首页和套餐页共用 Figma 会员／非会员／支付结果弹窗，原套餐内容保留。 -->
+  <link rel="stylesheet" href="./assets/vpoint-store.css?v=20261114-figma-three-states">
+  <script src="./assets/vpoint-store.js?v=20261114-figma-three-states"></script>
+  <script src="./assets/membership.js?v=20261114-figma-vpoint-store"></script>
+
+  <!-- 2026-10-25 Product Design：阿语独立词典和局部 RTL；保留侧栏、对话栏、创作分栏、表格列与时间轴的原始位置。默认中文，不改其他语言。 -->
+  <!-- 2026-10-25：刷新阿语文字完整性资源；仅清缓存，不改变页面布局和其他语言。 -->
+  <script src="./assets/arabic-copy.js?v=20261025-ar-text-integrity" defer></script>
+  <!-- 2026-10-25 阿语点击性能修复：刷新局部翻译运行时版本，按钮操作不再恢复并重译整页。 -->
+  <!-- 2026-10-25：补齐独立设定页与正文翻译、局部 RTL，并恢复大纲回形针原图。 -->
+  <!-- 2026-10-26 Product Design：同步会员卡片、权益和购买弹窗的阿语 RTL 样式版本，其他语言不变。 -->
+  <!-- 2026-10-26 缓存逻辑：同步阿语适配器版本，宽度规则仅命中指定短控件。 -->
+  <!-- 2026-10-26：同步共用阿语资源版本，分栏规则不命中会员页。 -->
+  <script src="./assets/arabic-i18n.js?v=20261026-agent-panel-right" defer></script>
+  <!-- 2026-10-30 Product Design：会员记录复用全屏账单弹窗，直接显示会员订单，关闭后保留会员方案当前状态。 -->
+  <link rel="stylesheet" href="./assets/billing-records.css?v=20261030-fullscreen-modal">
+  <script src="./assets/billing-records-data.js?v=20261030" defer></script>
+  <script src="./assets/billing-records.js?v=20261030-membership-overlay" defer></script>
+</body>
+</html>

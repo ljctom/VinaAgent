@@ -1,0 +1,348 @@
+/* 2026-09-17 迁移逻辑：从 VinaAgent旧迁入截图所示首页标题、Agent 胶囊切换与短剧曲线子导航；原输入区及其业务控件继续由当前版代码负责。 */
+.view[data-view="canvas"] #main-title.home-agent-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: min(100%, 1040px);
+  margin-bottom: 32px;
+  font-size: clamp(22px, 2.25vw, 32px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -.6px;
+  white-space: normal;
+}
+.home-agent-title > span { white-space: nowrap; }
+.home-agent-tabs {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid #282828;
+  border-radius: 999px;
+  background: #181818;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+  position: static;
+  width: auto;
+  height: 42px;
+  min-width: 76px;
+  padding: 0 19px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #858585;
+  font-size: 17px;
+  font-weight: 500;
+  transform: none;
+  transition: background-color 180ms, color 180ms, box-shadow 180ms;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  background: #383838;
+  color: #fff;
+  box-shadow: 0 5px 14px #0006;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab:hover { color: #fff; }
+.home-agent-tabs button:focus-visible,
+.home-drama-tabs button:focus-visible {
+  outline: 2px solid #caff70;
+  outline-offset: -5px;
+}
+
+/* 2026-09-17 迁移逻辑：旧斜切轮廓及其重复入口保留在 DOM 以兼容现有脚本，但退出视觉与点击流，由标题内的新三级切换统一承载。 */
+.view[data-view="canvas"] .home-composer-card > .home-composer-outline,
+.view[data-view="canvas"] .home-composer-card > .legacy-home-composer-tabs {
+  display: none !important;
+}
+.view[data-view="canvas"] .home-composer-card {
+  --home-input-surface: #1c1c1c;
+  height: auto;
+  border-radius: 32px;
+  background: transparent;
+}
+.view[data-view="canvas"] .home-composer-card .composer,
+.view[data-view="canvas"] .home-composer-card .ai-script-box {
+  background: var(--home-input-surface);
+  border-radius: 26px;
+  box-shadow: inset 0 0 0 1px #ffffff0d;
+}
+
+/* 2026-09-17 Product Design 改动逻辑：短剧 Tab 使用参考站的 #1c1c1c 选中面、#262626/#333333 未选面；只为上传剧本和重制转绘连接独立面板。 */
+.home-drama-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: 36px;
+  border-radius: 32px 32px 0 0;
+  background: #333;
+  isolation: isolate;
+}
+.home-drama-tabs[hidden] { display: none; }
+.home-drama-tab {
+  position: relative;
+  border: 0;
+  border-radius: 28px 28px 0 0;
+  padding: 0 10px;
+  background: #333;
+  color: rgba(255, 255, 255, .5);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 160ms, background-color 160ms;
+}
+.home-drama-tab:nth-child(2) { background: #262626; }
+.home-drama-tab:hover { color: #eee; }
+.home-drama-tab.active {
+  z-index: 1;
+  background: var(--home-input-surface);
+  color: #fff;
+}
+.home-drama-tab.active::before,
+.home-drama-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 82px;
+  height: 16px;
+  pointer-events: none;
+  background: var(--home-input-surface);
+  mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIG92ZXJmbG93PSJ2aXNpYmxlIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0iZGlzcGxheTpibG9jayIgdmlld0JveD0iMCAwIDgyLjY0OCAxNi4xODQiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0wIDE2LjE4NFYwYTIyLjk2IDIyLjk2IDAgMCAwIDIxLjkzOCAxNi4xODNoNjAuNzF6Ii8+PC9zdmc+") center / 100% 100% no-repeat;
+}
+/* 2026-10-10 Product Design 改动逻辑：首页短剧选中页签的左侧曲线向页签内部重叠 1px，
+   覆盖曲线遮罩与页签底色拼接时露出的小竖线；保留原曲线、颜色、尺寸及切换逻辑。 */
+.home-drama-tab.active::before { right: calc(100% - 1px); transform: scaleX(-1); }
+.home-drama-tab.active::after { left: 100%; }
+.home-drama-tab:first-child::before,
+.home-drama-tab:last-child::after { display: none; }
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .ai-script-box {
+  border-radius: 0 0 26px 26px;
+  box-shadow: none;
+}
+
+/* 2026-09-17 Product Design 改动逻辑：两个上传面板共用参考站的 12px 内衬、20px 虚线框与同色内容面，切换时 Tab 与输入框保持连续。 */
+.home-drama-reference-panel {
+  min-height: 248px;
+  padding: 12px;
+  background: #1c1c1c;
+  color: #fff;
+  display: flex;
+}
+.home-drama-reference-panel[hidden] { display: none; }
+/* 2026-09-17 修复逻辑：旧的 .ai-script-box display:flex 会覆盖 hidden；统一提高短剧子面板隐藏优先级，上传剧本和重制转绘时不再叠出下方剧本创作输入框。 */
+#home-drama-panel [data-home-drama-mode-panel][hidden] { display: none !important; }
+/* 2026-09-18 Product Design 修复逻辑：三个短剧 Tab 下方的内容面板统一取消顶部圆角并完整贴合导航底边，封住上传剧本右侧和重制转绘左侧原先露出的两个缺口；底部圆角继续保留。 */
+.home-drama-upload-panel,
+.home-drama-remake-panel { border-radius: 0 0 32px 32px; }
+.home-drama-dropzone {
+  width: 100%;
+  min-height: 224px;
+  border: 1px dashed rgba(255, 255, 255, .2);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+}
+.home-drama-remake-panel .home-drama-dropzone { border-color: rgba(255, 255, 255, .12); }
+.home-drama-upload-actions { display: flex; align-items: center; gap: 14px; }
+.home-drama-upload-primary,
+.home-drama-paste-disabled {
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+.home-drama-upload-primary {
+  border: 0;
+  background: #f5f5f5;
+  color: #171717;
+  cursor: pointer;
+}
+.home-drama-upload-primary svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.home-drama-paste-disabled {
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: transparent;
+  color: rgba(255, 255, 255, .58);
+  cursor: not-allowed;
+}
+.home-drama-dropzone p {
+  margin: 0;
+  max-width: 720px;
+  color: rgba(255, 255, 255, .42);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+@media (max-width: 760px) {
+  .view[data-view="canvas"] #main-title.home-agent-title { gap: 10px; font-size: 23px; }
+  .home-agent-title > span:last-child { flex-basis: 100%; text-align: center; }
+  .view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+    height: 36px;
+    min-width: 58px;
+    padding: 0 12px;
+    font-size: 15px;
+  }
+  .home-drama-tab { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .view[data-view="canvas"] .home-agent-tabs .home-composer-tab,
+  .home-drama-tab { transition: none; }
+}
+
+/* 2026-09-24 Product Design 改动逻辑：首页创作、广告输入框由 202px 增至 230px；短剧保持 36px 子导航，三个子面板统一增至 194px，使各主 Tab 总高度均为 230px；上传虚线框随面板同步增高至 170px。 */
+.view[data-view="canvas"] .home-composer-card .composer {
+  height: 230px;
+  min-height: 230px;
+}
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-reference-panel,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .ai-script-box {
+  height: 194px;
+  min-height: 194px;
+}
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-dropzone {
+  min-height: 170px;
+}
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .ai-script-box textarea {
+  min-height: 0;
+}
+
+/* 2026-09-25 Product Design：各首页主 Tab 输入框总高统一由 230px 增至 276px（+20%）。短剧保留 36px 导航，内容区为 240px；新增空间给正文，工具栏保持底部。 */
+.view[data-view="canvas"] .home-composer-card .composer { height:276px; min-height:276px; }
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-reference-panel,
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .ai-script-box { height:240px; min-height:240px; }
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-dropzone { min-height:216px; }
+.view[data-view="canvas"] .home-composer-card .composer-body { flex:1; }
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools { flex-shrink:0; }
+
+/* 2026-09-26 Product Design 改动逻辑：按 ego 读取的小云雀深色 toolbar token
+   统一首页创作、广告（共用 canvas 面板）及短剧参数按钮。底色 #ffffff0a、
+   文字 #ffffffb3、hover #ffffff14 与参考站一致；系统字体栈沿用参考站的
+   sans-serif 回退（Pippit Numeric 为站点专用数字字体，此处使用系统数字字形）。
+   仅作用于首页输入卡，不影响画布内工具栏、弹出菜单或发送按钮。 */
+.view[data-view="canvas"] .home-composer-card {
+  --home-toolbar-fill: #ffffff0a;
+  --home-toolbar-hover: #ffffff14;
+  --home-toolbar-text: #ffffffb3;
+  --home-toolbar-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools, .drama-generate-tools) :is(.select-chip, .home-generation-mode-trigger, .home-inspiration-trigger, .drama-option, .tool-btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--home-toolbar-fill);
+  color: var(--home-toolbar-text);
+  font-family: var(--home-toolbar-font);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: normal;
+  white-space: nowrap;
+  box-shadow: none;
+}
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools, .drama-generate-tools) :is(.select-chip, .home-generation-mode-trigger, .home-inspiration-trigger, .drama-option, .tool-btn):is(:hover, [aria-expanded="true"]) {
+  background: var(--home-toolbar-hover);
+  color: var(--home-toolbar-text);
+}
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools, .drama-generate-tools) :is(.select-chip, .home-generation-mode-trigger, .home-inspiration-trigger, .drama-option, .tool-btn):focus-visible {
+  outline: 2px solid #ffffff70;
+  outline-offset: 2px;
+}
+/* 图三的设定、风格、集数和模型分别由胶囊包裹，移除原竖分隔线；
+   回形针与加号使用相同表面色，保持圆形外框和原上传事件。 */
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools { gap: 10px; flex-wrap: wrap; }
+.view[data-view="canvas"] .home-composer-card .drama-generate-tools > .drama-divider { display: none; }
+.view[data-view="canvas"] .home-composer-card :is(.composer-tools > .tool-btn, .drama-generate-tools > .drama-attachment-button) {
+  /* 2026-09-26 Product Design：圆形上传按钮直径统一为 32px，与右侧胶囊等高。 */
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  flex: 0 0 32px;
+  padding: 0;
+  border-color: #ffffff0a;
+  border-radius: 50%;
+}
+/* 保留创建 Agent 的白色状态边框，通用胶囊规则不抹除该业务提示。 */
+.view[data-view="canvas"] .home-composer-card .composer-tools > .skill-chip.is-create-agent { border-color: #ffffffd1; }
+/* 标题三个主 Tab 使用参考站中文字体与常规/选中字重；维持现有尺寸与切换逻辑。 */
+.view[data-view="canvas"] .home-agent-tabs {
+  border-color: transparent;
+  background: #ffffff0a;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-weight: 400;
+  color: #ffffff99;
+}
+.view[data-view="canvas"] .home-agent-tabs .home-composer-tab.active {
+  background: #444;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 2026-09-26 Product Design：上传总高度保持240px，缩短虚线框并给下方风格、模型和发送留一行；三种状态都在框内居中。 */
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-upload-panel { flex-direction: column; gap: 12px; }
+.view[data-view="canvas"] .home-composer-card[data-agent-mode="drama"] .home-drama-upload-panel .home-drama-dropzone { min-height: 0; height: 160px; flex: 1; padding: 12px; }
+.home-drama-upload-panel .home-upload-toolbar { width: 100%; min-height: 40px; margin: 0; padding: 0 4px; flex-wrap: nowrap !important; }
+.home-drama-upload-panel [hidden] { display: none !important; }
+.home-upload-loading, .home-upload-file { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 100%; }
+.home-upload-loading { color: #aaa; font-size: 14px; }
+.home-upload-loading > img { width: 32px; height: 32px; filter: invert(1); animation: home-upload-spin 1s linear infinite; }
+@keyframes home-upload-spin { to { transform: rotate(360deg); } }
+.home-upload-file-icon { position: relative; width: 48px; height: 56px; }
+.home-upload-file-icon > img { width: 100%; height: 100%; filter: invert(1); }
+.home-upload-file-icon button { position: absolute; top: -5px; right: -15px; display: grid; place-items: center; width: 22px; height: 22px; padding: 4px; border: 0; border-radius: 50%; background: #303030; cursor: pointer; }
+.home-upload-file-icon button img { width: 14px; height: 14px; filter: invert(.8); }
+.home-upload-file-icon button:hover { background: #484848; }
+.home-upload-file [data-home-upload-complete-name] { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.home-upload-toolbar .generate-now:disabled { opacity: .45; cursor: not-allowed; }
+.home-upload-error { color: #ffb4a9; font-size: 12px; }
+.home-drama-upload-panel .home-drama-dropzone.is-dragover { border-color: #b8ff2c; background: #ffffff05; }
+@media (prefers-reduced-motion: reduce) { .home-upload-loading > img { animation-duration: 2.5s; } }
+
+/* 2026-09-26 Product Design：上传中采用与原按钮同高的浅色胶囊，左侧转圈、右侧文字；说明行保留在下方，避免状态切换时上下跳动。 */
+.home-drama-upload-panel .home-upload-loading { flex-direction: row; gap: 7px; min-height: 36px; padding: 0 18px; border-radius: 999px; background: #f5f5f5; color: #171717; font-size: 14px; font-weight: 600; order: 0; }
+.home-drama-upload-panel .home-upload-loading > img { width: 16px; height: 16px; filter: none; }
+.home-drama-upload-panel [data-home-upload-hint] { order: 1; }
+.home-drama-upload-panel .home-upload-error { order: 2; }
+
+/* 2026-10-02 Product Design 改动逻辑：三个短剧页签使用 ego 提取的参考站原始图标，
+ * 图标与文字整体居中，尺寸 16px、间距 8px 与参考页一致；currentColor 跟随原有选中、悬停颜色，
+ * 禁止图标截获鼠标事件，使原页签的点击、键盘切换及中英文文案继续沿用现有行为。 */
+.home-drama-tabs > .home-drama-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.home-drama-tabs > .home-drama-tab > .home-drama-tab-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: inherit;
+  pointer-events: none;
+}

@@ -1,0 +1,53 @@
+/* 2026-09-26 Product Design 改动逻辑：快捷提示词入口固定为 40px 圆形图标按钮，悬停或键盘聚焦时向上显示名称气泡；原点击弹层和分类布局保持原有交互。 */
+.episode-detail-workspace .detail-quick-prompt-btn {
+  position:relative;flex:0 0 40px;width:40px;height:40px;display:inline-grid;place-items:center;padding:0;border:1px solid var(--episode-border);border-radius:50%;background:var(--episode-bg);color:var(--episode-muted);font:inherit;cursor:pointer;
+}
+.episode-detail-workspace .detail-quick-prompt-btn svg { width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.episode-detail-workspace .detail-quick-prompt-btn:hover,
+.episode-detail-workspace .detail-quick-prompt-btn:focus-visible,
+.episode-detail-workspace .detail-quick-prompt-btn[aria-expanded="true"] { border-color:rgba(184,248,74,.5);background:#111820;color:var(--episode-text);outline:none; }
+/* 2026-09-26 Product Design 改动逻辑：说明文字只作为按钮上方的悬浮气泡出现，不占用工具栏宽度，并与邻近魔法棒提示保持一致。 */
+.episode-detail-workspace .detail-quick-prompt-tooltip { position:absolute;bottom:calc(100% + 10px);left:50%;z-index:15;width:max-content;padding:7px 10px;border:1px solid #3b4650;border-radius:8px;background:#202830;color:#edf1f4;box-shadow:0 8px 22px #0008;font-size:12px;line-height:1.4;font-weight:600;white-space:nowrap;transform:translate(-50%,4px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s ease,transform .15s ease,visibility .15s ease; }
+.episode-detail-workspace .detail-quick-prompt-btn:hover .detail-quick-prompt-tooltip,
+.episode-detail-workspace .detail-quick-prompt-btn:focus-visible .detail-quick-prompt-tooltip { opacity:1;visibility:visible;transform:translate(-50%,0); }
+.detail-quick-prompt-popover { position:fixed;z-index:10020;width:min(520px,calc(100vw - 24px));height:min(420px,calc(100vh - 120px));display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden;border:1px solid #ffffff22;border-radius:13px;background:#202020;color:#e9e9e9;box-shadow:0 22px 64px #000a; }
+.detail-quick-prompt-popover[hidden] { display:none!important; }
+.detail-quick-prompt-tabs { display:flex;gap:4px;overflow-x:auto;padding:10px 10px 7px;scrollbar-width:none;border-bottom:1px solid #ffffff0d; }
+.detail-quick-prompt-tabs::-webkit-scrollbar { display:none; }
+.detail-quick-prompt-tab { flex:0 0 auto;height:36px;padding:0 13px;border:0;border-radius:9px;background:transparent;color:#a9a9a9;font:inherit;font-size:14px;cursor:pointer; }
+.detail-quick-prompt-tab[aria-selected="true"] { background:#3a3a3a;color:#fff; }
+.detail-quick-prompt-list { min-height:0;overflow-y:auto;padding:8px 10px 14px;scrollbar-color:#575757 transparent;scrollbar-width:thin; }
+/* 2026-09-20 改动逻辑：自定义已有条目时把内容和底部操作分层，新建按钮固定在弹窗左下角，条目增多时只滚动上方列表。 */
+.detail-quick-prompt-list.is-custom { display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;padding:8px 10px 14px; }
+.detail-quick-prompt-custom-scroll { min-height:0;overflow-y:auto;scrollbar-color:#575757 transparent;scrollbar-width:thin; }
+.detail-quick-prompt-custom-footer { display:flex;justify-content:flex-start;padding-top:10px; }
+.detail-quick-prompt-option { width:100%;min-height:38px;display:block;padding:8px 12px;border:0;border-radius:8px;background:transparent;color:#dedede;font:inherit;font-size:14px;line-height:1.45;text-align:left;cursor:pointer; }
+.detail-quick-prompt-option:hover,.detail-quick-prompt-option:focus-visible { background:#393939;color:#fff;outline:none; }
+.detail-quick-prompt-empty { display:grid;place-items:center;align-content:center;gap:16px;min-height:250px;color:#868686;text-align:center; }
+.detail-quick-prompt-new { min-height:40px;padding:0 18px;border:1px solid #ffffff1d;border-radius:10px;background:#363636;color:#eee;font:inherit;cursor:pointer; }
+.detail-quick-prompt-new:hover { background:#414141; }
+.detail-quick-prompt-custom-row { display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center; }
+.detail-quick-prompt-delete { width:34px;height:34px;border:0;border-radius:8px;background:transparent;color:#808080;font-size:18px;cursor:pointer; }
+.detail-quick-prompt-delete:hover { background:#ffffff10;color:#eee; }
+.detail-quick-prompt-delete-dialog { width:min(400px,calc(100vw - 32px));padding:0;border:1px solid #ffffff24;border-radius:16px;background:#242424;color:#f2f2f2;box-shadow:0 28px 90px #000c; }
+.detail-quick-prompt-delete-dialog::backdrop { background:#0009;backdrop-filter:blur(4px); }
+.detail-quick-prompt-delete-copy { padding:24px 24px 12px; }
+.detail-quick-prompt-delete-copy h2 { margin:0 0 10px;font-size:18px; }
+.detail-quick-prompt-delete-copy p { margin:0;color:#999;font-size:14px;line-height:1.6; }
+.detail-quick-prompt-delete-actions { display:flex;justify-content:flex-end;gap:10px;padding:12px 24px 22px; }
+.detail-quick-prompt-delete-actions button { min-height:38px;padding:0 18px;border:1px solid #ffffff1c;border-radius:9px;background:#333;color:#ddd;font:inherit;cursor:pointer; }
+.detail-quick-prompt-delete-actions .is-danger { border-color:#874b4b;background:#6e3434;color:#fff; }
+.detail-quick-prompt-delete-actions .is-danger:hover { background:#813d3d; }
+.detail-quick-prompt-dialog { width:min(525px,calc(100vw - 32px));padding:0;border:1px solid #ffffff24;border-radius:18px;background:#212121;color:#f3f3f3;box-shadow:0 28px 90px #000c; }
+.detail-quick-prompt-dialog::backdrop { background:#0009;backdrop-filter:blur(4px); }
+.detail-quick-prompt-dialog-head { display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #ffffff14; }
+.detail-quick-prompt-dialog-head h2 { margin:0;font-size:16px; }
+.detail-quick-prompt-dialog-close { border:0;background:transparent;color:#aaa;font-size:24px;cursor:pointer; }
+.detail-quick-prompt-dialog-body { padding:16px; }
+.detail-quick-prompt-dialog textarea { width:100%;height:174px;box-sizing:border-box;resize:vertical;padding:14px;border:1px solid #ffffff24;border-radius:12px;outline:0;background:#303030;color:#f5f5f5;font:inherit;font-size:14px;line-height:1.6; }
+.detail-quick-prompt-dialog textarea:focus { border-color:#ffffff55; }
+.detail-quick-prompt-dialog-count { margin:10px 0 0;color:#777;font-size:13px; }
+.detail-quick-prompt-dialog-actions { display:flex;justify-content:flex-end;gap:12px;padding:0 16px 16px; }
+.detail-quick-prompt-dialog-actions button { min-height:38px;padding:0 18px;border:0;border-radius:10px;background:transparent;color:#aaa;font:inherit;cursor:pointer; }
+.detail-quick-prompt-dialog-actions .is-primary { background:#8d8d8d;color:#202020;font-weight:750; }
+.detail-quick-prompt-dialog-actions .is-primary:disabled { opacity:.45;cursor:not-allowed; }

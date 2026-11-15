@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+  <!-- 2026-10-11 Product Design 改动逻辑：3D 下载及删除反馈使用 Figma 四状态 Toast；嵌入应用时由父页面统一定位，单独打开时固定在自身顶部 25vh。 -->
+  <link rel="stylesheet" href="../assets/toast.css?v=20261011-figma-toast">
+  <script src="../assets/toast.js?v=20261011-figma-toast" defer></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 3D Studio</title>
@@ -2645,5 +2648,14 @@
     updateAssetActions(null);
     syncViewerEmptyLayout();
   </script>
+
+  <!-- 2026-10-25 Product Design：阿语独立词典和局部 RTL；保留侧栏、对话栏、创作分栏、表格列与时间轴的原始位置。默认中文，不改其他语言。 -->
+  <script src="../assets/arabic-copy.js?v=20261025-ar-complete" defer></script>
+  <!-- 2026-10-25 阿语点击性能修复：刷新局部翻译运行时版本，按钮操作不再恢复并重译整页。 -->
+  <!-- 2026-10-25：补齐独立设定页与正文翻译、局部 RTL，并恢复大纲回形针原图。 -->
+  <!-- 2026-10-26 Product Design：同步共用阿语适配资源版本，3D 场景坐标与其他语言布局不变。 -->
+  <!-- 2026-10-26 缓存逻辑：同步阿语适配器版本，3D 场景与其他语言尺寸保持原样。 -->
+  <!-- 2026-10-26：同步共用阿语资源版本，不改变 3D 场景坐标。 -->
+  <script src="../assets/arabic-i18n.js?v=20261026-agent-panel-right" defer></script>
 </body>
 </html>

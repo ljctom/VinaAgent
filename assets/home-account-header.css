@@ -1,0 +1,153 @@
+/* 2026-11-14 Product Design：按用户提供的 Figma 截图调整首页右上角。
+ * 原头像保留原 DOM 和点击监听，仅在首页将其外框接到积分／等级胶囊右侧。
+ * 旧版按钮沿用现有尺寸和内容；首页边框与文字颜色按下方最新注释调整，其他页面及移动端沿用旧账户 UI。 */
+.home-header-plan,
+.home-header-wallet { display: none; }
+@media (min-width: 761px) {
+  /* 2026-11-15 Product Design：Figma「2. 顶导航-优化-会员」6815:25681 的
+   * Color/Border/Primary 为 #2B3642；积分区、头像外框、竖分隔线及阿语镜像边框
+   * 共用该色值，保持当前 1px 描边、胶囊尺寸和入口交互。 */
+  .global-account.is-home-header-account { --home-header-account-border: #2b3642; }
+  /* 旧入口已有高优先级的桌面显示规则，首页明确覆盖其显示；其他页面仍沿用原规则。 */
+  .global-account.is-home-header-account > .home-header-benefits { display: none !important; }
+  /* 2026-11-15 Product Design 改动逻辑：首页顶部导航栏左右垂直对齐。
+   * 原先左上品牌区 .brand 中心线在 26px（top: 0，高 52px），右上账户区 .global-account.is-home-header-account 中心线在 34px，左右存在 8px 高度差。
+   * 现将右上账户区上移 4px（top: 34px -> 30px；有活动条时 78px -> 74px），左上品牌区同步下移 4px（top: 0 -> 4px；有活动条时 44px -> 48px），
+   * 使左右两侧统一收敛至同一水平中心线 30px（有活动条时 74px），同时保证“限时优惠”角标顶部仍留有安全边距且所有胶囊完整处于 52px 顶栏内；其他页面与交互保持不变。 */
+  body[data-primary-view="canvas"]:not(.canvas-workbench-active):not(.drama-workflow-active):not(.marketing-entry-active):not(.team-console-open) .brand { top: 4px; }
+  body[data-primary-view="canvas"]:not(.home-promo-dismissed):not(.canvas-workbench-active):not(.drama-workflow-active):not(.marketing-entry-active):not(.team-console-open) .brand { top: 48px; }
+  body[data-primary-view="canvas"]:not(.canvas-workbench-active):not(.drama-workflow-active):not(.marketing-entry-active):not(.team-console-open) .global-account.is-home-header-account { top: 30px; }
+  body[data-primary-view="canvas"]:not(.home-promo-dismissed):not(.canvas-workbench-active):not(.drama-workflow-active):not(.marketing-entry-active):not(.team-console-open) .global-account.is-home-header-account { top: 74px; }
+  /* 2026-11-14：切换到旧版只将边框和文字（含继承 currentColor 的箭头）改成普通灰白；背景、尺寸和圆角均保持原样。 */
+  .global-account.is-home-header-account > .home-header-legacy {
+    order: 1;
+    border-color: #6f7b88;
+    color: #d8e1e8;
+    /* 2026-11-14 Product Design：按标注取消旧版按钮文字加粗，使用常规 400 字重。 */
+    font-weight: 400;
+  }
+  /* 2026-11-14：旧版按钮箭头描边从 1.5 降至 1，与常规字重协调；保留原图标路径、尺寸和颜色。 */
+  .global-account.is-home-header-account > .home-header-legacy svg path { stroke-width: 1; }
+  .global-account.is-home-header-account > .home-header-plan {
+    position: relative;
+    order: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 104px;
+    height: 32px;
+    padding: 0 24px;
+    border: 1px solid #b8f84a;
+    border-radius: 999px;
+    background: #b8f84a;
+    color: #080d12;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .global-account.is-home-header-account > .home-header-plan:hover { background: #caff73; }
+  .home-header-plan-offer {
+    position: absolute;
+    top: -11px;
+    inset-inline-end: -5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    padding: 0 8px;
+    border: 1px solid #b8f84a;
+    border-radius: 999px;
+    background: #080d12;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+  }
+  .global-account.is-home-header-account > .home-header-wallet {
+    order: 3;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    height: 32px;
+    box-sizing: border-box;
+    border: 1px solid var(--home-header-account-border);
+    border-inline-end: 0;
+    border-start-start-radius: 999px;
+    border-end-start-radius: 999px;
+    background: #080d12;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+  }
+  .home-header-credit-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  .home-header-credit-button:hover { color: #b8f84a; }
+  .home-header-credit-button img { width: 20px; height: 20px; flex: 0 0 20px; }
+  .home-header-wallet-divider { width: 1px; height: 20px; background: var(--home-header-account-border); }
+  /* 2026-11-14：Free／Pro 改为真实按钮，清除默认按钮外观，保持原胶囊尺寸和文字样式。 */
+  .home-header-wallet-tier { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 0; background: transparent; color: inherit; font: inherit; white-space: nowrap; cursor: pointer; pointer-events: auto; }
+  .home-header-wallet-tier:hover { color: #b8f84a; }
+  .global-account.is-home-header-account > .account-avatar {
+    order: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 32px;
+    box-sizing: border-box;
+    margin-inline-start: -12px;
+    padding: 1px 3px 1px 0;
+    border: 1px solid var(--home-header-account-border);
+    border-inline-start: 0;
+    border-radius: 0;
+    border-start-end-radius: 999px;
+    border-end-end-radius: 999px;
+    background: #080d12;
+  }
+  .global-account.is-home-header-account > .account-avatar > .global-account-avatar-image,
+  .global-account.is-home-header-account.is-team-account > .account-avatar > .account-initial {
+    width: 28px;
+    height: 28px;
+  }
+  .global-account.is-home-header-account > .top-team-badge { order: 5; }
+  /* 2026-11-14 Product Design：阿语原规则会将头像设为 order:1，拆开新胶囊。
+   * 仅首页恢复头像与积分相邻，并镜像接缝、边框圆角和负边距；其他语言和页面不受影响。 */
+  html[data-vina-ar] body .global-account.is-home-header-account > .home-header-wallet {
+    flex-direction: row-reverse;
+    border-inline-start: 0;
+    border-inline-end: 1px solid var(--home-header-account-border);
+    border-radius: 0 999px 999px 0;
+  }
+  html[data-vina-ar] body .global-account.is-home-header-account > #profilePopoverTrigger {
+    order: 4;
+    margin-inline-start: 0;
+    margin-inline-end: -12px;
+    padding: 1px 0 1px 3px;
+    border-inline-start: 1px solid var(--home-header-account-border);
+    border-inline-end: 0;
+    border-radius: 999px 0 0 999px;
+  }
+  /* 首页个人与团队均继承首页 12px 间隔，头像接缝统一抵消该间隔；团队标识保留。 */
+  .home-header-plan:focus-visible,
+  .home-header-wallet-tier:focus-visible,
+  .home-header-credit-button:focus-visible { outline: 2px solid #b8f84a; outline-offset: 3px; }
+}

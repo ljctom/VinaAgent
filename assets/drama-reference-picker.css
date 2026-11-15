@@ -1,0 +1,277 @@
+/* 2026-10-27 Product Design 改动逻辑：仅调整第五步添加参考素材弹窗。
+   面板、标题栏和底部按钮采用 UI 稿最新/modal-unified.css；卡片与分类沿用 UI 稿。
+   公共分类右侧使用全能创作同一筛选 DOM、图标与中性色；多选反馈由 aria-pressed 和 selected 驱动。 */
+#referenceAssetOverlay { z-index:28000;background:rgba(2,6,10,.72);backdrop-filter:none; }
+#referenceAssetOverlay .reference-asset-dialog { position:relative;box-sizing:border-box;width:min(1120px,calc(100vw - 52px));height:min(760px,calc(100dvh - 52px));max-height:calc(100dvh - 52px);border:1px solid #2b3642;border-radius:16px;background:#171e27;color:#f5f7fa;font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:14px;line-height:20px;font-weight:400;box-shadow:0 24px 80px #0008;-webkit-font-smoothing:antialiased; }
+#referenceAssetOverlay .unified-picker-head { box-sizing:border-box;display:flex;align-items:center;flex:0 0 auto;min-height:72px;padding:20px 64px 20px 24px;border-bottom:1px solid #2b3642; }
+#referenceAssetOverlay #referenceAssetTitle { margin:0;padding:0;color:#f5f7fa;font-size:18px;line-height:28px;font-weight:600; }
+#referenceAssetOverlay .reference-asset-head { flex:0 0 auto;min-height:66px;padding:0 22px;border-bottom:1px solid #2b3642; }
+#referenceAssetOverlay .reference-asset-close { position:absolute;top:18px;right:20px;display:grid;place-items:center;box-sizing:border-box;width:36px;height:36px;padding:0;border:1px solid transparent;border-radius:8px;background:transparent;color:#b4bec8;font-size:24px;font-weight:400;box-shadow:none; }
+#referenceAssetOverlay .reference-asset-close:hover { background:#2b3642;color:#f5f7fa; }
+#referenceAssetOverlay .reference-asset-tabs { gap:10px; }
+#referenceAssetOverlay .reference-asset-tab { font-family:inherit;font-size:16px;font-weight:820; }
+#referenceAssetOverlay .reference-library-toolbar { position:relative;z-index:20;flex:0 0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;padding:16px 22px 0; }
+#referenceAssetOverlay .reference-library-categories { flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:0; }
+#referenceAssetOverlay .reference-library-category { font-family:inherit; }
+#referenceAssetOverlay .reference-library-category[hidden],
+#referenceAssetOverlay .reference-public-filters[hidden],
+#referenceAssetOverlay [data-reference-upload-more][hidden] { display:none!important; }
+#referenceAssetOverlay .reference-asset-body { min-height:0;flex:1;overflow:auto;padding:20px 22px;scrollbar-width:thin;scrollbar-color:#35414e transparent; }
+#referenceAssetOverlay .reference-library-grid { grid-template-columns:repeat(5,minmax(0,1fr));gap:12px; }
+#referenceAssetOverlay .reference-library-card { position:relative;min-width:0;font-family:inherit; }
+#referenceAssetOverlay .reference-library-card.selected { border-color:#9aa6b2;box-shadow:0 0 0 1px #9aa6b2; }
+#referenceAssetOverlay .reference-library-selected-label { display:none;position:absolute;top:12px;right:12px;z-index:2;padding:3px 8px;border:1px solid #9aa6b2;border-radius:6px;background:#2b3642;color:#f5f7fa;font-size:12px;line-height:18px;font-weight:500; }
+#referenceAssetOverlay .reference-library-card.selected .reference-library-selected-label { display:block; }
+#referenceAssetOverlay .reference-library-image { display:block;box-sizing:border-box;width:calc(100% - 10px);aspect-ratio:3/4;margin:5px 5px 0;border-radius:10px;object-fit:cover;background-size:cover;background-position:center;background-color:#111820; }
+#referenceAssetOverlay .reference-library-empty { min-height:240px;font-weight:400; }
+#referenceAssetOverlay .reference-library-foot { flex:0 0 auto;align-items:center;gap:12px;padding:16px 22px;border-top:1px solid #2b3642; }
+#referenceAssetOverlay .reference-selection-count { margin-right:auto;color:#9aa6b2;font-size:13px;font-weight:400; }
+#referenceAssetOverlay :is(.reference-library-action,.reference-upload-more) { box-sizing:border-box;min-width:0;width:auto;height:36px;min-height:36px;padding:0 16px;border:1px solid #2b3642;border-radius:999px;background:transparent;color:#d5dbe3;font-family:inherit;font-size:14px;line-height:20px;font-weight:500;box-shadow:none;cursor:pointer; }
+#referenceAssetOverlay .reference-library-action.primary { background:#fff;border-color:#fff;color:#0b121a; }
+#referenceAssetOverlay .reference-library-action.primary:disabled { opacity:.38;cursor:default; }
+#referenceAssetOverlay .reference-upload-more { margin-left:auto; }
+#referenceAssetOverlay button:focus-visible { outline:2px solid #9aa6b2;outline-offset:3px; }
+
+/* 公共资产分类和右侧筛选按全能创作排列；菜单保留复选框、已选标签及逐组清空。 */
+#referenceAssetOverlay.public-source .reference-library-toolbar { padding-top:16px;padding-bottom:0; }
+#referenceAssetOverlay.public-source .reference-library-categories { padding:4px;gap:2px;border-radius:10px;background:#202833; }
+#referenceAssetOverlay.public-source .reference-library-category { height:38px;min-height:38px;padding:0 18px;border:0;border-radius:6px;background:transparent;color:#9aa6b2;font-size:14px;font-weight:500; }
+#referenceAssetOverlay.public-source .reference-library-category.active { background:#2b3642;color:#f5f7fa; }
+#referenceAssetOverlay .reference-public-filters { min-width:0;max-width:100%;padding-left:24px;border-left:1px solid #2b3642; }
+#referenceAssetOverlay .character-tag-filter-bar { margin:0;gap:8px; }
+#referenceAssetOverlay .character-tag-filter-item { min-height:34px;border:1px solid #2b3642;border-radius:8px;background:#10171f;color:#9aa6b2; }
+#referenceAssetOverlay .character-tag-filter-item:is(:hover,.open,.selected) { border-color:#566474;background:#2b3642;color:#f5f7fa; }
+#referenceAssetOverlay .character-tag-filter-trigger { min-height:32px;max-width:210px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:500; }
+#referenceAssetOverlay [data-character-tag-filter-label] { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+#referenceAssetOverlay .character-tag-filter-plus { display:inline-flex;flex:0 0 14px; }
+#referenceAssetOverlay .character-tag-filter-plus img { display:block;width:14px;height:14px; }
+#referenceAssetOverlay .character-tag-filter-item.selected .character-tag-filter-plus { display:none; }
+#referenceAssetOverlay .character-tag-filter-menu { max-height:min(300px,45dvh);background:#171e27;border-color:#35414e;color:#d5dbe3;border-radius:12px; }
+#referenceAssetOverlay .character-tag-filter-item:last-child .character-tag-filter-menu { left:auto;right:0; }
+#referenceAssetOverlay .character-tag-filter-option { font-family:inherit;font-weight:400; }
+#referenceAssetOverlay .character-tag-filter-option input { accent-color:#9aa6b2; }
+@media(max-width:900px) {
+  #referenceAssetOverlay .reference-library-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  #referenceAssetOverlay .reference-library-toolbar { gap:12px; }
+  #referenceAssetOverlay .reference-public-filters { padding-left:12px; }
+}
+@media(max-width:600px) {
+  #referenceAssetOverlay { padding:12px; }
+  #referenceAssetOverlay .reference-asset-dialog { width:100%;height:calc(100dvh - 24px);max-height:calc(100dvh - 24px); }
+  #referenceAssetOverlay .unified-picker-head { padding-left:16px; }
+  #referenceAssetOverlay .reference-asset-head { padding-inline:12px; }
+  #referenceAssetOverlay .reference-asset-tab { padding-inline:10px;font-size:14px; }
+  #referenceAssetOverlay .reference-library-toolbar { padding-inline:12px; }
+  #referenceAssetOverlay .reference-public-filters { width:100%;padding-left:0;border-left:0; }
+  #referenceAssetOverlay .reference-asset-body { padding:16px 12px; }
+  #referenceAssetOverlay .reference-library-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #referenceAssetOverlay .reference-library-foot { padding:12px;gap:8px; }
+  #referenceAssetOverlay .reference-library-action { padding-inline:12px; }
+  #referenceAssetOverlay .character-tag-filter-item:last-child .character-tag-filter-menu { left:0;right:auto; }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：参考素材来源 tab 复用全能创作资产库
+   canvas-asset-source-tab 的 42px 高度、34px 间距、16px/500 字体与底部 2px 白线。
+   保留本集、全剧、公共、个人、本地上传五个来源和原切换事件，仅替换外观。 */
+#referenceAssetOverlay .reference-asset-head {
+  align-items:stretch;
+  min-height:66px;
+  padding:24px 24px 0;
+}
+#referenceAssetOverlay .reference-asset-tabs {
+  align-self:stretch;
+  align-items:stretch;
+  min-height:42px;
+  gap:34px;
+}
+#referenceAssetOverlay .reference-asset-tab {
+  position:relative;
+  box-sizing:border-box;
+  align-self:stretch;
+  min-width:0;
+  min-height:42px;
+  padding:2px 0 14px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#9aa6b2;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:500;
+  line-height:24px;
+  box-shadow:none;
+}
+#referenceAssetOverlay .reference-asset-tab:hover {
+  background:transparent;
+  color:#f5f7fa;
+}
+#referenceAssetOverlay .reference-asset-tab.active {
+  background:transparent;
+  border:0;
+  color:#f5f7fa;
+  box-shadow:none;
+}
+#referenceAssetOverlay .reference-asset-tab.active::after {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:2px;
+  border-radius:2px;
+  background:#f5f7fa;
+}
+/* 2026-11-04：二级分类所在行沿用弹窗背景，不增加单独的底色块；
+   本弹窗面板为 #171e27，分类底座用 #202833 保持可见层次，选中态采用 #2b3642。
+   4px 内边距、10px 容器圆角和 38px/6px 分类按钮与资产库保持一致。
+   公共资产的角色/音色分类和右侧筛选继续由原脚本显隐，其余来源保留原四分类。 */
+#referenceAssetOverlay .reference-library-toolbar,
+#referenceAssetOverlay.public-source .reference-library-toolbar {
+  padding:16px 24px;
+  border-bottom:1px solid #2b3642;
+  background:transparent;
+}
+#referenceAssetOverlay .reference-library-categories,
+#referenceAssetOverlay.public-source .reference-library-categories {
+  align-self:center;
+  margin:0;
+  padding:4px;
+  gap:2px;
+  border:0;
+  border-radius:10px;
+  background:#202833;
+}
+#referenceAssetOverlay .reference-library-category,
+#referenceAssetOverlay.public-source .reference-library-category {
+  box-sizing:border-box;
+  height:38px;
+  min-height:38px;
+  padding:9px 18px;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:#9aa6b2;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:400;
+  line-height:20px;
+  box-shadow:none;
+}
+#referenceAssetOverlay .reference-library-category:hover {
+  background:#202a35;
+  color:#f5f7fa;
+}
+#referenceAssetOverlay .reference-library-category.active,
+#referenceAssetOverlay.public-source .reference-library-category.active {
+  background:#2b3642;
+  color:#f5f7fa;
+  font-weight:500;
+}
+/* 2026-10-27：去掉素材卡右上角“已选”和左下角“可多选素材/已选择 X 项”。
+   数据与 aria-pressed 继续维护，保留选中描边及确认导入按钮数量；底部操作靠右排列。 */
+#referenceAssetOverlay .reference-library-selected-label,
+#referenceAssetOverlay .reference-library-card.selected .reference-library-selected-label,
+#referenceAssetOverlay .reference-selection-count {
+  display:none !important;
+}
+#referenceAssetOverlay .reference-library-foot { justify-content:flex-end; }
+@media(max-width:600px) {
+  #referenceAssetOverlay .reference-asset-head { padding:16px 12px 0; }
+  #referenceAssetOverlay .reference-asset-tabs { gap:22px; }
+  #referenceAssetOverlay .reference-asset-tab { font-size:14px; }
+  #referenceAssetOverlay .reference-library-toolbar,
+  #referenceAssetOverlay.public-source .reference-library-toolbar { padding:12px; }
+  #referenceAssetOverlay .reference-library-category { padding-inline:14px; }
+}
+
+/* 2026-10-27 Product Design 改动逻辑：参考素材的图片卡片复用全能创作资产库
+   canvas-import-card / canvas-import-name 的 201:330 竖图比例、8px 圆角、
+   贴边封面和图片内左下角名称。取消旧卡片图片边距及外置黑色标题栏，
+   名称使用同款渐暗遮罩、12px/700/18px 字体；所有来源的图片均适用。
+   音频卡保留原结构，素材多选、选中边框与确认导入事件继续沿用。 */
+#referenceAssetOverlay .reference-library-card:not(.reference-voice-card):not(:has(.reference-library-audio)) {
+  position:relative;
+  display:block;
+  box-sizing:border-box;
+  aspect-ratio:201 / 330;
+  padding:0;
+  overflow:hidden;
+  border:1px solid #2b3642;
+  border-radius:8px;
+  background:#080d12;
+}
+#referenceAssetOverlay .reference-library-card:not(.reference-voice-card):not(:has(.reference-library-audio)) > :is(.reference-library-image,.subject-portrait,.reference-library-scene) {
+  position:absolute;
+  inset:0;
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  margin:0;
+  aspect-ratio:auto;
+  border-radius:7px;
+  object-fit:cover;
+  object-position:center;
+  background-size:cover;
+  background-position:center;
+}
+#referenceAssetOverlay .reference-library-card:not(.reference-voice-card):not(:has(.reference-library-audio)) .reference-library-name {
+  position:absolute;
+  z-index:2;
+  bottom:0;
+  left:0;
+  right:0;
+  display:block;
+  margin:0;
+  padding:46px 12px 12px;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.82));
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  line-height:18px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  pointer-events:none;
+}
+#referenceAssetOverlay .reference-library-card:not(.reference-voice-card):not(:has(.reference-library-audio)):hover {
+  border-color:#b8f84a;
+  transform:none;
+}
+#referenceAssetOverlay .reference-library-card:not(.reference-voice-card):not(:has(.reference-library-audio)).selected {
+  border-color:#9aa6b2;
+  box-shadow:0 0 0 1px #9aa6b2;
+}
+
+/* 2026-10-27 Product Design：仅音色框复用全能创作横向音频卡，96px 高、
+   40px 播放入口、右侧名称及进度时长；选中描边包住整框，不使用勾选框。
+   图片卡覆盖规则排除音色，防止音色被竖图比例和渐暗名称规则影响。 */
+#referenceAssetOverlay .reference-library-grid.reference-voice-grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px; }
+#referenceAssetOverlay .reference-library-card.reference-voice-card {
+  position:relative;box-sizing:border-box;display:flex;align-items:center;gap:12px;
+  width:100%;height:96px;min-height:96px;aspect-ratio:auto;padding:16px;
+  border:1px solid #2b3642;border-radius:16px;background:#171e27;
+  color:#f5f7fa;text-align:left;cursor:pointer;box-shadow:none;
+}
+#referenceAssetOverlay .reference-library-card.reference-voice-card:hover { background:#1c2530;border-color:#3a4654;transform:none; }
+#referenceAssetOverlay .reference-library-card.reference-voice-card.selected { border-color:#f5f7fa;box-shadow:inset 0 0 0 1px #f5f7fa; }
+#referenceAssetOverlay .reference-voice-play { display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:#222b35;color:#d5dbe3;cursor:pointer; }
+#referenceAssetOverlay .reference-voice-play :is(svg,img) { display:block;width:16px;height:16px; }
+#referenceAssetOverlay .reference-voice-copy { flex:1;min-width:0; }
+#referenceAssetOverlay .reference-voice-name { display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;font-weight:700;line-height:24px;color:#f5f7fa; }
+#referenceAssetOverlay .reference-voice-preview { display:flex;align-items:center;gap:8px;margin-top:12px;min-height:18px; }
+#referenceAssetOverlay .reference-voice-track { display:block;flex:1;min-width:12px;height:3px;border-radius:2px;background:#2b3642;overflow:hidden; }
+#referenceAssetOverlay .reference-voice-progress { display:block;width:var(--library-voice-progress,0%);height:100%;border-radius:inherit;background:#b8f84a; }
+#referenceAssetOverlay .reference-voice-time { flex:0 0 auto;color:#6f7b88;font-size:12px;font-weight:700;line-height:18px;white-space:nowrap;font-variant-numeric:tabular-nums; }
+@media(max-width:600px) { #referenceAssetOverlay .reference-library-grid.reference-voice-grid { grid-template-columns:1fr; } }
+
+/* 2026-10-27 Product Design 修复逻辑：试听播放态切换为现有 getVoiceIcon('pause')
+   的线性 SVG，必须显式声明 stroke；只有尺寸而没有描边时，两条暂停线不可见。
+   仅作用于参考素材音色播放按钮，图片播放图标和其他页面样式保持原样。 */
+#referenceAssetOverlay .reference-voice-play svg {
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}

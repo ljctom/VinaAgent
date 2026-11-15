@@ -1,0 +1,149 @@
+/* 2026-10-25 Product Design 改动逻辑：通过 ego 参考跳跃视界首页，第一行放原创作/短剧
+ * 胶囊，第二行放对应标题。按钮保留玻璃、描边、悬停与滑动选中层，仅字号和内边距
+ * 参照参考页 16px / 42px 的按钮比例；输入框及其工具栏不增加任何覆盖规则。 */
+.view[data-view="canvas"] .hero {
+  isolation: isolate;
+  padding-top: 120px;
+}
+
+.view[data-view="canvas"] .hero > .home-agent-tabs {
+  flex: 0 0 auto;
+  margin: 0 0 24px;
+}
+
+.view[data-view="canvas"] .hero > .home-agent-tabs .home-composer-tab {
+  height: 42px;
+  min-width: 96px;
+  padding: 0 24px;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.view[data-view="canvas"] #main-title.home-agent-title {
+  display: block;
+  width: min(100%, 1040px);
+  margin: 0 0 28px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0;
+  text-align: center;
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.view[data-view="canvas"] #main-title.home-agent-title > span {
+  white-space: normal;
+}
+
+/* 2026-10-25 Product Design 改动逻辑：上传剧本和剧本创作共用的发送节点
+ * [data-home-open-script] 统一为全能创作发送按钮的 32×32px，箭头同步为 17×17px。
+ * 显式覆盖原 40px 最小尺寸和窄屏 100% 宽度，固定 flex 占位避免挤压变形；
+ * 节点在上传/创作工具栏之间移动时沿用同一规则，启用、禁用、配色及发送事件仍由原逻辑管理。 */
+.view[data-view="canvas"] .home-composer-card [data-home-open-script].generate-now {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  flex: 0 0 32px;
+}
+
+.view[data-view="canvas"] .home-composer-card [data-home-open-script].generate-now svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* 2026-10-25 Product Design 改动逻辑：通过 ego 读取 vinaai.tv 两种模式的原始
+ * 强调文字，统一使用 linear-gradient(160deg, #fff 30%, #b8f84a 100%)。
+ * 渐变按每个强调短语自身范围绘制；其余文字继承原白色，排版与 Tab 状态沿用。
+ * 支持文字裁切时才启用透明字色；不支持时保留品牌绿文字，避免标题不可见。 */
+.view[data-view="canvas"] #main-title .home-title-accent {
+  color: #b8f84a;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .view[data-view="canvas"] #main-title .home-title-accent {
+    background-image: linear-gradient(160deg, #fff 30%, #b8f84a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* 直接读取现有 Tab 状态：鼠标、方向键或项目入口触发的模式切换均使用同一文案规则。
+ * 不对标题使用 textContent 重写，使原有语言适配器可以分别翻译两段文字。 */
+.view[data-view="canvas"] #main-title .home-headline-drama,
+.view[data-view="canvas"] .home-agent-tabs:has([data-home-composer-tab="drama"][aria-selected="true"]) ~ #main-title .home-headline-canvas {
+  display: none;
+}
+
+.view[data-view="canvas"] .home-agent-tabs:has([data-home-composer-tab="drama"][aria-selected="true"]) ~ #main-title .home-headline-drama {
+  display: inline;
+}
+
+/* 2026-11-05：首页光晕收拢约四成，保留右上灰绿与左下青蓝。
+ * 降低中心亮度后回提少许，保留中间衰减节点，使明暗过渡更平缓。
+ * 细颗粒纹理仅在两团光源内部淡出，不覆盖全页，不参与鼠标交互。 */
+.view[data-view="canvas"] .hero::before {
+  display: block;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 410px 280px at calc(50% + 350px) 240px, rgba(87, 139, 124, .165) 0%, rgba(65, 108, 101, .082) 30%, rgba(46, 81, 79, .026) 60%, rgba(46, 81, 79, .004) 82%, transparent 100%),
+    radial-gradient(ellipse 300px 220px at calc(50% + 160px) 150px, rgba(74, 143, 124, .078) 0%, rgba(54, 110, 99, .03) 40%, transparent 100%),
+    radial-gradient(ellipse 220px 170px at calc(50% + 440px) 90px, rgba(151, 180, 128, .043) 0%, transparent 85%),
+    radial-gradient(ellipse 350px 240px at calc(50% - 450px) 420px, rgba(65, 136, 151, .125) 0%, rgba(45, 102, 124, .062) 30%, rgba(34, 72, 94, .02) 60%, rgba(34, 72, 94, .003) 82%, transparent 100%),
+    radial-gradient(ellipse 230px 180px at calc(50% - 530px) 480px, rgba(82, 155, 161, .046) 0%, rgba(48, 107, 125, .018) 40%, transparent 100%);
+  background-repeat: no-repeat;
+  background-size: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
+  pointer-events: none;
+}
+
+/* 窄屏缩短顶部留白与标题字号，文案可自然换行；胶囊仍保留两项和足够点击高度。 */
+@media (max-width: 760px) {
+  .view[data-view="canvas"] .hero { padding-top: 74px; }
+  .view[data-view="canvas"] .hero > .home-agent-tabs { margin-bottom: 20px; }
+  .view[data-view="canvas"] #main-title.home-agent-title {
+    margin-bottom: 24px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+  /* 窄屏按可视宽度收拢光源，灰青绿主光与淡绿次光同步降亮，保留右上氛围与柔和淡出。 */
+  .view[data-view="canvas"] .hero::before {
+    background:
+      radial-gradient(ellipse 280px 230px at 90% 190px, rgba(87, 139, 124, .14) 0%, rgba(65, 108, 101, .048) 35%, rgba(46, 81, 79, .008) 70%, transparent 100%),
+      radial-gradient(ellipse 210px 180px at 65% 100px, rgba(105, 151, 120, .06), transparent 90%),
+      radial-gradient(ellipse 240px 220px at 5% 430px, rgba(65, 136, 151, .10) 0%, rgba(45, 102, 124, .038) 35%, rgba(34, 72, 94, .006) 70%, transparent 100%);
+  }
+}
+
+.view[data-view="canvas"] .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url("./images/home-glow-grain.svg?v=20261105-frosted") repeat;
+  /* 柔光混合增强颗粒对比，避免纹理本身给光源叠加灰白亮度。 */
+  mix-blend-mode: soft-light;
+  opacity: .38;
+  -webkit-mask-image:
+    radial-gradient(ellipse 350px 240px at calc(50% + 350px) 240px, #000 0%, rgba(0,0,0,.5) 38%, transparent 100%),
+    radial-gradient(ellipse 300px 210px at calc(50% - 450px) 420px, #000 0%, rgba(0,0,0,.5) 38%, transparent 100%);
+  mask-image:
+    radial-gradient(ellipse 350px 240px at calc(50% + 350px) 240px, #000 0%, rgba(0,0,0,.5) 38%, transparent 100%),
+    radial-gradient(ellipse 300px 210px at calc(50% - 450px) 420px, #000 0%, rgba(0,0,0,.5) 38%, transparent 100%);
+}
+@media (max-width: 760px) {
+  .view[data-view="canvas"] .hero::after {
+    -webkit-mask-image:
+      radial-gradient(ellipse 240px 200px at 90% 190px, #000, transparent 100%),
+      radial-gradient(ellipse 210px 190px at 5% 430px, #000, transparent 100%);
+    mask-image:
+      radial-gradient(ellipse 240px 200px at 90% 190px, #000, transparent 100%),
+      radial-gradient(ellipse 210px 190px at 5% 430px, #000, transparent 100%);
+  }
+}

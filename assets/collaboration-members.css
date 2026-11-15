@@ -1,0 +1,107 @@
+/* 2026-11-09 Product Design：参考叠放头像和下拉名单，沿用项目的灰蓝面板、40px 按钮和 Caption 字号。
+ * 组件位于父页面账户组，两种工作台模式完全共用；只在团队的实时协同项目显示，不增加在线/同步/分享控件。
+ */
+.global-account > .vina-collaboration-members {
+  position: relative;
+  flex: 0 0 auto;
+  pointer-events: auto;
+  font-family: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+.global-account > .vina-collaboration-members[hidden],
+.vina-collaboration-members-panel[hidden],
+body:not(.canvas-workbench-active) .vina-collaboration-members,
+.global-account:not(.is-team-account) > .vina-collaboration-members { display: none !important; }
+.global-account .vina-collaboration-members-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 40px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #2B3642;
+  border-radius: 12px;
+  background: #171E27;
+  color: #F5F7FA;
+  font: inherit;
+  cursor: pointer;
+}
+.global-account .vina-collaboration-members-trigger:hover,
+.global-account .vina-collaboration-members-trigger[aria-expanded="true"] { background: #222B35; border-color: #465362; }
+.global-account .vina-collaboration-members-trigger:focus-visible { outline: 2px solid #B8F84A; outline-offset: 3px; }
+.vina-collaboration-members-stack { display: flex; align-items: center; padding-inline-end: 0; }
+.vina-collaboration-members .vina-collaboration-member-avatar {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* 三款固定默认头像配色以同一品牌机器人为底图；按钮和名单按成员 ID 保持相同配色，无自定义头像入口。 */
+.vina-collaboration-member-avatar-1 { filter: hue-rotate(115deg); }
+.vina-collaboration-member-avatar-2 { filter: hue-rotate(210deg); }
+.vina-collaboration-members-stack > .vina-collaboration-member-avatar {
+  width: 26px;
+  height: 26px;
+  flex-basis: 26px;
+  border: 2px solid #171E27;
+}
+.vina-collaboration-members-stack > .vina-collaboration-member-avatar + .vina-collaboration-member-avatar { margin-inline-start: -8px; }
+.vina-collaboration-members-count { font-size: 14px; font-weight: 500; line-height: 20px; font-variant-numeric: tabular-nums; }
+.vina-collaboration-members-chevron { display: block; width: 14px; height: 14px; flex: 0 0 14px; }
+.vina-collaboration-members-trigger[aria-expanded="true"] .vina-collaboration-members-chevron { transform: rotate(180deg); }
+.global-account .vina-collaboration-members-panel {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  box-sizing: border-box;
+  /* 2026-11-09：成员面板由 248px 收窄到 208px，保留头像、单行姓名和固定宽度的成员色圆点。 */
+  width: 208px;
+  max-width: calc(100vw - 48px);
+  padding: 16px 12px 12px;
+  border: 1px solid #2B3642;
+  border-radius: 12px;
+  background: #171E27;
+  color: #F5F7FA;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .32);
+  user-select: text;
+}
+.vina-collaboration-members-panel h2 { margin: 0 4px 12px; font-size: 13px; font-weight: 500; line-height: 20px; color: #9AA6B2; }
+.vina-collaboration-members-panel ul { list-style: none; margin: 0; padding: 0; max-height: min(320px, calc(100dvh - 160px)); overflow-y: auto; }
+.vina-collaboration-members-panel li { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 4px; box-sizing: border-box; }
+/* 2026-11-09：姓名允许缩到可用宽度并以省略号结尾；右侧彩色“·”不参与截断，五行右对齐。 */
+.vina-collaboration-members-panel .vina-collaboration-member-name { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 400; line-height: 22px; }
+.vina-collaboration-members-panel .vina-collaboration-member-dot { flex: 0 0 12px; width: 12px; text-align: center; font-size: 28px; font-weight: 700; line-height: 24px; }
+/* 2026-11-09 Product Design：截断姓名的完整内容以小浮层展示；独立于名单滚动区，沿用深色提示层样式。
+ * JS 测量是否截断并定位到姓名下方；长英文名可自然换行，不再次省略，也不拦截原名单 hover。
+ */
+.vina-collaboration-members .vina-collaboration-member-tooltip {
+  position: fixed;
+  z-index: 2;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 24px));
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid #3A4654;
+  border-radius: 8px;
+  background: #222B35;
+  color: #F5F7FA;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .28);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+.vina-collaboration-members .vina-collaboration-member-tooltip[hidden] { display: none !important; }
+@media (max-width: 640px) {
+  .global-account .vina-collaboration-members-trigger { gap: 6px; padding-inline: 8px; }
+  .global-account .vina-collaboration-members-panel { position: fixed; top: 78px; inset-inline-end: 16px; }
+}

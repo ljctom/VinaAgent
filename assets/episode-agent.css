@@ -1,0 +1,229 @@
+/* 2026-09-14：仅覆盖短剧左栏；固定 Tab 与输入区，剧本和消息分别滚动，避免污染画布。 */
+.episode-detail-workspace .detail-story-panel.episode-agent-sidebar{padding:0;overflow:hidden;display:flex;flex-direction:column;min-height:0;background:#0b131b}
+.episode-agent-tabs{display:flex;flex:none;gap:6px;padding:8px 12px;border-bottom:1px solid #26333f}
+.episode-agent-tabs button{flex:1;border:0;border-radius:8px;padding:9px 12px;background:transparent;color:#8996a3;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.episode-agent-tabs button[aria-selected="true"]{color:#bdff45;background:#222e20}
+.episode-agent-tabs button:hover{background:#1b2631}
+.episode-agent-sidebar [hidden]{display:none!important}
+.episode-agent-script{flex:1;min-height:0;overflow:auto;padding:20px 14px 24px;scrollbar-color:#4d5865 transparent}
+#episode-agent-pane{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.episode-agent-messages{flex:1;min-height:0;overflow:auto;padding:20px 14px;display:flex;flex-direction:column;gap:16px;scrollbar-color:#4d5865 transparent}
+.episode-agent-welcome{margin:auto;text-align:center;font-size:clamp(17px,1.25vw,24px);font-weight:700;color:#eef1f5}
+.episode-agent-message{font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;color:#dce3eb}
+.episode-agent-message[data-role="user"]{align-self:flex-end;max-width:94%;padding:10px 14px;border:1px solid #2a3949;border-radius:14px 14px 4px 14px;background:#1b2b3a}
+.episode-agent-message[data-role="assistant"]{align-self:stretch}
+.episode-agent-composer{flex:none;margin:8px;border:1px solid #2a3948;border-radius:18px;background:#141f2a;overflow:hidden}
+.episode-agent-composer textarea{display:block;box-sizing:border-box;width:100%;min-height:110px;max-height:210px;resize:vertical;padding:14px;border:0;outline:0;background:transparent;color:#edf1f6;font:inherit;font-size:14px;line-height:1.6}
+/* 2026-09-14 修复逻辑：Agent 输入框聚焦时不继承侧栏通用的绿色 focus-visible 轮廓，避免轮廓被 composer 裁切后显示成上下两条绿色横线；输入容器仍用自身边框反馈焦点。 */
+.episode-agent-sidebar .episode-agent-composer textarea:focus-visible{outline:none}
+.episode-agent-composer textarea::placeholder{color:#7f8a98}
+.episode-agent-composer:focus-within{border-color:#4b6480}
+.episode-agent-tools{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:8px;border-top:1px solid #293743}
+.episode-agent-tools button,.episode-agent-tools select{height:32px;min-width:0;max-width:112px;border:1px solid #3c4753;border-radius:8px;background:#27313c;color:#e6ebf1;font-size:11px;cursor:pointer}
+.episode-agent-tools select{padding:0 3px;flex:1}
+/* 2026-09-14 修复逻辑：加号按钮使用网格在固定尺寸内双向居中，并清除文本按钮默认内边距与字体行高造成的基线下沉，使“＋”与同排“选择分镜”按钮严格对齐。 */
+.episode-agent-tools .episode-agent-add{display:grid;place-items:center;width:30px;padding:0;font-size:22px;line-height:1;flex:none}
+.episode-agent-tools .episode-agent-send{width:32px;flex:none;margin-left:auto;background:#3869ff;border-color:#3869ff;display:grid;place-items:center}
+.episode-agent-send svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.episode-agent-tools button:disabled{opacity:.4;cursor:default}
+.episode-agent-files{display:flex;flex-wrap:wrap;gap:6px;padding:0 10px}
+.episode-agent-files:empty{display:none}
+.episode-agent-files button{max-width:100%;margin-top:8px;border:1px solid #3b4d60;border-radius:6px;padding:4px 6px;background:#203247;color:#dce6f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-size:12px}
+.episode-agent-sidebar :focus-visible{outline:2px solid #bdff45;outline-offset:2px}
+
+/* 2026-09-17 改动逻辑：当前分镜由 Agent 打开时自动加入；输入区只保留引用缩略图，不再展示选择按钮和时间线勾选态。 */
+.episode-agent-sidebar .episode-agent-files,.episode-agent-message-references{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;max-width:100%;padding:10px;scrollbar-width:thin}
+.episode-agent-message-references{padding:10px 0 0;white-space:normal}
+.episode-agent-reference{position:relative;flex:0 0 76px;width:76px;height:64px;overflow:hidden;border:1px solid #3b4d60;border-radius:8px;background:#23303b}
+.episode-agent-reference img,.episode-agent-reference-cover{display:block;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center}
+.episode-agent-reference-name{position:absolute;bottom:0;left:0;right:0;padding:3px 4px;background:#080d12bf;color:#fff;font-size:10px;line-height:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.episode-agent-sidebar .episode-agent-reference .episode-agent-reference-remove{position:absolute;top:3px;right:3px;display:grid;place-items:center;width:18px;height:18px;margin:0;padding:0;border:0;border-radius:5px;background:#0a101ddd;color:#fff;font-size:16px;line-height:1}
+.episode-agent-message[data-role="user"]{min-width:0;box-sizing:border-box}
+.episode-agent-toast{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);z-index:100000;padding:12px 22px;border:1px solid #445364;border-radius:10px;background:#202a35;color:#f1f4f8;box-shadow:0 8px 24px #0006;font-size:14px;pointer-events:none}
+.episode-agent-toast[hidden]{display:none}
+
+/* 2026-09-14：短剧专用多选卡、纯文字确认弹窗与三秒全屏加载，所有选择器独立于画布。 */
+.episode-agent-decision{padding:16px;border:1px solid #344456;border-radius:14px;background:#192633;color:#e6edf5;font-size:14px}
+.episode-agent-decision p{margin:0 0 14px;line-height:1.6}
+.episode-agent-decision label{display:flex;align-items:flex-start;gap:10px;padding:12px;margin:8px 0;border:1px solid #3b4958;border-radius:10px;cursor:pointer;line-height:1.5}
+.episode-agent-decision label:has(input:checked){border-color:#baff45;background:#283621}
+.episode-agent-decision input{accent-color:#baff45;margin-top:4px}
+.episode-agent-decision button,.episode-agent-confirm button{border:0;border-radius:10px;padding:11px 18px;background:#baff45;color:#16200c;font:inherit;font-weight:700;cursor:pointer}
+.episode-agent-decision>button{margin-top:12px;width:100%}
+.episode-agent-decision button:disabled{opacity:.4;cursor:default}
+/* 2026-09-14：确认卡嵌入侧边栏消息流，宽度随侧栏收缩，不覆盖或模糊右侧工作区。 */
+.episode-agent-sidebar .episode-agent-confirm{box-sizing:border-box;width:100%;min-width:0;padding:18px;border:1px solid #344456;border-radius:16px;background:#192633;color:#edf2f7}
+.episode-agent-confirm h2{margin:0 0 12px;font-size:16px;line-height:1.5}
+.episode-agent-confirm p{margin:0;color:#b9c5d1;font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.episode-agent-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:20px}
+.episode-agent-confirm button{font-size:13px;padding:10px 14px}
+.episode-agent-confirm [data-cancel]{background:#28333f;color:#dce4ed}
+.episode-agent-loading{position:fixed;inset:0;box-sizing:border-box;margin:0;width:100vw;max-width:none;height:100dvh;max-height:none;border:0;background:#071019e8;color:#f1f5f9;padding:0}
+.episode-agent-loading[open]{display:grid;place-items:center}
+.episode-agent-loading::backdrop{background:#080d14b3}
+.episode-agent-loading [role=status]{display:flex;flex-direction:column;align-items:center;font-size:18px;font-weight:600;letter-spacing:1px}
+.episode-agent-spinner{width:40px;height:40px;border:3px solid #344438;border-top-color:#baff45;border-radius:50%;animation:episode-agent-spin .8s linear infinite}
+@keyframes episode-agent-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.episode-agent-spinner{animation:none}}
+
+/* 2026-09-17 改动逻辑：左侧剧本/Agent 不再常驻网格；顶栏以两个图文胶囊作为互斥入口，内容作为覆盖式浮层打开，主分镜区默认获得完整宽度。 */
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-detail-header-left{grid-column:1;display:flex;align-items:center;gap:12px;min-width:0;z-index:4}
+/* 2026-09-17 改动逻辑：返回按钮缩为独立圆形入口；标题横条占据其右侧位置，防止点击标题误返回。 */
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-detail-header-left .script-back{flex:0 0 52px;width:52px;min-width:52px;padding:0;justify-content:center;border-radius:50%}
+/* 2026-09-17 改动逻辑：分集菜单触发区包含完整标题与最右三横线；按钮收紧到与两侧工具按钮一致的 40px 高度，并同步缩小文字和菜单图标，弹层保持从整条横条左下方展开。 */
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher{position:relative;flex:0 1 250px;min-width:150px}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:40px;padding:0 14px;border:1px solid #2b3642;border-radius:999px;background:#111820;color:#c7d0d9;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .16s ease,background .16s ease,color .16s ease}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle:hover,:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle:focus-visible,:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle[aria-expanded="true"]{border-color:#ffffff38;background:#19222c;color:#f4f7fa;outline:none}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu{position:absolute;z-index:80;top:44px;left:0;box-sizing:border-box;min-width:156px;padding:8px;border:1px solid #2b3642;border-radius:14px;background:#111820;box-shadow:0 16px 40px #000a,0 0 0 1px #ffffff08}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu[hidden]{display:none!important}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu button{display:flex;align-items:center;width:100%;height:42px;padding:0 14px;border:0;border-radius:9px;background:transparent;color:#d8dee5;font:inherit;font-size:14px;text-align:left;white-space:nowrap;cursor:pointer}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu button:hover,:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu button:focus-visible{background:#222d38;color:#fff;outline:none}
+:is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-menu button[aria-current="true"]{background:#26351f;color:#b8f84a}
+.episode-detail-workspace .episode-side-panel-controls{display:flex;align-items:center;gap:8px;flex:none}
+.episode-detail-workspace .episode-side-panel-controls button{height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 15px;border:1px solid #2b3642;border-radius:999px;background:#111820;color:#9aa6b2;font:inherit;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer;transition:border-color .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease}
+.episode-detail-workspace .episode-side-panel-controls button:hover,.episode-detail-workspace .episode-side-panel-controls button:focus-visible{border-color:#ffffff38;background:#19222c;color:#eef3f7;outline:none}
+.episode-detail-workspace .episode-side-panel-controls button.is-active{border-color:#b8f84a99;background:#202d1c;color:#b8f84a;box-shadow:0 0 0 1px #b8f84a1f}
+.episode-detail-workspace .episode-side-panel-controls :is(img,svg){width:17px;height:17px;object-fit:contain;opacity:.9}
+/* 2026-09-17 改动逻辑：Agent 内联 SVG 只继承按钮当前文字色，不使用独立彩色填充；默认、悬停和激活状态都与相邻“剧本”图标统一。 */
+.episode-detail-workspace .episode-side-panel-controls svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.episode-detail-workspace .episode-side-panel-controls button.is-active img{filter:brightness(0) saturate(100%) invert(91%) sepia(78%) saturate(744%) hue-rotate(29deg) brightness(104%);opacity:1}
+.episode-detail-workspace .episode-agent-sidebar[hidden]{display:none!important}
+.episode-detail-workspace #episodeVideoStoryboardPanel{--episode-preview-width:clamp(230px,18vw,320px);position:relative;grid-template-columns:minmax(0,1fr) var(--episode-preview-width)}
+.episode-detail-workspace .detail-prompt-panel{grid-column:1;grid-row:1}
+.episode-detail-workspace .detail-player-panel{grid-column:2;grid-row:1}
+.episode-detail-workspace .episode-timeline-panel{grid-column:1 / -1;grid-row:2}
+/* 2026-09-17 Product Design 改动逻辑：分隔线覆盖提示词右边框与列间距，扩大实际命中区但保持视觉为一条细线；拖动、悬停和键盘聚焦时用青柠色反馈。 */
+.episode-detail-workspace .detail-panel-resizer{grid-column:2;grid-row:1;align-self:stretch;justify-self:start;z-index:35;width:12px;margin-left:-11px;border:0;background:transparent;cursor:col-resize;touch-action:none;outline:none}
+.episode-detail-workspace .detail-panel-resizer::before{content:"";display:block;width:1px;height:100%;margin-left:5px;background:#2b3642;transition:width .15s ease,margin-left .15s ease,background .15s ease,box-shadow .15s ease}
+.episode-detail-workspace .detail-panel-resizer:hover::before,.episode-detail-workspace .detail-panel-resizer:focus-visible::before,.episode-detail-workspace .detail-panel-resizer.is-dragging::before{width:3px;margin-left:4px;background:#b8f84a;box-shadow:0 0 10px #b8f84a66}
+body.is-episode-panel-resizing{cursor:col-resize!important;user-select:none!important}
+/* 2026-10-11 Product Design 改动逻辑：视频继续按 9:16 居中并撑满容器高度，横向留白及视频底色改为与外圈一致的深灰；block 消除媒体行内基线留缝，空态与失败背景仍沿用各自规则。 */
+.episode-detail-workspace .detail-preview:not(.is-ungenerated):not(.is-generation-failed){background:var(--episode-panel-solid,#0f151c)!important}
+.episode-detail-workspace .detail-preview:not(.is-ungenerated):not(.is-generation-failed) video{display:block;left:50%;right:auto;width:auto;height:100%;max-width:100%;aspect-ratio:9 / 16;object-fit:cover;object-position:center;transform:translateX(-50%);background:var(--episode-panel-solid,#0f151c)}
+.episode-detail-workspace .detail-story-panel.episode-agent-sidebar{position:absolute;z-index:40;top:0;bottom:0;left:0;width:clamp(300px,24vw,380px);max-width:calc(100% - 24px);box-sizing:border-box;border-radius:20px;background:#0b131bf5;box-shadow:18px 0 42px #0009,0 0 0 1px #ffffff0a;backdrop-filter:blur(18px)}
+.episode-detail-workspace .episode-agent-tabs{display:none}
+/* 2026-09-24 Product Design 改动逻辑：剧本与审核意见共用的关闭按钮只显示叉号，去掉圆形边框、底色和阴影；保留原点击区域与位置。 */
+.episode-detail-workspace .episode-agent-close{position:absolute;top:12px;right:20px;z-index:6;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:0;background:transparent;color:#9aa6b2;font:inherit;font-size:22px;line-height:1;cursor:pointer;box-shadow:none;transition:color .16s ease}
+/* 2026-09-26 Product Design 改动逻辑：剧本内按钮参与正文滚动，外层固定按钮仅在 Agent 或审核意见面板显示。 */
+.episode-detail-workspace .episode-agent-script .episode-script-scroll-close{position:static;float:right;margin:-8px 6px 0 8px}
+.episode-detail-workspace .episode-agent-sidebar:has(#episode-script-pane:not([hidden])) > .episode-agent-close{display:none}
+/* 2026-09-25 Product Design 改动逻辑：仅审核意见侧栏展开时将关闭按钮向右移动 16px，使叉号更靠近面板右边缘；剧本和 Agent 侧栏沿用原位置。 */
+.episode-detail-workspace .episode-agent-sidebar:has(.detail-review-panel:not([hidden])) .episode-agent-close{right:4px}
+.episode-detail-workspace .episode-agent-close:hover,.episode-detail-workspace .episode-agent-close:focus-visible{color:#b8f84a}
+.episode-detail-workspace .episode-agent-close:focus-visible{outline:2px solid #b8f84a;outline-offset:2px}
+
+/* 2026-09-17 改动逻辑：桌面端打开剧本或 Agent 后恢复左中右三栏，左栏进入网格并占据两行；提示词、视频和时间线整体向右让位，不再被浮层遮挡。关闭左栏时仍回到两栏宽布局。 */
+@media(min-width:1000px){
+  .episode-detail-workspace .script-status{grid-template-columns:minmax(500px,1fr) 260px minmax(220px,1fr)}
+  /* 2026-09-17 改动逻辑：移除侧栏收起时批量按钮的额外右移，展开和收起均沿用 episode-video-mode.css 的编辑区域水平居中定位；窄屏继续沿用独立一行居中，不改变其他元素布局。 */
+  /* 2026-09-26 Product Design 改动逻辑：左栏默认仍用原响应式宽度；拖动时只覆盖左侧网格列，中央编辑区自动分配剩余空间。 */
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])){grid-template-columns:var(--episode-sidebar-width,clamp(240px,14.6vw,280px)) minmax(0,1fr) var(--episode-preview-width)}
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .episode-agent-sidebar{position:static;grid-column:1;grid-row:1 / 3;width:auto;max-width:none;border-radius:20px;box-shadow:none;backdrop-filter:blur(10px)}
+  /* 2026-09-26 Product Design 改动逻辑：剧本右边界复用视频分隔线的命中宽度和悬停反馈，跨两行覆盖整块左栏；关闭左栏时不显示。 */
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .detail-sidebar-resizer{display:block;grid-column:2;grid-row:1 / 3;align-self:stretch;justify-self:start;z-index:45;width:12px;margin-left:-11px;border:0;background:transparent;cursor:col-resize;touch-action:none;outline:none}
+  .episode-detail-workspace .detail-sidebar-resizer::before{content:"";display:block;width:1px;height:100%;margin-left:5px;background:#2b3642;transition:width .15s ease,margin-left .15s ease,background .15s ease,box-shadow .15s ease}
+  .episode-detail-workspace .detail-sidebar-resizer:hover::before,.episode-detail-workspace .detail-sidebar-resizer:focus-visible::before,.episode-detail-workspace .detail-sidebar-resizer.is-dragging::before{width:3px;margin-left:4px;background:#b8f84a;box-shadow:0 0 10px #b8f84a66}
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .detail-prompt-panel{grid-column:2;grid-row:1}
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .detail-player-panel{grid-column:3;grid-row:1}
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .detail-panel-resizer{grid-column:3}
+  .episode-detail-workspace #episodeVideoStoryboardPanel:has(.episode-agent-sidebar:not([hidden])) .episode-timeline-panel{grid-column:2 / 4;grid-row:2}
+}
+
+/* 2026-09-26 Product Design 改动逻辑：窄屏左栏仍为原覆盖式浮层，不出现桌面三栏专用拖拽手柄。 */
+.episode-detail-workspace .detail-sidebar-resizer{display:none}
+
+/* 2026-09-17 改动逻辑：窄屏仍让主编辑与视频占满行；浮层改为视口内安全宽度，顶栏标题可收缩但保留两个图文入口。 */
+@media(max-width:999.98px){
+  .episode-detail-workspace .episode-detail-header-left{grid-column:1 / -1;grid-row:1;gap:8px;padding-right:64px}
+  /* 2026-09-17 改动逻辑：窄屏仍保留独立返回键，并让标题触发横条弹性占满剩余宽度。 */
+  .episode-detail-workspace .episode-detail-header-left .script-back{flex:0 0 38px;width:38px;min-width:38px;min-height:38px;padding:0}
+  :is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher{flex:1 1 auto;min-width:0}
+  :is(.episode-detail-workspace,.episode-review-workspace) .episode-switcher-toggle{height:38px;padding:0 12px;font-size:13px}
+  .episode-detail-workspace .episode-side-panel-controls button{height:38px;padding:0 12px}
+  .episode-detail-workspace #episodeVideoStoryboardPanel{grid-template-columns:minmax(0,1fr);grid-template-rows:max(440px,65dvh) 138px 360px}
+  /* 2026-09-17 改动逻辑：窄屏恢复纵向排列，不显示只适用于左右双栏的拖拽分隔线。 */
+  .episode-detail-workspace .detail-panel-resizer{display:none}
+  .episode-detail-workspace .detail-prompt-panel{grid-column:1;grid-row:1}
+  .episode-detail-workspace .episode-timeline-panel{grid-column:1;grid-row:2}
+  .episode-detail-workspace .detail-player-panel{grid-column:1;grid-row:3}
+  .episode-detail-workspace .detail-story-panel.episode-agent-sidebar{top:0;bottom:auto;height:min(620px,calc(100dvh - 122px));width:min(380px,calc(100% - 20px))}
+}
+
+@media(max-width:599.98px){
+  .episode-detail-workspace .episode-detail-header-left{padding-right:0}
+  .episode-detail-workspace .episode-side-panel-controls{gap:6px}
+  .episode-detail-workspace .episode-side-panel-controls button{padding:0 10px;font-size:12px}
+  .episode-detail-workspace .episode-side-panel-controls :is(img,svg){width:15px;height:15px}
+}
+
+/* 2026-09-17 改动逻辑：审片与分集视频共享上方切集横条及弹层全部样式；审片返回按钮仅显示箭头，保持 40px 高度并让弹层覆盖正文。 */
+.episode-review-workspace .episode-detail-header-left .script-back{height:40px;min-height:40px;background:#111820;border:1px solid #2b3642;color:#c7d0d9}
+.episode-review-workspace .episode-detail-header-left .script-back svg{width:20px;height:20px;flex:0 0 20px}
+.episode-review-workspace .script-status{position:relative;z-index:10}
+
+/* 2026-09-24 Product Design：审核意见复用剧本左栏，随侧栏进入网格；意见列表独立滚动，关闭按钮固定在右上角。 */
+.detail-review-toggle{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid #303c47;border-radius:20px;background:#111920;color:#dce3e9;font:inherit;font-size:13px;font-weight:650;cursor:pointer}
+.detail-review-toggle:hover:not(:disabled),.detail-review-toggle[aria-expanded="true"]{border-color:#b8f84a88;color:#b8f84a;background:#1b261b}
+.detail-review-toggle:focus-visible{outline:2px solid #b8f84a;outline-offset:3px}
+/* 2026-09-26 Product Design 修复逻辑：审核意见图标直接显示为本地 SVG 图片；沿用顶栏图标尺寸，展开时复用现有按钮图片的绿色状态。 */
+.episode-detail-workspace .episode-side-panel-controls img.detail-review-icon{display:block;flex:none;width:17px;height:17px;object-fit:contain;opacity:.9}
+.detail-review-toggle:disabled{color:#727e89;cursor:default}
+/* 2026-09-26 Product Design 改动逻辑：意见数胶囊样式只作用于数字徽标，避免新增的左侧图标继承内边距与底色。 */
+.detail-review-toggle #detailReviewBadge{min-width:19px;padding:1px 5px;border-radius:10px;background:#b8f84a;color:#17220b;font-size:11px;text-align:center}
+.detail-review-panel{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;background:#0b131b}
+.detail-review-panel[hidden],.detail-review-toggle span[hidden]{display:none}
+.detail-review-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 60px 14px 14px;flex:none;border-bottom:1px solid #26313d}
+.detail-review-head h2{margin:0;color:#eef2f5;font-size:16px;font-weight:700}
+/* 2026-10-01 Product Design 改动逻辑：版本号以内联形式紧随审核标题，间距由标题内的单个空格提供；移除标题下方裁剪说明及对应样式，标题区随单行内容自然缩短。 */
+.detail-review-version{display:inline;margin:0;color:#94a1ad;font-size:12px;font-weight:600;line-height:1.3}
+.detail-review-version[hidden]{display:none}
+/* 2026-09-24 Product Design 改动逻辑：标题下的摘要已移除，无需保留其段落样式。 */
+.detail-review-readonly{flex-shrink:0;padding:3px 8px;border:1px solid #34414d;border-radius:6px;color:#9aa7b3;font-size:11px}
+.detail-review-list{display:grid;align-content:start;gap:10px;flex:1;min-height:0;padding:14px;overflow:auto;overscroll-behavior:contain}
+/* 2026-09-27 Product Design 改动逻辑：意见点选后用轻微提亮的细边框标识当前项，不改变卡片尺寸；分镜号与镜内时间移到审核人下方同一行。 */
+.detail-review-item{padding:14px;border:1px solid #2b3641;border-radius:10px;background:#151e27;cursor:pointer;transition:border-color .16s ease,box-shadow .16s ease}
+.detail-review-item.is-selected{border-color:#596f73;box-shadow:inset 0 0 0 1px #5ee6d610}
+.detail-review-item:focus-visible{outline:1px solid #708b91;outline-offset:2px}
+.detail-review-item-head{display:flex;justify-content:space-between;gap:12px;color:#d7dfe7;font-size:12px;font-weight:600}
+/* 2026-09-27 Product Design 改动逻辑：镜内时间紧跟分镜号右侧并对齐文字基线；元信息与上下两行均保持 8px 间距。 */
+.detail-review-item-meta{display:flex;justify-content:flex-start;align-items:baseline;gap:16px;margin-top:8px;font-size:12px;font-weight:600}
+.detail-review-shot{color:#8995a1;font-size:11px;font-weight:500}
+.detail-review-item time{color:#d4b667;font-variant-numeric:tabular-nums}
+.detail-review-item p{margin:8px 0 0;color:#bac5cf;font-size:13px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+/* 2026-09-26 Product Design 改动逻辑：九条意见只在中间列表滚动；“修改完成”操作固定于底部，并用分隔线与审核记录区分。 */
+/* 2026-09-27 Product Design 改动逻辑：仅缩短审核意见侧栏底部“修改完成”按钮和上下留白，使底部操作区整体更紧凑，审片页的同款按钮尺寸保持原样。 */
+.detail-review-complete-footer{flex:none;padding:16px 14px;border-top:1px solid #26313d;background:#0d1319}
+.detail-review-complete-footer .review-decision-button{display:flex;width:100%;height:48px}
+/* 2026-09-30 Product Design 改动逻辑：短剧已提交按钮悬停显示“撤回审核提交”，沿用共用撤回样式，点击恢复未提交。 */
+.detail-review-complete-footer .review-decision-button:focus-visible{outline:2px solid #5ee6d6;outline-offset:3px}
+.detail-review-footer{padding:11px 18px;border-top:1px solid #26313d;color:#84919e;font-size:11px}
+@keyframes detail-review-expand{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.detail-review-panel{animation:none}}
+
+/* 2026-09-25 Product Design 改动逻辑：短剧各页只有箭头的独立返回按钮统一使用与右侧分集标题横条等高的 40px 圆形；资产画布的带文字返回胶囊不在此范围内。 */
+:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"],.episode-detail-workspace,.episode-review-workspace) .script-back{box-sizing:border-box;position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;min-width:40px;height:40px;min-height:40px;gap:0;padding:0;border:0;border-radius:50%;background:#171e29;color:#aeb8c6;box-shadow:none;overflow:visible}
+:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"],.episode-detail-workspace,.episode-review-workspace) .script-back:hover{background:#202938;color:#fff}
+:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"],.episode-detail-workspace,.episode-review-workspace) .script-back:focus-visible{outline:2px solid #b8f84a;outline-offset:3px}
+:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"],.episode-detail-workspace,.episode-review-workspace) .script-back svg{width:20px;height:20px;flex:0 0 20px}
+/* 2026-09-25 改动逻辑：审片列表的项目名放在圆形返回按钮右侧，与其余短剧列表页保持同一布局。 */
+.episode-workspace[data-view="episode-review-list"] .script-back-title{position:absolute;left:56px;width:150px;max-width:150px;margin:0;padding:0;color:#d8dde5;text-align:left;font-size:16px;font-weight:760}
+/* 2026-09-25 改动逻辑：返回按钮缩至 40px 后，列表页剧名左移 8px，继续保持按钮与文字之间 16px 的间距。 */
+:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"]) .script-back-title{left:56px}
+/* 2026-10-11 Product Design 修复逻辑：独立标题和返回按钮使用同一个非交互定位容器，
+ * 输入框不再嵌在按钮内，避免保存/失焦触发返回；标题与编辑态仍位于箭头右侧。
+ * 容器只占原网格首列，不改变步骤导航；输入框沿用 150px 宽度和 36px 高度。
+ */
+.script-status > .script-back-group{position:relative;display:flex;align-items:center;justify-self:start;width:100%;min-width:0;height:40px}
+.script-status > .script-back-group > .script-back-title{top:50%;transform:translateY(-50%)}
+.script-status > .script-back-group > .script-title-input{position:absolute;left:56px;top:50%;transform:translateY(-50%);box-sizing:border-box;width:150px;max-width:150px;min-width:0;height:36px;margin:0;font-family:inherit;font-size:16px;font-weight:760;text-align:left}
+@media(max-width:999.98px){.script-status > .script-back-group{height:38px}.script-status > .script-back-group > .script-title-input{left:54px}}
+/* 2026-09-25 改动逻辑：窄屏分集标题横条为 38px，所有独立返回按钮同步缩为 38px 圆形。 */
+@media(max-width:999.98px){:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"],.episode-detail-workspace,.episode-review-workspace) .script-back{flex-basis:38px;width:38px;min-width:38px;height:38px;min-height:38px}:is(.script-workspace[data-view="script-studio"],.asset-workspace[data-view="asset-library"]:not(.is-canvas-view),.episode-workspace[data-view="episode-video"],.episode-workspace[data-view="episode-review-list"]) .script-back-title{left:54px}}
+/* 2026-09-25 Product Design 改动逻辑：分镜工具栏的片段时长（如 9s）使用常规字重，数值改变时同样保持不加粗。 */
+.episode-detail-workspace .detail-duration-btn{font-weight:400}
+
+/* 2026-10-26 Product Design 改动逻辑：等待层标题与状态正文建立层级，保留居中布局、转圈动画和原显示条件。 */
+.episode-agent-loading #episodeAgentLoadingTitle{margin:0 0 24px;font-size:20px;font-weight:760;line-height:1.45;letter-spacing:0;text-align:center}
+.episode-agent-loading #episodeAgentLoadingMessage{margin:16px 0 0;font-size:14px;font-weight:400;color:#a9b5c1;letter-spacing:0}

@@ -1,0 +1,109 @@
+/* 2026-10-11 Product Design 改动逻辑：直接复用「设计稿代码 1009」最终加载的首页短剧设定弹层、
+   已选标签与移动端样式；保留 index.html 中与设计稿完全一致的基础四列布局及自定义表单结构。
+   设计稿的公共变量仅作用于此弹层与标签容器，避免更改首页其他组件和短剧后续步骤。 */
+.home-setting-popover,
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags {
+  --va-border: #2b3642;
+  --va-border-focus: #3a4654;
+  --va-text: #f5f7fa;
+  --va-secondary: #d5dbe3;
+  --va-tertiary: #9aa6b2;
+  --va-font: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+/* Script creation settings share the same dropdown foundations. */
+.home-setting-popover {
+  padding: 16px;
+  box-sizing: border-box;
+  border: 1px solid #2b3642;
+  border-radius: 14px;
+  background: #171e27;
+  color: #d5dbe3;
+  font-family: var(--va-font);
+  box-shadow: 0 24px 64px rgba(0,0,0,.55);
+}
+.home-setting-popover[hidden] { display: none !important; }
+.home-setting-popover .home-setting-body { grid-template-columns: 140px minmax(0,1fr); min-height: 0; }
+.home-setting-popover .home-setting-categories { gap: 6px; padding-right: 14px; border-right: 1px solid #2b3642; }
+.home-setting-popover :is(.home-setting-category,.home-setting-option) {
+  position: relative;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9aa6b2;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  box-shadow: none;
+  transition: background .18s ease, color .18s ease;
+}
+.home-setting-popover :is(.home-setting-category,.home-setting-option)::before { content: none; }
+.home-setting-popover :is(.home-setting-category,.home-setting-option):not([aria-pressed="true"]):hover { background: var(--va-border); color: #d5dbe3; }
+.home-setting-popover :is(.home-setting-category,.home-setting-option)[aria-pressed="true"] {
+  background: #2b3642;
+  color: #f5f7fa;
+  font-weight: 500;
+}
+.home-setting-popover .home-setting-options { gap: 8px; padding-left: 16px; }
+.home-setting-popover .home-setting-option { background: #202936; color: #d5dbe3; padding-inline: 10px 24px; }
+.home-setting-popover .home-setting-option:not([aria-pressed="true"]):hover { background: var(--va-border); color: #f5f7fa; }
+.home-setting-popover .home-setting-option[aria-pressed="true"]::after {
+  content: '✓'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #b8f84a; font-size: 12px;
+}
+.home-setting-popover button:focus-visible { outline: 2px solid #3a4654; outline-offset: 2px; }
+.home-setting-popover .home-setting-custom input {
+  background: #080d12; border: 1px solid #2b3642; border-radius: 8px; color: #d5dbe3; font-size: 14px; line-height: 20px;
+}
+.home-setting-popover .home-setting-custom input::placeholder { color: #9aa6b2; }
+.home-setting-popover .home-setting-custom input:focus { outline: none; border-color: #3a4654; }
+.home-setting-popover .home-setting-custom button { background: #b8f84a; color: #0d1308; border-radius: 8px; font-size: 14px; line-height: 20px; font-weight: 500; }
+.home-setting-popover .home-setting-custom button:hover { background: #cfff5a; }
+.home-setting-popover .home-setting-custom button:active { background: #9fdb3e; }
+.home-setting-popover .home-setting-empty { color: #6f7b88; font-size: 14px; line-height: 20px; }
+@media (max-width: 600px) {
+  .home-setting-popover { padding: 12px; border-radius: 14px; }
+  .home-setting-popover .home-setting-body { grid-template-columns: 108px minmax(0,1fr); }
+  .home-setting-popover .home-setting-categories { padding-right: 8px; }
+  .home-setting-popover .home-setting-options { grid-template-columns: repeat(2,minmax(0,1fr)); padding-left: 10px; }
+}
+
+/* Selected script conditions and their overflow scrollbar use design-system colors. */
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags {
+  scrollbar-width: thin;
+  scrollbar-color: var(--va-border) transparent;
+}
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar { height: 4px; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-track { background: transparent; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb { background: var(--va-border); border-radius: 999px; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb:hover { background: var(--va-border-focus); }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tag {
+  background: var(--va-border);
+  color: var(--va-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  border: 0;
+  box-shadow: none;
+}
+.view[data-view="canvas"] #home-drama-panel .home-setting-tag::before { color: var(--va-tertiary); }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tag button {
+  color: var(--va-tertiary);
+  border-radius: 50%;
+  transition: color .18s ease, background .18s ease;
+}
+.view[data-view="canvas"] #home-drama-panel .home-setting-tag button:hover { color: var(--va-text); background: var(--va-border-focus); }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tag button:focus-visible { outline: 2px solid var(--va-border-focus); outline-offset: 2px; }
+
+/* Transparent thumb keeps the scroll area stable while hidden. */
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags { scrollbar-color: transparent transparent; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb { background: transparent; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover { scrollbar-color: var(--va-border) transparent; }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover::-webkit-scrollbar-thumb { background: var(--va-border); }
+.view[data-view="canvas"] #home-drama-panel .home-setting-tags:hover::-webkit-scrollbar-thumb:hover { background: var(--va-border-focus); }
+@media (hover: none) {
+  .view[data-view="canvas"] #home-drama-panel .home-setting-tags { scrollbar-color: var(--va-border) transparent; }
+  .view[data-view="canvas"] #home-drama-panel .home-setting-tags::-webkit-scrollbar-thumb { background: var(--va-border); }
+}
+

@@ -1,0 +1,19 @@
+/* 2026-11-14 Product Design 改动逻辑：顶部同时复制首页光晕和 hero 的实际底色。
+ * 原先只复制半透明光晕、仍叠在 #050c10 上，与 hero 的 #080d12 产生横向切割感。
+ * 第二层实色背景与光晕共用尺寸、坐标，只覆盖 hero 对应范围；宽屏两侧仍保留
+ * 页面原本的 #050c10 留白。根页面离开顶部后移除两层背景，整条顶栏统一深色；
+ * 回到顶部恢复衔接。其他业务页面继续沿用各自的顶栏规则。 */
+body[data-primary-view="canvas"]:not(.marketing-entry-active):not(.team-console-open):not(.canvas-workbench-active):not(.drama-workflow-active) .app::before {
+  background-color: #050c10;
+  background-image:
+    var(--home-navbar-glow-image, none),
+    linear-gradient(var(--home-navbar-surface, #080d12), var(--home-navbar-surface, #080d12));
+  background-size: var(--home-navbar-glow-size, auto);
+  background-position: var(--home-navbar-glow-position, 0 0);
+  background-repeat: no-repeat;
+  backdrop-filter: none;
+}
+
+body[data-primary-view="canvas"].home-navbar-scrolled:not(.marketing-entry-active):not(.team-console-open):not(.canvas-workbench-active):not(.drama-workflow-active) .app::before {
+  background-image: none;
+}

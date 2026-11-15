@@ -1,0 +1,112 @@
+/* 2026-10-01 Product Design / Figma 1339:12485：只调整短剧大纲与剧本阶段的对话展示。
+ * 用户气泡按设计使用绿色底和右下直角；Agent 正文去掉外层卡片，显示现有 Agent 名称。
+ * 输入框和工具栏采用 Figma 原始图标、尺寸与圆角；仅保留回形针和上传按钮，文件名在上传按钮内显示。
+ * 保留原消息内容、上传/移除事件、发送快捷键、响应式工具折叠以及 disabled / is-locked 状态。
+ * 仅限定 script-studio 的 script-chat，不影响右侧编辑内容及资产/视频页面。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-conversation { gap:24px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-message.ai { display:flex;flex-direction:column;gap:8px;width:100%;max-width:100%; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-user-bubble { padding:16px;border:0;border-radius:24px 24px 0 24px;background:rgba(184,236,100,.29);color:#fff;font-size:14px;font-weight:400;line-height:20px;box-shadow:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-ai-head { display:flex;align-items:center;gap:0;min-height:16px;margin:0;color:#b8ec64;font-size:12px;font-weight:600;line-height:16px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-ai-logo { display:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-ai-text { width:100%;padding:0;border:0;border-radius:0;background:transparent;color:#fff;font-size:14px;font-weight:500;line-height:20px;box-shadow:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input { display:flex;flex-direction:column;gap:16px;min-height:160px;padding:16px;border:1px solid #2b3642;border-radius:12px;background:#171e27;box-shadow:0 4px 50px rgba(0,0,0,.25); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input:focus-within { border-color:#435366; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input [data-script-chat-input] { flex:1 1 auto;min-height:70px;padding:0;border:0;border-radius:0;background:transparent;color:#fff;font-size:14px;font-weight:400;line-height:20px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input [data-script-chat-input]::placeholder { color:#6f7b88; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .drama-attachment-strip:not(:empty) { padding:0; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-row { gap:12px;min-height:40px;padding:0;border-top:0;align-items:center; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools { gap:12px;align-items:center; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .drama-option { height:30px;min-height:30px;gap:6px;padding:6px 12px;border:0;border-radius:24px;background:#080d12;color:#9aa6b2;font-size:12px;font-weight:500;line-height:18px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .drama-option > svg { width:14px;height:14px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .drama-attachment-button { width:40px;height:40px;min-height:40px;padding:9px;border:1px solid #2b3642;border-radius:24px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .drama-attachment-button > svg { width:20px;height:20px;color:#b8ec64; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .script-tool-icon-only:not(.drama-attachment-button) { width:32px;min-width:32px;padding-inline:0;gap:0; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .script-tool-icon-only:has(.script-file-remove.visible) { width:auto;padding-inline:6px;gap:4px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-input-tools .drama-option:hover { background:#111923;color:#fff;border-color:#435366; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send { width:32px;height:32px;min-height:32px;flex:0 0 32px;padding:6px;border:0;border-radius:24px;box-shadow:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send:not(:disabled):not(.is-locked) { background:#b8ec64;color:#080d12; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send:not(:disabled):not(.is-locked):hover { background:#c8f586; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send:disabled, body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send.is-locked { background:#3d4f2a;color:#080d12;opacity:1;cursor:not-allowed; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send svg { width:20px;height:20px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .drama-option:focus-visible, body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send:focus-visible { outline:2px solid #b8ec64;outline-offset:2px; }
+
+/* 2026-10-01 Product Design 改动逻辑：箭头标出的消息标识、回形针、上传、参数和发送
+ * 均使用 Figma 下载资产；保留 SVG 根尺寸，外层只负责对应 20/14/13/53.4315px 插槽。
+ * 消息标识为 53.4315×9px，附件按钮 40px、胶囊 30px、发送按钮 32px。
+ * 空输入/生成中/锁定态沿用现有 disabled/is-locked，实色 #3D4F2A 不再叠加透明度。
+ * 窄栏沿用原工具折叠逻辑，同时收起文字和下拉箭头，保留第一个图标及文件移除入口。
+ */
+body.drama-workflow-active .script-chat .script-ai-head .script-ai-wordmark { display:block;width:53.4315px;height:9.00021px;flex:none; }
+body.drama-workflow-active .script-chat .script-input-tools .drama-option > img { display:block;flex:none; }
+body.drama-workflow-active .script-chat .script-input-tools .drama-option > img:first-child:not([width="20"]) { opacity:.7; }
+body.drama-workflow-active .script-chat .script-input-tools .script-composer-caret { display:block;flex:none; }
+body.drama-workflow-active .script-chat .script-input-tools .script-tool-icon-only > .script-composer-caret { display:none; }
+body.drama-workflow-active .script-chat .script-input-tools .script-composer-control { position:relative;flex:0 0 auto; }
+body.drama-workflow-active .script-chat .script-input .script-send > img { display:block;flex:none; }
+body.drama-workflow-active .script-chat .script-input .script-send { display:flex;align-items:center;justify-content:center; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"][data-script-stage] .script-chat .script-input .script-send:not(:disabled):not(.is-locked) { background:#b8f84a; }
+
+/* 2026-10-01 Product Design 最新标注 / Figma 1339:2626：上传图片使用 60×60 方形缩略图，
+ * 间距 12px，独立横向托盘位于文字上方；取消旧的绝对定位和文本左偏移。
+ * 上传剧本直接打开系统文件窗口，有文件后同一个胶囊切换为文档图标、文件名和删除叉号。
+ * 窄栏优先截断文件名并保留完整 title，禁止旧工具折叠把文件名整体隐藏。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input.has-drama-attachments { min-height:230px;gap:12px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input.has-drama-attachments textarea { padding:0!important;min-height:70px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .drama-attachment-strip { position:static;left:auto;top:auto;width:100%;max-width:100%;flex:none;gap:12px;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;pointer-events:auto; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .drama-attachment-strip:empty { display:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .canvas-attachment-card { box-sizing:border-box;flex:0 0 60px;width:60px;height:60px;border:1px solid #2b3642;border-radius:8px;background:#080d12;box-shadow:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .canvas-attachment-card img { width:100%;height:100%;border-radius:7px;object-fit:cover; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .canvas-attachment-remove { top:3px;right:3px;width:16px;height:16px;min-height:0;padding:2px;border:0;border-radius:50%;background:#080d12cc;color:#fff; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input .canvas-attachment-remove svg { width:12px;height:12px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload] { flex:0 1 auto;min-width:0;width:auto;max-width:calc(100% - 52px);padding-inline:12px;gap:6px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload] .script-file-name { display:block!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload].has-file { color:#fff; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload].has-file > img:first-child { opacity:1; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload].has-file .script-composer-caret { display:none; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload] .script-file-remove { flex:none;width:13px;height:13px;margin-left:0;padding:0; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-input-tools [data-script-chat-upload].has-file .script-file-remove { display:inline-flex;align-items:center;justify-content:center; }
+
+/* 2026-10-01 Product Design / Figma 1087:2877、3275、3075、3392：右侧空态/生成态
+ * 采用 200×200 插画插槽，原始文档图标 125px、环形生成图标 80px；插画与文案间距 24px。
+ * 标题 24/30px、说明 14/20px，两行间隔 8px；整个状态组在内容面板中央，右下流程按钮禁用。
+ * 生成中的旋转仅作用于下载的 SVG，关闭旧边框转圈伪元素；结束后由现有阶段类恢复内容。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail:is(.is-empty,.is-generating) { position:relative;min-height:0;background:rgba(15,21,28,.6); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail .script-loading,
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail .script-detail-empty { display:none;position:absolute;inset:0;min-height:0;padding:24px;box-sizing:border-box;align-items:center;justify-content:center;white-space:normal; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-empty:not(.is-generating) .script-detail-empty,
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail.is-generating .script-loading:not([hidden]) { display:flex!important; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-detail .script-loading::before { display:none!important;content:none; }
+.script-state-content { display:flex;flex-direction:column;align-items:center;gap:24px;width:320px;max-width:100%;text-align:center; }
+.script-state-illustration { display:flex;align-items:center;justify-content:center;flex:none;width:200px;height:200px;border-radius:15px;overflow:hidden; }
+.script-state-illustration img { display:block;flex:none; }
+.script-state-copy { display:flex;flex-direction:column;align-items:center;gap:8px; }
+.script-state-copy strong { margin:0;color:#f5f7fa;font-size:24px;font-weight:700;line-height:30px; }
+.script-state-copy span { color:#9aa6b2;font-size:14px;font-weight:400;line-height:20px; }
+.script-state-next { position:absolute;right:24px;bottom:24px;padding:10px 60px;border:0;border-radius:36px;background:#3d4f2a;color:#0d1308;font:inherit;font-size:16px;font-weight:700;line-height:24px;cursor:not-allowed; }
+.script-loading .script-state-illustration img { animation:script-figma-loading-spin 1.4s linear infinite; }
+@keyframes script-figma-loading-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .script-loading .script-state-illustration img { animation:none; } }
+@media (max-width:760px) { .script-state-next { right:16px;bottom:16px;padding:10px 24px; } }
+
+/* 2026-10-01：空态/生成态只显示面板内禁用流程按钮，隐藏原可点击流程入口，防止生成期间重复推进；完成后自动恢复原业务按钮。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-layout:has(> .script-detail:is(.is-empty,.is-generating)) > .next-step { display:none!important; }
+
+/* 2026-10-01 Product Design / Figma 1339:2654、2667：发送后的图片独立于绿色文字气泡，
+ * 每张 96×96、圆角 12px，间距 12px；图片组和文字上下相隔 12px，靠右排列、多图自动换行。
+ * 输入区的 60px 待发送缩略图保持原尺寸；历史只使用已发送的真实图片，不放预置设计图。
+ */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-chat .script-message.user.has-sent-images { flex-direction:column;align-items:flex-end;gap:12px; }
+.script-chat .script-message-images { display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start;gap:12px;width:100%;min-width:0; }
+.script-chat .script-message-images img { display:block;box-sizing:border-box;flex:0 0 96px;width:96px;height:96px;border:1px solid #2b3642;border-radius:12px;background:#080d12;object-fit:cover; }
+
+/* 2026-10-01 Product Design：已发送剧本保持 96×96 正方形及 12px 圆角，
+ * 底色使用页面现有深灰 #181f27，搭配柔和边框和浅色文档图标，使卡片融入深色对话区。
+ * 图标下显示实际文件名，字号降至 12px、常规字重；左右留白 10px，超宽单行末尾省略。
+ * 完整文件名仍保留在 title 与无障碍标签中；附件区位置及发送逻辑沿用原实现。
+ */
+.script-chat .script-message-images .script-message-script-file { display:flex;box-sizing:border-box;flex:0 0 96px;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:96px;height:96px;padding:10px;border:1px solid #2b3642;border-radius:12px;background:#181f27;color:#d5dbe3;overflow:hidden; }
+.script-chat .script-message-images .script-message-script-file img { display:block;flex:0 0 28px;width:28px;height:28px;border:0;border-radius:0;background:transparent;object-fit:contain;filter:brightness(0) invert(1);opacity:.8; }
+.script-chat .script-message-images .script-message-script-file span { display:block;box-sizing:border-box;flex:none;width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;color:#c5cdd7;font-size:12px;font-weight:400;line-height:18px; }

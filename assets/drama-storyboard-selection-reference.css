@@ -1,0 +1,194 @@
+/* 2026-10-30 Product Design 改动逻辑：仅将短剧视频分镜表「景别」列的标题和正文左对齐，沿用原有列宽、内边距、颜色及编辑状态，其他列保持原样。 */
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-shot-size-cell {
+  text-align:left;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：从「UI 稿最新/assets/storyboard-workspace-design-system.css」
+   采用分镜表编辑焦点和视图切换的原始样式数值；选中单元格改为灰底、底部灰线，
+   分镜表 / 提示词 tab 同步设计稿的胶囊圆角、尺寸、间距、文字及选中配色。
+   作用范围限定为短剧片段详情，沿用现有编辑和 aria-pressed 切换逻辑。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch {
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  padding:4px;
+  gap:2px;
+  border:1px solid #2b3642;
+  background:#171e27;
+  border-radius:999px;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button {
+  box-sizing:border-box;
+  min-height:38px;
+  padding:9px 18px;
+  border:0;
+  font-size:14px;
+  line-height:20px;
+  font-weight:400;
+  color:#9aa6b2;
+  border-radius:999px;
+  background:transparent;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button[aria-pressed="true"] {
+  background:#2b3642;
+  color:#f5f7fa;
+  font-weight:500;
+  box-shadow:none;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button:hover {
+  color:#f5f7fa;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-view-switch button:focus-visible {
+  outline:2px solid #566474;
+  outline-offset:3px;
+}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard td[contenteditable="true"]:hover {
+  background:#202a35;
+}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard td[contenteditable="true"]:focus {
+  background:#222d38;
+  color:#f5f7fa;
+  box-shadow:inset 0 -2px 0 #8291a3;
+  outline:0;
+  caret-color:#d5dbe3;
+}
+/* 时长输入框获得焦点时也沿用设计稿的中性灰描边，避免表格内出现绿色选中框。 */
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-field:focus-within {
+  border-color:#9aa6b2;
+  background:#2b3642;
+  box-shadow:0 0 0 2px #9aa6b214;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：人物站位图、分镜预览图采用设计稿
+   merged-design-system.css 的字体栈和 20px 行高，以及 episode-storyboard.css
+   的 12px 字号、storyboard-workspace-design-system.css 的 500 字重；
+   按钮标题与积分数字统一继承，去掉原先 760 的粗体，仅作用于这两个按钮。 */
+body.drama-workflow-active .episode-detail-workspace :is(#detailPositioningPreview,#detailStoryboardPreview) {
+  font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  font-size:12px;
+  font-weight:500;
+  line-height:20px;
+  font-style:normal;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
+}
+body.drama-workflow-active .episode-detail-workspace :is(#detailPositioningPreview,#detailStoryboardPreview) :is(.detail-video-action-label,.detail-video-action-cost) {
+  font-family:inherit;
+  font-size:inherit;
+  font-weight:inherit;
+  line-height:inherit;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：用户标出的三处模块背景直接采用
+   「UI 稿最新/assets/storyboard-workspace-design-system.css」的原始色值：
+   顶部片段/参考素材区及底部片段面板为 #18212a，分镜表表头为 #202a35。
+   标题、素材列表和片段滚动容器透明透出所属面板底色，避免共享透明背景叠加后产生色差；
+   仅覆盖原短剧片段编辑页背景，不改变布局、缩略图内容及生成中动效。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(.detail-prompt-panel,.episode-timeline-panel) {
+  background:#18212a !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(.detail-prompt-head,.detail-reference-list,.shot-strip) {
+  background:transparent !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailStoryboard th {
+  background:#202a35 !important;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：顶部参考图、音频、人物站位及分镜预览卡片
+   底部文字遮罩分别继承外框的左右下圆角；替换原无效的「0 0 inherit inherit」混合简写效果，
+   避免黑色文字底板伸出圆角形成直角。保留卡片 overflow:visible，悬浮名称和删除按钮仍可完整展示。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .detail-reference-card::after {
+  border-bottom-left-radius:inherit;
+  border-bottom-right-radius:inherit;
+}
+
+/* 2026-10-27 Product Design 改动逻辑：三张标注图对应的镜号删除、时长微调和视图切换
+   采用「设计稿/assets/storyboard-workspace-design-system.css」原始控件样式；
+   删除图标跟随 currentColor，时长使用独立按钮，防止原生微调箭头挤在秒数与 s 之间。
+   顶部切换提高选择器优先级以覆盖旧版小圆角规则，仍沿用原 aria-pressed 和切换事件。 */
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-field{background:#202a35;border-color:#35414e;border-radius:8px;box-shadow:none}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-input{font-size:13px;font-weight:500;color:#f5f7fa}
+body.drama-workflow-active .episode-detail-workspace .storyboard-row-delete{width:28px;height:28px;padding:0;border:0;border-radius:7px;background:transparent;color:var(--va-tertiary,#9aa6b2);box-shadow:none;transition:color .15s,background-color .15s}
+body.drama-workflow-active .episode-detail-workspace .storyboard-row-delete .episode-outline-trash-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;overflow:visible;opacity:1;color:inherit}
+body.drama-workflow-active .episode-detail-workspace .storyboard-row-delete .episode-outline-trash-icon svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5}
+body.drama-workflow-active .episode-detail-workspace .storyboard-row-delete:is(:hover,:focus-visible){color:#FF5C7A;background:rgba(255,92,122,.14)}
+body.drama-workflow-active .episode-detail-workspace .storyboard-row-delete:focus-visible{outline:2px solid #9aa6b2;outline-offset:2px;opacity:1;pointer-events:auto}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-field{grid-template-columns:minmax(0,1fr) 9px 18px}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-input{appearance:textfield;-moz-appearance:textfield}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-input::-webkit-inner-spin-button,
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard .storyboard-duration-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-steppers{display:grid;grid-template-rows:1fr 1fr;height:32px;border-left:1px solid #35414e}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step{display:grid;place-items:center;width:17px;min-width:0;height:16px;min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:#9aa6b2;cursor:pointer;box-shadow:none;transition:background .15s,color .15s}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step:hover:not(:disabled){background:#354252;color:#fff}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step:active:not(:disabled){background:#465465;color:#fff}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step:focus-visible{outline:0;box-shadow:inset 0 0 0 1px #9aa6b2;color:#fff}
+body.drama-workflow-active .episode-detail-workspace .storyboard-duration-step:disabled{color:#566474;opacity:.45;cursor:default}
+
+/* 2026-10-27：删除悬浮提示按截图使用深色胶囊、细边框与 14px 文字；键盘聚焦也显示删除控件。 */
+body.drama-workflow-active .storyboard-row-tooltip {
+  padding:7px 16px;
+  border:1px solid #2b3642;
+  border-radius:999px;
+  background:#171e27;
+  color:#f5f7fa;
+  font-size:14px;
+  line-height:20px;
+}
+body.drama-workflow-active .episode-detail-workspace #detailStoryboard td.storyboard-index-cell:focus-within .storyboard-row-number { visibility:hidden; }
+
+/* 2026-10-27 Product Design 改动逻辑：按图一将底部分镜卡片的 hover 恢复为设计稿
+   storyboard-workspace-design-system.css 与 episode-panels-refinement.css 的边框、标题底色
+   及删除按钮危险态；限定单集编辑页以覆盖旧主题，移除旧 hover 上浮和发光效果。
+   原选片、删除和已生成状态交互继续使用现有代码。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:hover:not(.active) .shot-thumb{border-color:#718093}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:hover:not(.active) .shot-thumb{outline:none!important;border-color:#718093!important;box-shadow:none!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:hover:not(.active) .shot-title{background:#202a35!important;color:#f5f7fa!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card .shot-thumb{box-sizing:border-box;border:1px solid #35414e;border-radius:9px;outline:none!important;box-shadow:none!important;transition:border-color .15s}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.active .shot-thumb{border:1px solid #aab5c2!important;outline:none!important;box-shadow:none!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-title{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-height:24px;margin-top:6px;padding:3px 8px;border-radius:6px;font-size:12px;line-height:18px;font-weight:400;color:#9aa6b2;transition:background .15s,color .15s}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card.active .shot-title{background:#26313d!important;color:#f5f7fa!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-delete-btn{width:26px;height:26px;top:7px;right:7px;border:1px solid #35414e;border-radius:7px;background:#171e27e6!important;color:#9aa6b2!important;box-shadow:none!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-delete-btn:is(:hover,:focus-visible){background:#402330!important;border-color:#ff5c7a!important;color:#ff5c7a!important}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-delete-btn svg{width:16px;height:16px;stroke-width:1.5}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-delete-btn:focus-visible{outline:2px solid #9aa6b2;outline-offset:2px}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:is(:hover,:focus-within) .shot-thumb { transform:none; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:focus-visible:not(.active) .shot-thumb { border-color:#718093 !important; outline:none !important; box-shadow:none !important; }
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) .shot-card:focus-visible:not(.active) .shot-title { background:#202a35 !important; color:#f5f7fa !important; }
+
+/* 2026-10-27 Product Design 改动逻辑：按图二套用设计稿中性播放按钮 hover 色值，
+   本次将下载、播放方式、片段重拍、历史记录四个按钮统一使用此灰色 hover/focus
+   与菜单展开样式，并统一胶囊文字提示；禁用按钮不应用高亮。下载图片 hover
+   取消旧绿色滤镜，改为白色，与播放方式 SVG 图标保持一致。
+   并将播放模式文字提示采用 shared-tooltips.css 的 32px 深色胶囊规格。
+   继续由原伪元素控制提示显隐，去除旧三角箭头；菜单展开时仍由原规则隐藏提示。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible,[aria-expanded="true"]) {
+  background:#2b3642 !important;
+  border-color:#718093 !important;
+  color:#f5f7fa !important;
+  box-shadow:none !important;
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn)[data-tooltip]::after {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  width:max-content;
+  height:32px;
+  padding:0 16px;
+  background:#171E27;
+  border:1px solid #2B3642;
+  border-radius:16px;
+  color:#FFFFFF;
+  font-family:"Noto Sans SC",sans-serif;
+  font-size:14px;
+  font-weight:500;
+  line-height:20px;
+  white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.16);
+}
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) :is(#detailDownloadButton,#detailPlayModeButton,#detailRemakeButton,#detailHistoryBtn)[data-tooltip]::before { content:none; display:none; }
+
+/* 2026-10-27 改动逻辑：下载图标由两张 SVG 图片组成，单独覆盖旧 hover 绿色滤镜。 */
+body.drama-workflow-active .episode-detail-workspace[data-view="episode-detail"]:not(.is-episode-composer-open) #detailDownloadButton:not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) .detail-player-download-icon img {
+  filter:brightness(0) invert(1) !important;
+}

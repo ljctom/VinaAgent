@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<!-- 2026-10-11 Product Design 改动逻辑：进入创作空间的加载提示采用 Figma 信息态 Toast，营销页面和应用共用顶部 25vh 提示位置。 -->
+<link rel="stylesheet" href="../assets/toast.css?v=20261011-figma-toast">
+<script src="../assets/toast.js?v=20261011-figma-toast" defer></script>
 <meta charSet="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <!-- 2026-08-25 文件模式修复逻辑：构建资源统一改为相对默认项目根目录的路径，使 HTTP、Vercel 与 Finder 双击 file:// 打开都能加载同一套样式和脚本。 -->
@@ -523,6 +526,86 @@
     .model-card span{font-size:12px}
   }
 </style>
+<!-- 2026-08-31 Product Design 改动逻辑：H5 品牌营销首屏标题下方替换为旧版的电脑端引导与官网复制框；桌面端继续保留原介绍和开始创作按钮，其他首屏结构不变。 -->
+<style>
+  .hero-desktop-guide{display:none}
+  .nav-auth-avatar{display:none}
+  @media (max-width:700px){
+    /* 2026-08-31 改动逻辑：H5 顶部语言入口仅保留地球图标，隐藏当前语言文字和向下箭头；点击图标仍打开原五语言菜单，电脑端不受影响。 */
+    .marketing-language-trigger{
+      width:42px;
+      min-width:42px;
+      padding:0;
+      gap:0;
+    }
+    .marketing-language-trigger .marketing-language-label,
+    .marketing-language-trigger .marketing-language-chevron{display:none!important}
+    /* 2026-08-31 改动逻辑：H5 登录完成后隐藏登录按钮并显示不可点击头像，仅表示已登录状态。 */
+    body.marketing-authenticated .nav-actions>.primary.small{display:none!important}
+    body.marketing-authenticated .nav-auth-avatar{
+      width:42px;
+      height:42px;
+      display:block;
+      flex:0 0 42px;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:50%;
+      object-fit:cover;
+      pointer-events:none;
+      user-select:none;
+    }
+    .hero .subhead,
+    .hero .hero-actions{display:none!important}
+    .hero-desktop-guide{
+      width:min(100%,420px);
+      display:block;
+      margin:22px auto 0;
+      text-align:center;
+    }
+    .hero-desktop-guide>p{
+      margin:0 0 22px;
+      color:rgba(255,255,255,.58);
+      font-size:14px;
+      line-height:1.7;
+    }
+    .hero-desktop-link{
+      width:100%;
+      min-height:56px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 6px 6px 17px;
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:16px;
+      background:rgba(13,20,27,.92);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 18px 42px rgba(0,0,0,.28);
+    }
+    .hero-desktop-url{
+      min-width:0;
+      flex:1;
+      overflow:hidden;
+      color:rgba(255,255,255,.8);
+      font-size:14px;
+      font-weight:650;
+      text-align:left;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      user-select:all;
+    }
+    .hero-desktop-copy{
+      min-width:72px;
+      height:44px;
+      padding:0 16px;
+      border:0;
+      border-radius:12px;
+      background:#b8f84a;
+      color:#0a1207;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .hero-desktop-copy:active{transform:scale(.98)}
+  }
+</style>
 </head>
 <body>
 <main>
@@ -556,6 +639,8 @@
 <!-- 2026-08-26 改动逻辑：顶部绿色主按钮文案由“开始创作”改为“登录”，原点击行为与箭头保持不变。 -->
 <button class="primary small"><span class="nav-primary-label">登录</span><b>↗</b>
 </button>
+<!-- 2026-08-31 改动逻辑：H5 登录后以不可点击的默认头像替换登录按钮，桌面端保持原入口。 -->
+<img class="nav-auth-avatar" src="../assets/images/user-profile-default-avatar.png" alt="已登录" aria-disabled="true"/>
 </div>
 </header>
 <section class="hero">
@@ -567,6 +652,14 @@
 <h1>从灵感到视频，<em>一站式 AI 创作平台</em>
 </h1>
 <p class="subhead">用一句话、图片或剧本开始，Agent 会理解需求、规划内容，并生成可继续编辑的视频、广告与短剧作品。</p>
+<!-- 2026-08-31 Product Design 改动逻辑：红框区域复用旧版“复制官网链接”内容，复制按钮保留真实可用的剪贴板交互和成功状态。 -->
+<div class="hero-desktop-guide" aria-label="前往电脑端创作">
+<p>复制下方官网链接，前往电脑端开启创作</p>
+<div class="hero-desktop-link">
+<span class="hero-desktop-url">www.laihua.com</span>
+<button class="hero-desktop-copy" type="button" aria-label="复制网页端网址">复制</button>
+</div>
+</div>
 <div class="hero-actions">
 <button class="primary">开始创作<b>→</b>
 </button>
@@ -773,6 +866,11 @@
 <button role="tab" aria-selected="false" class="">
 <span>0<!-- -->5</span>
 <b>数字人</b>
+</button>
+<!-- 2026-08-31 改动逻辑：在创作场景末尾新增 3D 创作入口，点击后复用图二对应的本地 3D 角色视频，并保持与前五项一致的编号和选中态结构。 -->
+<button role="tab" aria-selected="false" class="" data-scene-model-3d>
+<span>0<!-- -->6</span>
+<b>3D 创作</b>
 </button>
 </div>
 </div>
@@ -1117,7 +1215,7 @@
       render();
     }));
 
-    // 2026-08-26 改动逻辑：本地文件模式下按“广告 / 创意社媒 / 短剧 / MG 动画 / 数字人”顺序切换，并直接使用用户从精选案例指定的五条真实视频。
+    // 2026-08-31 改动逻辑：本地文件模式在原五类场景末尾补充 3D 创作，并让第六项直接播放图二对应的 model-3d-creation 本地视频。
     const sceneTheater = document.querySelector(".scene-theater");
     const sceneTabs = Array.from(sceneTheater?.querySelectorAll(".scene-theater-tabs > button") || []);
     const sceneVideo = sceneTheater?.querySelector(":scope > video");
@@ -1126,20 +1224,22 @@
     const sceneTitle = sceneTheater?.querySelector(".scene-theater-copy h3");
     const sceneDescription = sceneTheater?.querySelector(".scene-theater-copy > p:not(.kicker)");
     const sceneTags = Array.from(sceneTheater?.querySelectorAll(".scene-theater-copy li") || []);
-    const sceneNames = ["广告", "创意社媒", "短剧", "MG 动画", "数字人"];
+    const sceneNames = ["广告", "创意社媒", "短剧", "MG 动画", "数字人", "3D 创作"];
     const sceneCaseNames = [
       "剧情TVC广告示例",
       "冰箱午夜共和国",
       "用户上传短剧",
       "从咖啡果到一杯咖啡",
-      "入职教练"
+      "入职教练",
+      "3D 角色创作演示"
     ];
     const sceneVideoSources = [
       "https://res-public.laihua.com/system/20260821/video/01a0228c-2139-73c8-8e48-6d93e07885c3.mp4",
       "https://res-public.vinabot.ai/system/20260814/video/019ffff8-a9f0-70f8-9537-23c043e1b192.mp4",
       "../assets/videos/drama-ai-video-8.mp4",
       "https://res-public.vinabot.ai/system/20260814/video/01a0000b-a7cc-77da-9a20-a78f7e3e44cf.mp4",
-      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4"
+      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4",
+      "../assets/videos/model-3d-creation.mp4?v=20260831-scene-module"
     ];
     const sceneCopy = [
       // 2026-08-26 改动逻辑：广告场景标题开头增加“智能”，突出系统自动提炼商品卖点的能力。
@@ -1148,7 +1248,9 @@
       ["创作爆款社媒短视频", "围绕热点、品牌与日常选题，快速生成适合社媒传播的竖屏创意视频。", ["趋势灵感", "平台原生", "高频更新"]],
       ["从故事设定到连续短剧", "稳定角色与画风，并行推进剧本、分镜、配音和成片，让系列内容持续更新。", ["角色一致性", "智能分镜", "系列化生产"]],
       ["让复杂信息变成直观动画", "用图形、文字与节奏化转场，把品牌概念和产品信息讲得更清楚。", ["图形动画", "节奏转场", "品牌视觉"]],
-      ["快速生成可信赖的数字人口播", "创建自然出镜的数字人内容，并完成多语配音、字幕与不同场景适配。", ["自然口型", "多语配音", "字幕生成"]]
+      ["快速生成可信赖的数字人口播", "创建自然出镜的数字人内容，并完成多语配音、字幕与不同场景适配。", ["自然口型", "多语配音", "字幕生成"]],
+      // 2026-08-31 改动逻辑：3D 创作文案沿用前五项的“能力标题 + 一句流程说明 + 三项能力标签”表达密度，突出从参考到成型的完整链路。
+      ["一键生成精致的 3D 模型", "输入文字或上传参考图，自动完成造型、材质与细节生成，让 3D 创意快速成型。", ["智能建模", "材质生成", "细节精修"]]
     ];
 
     const renderScene = (index) => {
@@ -1331,6 +1433,8 @@
         nav:["精选案例","核心能力","创作场景","灵感广场"], login:"登录", start:"开始创作",
         // 2026-08-26 改动逻辑：中文语言映射同步使用“从灵感到视频”，避免语言切换或运行时重建后恢复旧标题。
         hero:["从灵感到视频，","一站式 AI 创作平台"], heroDesc:"用一句话、图片或剧本开始，Agent 会理解需求、规划内容，并生成可继续编辑的视频、广告与短剧作品。", hint:"无需复杂提示词，创作从表达开始。", mobile:"移动端支持登录与浏览，完整创作请使用电脑端。",
+        // 2026-08-31 Product Design 改动逻辑：H5 官网复制引导的提示、按钮和反馈统一进入五语言包，避免切换语言后残留中文。
+        desktopGuide:{prompt:"复制下方官网链接，前往电脑端开启创作",copy:"复制",copied:"已复制",fallback:"请长按复制",aria:"复制网页端网址"},
         prompts:["未来感跑车驶入夜色公路，电影级追焦与金属质感。","微观花园苏醒，晶莹植物与发光生物在自然光中展开。","亲和的数字人老师在现代教室清晰讲解知识。","年轻女巫骑扫帚掠过云海，展开电影感奇幻冒险。","用几何图形与节奏转场演绎高级品牌视觉。","科幻机械从线稿到 3D 成型，呈现精密细节。"],
         cases:["汽车品牌 · 商业 TVC","微观世界 · 创意短片","数字人 · 教育讲解","扫帚飞行 · 奇幻短剧","MG 动画 · 品牌视觉","3D 模型 · 创作演示"], previous:"上一个案例", next:"下一个案例",
         capTitle:"不只生成视频，而是推进完整创作", capDesc:"从意图理解到持续编辑，五项核心能力协同工作。",
@@ -1353,26 +1457,29 @@
       en: {
         label:"English", htmlLang:"en", title:"AI Video Creation, All in One", description:"Turn ideas into editable videos with one AI workspace.",
         nav:["Examples","Capabilities","Use Cases","Inspiration"], login:"Sign In", start:"Create Now",
-        hero:["From idea to video,","all in one AI workspace"], heroDesc:"Start with a prompt, image, or script. The Agent plans and creates editable videos, ads, and stories.", hint:"No complex prompts. Just share your idea.", mobile:"Sign in and browse on mobile. Create fully on desktop.",
+        // English display headings and step-card titles use Title Case for consistent capitalization.
+        hero:["From Idea to Video,","All in One AI Workspace"], heroDesc:"Start with a prompt, image, or script. The Agent plans and creates editable videos, ads, and stories.", hint:"No complex prompts. Just share your idea.", mobile:"Sign in and browse on mobile. Create fully on desktop.",
+        desktopGuide:{prompt:"Copy the website link below and continue creating on desktop.",copy:"Copy",copied:"Copied",fallback:"Press and hold to copy",aria:"Copy the desktop website address"},
         prompts:["A futuristic sports car races through the night in a cinematic tracking shot.","A crystal garden wakes as glowing life appears in soft daylight.","A friendly AI teacher explains a lesson in a modern classroom.","A young witch flies above the clouds in a cinematic fantasy adventure.","Geometric motion and rhythmic cuts shape a refined brand visual.","A sci-fi machine evolves from sketch to detailed 3D form."],
         cases:["Automotive · TVC","Micro World · Film","AI Avatar · Education","Broom Flight · Fantasy","Motion Graphics · Brand","3D Model · Demo"], previous:"Previous example", next:"Next example",
-        capTitle:"Beyond generation. Build the full story.", capDesc:"Five core capabilities work together, from intent to final edit.",
+        capTitle:"Beyond Generation. Build the Full Story.", capDesc:"Five core capabilities work together, from intent to final edit.",
         caps:[["Creative Agent","Understands goals, plans tasks, and moves creation forward.",["Creative brief","Task plan","Editable output"]],["Scenario Skills","Expert workflows for ads, stories, products, and more.",["Skill Marketplace","Pro workflow","Reuse fast"]],["Infinite Canvas","Keep ideas, assets, and results in one visual space.",["Asset nodes","Free layout","Keep expanding"]],["Character Consistency","Keep characters and style coherent across every shot.",["Character setup","Shot lock","Stable output"]],["Story Studio","Move from script and storyboard to episodic video.",["Script","Storyboard","Episodes"]]],
-        sceneTitle:"One workspace for every video idea", sceneDesc:"Choose a goal. The Agent matches the right Skill and workflow.", sceneNames:["Stories","Ads","Social","Motion","Avatars"],
+        sceneTitle:"One Workspace for Every Video Idea", sceneDesc:"Choose a goal. The Agent matches the right Skill and workflow.", sceneNames:["Stories","Ads","Social","Motion","Avatars"],
         scenes:[["From story idea to full episodes","Keep characters and style consistent across scripts, shots, voice, and video.",["Consistent cast","Smart boards","Episode flow"]],["Turn product insights into better ads","Upload an image or link to create selling points, scripts, visuals, and cuts.",["Smart benefits","All formats","Batch SKUs"]],["Create social-first short videos","Turn trends and brand ideas into vertical creative videos made to travel.",["Trend ideas","Platform-native","High-frequency"]],["Make complex ideas easy to see","Use motion, type, and rhythm to explain products and brands clearly.",["Graphic motion","Rhythmic cuts","Brand visuals"]],["Create natural avatar videos fast","Make presenter videos with multilingual voice, captions, and scene options.",["Natural lip sync","Multi-language","Auto captions"]]],
-        processTitle:"Complex creation in three simple steps", processDesc:"From first spark to final cut, the Agent moves every step forward.", process:[["Share an idea","Start with a prompt, image, product, or script."],["Agent builds","It plans scripts, shots, assets, and generation."],["Refine freely","Edit, regenerate, and export in the canvas."]],
-        inspireTitle:"Find inspiration in great work", inspireDesc:"Explore standout ads, stories, and social work. Reuse proven prompts and flows in one click.", rail:"Featured videos", play:"Play example: ",
-        modelTitle:"Intelligently select the right model for every task", modelDesc:"More than model access, the Agent tunes and matches the best model to each creative task.",
+        processTitle:"Complex Creation in Three Simple Steps", processDesc:"From first spark to final cut, the Agent moves every step forward.", process:[["Share an Idea","Start with a prompt, image, product, or script."],["Agent Builds","It plans scripts, shots, assets, and generation."],["Refine Freely","Edit, regenerate, and export in the canvas."]],
+        inspireTitle:"Find Inspiration in Great Work", inspireDesc:"Explore standout ads, stories, and social work. Reuse proven prompts and flows in one click.", rail:"Featured videos", play:"Play example: ",
+        modelTitle:"Intelligently Select the Right Model for Every Task", modelDesc:"More than model access, the Agent tunes and matches the best model to each creative task.",
         featured:["Smart Hair Dryer","Three Worlds, One Bite","Hair Oil Ad","Smart Glasses","Perfume Project","Health Ring","VYRA Sunscreen","AI Translator Earbuds"],
-        storyTitle:"More time for the ideas that matter", storyDesc:"Let the Agent handle repetition, so you can focus on the creative work.", stories:[["“We used to manage four stages. Now a first cut can happen in one afternoon.”","Alex · Brand Creative Lead"],["“Stable characters finally let us produce episodes, not retry every shot.”","Mia · Story Creator"],["“I do not write complex prompts. The Agent asks, then gives me an editable result.”","Ethan · Content Founder"],["“We save strong projects as Skills, so new teammates can reuse our brand method.”","Emma · Brand Content Lead"]],
-        finalTitle:"Your next great video starts with one line", finalDesc:"Let the Agent turn your idea into a video ready to share.", placeholder:"Describe your video, e.g. a 15-second summer drink ad…",
-        faqTitle:"Frequently asked questions", faqs:[["How is the Agent different?","The Agent connects planning, generation, editing, and reuse with Skills, Canvas, and Story Studio."],["Do I need prompt or editing skills?","No. Describe your goal. The Agent gathers details and creates editable results."],["What can I create?","Ads, episodic stories, social content, brand videos, avatar videos, image-to-video, and more."],["Can I create on mobile?","Mobile supports sign-in and browsing. Use desktop for full creation."],["Can I use the content commercially?","Rights depend on models, source assets, and your plan. Review the license before publishing."]],
+        storyTitle:"More Time for the Ideas That Matter", storyDesc:"Let the Agent handle repetition, so you can focus on the creative work.", stories:[["“We used to manage four stages. Now a first cut can happen in one afternoon.”","Alex · Brand Creative Lead"],["“Stable characters finally let us produce episodes, not retry every shot.”","Mia · Story Creator"],["“I do not write complex prompts. The Agent asks, then gives me an editable result.”","Ethan · Content Founder"],["“We save strong projects as Skills, so new teammates can reuse our brand method.”","Emma · Brand Content Lead"]],
+        finalTitle:"Your Next Great Video Starts with One Line", finalDesc:"Let the Agent turn your idea into a video ready to share.", placeholder:"Describe your video, e.g. a 15-second summer drink ad…",
+        faqTitle:"Frequently Asked Questions", faqs:[["How is the Agent different?","The Agent connects planning, generation, editing, and reuse with Skills, Canvas, and Story Studio."],["Do I need prompt or editing skills?","No. Describe your goal. The Agent gathers details and creates editable results."],["What can I create?","Ads, episodic stories, social content, brand videos, avatar videos, image-to-video, and more."],["Can I create on mobile?","Mobile supports sign-in and browsing. Use desktop for full creation."],["Can I use the content commercially?","Rights depend on models, source assets, and your plan. Review the license before publishing."]],
         footer:["Product","Resources","Company","Terms","Privacy"], google:"Continue with Google", opening:"Opening your workspace…"
       },
       ja: {
         label:"日本語", htmlLang:"ja", title:"オールインワン AI 動画制作", description:"アイデアから編集可能な動画まで、ひとつの AI ワークスペースで。",
         nav:["制作事例","主な機能","制作シーン","アイデア"], login:"ログイン", start:"制作を始める",
         hero:["アイデアから動画へ。","AI 制作をひとつに"], heroDesc:"言葉・画像・台本から開始。Agent が企画し、編集できる動画、広告、物語を制作します。", hint:"難しいプロンプトは不要。アイデアを伝えるだけ。", mobile:"スマホはログインと閲覧に対応。制作は PC で。",
+        desktopGuide:{prompt:"下の公式サイトのリンクをコピーし、PC で制作を続けてください。",copy:"コピー",copied:"コピー済み",fallback:"長押しでコピー",aria:"デスクトップ版サイトの URL をコピー"},
         prompts:["未来的なスポーツカーが夜の道路を映画のように駆け抜ける。","光る生物と結晶の植物が、やわらかな光の中で目覚める。","親しみやすい AI 講師が現代的な教室で解説する。","若い魔女が雲海を飛ぶ、映画のような冒険。","幾何学とリズムある転換で上質なブランド映像を描く。","SF マシンが線画から精密な 3D へ進化する。"],
         cases:["自動車 · CM","ミクロ世界 · 映像","AI アバター · 教育","ほうき飛行 · 物語","モーション · ブランド","3D モデル · デモ"], previous:"前の事例", next:"次の事例",
         capTitle:"生成だけでなく、制作全体を前へ", capDesc:"意図の理解から編集まで、5 つの機能が連携します。",
@@ -1392,6 +1499,7 @@
         label:"Bahasa Melayu", htmlLang:"ms", title:"Studio Video AI Sehenti", description:"Ubah idea menjadi video boleh sunting dalam satu ruang AI.",
         nav:["Contoh","Keupayaan","Kegunaan","Inspirasi"], login:"Log Masuk", start:"Mula Cipta",
         hero:["Daripada idea ke video,","semua dalam satu studio AI"], heroDesc:"Mulakan dengan arahan, imej atau skrip. Agent merancang dan menghasilkan video, iklan serta cerita yang boleh disunting.", hint:"Tak perlu arahan rumit. Kongsikan idea anda.", mobile:"Log masuk dan lihat di telefon. Cipta penuh di desktop.",
+        desktopGuide:{prompt:"Salin pautan laman rasmi di bawah dan teruskan berkarya pada desktop.",copy:"Salin",copied:"Disalin",fallback:"Tekan lama untuk salin",aria:"Salin alamat laman desktop"},
         prompts:["Kereta sport futuristik memecut pada waktu malam dalam rakaman sinematik.","Taman kristal terjaga dengan hidupan bercahaya dalam cahaya lembut.","Guru AI mesra menerangkan pelajaran dalam kelas moden.","Ahli sihir muda terbang di atas awan dalam pengembaraan sinematik.","Gerak geometri dan transisi berirama membentuk visual jenama premium.","Mesin sci-fi berubah daripada lakaran kepada bentuk 3D terperinci."],
         cases:["Automotif · TVC","Dunia Mikro · Filem","Avatar AI · Edu","Terbang · Fantasi","Grafik Gerak · Jenama","Model 3D · Demo"], previous:"Contoh sebelumnya", next:"Contoh seterusnya",
         capTitle:"Bukan sekadar jana. Siapkan seluruh karya.", capDesc:"Lima keupayaan bekerjasama daripada niat hingga suntingan.",
@@ -1411,6 +1519,7 @@
         label:"Français", htmlLang:"fr", title:"Création vidéo IA tout-en-un", description:"Transformez vos idées en vidéos modifiables dans un seul studio IA.",
         nav:["Exemples","Fonctions","Usages","Inspiration"], login:"Connexion", start:"Créer",
         hero:["De l’idée à la vidéo,","dans un seul studio IA"], heroDesc:"Partez d’un texte, d’une image ou d’un script. L’Agent planifie et crée vidéos, publicités et récits modifiables.", hint:"Aucun prompt complexe. Décrivez simplement votre idée.", mobile:"Connexion et aperçu sur mobile. Création complète sur ordinateur.",
+        desktopGuide:{prompt:"Copiez le lien du site ci-dessous et poursuivez la création sur ordinateur.",copy:"Copier",copied:"Copié",fallback:"Appuyez longuement pour copier",aria:"Copier l’adresse du site pour ordinateur"},
         prompts:["Une voiture futuriste file de nuit dans un travelling cinématographique.","Un jardin de cristal s’éveille avec une vie lumineuse sous une douce lumière.","Un avatar enseignant explique clairement un cours dans une salle moderne.","Une jeune sorcière survole les nuages dans une aventure cinématographique.","Mouvements géométriques et transitions rythmées créent une image de marque soignée.","Une machine de science-fiction passe du croquis à une forme 3D détaillée."],
         cases:["Auto · Spot TV","Micro-monde · Film","Avatar IA · Éducation","Vol magique · Fiction","Motion · Marque","Modèle 3D · Démo"], previous:"Exemple précédent", next:"Exemple suivant",
         capTitle:"Bien plus que générer : créez de bout en bout", capDesc:"Cinq fonctions travaillent ensemble, de l’intention au montage.",
@@ -1427,19 +1536,34 @@
         footer:["Produit","Ressources","Société","Conditions","Confidentialité"], google:"Continuer avec Google", opening:"Ouverture de votre espace…"
       }
     };
+    // 2026-08-31 改动逻辑：为新增 3D 创作补齐五种界面语言，并在运行时扩展原语言包，避免切换语言或 React 重建后第六项丢失文案。
+    const model3dSceneCopy = {
+      // 2026-08-31 改动逻辑：将“快速 / 作品”统一改为“一键 / 模型”，其余语言同步表达一键生成单个精致 3D 模型的含义。
+      zh:["3D 创作", "一键生成精致的 3D 模型", "输入文字或上传参考图，自动完成造型、材质与细节生成，让 3D 创意快速成型。", ["智能建模", "材质生成", "细节精修"]],
+      en:["3D Creation", "Generate a polished 3D model in one click", "Start with text or a reference image, then generate form, materials, and refined details in one flow.", ["Smart modeling", "Material generation", "Detail refinement"]],
+      ja:["3D 制作", "精細な 3D モデルをワンクリックで生成", "テキストや参考画像から、造形、素材、細部まで一つの流れで生成します。", ["スマート造形", "素材生成", "細部調整"]],
+      ms:["Ciptaan 3D", "Jana model 3D terperinci dengan satu klik", "Mulakan dengan teks atau imej rujukan untuk menjana bentuk, bahan dan butiran dalam satu aliran.", ["Pemodelan pintar", "Janaan bahan", "Kemasan butiran"]],
+      fr:["Création 3D", "Générez un modèle 3D détaillé en un clic", "Partez d’un texte ou d’une image pour générer formes, matières et détails dans un seul flux.", ["Modélisation intelligente", "Génération de matières", "Finition des détails"]]
+    };
+    Object.entries(model3dSceneCopy).forEach(([code, item]) => {
+      if (!copy[code]) return;
+      copy[code].sceneNames[5] = item[0];
+      copy[code].scenes[5] = [item[1], item[2], item[3]];
+    });
     let locale = "zh";
     let applying = false;
-    // 2026-08-26 改动逻辑：界面顺序调整为广告、创意社媒、短剧、MG 动画、数字人；内容索引继续复用原五语言数据，避免重复维护翻译。
-    const sceneOrder = [1, 2, 0, 3, 4];
-    // 2026-08-26 改动逻辑：广告改用用户最新指定的来画公开视频链接，短剧继续使用用户上传视频；其余三类沿用已指定精选案例。
+    // 2026-08-31 改动逻辑：界面顺序在广告、创意社媒、短剧、MG 动画、数字人之后追加 3D 创作；第六项使用新扩展的语言包索引。
+    const sceneOrder = [1, 2, 0, 3, 4, 5];
+    // 2026-08-31 改动逻辑：3D 创作使用图二对应的本地视频，其余五类继续沿用已指定精选案例。
     const curatedSceneVideos = [
       "https://res-public.laihua.com/system/20260821/video/01a0228c-2139-73c8-8e48-6d93e07885c3.mp4",
       "https://res-public.vinabot.ai/system/20260814/video/019ffff8-a9f0-70f8-9537-23c043e1b192.mp4",
       "../assets/videos/drama-ai-video-8.mp4",
       "https://res-public.vinabot.ai/system/20260814/video/01a0000b-a7cc-77da-9a20-a78f7e3e44cf.mp4",
-      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4"
+      "https://res-public.vinabot.ai/system/20260814/video/019fffa7-ec00-734a-8e6f-93ec8552efcb.mp4",
+      "../assets/videos/model-3d-creation.mp4?v=20260831-scene-module"
     ];
-    const curatedSceneTitles = ["剧情TVC广告示例", "冰箱午夜共和国", "用户上传短剧", "从咖啡果到一杯咖啡", "入职教练"];
+    const curatedSceneTitles = ["剧情TVC广告示例", "冰箱午夜共和国", "用户上传短剧", "从咖啡果到一杯咖啡", "入职教练", "3D 角色创作演示"];
 
     const languageSwitcherMarkup = () => `
       <div class="marketing-language-switcher" id="marketingLanguageSwitcher">
@@ -1537,6 +1661,12 @@
       const heroTitle = document.querySelector(".hero h1");
       if (heroTitle) heroTitle.innerHTML = `${t.hero[0]}<em>${t.hero[1]}</em>`;
       setText(".hero .subhead", t.heroDesc);
+      // 2026-08-31 Product Design 改动逻辑：首屏官网引导随当前语言同步提示、按钮文案与无障碍说明。
+      setText(".hero-desktop-guide > p", t.desktopGuide.prompt);
+      // 2026-08-31 修复逻辑：复制成功或失败反馈期间不覆盖按钮文案，避免 DOM 同步监听立即把“已复制”重置为“复制”。
+      const desktopCopyButton = document.querySelector(".hero-desktop-copy");
+      if (!desktopCopyButton?.dataset.copyFeedback) setText(".hero-desktop-copy", t.desktopGuide.copy);
+      document.querySelector(".hero-desktop-copy")?.setAttribute("aria-label", t.desktopGuide.aria);
       setText(".hero .hint", `✓ ${t.hint}`);
       setCommand(document.querySelector(".hero-actions > .primary"), t.start);
       setText(".mobile-note", t.mobile);
@@ -1637,6 +1767,16 @@
     };
 
     const ensureUploadedLanguageSwitcher = () => {
+      // 2026-08-31 Product Design 改动逻辑：底层 React 若重建首屏，自动恢复 H5 电脑端引导，避免替换区域在运行时丢失。
+      const heroCopy = document.querySelector(".hero-copy");
+      if (heroCopy && !heroCopy.querySelector(".hero-desktop-guide")) {
+        heroCopy.querySelector(".hero-actions")?.insertAdjacentHTML("beforebegin", `<div class="hero-desktop-guide" aria-label="前往电脑端创作"><p>复制下方官网链接，前往电脑端开启创作</p><div class="hero-desktop-link"><span class="hero-desktop-url">www.laihua.com</span><button class="hero-desktop-copy" type="button" aria-label="复制网页端网址">复制</button></div></div>`);
+      }
+      const sceneTabList = document.querySelector(".scene-theater-tabs");
+      if (sceneTabList && !sceneTabList.querySelector("[data-scene-model-3d]")) {
+        // 2026-08-31 改动逻辑：底层 React 若重建为原五项场景，就在末尾恢复第六项 3D 创作按钮，保证桌面端与 H5 始终可进入该模块。
+        sceneTabList.insertAdjacentHTML("beforeend", `<button role="tab" aria-selected="false" class="" data-scene-model-3d><span>06</span><b>${copy[locale].sceneNames[5]}</b></button>`);
+      }
       const legacyButton = document.querySelector(".nav-actions > button.lang");
       if (legacyButton) {
         legacyButton.insertAdjacentHTML("beforebegin", languageSwitcherMarkup());
@@ -1663,6 +1803,11 @@
         if (primaryLabel.textContent !== copy[locale].login) primaryLabel.textContent = copy[locale].login;
         // 2026-08-26 改动逻辑：移除其余直接子级文字标签，仅保留登录标签与箭头，彻底消除 H5 的双文案。
         primaryEntry.querySelectorAll(":scope > span:not(.nav-primary-label)").forEach((label) => label.remove());
+      }
+      // 2026-08-31 改动逻辑：React 重建顶部导航时恢复 H5 已登录头像，并继续保持不可点击。
+      const navActions = document.querySelector(".nav-actions");
+      if (navActions && !navActions.querySelector(".nav-auth-avatar")) {
+        navActions.insertAdjacentHTML("beforeend", `<img class="nav-auth-avatar" src="../assets/images/user-profile-default-avatar.png" alt="已登录" aria-disabled="true"/>`);
       }
       // 2026-08-27 改动逻辑：首屏不再恢复 Google 快捷登录入口，运行时重建后仍只展示居中的“开始创作”按钮。
       // 2026-08-26 改动逻辑：React 运行时可能重建能力区；此处恢复标题下主按钮及五张卡片的绿色文字箭头入口，并统一标记为登录入口。
@@ -1745,8 +1890,66 @@
         switcher.querySelector(".marketing-language-trigger")?.focus();
       });
     });
+    // 2026-08-31 改动逻辑：接收父页面的 H5 登录完成通知，只切换营销页头像状态，不触发页面跳转。
+    window.addEventListener("message", (event) => {
+      if (event.source !== window.parent || event.data?.type !== "vina-marketing-authenticated") return;
+      document.body.classList.add("marketing-authenticated");
+      ensureUploadedLanguageSwitcher();
+    });
+    // 2026-08-31 Product Design 改动逻辑：网址按钮优先使用剪贴板 API，非安全上下文使用兼容复制，并在按钮内显示简短成功反馈。
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest(".hero-desktop-copy");
+      if (!button) return;
+      const desktopUrl = "www.laihua.com";
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(desktopUrl);
+        } else {
+          const helper = document.createElement("textarea");
+          helper.value = desktopUrl;
+          helper.setAttribute("readonly", "");
+          helper.style.position = "fixed";
+          helper.style.opacity = "0";
+          document.body.appendChild(helper);
+          helper.select();
+          document.execCommand("copy");
+          helper.remove();
+        }
+        // 2026-08-31 修复逻辑：反馈标记在 1.6 秒内阻止多语言监听覆盖文案，超时后再恢复当前语言的默认按钮文案。
+        button.dataset.copyFeedback = "success";
+        button.textContent = copy[locale].desktopGuide.copied;
+        window.setTimeout(() => {
+          delete button.dataset.copyFeedback;
+          button.textContent = copy[locale].desktopGuide.copy;
+        }, 1600);
+      } catch (error) {
+        button.dataset.copyFeedback = "failure";
+        button.textContent = copy[locale].desktopGuide.fallback;
+        window.setTimeout(() => {
+          delete button.dataset.copyFeedback;
+          button.textContent = copy[locale].desktopGuide.copy;
+        }, 1600);
+      }
+    });
     // 2026-08-26 改动逻辑：轮播或场景按钮会由底层组件写入默认中文；交互完成后重新套用当前语言，保证动态内容不会回退。
     document.addEventListener("click", (event) => {
+      const model3dTab = event.target.closest("[data-scene-model-3d]");
+      if (model3dTab) {
+        // 2026-08-31 改动逻辑：新增按钮由营销页覆盖层接管切换，直接激活第六项并写入 3D 视频；不依赖底层仅认识五项的旧 React 事件。
+        const tabs = Array.from(document.querySelectorAll(".scene-theater-tabs > button"));
+        tabs.forEach((tab) => {
+          const active = tab === model3dTab;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", String(active));
+        });
+        const video = document.querySelector(".scene-theater > video");
+        const source = curatedSceneVideos[5];
+        if (video && video.getAttribute("src") !== source) {
+          video.src = source;
+          video.load();
+          video.play().catch(() => {});
+        }
+      }
       if (!event.target.closest(".scene-theater-tabs > button,.film-prev,.film-next,.cinema-dots button")) return;
       window.setTimeout(applyTranslations, 20);
     });

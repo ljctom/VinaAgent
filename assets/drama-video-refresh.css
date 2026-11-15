@@ -1,0 +1,88 @@
+/* 2026-10-29 Product Design 改动逻辑：历史版本直接回填当前片段，移除独立预览弹窗样式；保留历史列表分组与第五步待生成封面。 */
+.detail-history-group-title { margin:14px 0 8px; color:#9ba7b4; font-size:12px; line-height:18px; }
+#detailHistoryList { max-height:min(440px,60dvh); overflow:auto; }
+/* 当前片段已回到待生成时，列表也清除旧视频封面，进度从新草稿重新计算。 */
+.episode-cover.is-ungenerated { background:#111820; }
+.episode-cover.is-ungenerated .episode-cover-play { display:none; }
+
+/* 2026-10-30 Product Design 改动逻辑：移植“设计 UI 稿最新”的待更新入口及全屏等待层原始样式。
+   灰蓝底、品牌绿状态点、文字更新入口；等待时只显示居中转圈和说明，不再展示生成中 Toast。 */
+.episode-detail-workspace .episode-prompt-refresh-entry {
+  box-sizing:border-box; display:flex; align-items:center;
+  flex:0 0 auto; gap:8px; max-width:100%; min-height:40px;
+  margin-right:auto; padding:4px 12px; border:1px solid #354350; border-radius:10px;
+  background:#222e39; color:#a7b2bd; font-size:13px; line-height:22px; font-weight:400; white-space:nowrap;
+  box-shadow:none;
+}
+.episode-detail-workspace .episode-prompt-refresh-entry[hidden] { display:none !important; }
+.episode-detail-workspace .episode-prompt-refresh-entry::before {
+  content:""; flex:0 0 6px; width:6px; height:6px; border-radius:50%; background:var(--episode-accent,#bbfa42);
+}
+.episode-detail-workspace .episode-prompt-refresh-entry button {
+  display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; min-width:32px; min-height:30px;
+  margin-left:4px; padding:4px 0; border:0; border-radius:4px; background:transparent;
+  color:var(--episode-accent,#bbfa42); font:inherit; font-size:13px; line-height:22px; font-weight:600; cursor:pointer;
+  transition:background .16s ease,color .16s ease;
+}
+.episode-detail-workspace #dramaVideoRefreshButton { background:transparent !important; box-shadow:none !important; }
+.episode-detail-workspace .episode-prompt-refresh-entry button:hover:not(:disabled) { color:#d0ff80; text-decoration:underline; text-underline-offset:3px; }
+.episode-detail-workspace .episode-prompt-refresh-entry button:focus-visible { outline:2px solid var(--episode-accent,#bbfa42); outline-offset:3px; }
+.episode-detail-workspace .episode-prompt-refresh-entry button:disabled { opacity:.5; cursor:wait; }
+#dramaVideoRefreshLoading {
+  box-sizing:border-box; position:fixed; inset:0; width:100%; height:100dvh;
+  max-width:none; max-height:none; margin:0; padding:24px; border:0; border-radius:0;
+  background:transparent; color:#e6ebef; box-shadow:none; cursor:wait;
+}
+#dramaVideoRefreshLoading[open] { display:flex; align-items:center; justify-content:center; }
+#dramaVideoRefreshLoading::backdrop { background:rgba(7,12,18,.68); }
+#dramaVideoRefreshLoading .episode-prompt-refresh-loading-content {
+  display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
+  font-size:14px; line-height:22px; font-weight:400;
+}
+#dramaVideoRefreshLoading .episode-prompt-refresh-loading-spinner {
+  box-sizing:border-box; width:40px; height:40px;
+  border:3px solid rgba(230,235,239,.18); border-top-color:#e6ebef; border-radius:50%;
+  animation:episode-prompt-refresh-spin .75s linear infinite;
+}
+@keyframes episode-prompt-refresh-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) {
+  #dramaVideoRefreshLoading .episode-prompt-refresh-loading-spinner { animation:none; }
+}
+.episode-detail-workspace .detail-prompt-title-row:has(.episode-prompt-refresh-entry:not([hidden])) { justify-content:flex-start; gap:14px; }
+.episode-detail-workspace .detail-prompt-title-row:has(.episode-prompt-refresh-entry:not([hidden])) .detail-view-switch { margin-left:auto; }
+/* 本集确认框以两段正文表达操作和归档结果，不使用列表符号；仅覆盖本弹窗，不影响第二、三步的确认框。 */
+html body.drama-workflow-active:not(#legacy-drama-confirmation-theme) #dramaVideoRefreshNotice > .batch-generate-dialog.episode-prompt-refresh-dialog {
+  box-sizing:border-box; width:min(540px,calc(100vw - 32px)) !important; max-width:540px !important;
+  max-height:calc(100dvh - 48px); overflow:auto; padding:28px !important; border-radius:20px !important;
+  box-shadow:0 24px 72px rgba(0,0,0,.4);
+}
+html body.drama-workflow-active #dramaVideoRefreshNotice .episode-prompt-refresh-copy { display:grid; gap:14px; margin:20px 0 0; padding:0; color:#d9e0e7; font-size:14px; line-height:26px; font-weight:400; }
+html body.drama-workflow-active #dramaVideoRefreshNotice .episode-prompt-refresh-copy p { margin:0; padding:0; font-size:inherit; line-height:inherit; font-weight:400; text-align:left; }
+html body.drama-workflow-active #dramaVideoRefreshNotice .episode-prompt-refresh-history { color:#9daab7; }
+@media(max-width:760px) {
+  .episode-detail-workspace .detail-prompt-title-row:has(.episode-prompt-refresh-entry:not([hidden])) { flex-wrap:wrap; }
+  .episode-detail-workspace .episode-prompt-refresh-entry { flex-basis:auto; min-width:0; gap:8px; }
+}
+
+/* 2026-10-30 Product Design 改动逻辑：将原生“更新”按钮的点击区域扩展至整个灰蓝色入口，
+   文案、状态点和留白均打开同一确认弹窗；继续复用原按钮的键盘及生成中禁用行为，不额外绑定点击事件。 */
+.episode-detail-workspace .episode-prompt-refresh-entry { position:relative; isolation:isolate; cursor:pointer; }
+.episode-detail-workspace #dramaVideoRefreshButton { position:static; }
+.episode-detail-workspace #dramaVideoRefreshButton::after { content:""; position:absolute; inset:0; z-index:1; border-radius:10px; }
+.episode-detail-workspace .episode-prompt-refresh-entry:has(button:focus-visible) { outline:2px solid var(--episode-accent,#bbfa42); outline-offset:3px; }
+.episode-detail-workspace .episode-prompt-refresh-entry button:focus-visible { outline:none; }
+.episode-detail-workspace .episode-prompt-refresh-entry:has(button:disabled) { cursor:wait; }
+
+/* 2026-11-05 Product Design：整集合成沿用现有加载图标，在播放封面和操作按钮的原图标位置旋转，文字及卡片布局保持稳定。
+   不禁用或遮挡点击区域，使两秒内的重复点击继续触发同一合成中提示。 */
+[data-view="episode-video"] [data-episode-action] .episode-list-merge-spinner { display:none; }
+[data-view="episode-video"] [data-episode-action].is-episode-composing svg { display:none !important; }
+[data-view="episode-video"] [data-episode-action].is-episode-composing .episode-list-merge-spinner {
+  display:block; width:16px; height:16px; flex:0 0 16px; object-fit:contain;
+  filter:brightness(0) invert(1); animation:episode-toast-spin .7s linear infinite;
+}
+[data-view="episode-video"] .episode-cover.is-episode-composing .episode-list-merge-spinner { width:32px; height:32px; }
+[data-view="episode-video"] [data-episode-action].is-episode-composing { cursor:progress; }
+@media(prefers-reduced-motion:reduce) {
+  [data-view="episode-video"] [data-episode-action].is-episode-composing .episode-list-merge-spinner { animation:none; }
+}

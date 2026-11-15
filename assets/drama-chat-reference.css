@@ -1,0 +1,146 @@
+/* 2026-11-06 Product Design：本集大纲复用可编辑分场卡的局部边框光效，继续沿用现有颜色、半径与动画。 */
+/* 2026-10-10 Product Design 改动逻辑：短剧第二、第三步消息气泡、回复文字、
+ * 左侧确认选项与右侧分类标签按设计参考显示；保留全部节点、状态与业务事件。
+ * 回复为浅灰常规字重；选项采用中性描边。 */
+/* 2026-11-05 Product Design：大纲和剧本的用户消息沿用 UI 稿的半透明绿底、右下直角和 16px × 24px 内边距。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-user-bubble { background:rgba(184,236,100,.29) !important; color:#f5f7fa !important; border:0 !important; border-radius:24px 24px 0 24px !important; padding:16px 24px !important; font-size:14px !important; line-height:20px !important; font-weight:400 !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-ai-text { background:transparent !important; border:0 !important; padding:0 !important; color:#d5dbe3 !important; font-size:14px !important; line-height:22px !important; font-weight:400 !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-detail-view-tabs,.subject-role-tabs) { background:#171e27 !important; border:0 !important; padding:4px !important; border-radius:10px !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-detail-view-tab,.subject-role-tab) { border:0 !important; border-radius:7px !important; background:transparent !important; color:#9aa6b2 !important; font-size:14px !important; line-height:20px !important; font-weight:400 !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-detail-view-tab,.subject-role-tab):hover { background:#2b3642 !important; color:#d5dbe3 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-detail-view-tab.active,.script-detail-view-tab[aria-selected="true"],.subject-role-tab.active,.subject-role-tab[aria-selected="true"]) { background:#2b3642 !important; color:#f5f7fa !important; font-weight:500 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card { box-sizing:border-box; color:#d5dbe3 !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head strong { color:#f5f7fa !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option { border:1px solid transparent !important; color:#d5dbe3 !important; box-shadow:none !important; transition:background .18s ease,border-color .18s ease; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option.selected { color:#f5f7fa !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option b { font-size:14px !important; line-height:20px !important; font-weight:500 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option small { color:#9aa6b2 !important; font-size:12px !important; line-height:18px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card :is(input,textarea) { background:#171e27 !important; border:1px solid #2b3642 !important; color:#d5dbe3 !important; font-size:14px !important; line-height:20px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-custom button { color:#9aa6b2 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(input,textarea)::placeholder { color:#9aa6b2 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button { background:#b8f84a !important; color:#0d1308 !important; border:0 !important; box-shadow:none !important; font-weight:500 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button:not(:disabled):hover { background:#cfff5a !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button:not(:disabled):active { background:#9fdb3e !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button:disabled { background:#3d4f2a !important; color:#0d1308 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav button { color:#9aa6b2 !important; }
+/* 底部发送输入区采用参考的深色表面及圆角，不改变输入区尺寸和发送/上传处理。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-input { background:#171e27 !important; border:1px solid #2b3642 !important; border-radius:20px !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-input:focus-within { border-color:#3a4654 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-input [data-script-chat-input] { color:#d5dbe3 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-input .script-input-tools .drama-option { background:#080d12 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .script-input .script-input-tools .drama-option:not(:disabled):hover { background:#2b3642 !important; }
+
+/* 2026-10-10 改动逻辑：沿用参考确认卡的宽度、圆角、间距及底部分页布局；
+ * 页码、箭头、选项编号及继续按钮复用原有事件。 */
+/* Reference confirmation card: separate rounded options and a quiet selected outline. */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card { width:380px; max-width:100%; padding:20px; background:rgba(15,21,28,.6) !important; border-color:#2b3642 !important; border-radius:16px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head { align-items:center; gap:16px; margin-bottom:18px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head strong { font-size:15px; line-height:22px; font-weight:600; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-body { gap:12px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option { position:relative; align-items:center; min-height:48px; padding:14px 16px; gap:8px; background:#171e27 !important; border-color:transparent !important; border-radius:14px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option:not(:disabled):not(.selected):hover { background:#2b3642 !important; border-color:transparent !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option.selected { background:#171e27 !important; border-color:#9aa6b2 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option.selected:not(:disabled) { border-color:#9aa6b2 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-marker { flex-basis:18px; height:20px; border:0 !important; background:transparent !important; color:#d5dbe3 !important; border-radius:0; font-size:14px; font-weight:400; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option.selected .do-marker { background:transparent !important; color:#9aa6b2 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-question-type="multiple"] .do-marker { display:none; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option.selected::after { content:none; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option small { margin-top:3px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-custom { margin-top:0; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-custom input { background:#171e27 !important; border:1px solid transparent !important; border-radius:14px; padding:14px 38px 14px 16px; }
+/* 2026-10-10 Product Design 改动逻辑：短剧大纲和剧本的“输入其他选项”聚焦时，
+ * 使用上方选中选项相同的 1px 灰白边框，清除继承的绿色轮廓和阴影；只调整视觉。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-custom input:is(:focus,:focus-visible) { border-color:#9aa6b2 !important; outline:none !important; box-shadow:none !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions { margin-top:20px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button { min-height:36px; min-width:88px; padding:8px 20px; border-radius:18px; font-size:14px; line-height:20px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option:focus-visible { outline:1px solid #9aa6b2; outline-offset:2px; }
+
+/* Pagination shares the footer with the action; question headings keep full width. */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card { position:relative; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head { display:block; margin-bottom:18px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head > strong { display:block; min-width:0; width:100%; white-space:normal; overflow-wrap:anywhere; line-height:24px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head .do-nav { position:absolute; bottom:20px; left:20px; display:flex; align-items:center; gap:8px; white-space:nowrap; height:36px; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card:has(.do-nav) .do-actions { min-height:36px; padding-left:112px; align-items:center; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-done] .do-head::after { display:block; margin-top:6px; }
+
+/* Compact chevron pagination: < 2/3 >. */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav { gap:4px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav button { width:28px; height:32px; padding:0; border:0 !important; border-radius:6px; background:transparent !important; font-size:18px; line-height:1; font-weight:400; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav button:not(:disabled):hover { background:#2b3642 !important; color:#f5f7fa !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav button:disabled { background:transparent !important; color:#4d5865 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav > span { font-size:12px; line-height:20px; color:#9aa6b2; font-variant-numeric:tabular-nums; }
+
+
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card { width:380px !important; padding:20px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head { margin-bottom:18px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-head > strong { font-size:15px !important; line-height:24px !important; font-weight:600 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-body { gap:12px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-option { padding:14px 16px !important; gap:8px !important; border-radius:14px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-marker { flex-basis:18px !important; height:20px !important; border-radius:0 !important; font-size:14px !important; font-weight:400 !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-custom input { border-radius:14px !important; padding:14px 38px 14px 16px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions { margin-top:20px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-actions button { padding:8px 20px !important; border-radius:18px !important; font-size:14px !important; line-height:20px !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card .do-nav button { width:28px !important; height:32px !important; font-size:18px !important; }
+
+/* 2026-10-10 改动逻辑：复用参考的 1px 遮罩径向渐变，hover 时仅边框局部亮起；
+ * 伪元素不接收事件，可编辑角色、大纲和分场卡沿用原权限与圆角。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-input,.script-detail :is(.story-summary,.subject-card,.scene-card,.script-scene-card):is([contenteditable="true"],[contenteditable="plaintext-only"],:has([contenteditable="true"],[contenteditable="plaintext-only"],textarea:not(:disabled)))) { position:relative; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-input,.script-detail :is(.story-summary,.subject-card,.scene-card,.script-scene-card):is([contenteditable="true"],[contenteditable="plaintext-only"],:has([contenteditable="true"],[contenteditable="plaintext-only"],textarea:not(:disabled))))::after { content:""; position:absolute; inset:0; z-index:3; padding:1px; border-radius:inherit; pointer-events:none; background: radial-gradient(300px circle at var(--glow-x,50%) var(--glow-y,50%), #00FF90 0%, rgba(184,236,100,.48) 40%, rgba(250,255,159,.16) 70%, rgba(250,255,159,0) 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; opacity:0; transition:opacity .25s ease-out; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-input,.script-detail :is(.story-summary,.subject-card,.scene-card,.script-scene-card):is([contenteditable="true"],[contenteditable="plaintext-only"],:has([contenteditable="true"],[contenteditable="plaintext-only"],textarea:not(:disabled)))):hover { border-color:transparent !important; }
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) :is(.script-input,.script-detail :is(.story-summary,.subject-card,.scene-card,.script-scene-card):is([contenteditable="true"],[contenteditable="plaintext-only"],:has([contenteditable="true"],[contenteditable="plaintext-only"],textarea:not(:disabled)))):hover::after { opacity:1; }
+
+/* 2026-10-13 Product Design 改动逻辑：AI 修改的输入附件卡使用偏青的深蓝灰底色和低饱和青色描边，
+ * 正文提亮、说明文字保持次级层次；样式只作用于输入区选文卡，保留原有省略、移除和发送行为。 */
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-input .script-selection-card { background:#1c2c33; border:1px solid rgba(86,198,220,.28); box-shadow:inset 3px 0 0 rgba(86,198,220,.65); }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-input .script-selection-card .script-selection-preview { color:#e0edf0; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-input .script-selection-card .script-selection-caption { color:#94adb5; }
+body.drama-workflow-active .script-workspace[data-view="script-studio"] .script-input .script-selection-card .script-selection-close:hover { background:rgba(86,198,220,.12); }
+
+/* 2026-10-30 Product Design 改动逻辑：按全能创作多问题卡复用 430px 卡宽、标题右侧分页和绿色确认按钮。
+ * 覆盖旧版把分页绝对定位到页脚的规则；每页按内容自然撑高，窄侧栏收缩，答案与业务事件由独立短剧 Agent 保留。
+ * 使用现有箭头资产，不新建图形；样式限定问题卡，不改变右侧大纲、剧本和底部对话输入区。
+ */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] {
+  width:430px !important;max-width:100%;padding:14px !important;border-radius:18px !important;
+}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-head {
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:12px;margin-bottom:12px !important;
+}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-head .do-nav {
+  position:static;inset:auto;gap:8px !important;height:30px;
+}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-nav button {
+  display:grid;place-items:center;width:30px !important;height:30px !important;background:#2b3642 !important;border-radius:6px;
+}
+.drama-outline-card .do-nav img {display:block;width:16px;height:16px;}
+.drama-outline-card .do-nav [data-do="next"] img {transform:rotate(180deg);}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-nav button:disabled {opacity:.35;}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-body {gap:12px !important;}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-option {align-items:flex-start;}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-custom input {
+  height:38px;background:#080d12 !important;border:1px solid #2b3642 !important;border-radius:12px !important;padding:8px 38px 8px 12px !important;
+}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-actions {
+  display:flex;gap:12px;padding-left:0;margin-top:12px !important;min-height:36px;align-items:stretch;
+}
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-actions button {flex:1;min-width:0;padding:8px 10px !important;white-space:normal;}
+
+/* 2026-10-30 Product Design 改动逻辑：移除跳过后，唯一“确认”按钮保持右对齐与紧凑胶囊宽度，不拉伸占满问题卡。 */
+.script-workspace[data-view="script-studio"]:is([data-script-stage="empty"],[data-script-stage="overall"],[data-script-stage="episode"]):not([data-setup-page="true"]) .drama-outline-card[data-state] .do-actions [data-do="continue"] {flex:0 0 auto;min-width:88px;margin-inline-start:auto;}
+
+/* 2026-11-03 Product Design：三个固定圆点独占回复下一行，以 1.2 秒错峰明暗循环形成波动；
+ * 不跳动、不增减圆点、不附加省略号，沿用侧栏文字色。减少动态效果时保留三个静态圆点。 */
+.script-chat .script-message.ai[data-drama-agent-pending] { gap:10px; }
+.script-chat [data-drama-agent-pending] .script-ai-text[hidden] { display:none !important; }
+.script-chat .drama-reply-dots { display:flex;align-items:center;gap:5px;min-height:22px;width:max-content;max-width:100%;padding:0;line-height:1;color:#d5dbe3; }
+.script-chat .drama-reply-dots > span { display:block;flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.28;animation:drama-reply-dot-wave 1.2s ease-in-out infinite; }
+.script-chat .drama-reply-dots > span:nth-child(1) { animation-delay:-.4s; }
+.script-chat .drama-reply-dots > span:nth-child(2) { animation-delay:-.2s; }
+.script-chat .drama-reply-dots > span:nth-child(3) { animation-delay:0s; }
+@keyframes drama-reply-dot-wave { 0%,70%,100% { opacity:.28; } 30% { opacity:1; } }
+@media (prefers-reduced-motion:reduce) { .script-chat .drama-reply-dots > span { animation:none;opacity:.6; } }
+
+/* 2026-11-03 Product Design 改动逻辑：大纲和剧本生成中的三点显示在全部对话下方、输入区上方，
+ * 复用现有三个圆点的明暗动画；独立于历史消息保存，生成结束移除，不留下空白占位。 */
+.script-chat .drama-generation-dots { margin-top:-12px;margin-bottom:18px; }
+.script-chat .drama-generation-dots[hidden] { display:none !important; }
